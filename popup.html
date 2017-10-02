@@ -1,67 +1,11 @@
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
 <html>
   <head>
     <title>Welcome to SteemPlus</title>
 
     <link id="themecss" rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
-    <style>
-      body {
-        font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
-        font-size: 100%;
-        margin:5px;
-      }
-      #status {
-        /* avoid an excessively wide status text */
-        white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        max-width: 400px;
-      }
-      .slider {
-        -webkit-appearance: none;
-        width: 100%;
-        height: 7px;
-        border-radius: 5px;
-        background: #f1f1f1;
-        outline: none;
-        opacity: 0.7;
-        -webkit-transition: .2s;
-        transition: opacity .2s;
-      }
+    <link  rel="stylesheet" type="text/css" href="css/popup.css">
 
-      .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #2196F3;
-        cursor: pointer;
-      }
-
-      .slider::-moz-range-thumb {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #2196F3;
-        cursor: pointer;
-      }
-      h4{margin-top: 1em;}
-      #vote{cursor: pointer;
-        background:  url('img/logo.png') no-repeat 15px 15px ;
-        font-weight:bold;font-size:1.2em;color:#1a5099;
-        height:50px;
-        padding-left: 30px;
-        line-height:45px;
-        text-align: center;
-        border:#2196F3 solid 2px;
-        background-size: 20px 20px;}
-    </style>
 
     <!--
       - JavaScript and HTML must be in separate files: see our Content Security
@@ -73,27 +17,41 @@
   </head>
   <body>
     <div>
-      <div id="vote" >Upvote</div>
-      <br/><h4>Voting weight (%)</h4>
-      <div id="slidecontainer">
-        <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
+      <img id="logo" src="img/steemplus.png" width="200px">
+      <div class="menu">Upvote<div class="more"></div></div>
+      <div class="content">
+        <div class="back_menu">Back</div>
+        <div id="vote" >Upvote</div>
+        <br/><h4>Voting weight (%)</h4>
+        <div id="slidecontainer">
+          <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
+        </div>
+        <input id="weight" type="number">
+        <br/><h4>Username</h4>
+        <input id="username" type="text">
+        <br/><div class="w3-light-grey w3-round" style="margin-top: 10px;">
+          <div id="bar" class="w3-container w3-round w3-blue w3-center" style="width:0%">0%</div>
+        </div>
+        <h4>Private Posting WIF</h4>
+        <input id="wif" type="password" type="text">
+        <br/><br/>
+        <p style=" text-align: justify;">All this data will be stored on your PC, nothing is kept online.</p>
       </div>
-      <input id="weight" type="number">
-      <br/><h4>Username</h4>
-      <input id="username" type="text">
-      <br/><div class="w3-light-grey w3-round" style="margin-top: 10px;">
-        <div id="bar" class="w3-container w3-round w3-blue w3-center" style="width:0%">0%</div>
-      </div>
-      <h4>Private Posting WIF</h4>
-      <input id="wif" type="password" type="text">
-      <br/><br/>
-      <p style=" text-align: justify;">All this data will be stored on your PC, nothing is kept online.</p>
+      <div class="menu">Resteems<div class="more"></div></div>
+      <div class="content">
 
-      <input type="checkbox" id="hide_resteem"> Hide Resteems
+        <div class="back_menu">Back</div>
+        <h4>Resteems</h4>
+        <input type="radio" name="resteem" value="show" id="show"> <label for="show">Show all</label> <br>
+        <input type="radio" name="resteem" value="hide" id="hide"> <label for="hide">Hide all</label> <br>
+        <input type="radio" name="resteem" value="blacklist_radio" id="blacklist_radio"><label for="blacklist_radio"> Show all resteems except</label><textarea rows="4" id="blacklist" style="width: 100%"></textarea><br>
+        <input type="radio" name="resteem"  value="whitelist_radio" id="whitelist_radio"><label for="whitelist_radio"> Show only resteems from</label><textarea rows="4" id="whitelist" style="width: 100%"></textarea><br><br>
+        <input type="checkbox" id="reputation"><label for="reputation"> Hide resteems if reputation</label> < <input type="text" id="rep" style="width: 50px;">
+      </div>
     </div>
-    <script src="jquery.js"></script>
-    <script src="steemjs.js"></script>
-    <script src="popup.js"></script>
+    <script src="js/third-party/jquery.js"></script>
+    <script src="js/third-party/steemjs.js"></script>
+    <script src="js/popup.js"></script>
    
   </body>
 </html>

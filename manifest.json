@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "1.2.0.0",
+  "version": "1.3.0.0",
 
   "browser_action": {
     "default_icon": "img/logo.png",
@@ -16,11 +16,14 @@
 
   "web_accessible_resources": [
     "img/*"
+
   ],
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*"],
-      "js": ["js/third-party/jquery.js", "js/third-party/steemjs.js","js/resteem.js","js/feedplus.js"],
+      "js": ["js/third-party/jquery.js",
+        "js/third-party/steemjs.js",
+        "js/third-party/timeago.js","js/feedplus.js","js/resteem.js"],
       "css":["css/resteem.css","css/feedplus.css"],
       "permissions": [
         "activeTab",

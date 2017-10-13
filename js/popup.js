@@ -15,7 +15,7 @@ chrome.storage.local.get(['username','wif','weight','resteem','blacklist','white
     username=items.username;
     wif=items.wif;
     weight=items.weight;
-    console.log(items.resteem);
+    //console.log(items.resteem);
     if(weight!==undefined)
         {
             document.getElementById('weight').value=weight;
@@ -84,51 +84,9 @@ $("#myRange").blur(function(){chrome.storage.local.set({
 });});
 
 
-//Handles Resteem Parameters
-$(document).on("change","input[name=resteem]",function(){
-    chrome.storage.local.set({
-       resteem:$("input[name=resteem]:checked").val()
-    });
-   HandleListsVisibility();
-    chrome.tabs.getSelected(null, function (tab) {
-        var code = 'window.location.reload();';
-        chrome.tabs.executeScript(tab.id, {code: code});
-    });
-});
-$("#blacklist").blur(function(){chrome.storage.local.set({
-    blacklist:document.getElementById('blacklist').value
-});});
-$("#whitelist").blur(function(){chrome.storage.local.set({
-    whitelist:document.getElementById('whitelist').value
-});});
-$("#rep").blur(function(){chrome.storage.local.set({
-    rep:document.getElementById('rep').value
-});});
 
 
-document.getElementById("reputation").onclick = function() {
-    chrome.storage.local.set({
-        reputation:document.getElementById('reputation').checked
-    });
-    HandleRepDisabled();
-}
 
-function HandleRepDisabled(){
-    if(document.getElementById('reputation').checked===false) $("#rep").prop('disabled', true);
-    else $("#rep").prop('disabled', false);
-}
-
-function HandleListsVisibility(){
-    if($("input[name=resteem]:checked").val()=="blacklist_radio")
-        $("#blacklist").show();
-    else $("#blacklist").hide();
-
-    if($("input[name=resteem]:checked").val()=="whitelist_radio")
-        $("#whitelist").show();
-    else
-        $("#whitelist").hide();
-
-}
 function getAccounts(){
     steem.api.getAccounts([document.getElementById('username').value], function(err, response){
         if(response[0]!=null&&response[0]!=undefined&&document.getElementById('wif').value!='')

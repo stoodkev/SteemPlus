@@ -6,6 +6,7 @@ const LIMIT_PER_CALL=100;
 var feed=false;
 var feed_url=document.getElementsByClassName("Header__top-steemit")[0].firstChild.href;
 var user=feed_url.split('@')[1].split('/')[0];
+var user=feed_url.split('@')[1].split('/')[0];
 var feedplus_url=feed_url+"#plus";
 var list_posts=[];
 var list_authors=[];
@@ -173,7 +174,7 @@ function getParameters()
      tmp.push(list_posts.find(function (e){return (e.username==='steem-plus')}));
 
      if(tmp.length!==0&&tmp[0]!==undefined)
-        {if(tmp[0].voted===false){filtered_list=[tmp[0]].concat(filtered_list); ad=true; Display();}}
+        {if(tmp[0].voted===false){filtered_list=[tmp[0]].concat(filtered_list); ad=true; }Display();}
         else
      {
 
@@ -200,6 +201,7 @@ function getParameters()
 
  function Display()
  {
+
      $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink show-for-large"></div></div>');
      var more=chrome.extension.getURL("/img/more.png");
 

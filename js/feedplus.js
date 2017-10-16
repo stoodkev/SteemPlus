@@ -102,8 +102,9 @@ function getParameters()
 
  function Filter(){
 
-         if (tag ==="list" && list_tags !== "")
+         if (tag ==="list" && list_tags !== "" && list_tags!=null)
          {
+             console.log(list_tags);
              var tags = list_tags.split(' ');
 
            filtered_list=  list_posts.filter(function (elt) {
@@ -202,7 +203,7 @@ function getParameters()
  function Display()
  {
 
-     $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink show-for-large"></div></div>');
+     $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink "></div></div>');
      var more=chrome.extension.getURL("/img/more.png");
 
      var filters='<ul class="Topics"><li class="Topics__title" >Sort By</li><hr><select id="sort" >'+

@@ -3,21 +3,41 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "1.3.0.3",
+  "version": "1.4.0.0",
 
   "browser_action": {
     "default_icon": "img/logo.png",
     "default_popup": "popup.html"
-  },
+  }  ,
+  "background": {"scripts": ["js/background.js"]},
   "permissions": [
     "activeTab",
     "storage"
   ],
 
+  "commands": {
+    "busyfy": {
+      "suggested_key": {
+        "default": "Shift+Alt+B",
+        "mac": "Shift+Alt+B"
+      },
+      "description": "Steemit <-> Busy"
+    },
+    "steemdify": {
+      "suggested_key": {
+        "default": "Shift+Alt+D",
+        "mac": "Shift+Alt+D"
+      },
+      "description": "Steemit <-> Steemd"
+    }
+
+  },
+
   "web_accessible_resources": [
     "img/*"
 
   ],
+
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*"],
@@ -31,4 +51,5 @@
       ]
     }
   ]
+
 }

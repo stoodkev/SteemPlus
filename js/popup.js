@@ -9,7 +9,6 @@ var width=0;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
-
 // Get local parameters stored using Chrome Storage API
 chrome.storage.local.get(['username','wif','weight','resteem','blacklist','whitelist','reputation','rep'], function (items) {
     username=items.username;
@@ -153,7 +152,7 @@ function Upvote(){
     SaveParameters();
     chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
        tab=tabs[0].url;
-
+    if(tab.split('@')[tab.split('@').length-1].split('/')[0]!==''&&tab.split('@')[tab.split('@').length-1].split('/')[1]!=='' )
         steem.broadcast.vote(
             document.getElementById('wif').value,
             document.getElementById('username').value, // Voter
@@ -161,7 +160,7 @@ function Upvote(){
             tab.split('@')[tab.split('@').length-1].split('/')[1], // Permlink
             document.getElementById('weight').value*100, // Weight (10000 = 100%)
             function(err, result) {
-              //  console.log(err,result);
+                console.log(err,result);
                 if(err!==undefined&&err!==null&&err.cause!==undefined&&err.cause.toString().includes('Voting weight is too small, please accumulate more voting power or steem power.'))
                     alert('Voting weight is too small, please accumulate more voting power or steem power.');
                 else if(err!==null&&err.name!==null)
@@ -175,6 +174,7 @@ function Upvote(){
 
             }
         );
+    else alert('The current URL does not correspond to a post. Click to "... ago" on the post summary to change the url.')
     });
 
 }

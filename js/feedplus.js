@@ -1,19 +1,19 @@
 
 console.log("Start FeedPlus");
 //steem.config.set('websocket','wss://steemd.steemitdev.com');
-const FEED_SIZE=3;
+const DEFAULT_FEED_SIZE=3;
 const LIMIT_PER_CALL=100;
 var feed=false;
 var feed_url=document.getElementsByClassName("Header__top-steemit")[0].firstChild.href;
-var user=feed_url.split('@')[1].split('/')[0];
 var user=feed_url.split('@')[1].split('/')[0];
 var feedplus_url=feed_url+"#plus";
 var list_posts=[];
 var list_authors=[];
 var filtered_list=[];
-var resteem,blacklist,whitelist,rep_feed_check,rep_feed,sort,tag,list_tags=null;
+var resteem,blacklist,whitelist,rep_feed_check,rep_feed,sort,tag,list_tags,voted_check,nb_posts=null;
 var ad=false;
-if(window.location.href.match(/#plus/)) StartFeedPlus();
+
+
 
 var feedplus=document.createElement('li');
 feedplus.className="";
@@ -33,18 +33,30 @@ feedplus.onclick=function(){
 };
 document.getElementsByClassName("HorizontalMenu")[0].appendChild(feedplus);
 $(document).click(function(){if(!window.location.href.match(/#plus/)&&feed)location.reload();});
-
+if(window.location.href.match(/#plus/)) StartFeedPlus();
 function StartFeedPlus() {
 
 
-    feed = true;
+        feed = true;
     var feed_calls = 0;
-     list_posts=[];
-     list_authors=[];
+    list_posts=[];
+    list_authors=[];
     $('.HorizontalMenu  li').removeClass('active');
     $('#FeedPlus').addClass('active');
-    GetFeed('', '');
-    $(".App__content").html('<div class="loader"></div>');
+
+    chrome.storage.local.get(['nb_posts'], function (items) {
+
+        if(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')
+            nb_posts=items.nb_posts;
+        else
+            nb_posts=DEFAULT_FEED_SIZE;
+        GetFeed('', '');
+        $(".App__content").html('<div class="loader"></div><div id="loading_status"><p></p></div>');
+
+    });
+
+
+
     function GetFeed(author, perm) {
         steem.api.getDiscussionsByFeed({
             limit: LIMIT_PER_CALL,
@@ -60,9 +72,10 @@ function StartFeedPlus() {
                 elt.active_votes.forEach(function(e){if(e.voter===user)voted=true;});
 
                 list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
+                $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+nb_posts*100);
             }
         });
-        if (feed_calls < FEED_SIZE) GetFeed(result[LIMIT_PER_CALL-1].author, result[LIMIT_PER_CALL-1].permlink);
+        if (feed_calls < nb_posts) GetFeed(result[LIMIT_PER_CALL-1].author, result[LIMIT_PER_CALL-1].permlink);
         else {
             getParameters();
         }
@@ -74,7 +87,7 @@ function StartFeedPlus() {
 
 function getParameters()
 {
-    chrome.storage.local.get(['resteem','blacklist','whitelist','rep_feed_check','rep_feed','sort','tag','list_tags'], function (items) {
+    chrome.storage.local.get(['resteem','blacklist','whitelist','rep_feed_check','rep_feed','sort','tag','list_tags','voted_check'], function (items) {
         if(items.resteem!==undefined)
             resteem=items.resteem;
         else
@@ -95,6 +108,9 @@ function getParameters()
             tag="show";
         if(items.list_tags!==undefined)
             list_tags=items.list_tags;
+        if(items.voted_check!==undefined)
+            voted_check=items.voted_check;
+        else voted_check=false;
 
         Filter();
     });
@@ -129,6 +145,13 @@ function getParameters()
                      }).reputation >= rep_feed;
              });
          }
+
+     if (voted_check) {
+         filtered_list = filtered_list.filter(function (elt) {
+             return !elt.voted
+
+         });
+     }
 
          if (resteem !== "show")
              filtered_list = filtered_list.filter(function (elt) {
@@ -202,11 +225,11 @@ function getParameters()
 
  function Display()
  {
-
+     document.title ='Feed+';
      $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink "></div></div>');
      var more=chrome.extension.getURL("/img/more.png");
 
-     var filters='<ul class="Topics"><li class="Topics__title" >Sort By</li><hr><select id="sort" >'+
+     var filters='<ul class="Topics"><li  class="Topics__title" >Sort By</li><hr><select id="sort" >'+
          '<option value="recent">Recent</option>'+
          ' <option value="old">Old</option>'+
          '<option value="payout">Payout</option>'+
@@ -225,7 +248,9 @@ function getParameters()
          '<input type="radio" name="resteem"  value="whitelist_radio" id="whitelist_radio"><label for="whitelist_radio"> Whitelist</label><textarea rows="4" id="whitelist" style="width: 100%"></textarea><br><br>'+
          // '<div style="display: inline-block"><input type="checkbox" id="reputation"><label for="reputation" > Reputation <</label></div>  <input type="text" id="rep" style="width: 50px;"></div>'+
          '</div><hr>'+
-         '<div class="filters"><div class="category_filter"><img src="'+more+'"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed"></div></div>'+
+         '<div class="filters"><div class="category_filter"><img src="'+more+'"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed">'+
+         '<input type="checkbox" id="voted_check" ><label for="voted_check">Hide upvoted </label></div></div>' +
+         '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr>Posts: <input id="nb_posts" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00'+
          '</ul>';
      $(".PostsIndex__topics ").html(filters);
      var posts='';
@@ -316,6 +341,9 @@ function getParameters()
          $('#list_tags').val(list_tags);
      if(sort!==null)
          $('#sort option[value='+sort+']').prop('selected',true);
+     $('#nb_posts').val(nb_posts);
+     if(voted_check!==null)
+         $('#voted_check').prop('checked',voted_check);
 
  }
 
@@ -395,8 +423,8 @@ function getParameters()
          Filter();});
 
 
-
-//Reputation
+// Others
+    //Reputation
      $("#rep_feed").blur(function(){
          rep_feed=document.getElementById('rep_feed').value;
          chrome.storage.local.set({
@@ -414,6 +442,24 @@ function getParameters()
          DisableMenu(true);
          Filter();
      }
+
+     //Upvoted
+     document.getElementById("voted_check").onclick = function() {
+         voted_check=document.getElementById('voted_check').checked;
+         chrome.storage.local.set({
+             voted_check:voted_check
+         });
+         DisableMenu(true);
+         Filter();
+     }
+
+     $("#nb_posts").blur(function(){
+         nb_posts=document.getElementById('nb_posts').value;
+         if(nb_posts!=='')
+         chrome.storage.local.set({
+             nb_posts:nb_posts
+         });});
+
  }
 function HandleTagListsVisibility(){
     if($("input[name=tag]:checked").val()=="list")
@@ -468,4 +514,6 @@ function Posts(body,title,resteem,date,payout,comments,votes,username,tags,img,u
     };
     return post;
 }
+
+
 

@@ -4,16 +4,16 @@ chrome.commands.onCommand.addListener(function(command) {
 
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url;
-            if (url.includes('https://steemit.com')) {
+            if (url.includes('steemit.com')) {
                 chrome.tabs.getSelected(null, function (tab) {
-                    var code = url.replace('https://steemit.com', 'https://busy.org');
+                    var code = url.replace('steemit.com', 'busy.org');
                     chrome.tabs.update(tab.id, {url: code});
                 });
             }
-            else if (url.includes('https://busy.org')) {
+            else if (url.includes('busy.org')) {
                 console.log('b2');
                 chrome.tabs.getSelected(null, function (tab) {
-                    var code = url.replace('https://busy.org', 'https://steemit.com');
+                    var code = url.replace('busy.org', 'steemit.com');
                     chrome.tabs.update(tab.id, {url: code});
                 });
             }
@@ -24,16 +24,16 @@ chrome.commands.onCommand.addListener(function(command) {
 
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url;
-            if (url.includes('https://steemit.com')) {
+            if (url.includes('steemit.com')) {
                 chrome.tabs.getSelected(null, function (tab) {
-                    var code = url.replace('https://steemit.com', 'https://steemd.com');
+                    var code = url.replace('steemit.com', 'steemd.com');
                     chrome.tabs.update(tab.id, {url: code});
                 });
             }
-            else if (url.includes('https://steemd.com')) {
+            else if (url.includes('steemd.com')) {
                 console.log('b2');
                 chrome.tabs.getSelected(null, function (tab) {
-                    var code = url.replace('https://steemd.com', 'https://steemit.com');
+                    var code = url.replace('steemd.com', 'steemit.com');
                     chrome.tabs.update(tab.id, {url: code});
                 });
             }

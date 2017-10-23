@@ -1,5 +1,5 @@
 #FeedPlus{
-cursor:pointer;
+cursor:pointer; display:inline-block;
 }
 
 #FeedPlus a{
@@ -40,4 +40,50 @@ input::-webkit-inner-spin-button {
     /* display: none; <- Crashes Chrome on hover */
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+.sidebar-content .Topics__title
+{
+    color:white;
+    font-size: 1.5em;
+    text-align: center;
+
+}
+.sidebar-content select{}
+.sidebar-content option{color: #3756a0;background-color: white; }
+.sidebar-content .category_filter{font-size: 1.2em; margin-left: 1em;}
+.sidebar-content .filter_content, .sidebar-content .parameters{font-size: 1.1em; margin-left: 1em;}
+
+.sidebar-content #nb_posts, .filter_content input,.sidebar-content .filter_content textarea{background-color: hsla(0,0%,100%,.05);font-size: 1em; color: white;}
+.sidebar-content .filter_content label{margin-left: 0.5em; font-size: 1.1em;}
+
+.sidebar-content .select_box{
+
+    position: relative;
+    display: inline-block;
+    margin-left:10%;margin-right: 10%;
+    width:80%;
+
+}
+.sidebar-content .select_box:after{
+    content: '';
+    position: absolute;
+    right: 4px;
+    top: 11px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+    pointer-events: none;
+}
+.sidebar-content .select_box select{
+
+    width: 100%;
+    background-color: hsla(0,0%,100%,.05);color: white;font-size: 1em;
+    border-color: white;
+    padding:0.4em;
+    padding-right: 10px;
+    outline: none;
+
 }

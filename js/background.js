@@ -11,7 +11,7 @@ chrome.commands.onCommand.addListener(function(command) {
                 });
             }
             else if (url.includes('busy.org')) {
-                console.log('b2');
+
                 chrome.tabs.getSelected(null, function (tab) {
                     var code = url.replace('busy.org', 'steemit.com');
                     chrome.tabs.update(tab.id, {url: code});
@@ -31,7 +31,7 @@ chrome.commands.onCommand.addListener(function(command) {
                 });
             }
             else if (url.includes('steemd.com')) {
-                console.log('b2');
+
                 chrome.tabs.getSelected(null, function (tab) {
                     var code = url.replace('steemd.com', 'steemit.com');
                     chrome.tabs.update(tab.id, {url: code});

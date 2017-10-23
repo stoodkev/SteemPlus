@@ -24,21 +24,7 @@ chrome.storage.local.get(['username','wif','weight','resteem','blacklist','white
                document.getElementById('username').value=username;
     if(wif!==undefined)
     document.getElementById('wif').value=wif;
-    if(items.resteem!==undefined)
-        $("input[name=resteem][value=" + items.resteem + "]").prop('checked', true);
-    else
-        $("input[name=resteem][value=show]").prop('checked', true);
-    if(items.whitelist!==undefined)
-        $("#whitelist").val(items.whitelist);
-    if(items.blacklist!==undefined)
-        $("#blacklist").val(items.blacklist);
-    if(items.reputation!==undefined)
-        document.getElementById('reputation').checked=items.reputation;
-    if(items.rep!==undefined)
-        $("#rep").val(items.rep);
 
-    HandleRepDisabled();
-    HandleListsVisibility();
 
    getAccounts();
 });

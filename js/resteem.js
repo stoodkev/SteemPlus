@@ -5,6 +5,7 @@ var reputation=false;
 var rep="";
 var first=true;
 var username="";
+var website,spliter=null;
 
 
 // Get parameters from local storage
@@ -29,18 +30,34 @@ chrome.storage.local.get(['username', 'resteem', 'reputation', 'rep', 'whitelist
 
 // Handle resteems according to user preferences
 function ResteemManager() {
+    if(window.location.href.match('steemit.com')) {
+        website='steemit';
+    spliter='.com/';}
+        else if(window.location.href.match('busy.org')) {
+        website='busy';
+    spliter='.org/';}
+
     tab = window.location.href;
-    if (tab.split(".com/")[1][0] === "@" && !tab.split(".com/")[1].match(/\//) && tab.split("@")[1] !== username && first) {
+    if (tab.split(spliter)[1][0] === "@" && !tab.split(spliter)[1].match(/\//) && tab.split("@")[1] !== username && first) {
 
         first = false;
         setTimeout(function () {
-            if (document.getElementsByClassName("UserProfile__buttons")[0].firstChild.firstChild.innerHTML === "Unfollow") {
+            if ((website==='steemit'&&document.getElementsByClassName("UserProfile__buttons")[0].firstChild.firstChild.innerHTML === "Unfollow")||(website==='busy'&&$('.my-5')[0].innerHTML.match("Followed"))) {
                 var user = tab.split("@")[1];
                 if (resteem === "blacklist_radio") {
-                    var add_blacklist = document.createElement("label");
-                    add_blacklist.className += "button slim hollow secondary ";
+                    var add_blacklist;
+                    if(website==='busy') {
+                        add_blacklist=document.createElement('span');
+                        add_blacklist.innerHTML='<a class="btn btn-sm btn-outline-success" style="margin-left:0.5em;">Blacklist</a>';
+                    }
+                    else if(website==='steemit'){
+                        add_blacklist = document.createElement("label");
+                        add_blacklist.className += "button slim hollow secondary ";
+
+                    }
                     if (!blacklist.includes(user)) {
-                        add_blacklist.innerHTML = "Add To Blacklist";
+                        if(website==='steemit')
+                            add_blacklist.innerHTML = "Add To Blacklist";
                         add_blacklist.onclick = function () {
                             blacklist += " " + user;
                             chrome.storage.local.set({
@@ -50,7 +67,10 @@ function ResteemManager() {
                         }
                     }
                     else {
-                        add_blacklist.innerHTML = "Remove from Blacklist";
+                        if(website==='steemit')
+                            add_blacklist.innerHTML = "Remove from Blacklist";
+                        else
+                            add_blacklist.firstChild.className='btn btn-sm btn-success';
                         add_blacklist.onclick = function () {
                             blacklist = blacklist.replace(user, '').replace(/  +/g, ' ');
                             chrome.storage.local.set({
@@ -59,13 +79,24 @@ function ResteemManager() {
                             location.reload();
                         }
                     }
+                    if(website==='steemit')
                     document.getElementsByClassName("UserProfile__buttons")[0].firstChild.append(add_blacklist);
+                    else document.getElementsByClassName("my-5")[0].append(add_blacklist);
                 }
                 else if (resteem === "whitelist_radio") {
-                    var add_whitelist = document.createElement("label");
-                    add_whitelist.className += "button slim hollow secondary ";
+                    var add_whitelist;
+                    if(website==='busy') {
+                        add_whitelist=document.createElement('span');
+                        add_whitelist.innerHTML='<a class="btn btn-sm btn-outline-success" style="margin-left:0.5em;">Whitelist</a>';
+                    }
+                    else if(website==='steemit'){
+                        add_whitelist = document.createElement("label");
+                        add_whitelist.className += "button slim hollow secondary ";
+
+                    }
                     if (!whitelist.includes(user)) {
-                        add_whitelist.innerHTML = "Add To Whitelist";
+                        if(website==='steemit'){
+                            add_whitelist.innerHTML = "Add To Whitelist";}
                         add_whitelist.onclick = function () {
                             whitelist += " " + user;
                             chrome.storage.local.set({
@@ -75,7 +106,11 @@ function ResteemManager() {
                         }
                     }
                     else {
-                        add_whitelist.innerHTML = "Remove from Whitelist";
+                        if(website==='steemit')
+                          add_whitelist.innerHTML = "Remove from Whitelist";
+                        else
+                            add_whitelist.firstChild.className='btn btn-sm btn-success';
+
                         add_whitelist.onclick = function () {
                             whitelist = whitelist.replace(user, '').replace(/  +/g, ' ');
                             chrome.storage.local.set({
@@ -84,8 +119,9 @@ function ResteemManager() {
                             location.reload();
                         }
                     }
-                    document.getElementsByClassName("UserProfile__buttons")[0].firstChild.append(add_whitelist);
-                }
+                    if(website==='steemit')
+                        document.getElementsByClassName("UserProfile__buttons")[0].firstChild.append(add_whitelist);
+                    else document.getElementsByClassName("my-5")[0].append(add_whitelist);                }
             }
         }, 10000);
     }

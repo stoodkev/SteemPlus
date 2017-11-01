@@ -24,7 +24,7 @@ if(window.location.href.match('steemit.com')) {
     post_div='.PostsIndex__left';
     reblog=".PostSummary__reblogged_by";
     ad_post="li:first-child .entry-title a";
-    feed_url = document.getElementsByClassName("Header__top-steemit")[0].firstChild.href;
+    feed_url = document.getElementsByClassName("Header__top-logo")[0].firstChild.href;
     feedplus_url=feed_url+"#plus";
     user = feed_url.split('@')[1].split('/')[0];
     menu_list=document.getElementsByClassName("HorizontalMenu")[0];
@@ -56,7 +56,7 @@ else if(window.location.href.match('busy.org')) {
             createBusyFeedPlusButton();
         }
         else {
-            setTimeout(check, 1000); // checkLoad again in a second
+            setTimeout(check, 1000); // addBeneficiariesButton again in a second
         }
     }
     function createBusyFeedPlusButton() {
@@ -119,12 +119,14 @@ function StartFeedPlus() {
 
 
     function GetFeed(author, perm) {
+
         steem.api.getDiscussionsByFeed({
             limit: LIMIT_PER_CALL,
             tag: user,
             start_author: author,
             start_permlink: perm
-        }).then((result) => {feed_calls=feed_calls + 1;
+        }).then((result) => {
+            feed_calls=feed_calls + 1;
 
         result.forEach(function (elt, i, array) {
             if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
@@ -222,7 +224,7 @@ function getParameters()
                      case "hide":
                          return elt.resteem === "";
                          break;
-                     //Show all except blacklist, also checkLoad rep
+                     //Show all except blacklist, also addBeneficiariesButton rep
                      case "blacklist_radio":
 
                          return (elt.resteem === '' || !blacklist.split(' ').includes(elt.resteem));

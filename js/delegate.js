@@ -26,7 +26,7 @@ function checkLoad(){
         createButton();
     }
     else {
-        setTimeout(checkLoad, 1000); // checkLoad again in a second
+        setTimeout(checkLoad, 1000); // addBeneficiariesButton again in a second
     }
 }
 
@@ -56,7 +56,7 @@ function createButton() {
                 '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">'+
                 'Max: '+getMaxSP()+' SP</a></div></div></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp button hollow delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
             $('body').append(div);
-            $('.close-button').click(function(){console.log('close');$('#overlay_delegate').remove();});
+            $('.close-button').click(function(){$('#overlay_delegate').remove();});
             $('#max_sp').click(function(){$('input[name=amount]').val(getMaxSP()+'');});
             $('form input').blur(function () {
                 if(parseFloat($('input[name=amount]').val())>=0&&parseFloat($('input[name=amount]').val())<=getMaxSP()&&$('input[placeholder="Your account"]').val()!==''&&$('input[placeholder="Send to account"]').val()!=='')

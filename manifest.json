@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "1.6.0.0",
+  "version": "1.7.0.0",
 
   "browser_action": {
     "default_icon": "img/logo.png",
@@ -52,11 +52,13 @@
 
     },
     {
-      "matches": ["https://steemit.com/*","https://busy.org/*"],
+      "matches": ["https://steemit.com/*"],
       "js": ["js/third-party/jquery.js",
         "js/third-party/steemjs.js",
-        "js/delegate.js"],
-      "css":["css/delegate.css"],
+        "js/third-party/steemconnect.js",
+        "js/delegate.js",
+      "js/beneficiaries.js"],
+      "css":["css/delegate.css","css/beneficiaries.css"],
       "permissions": [
         "activeTab",
         "storage"

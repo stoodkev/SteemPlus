@@ -42,7 +42,7 @@ function ResteemManager() {
 
         first = false;
         setTimeout(function () {
-            if ((website==='steemit'&&document.getElementsByClassName("UserProfile__buttons")[0].firstChild.firstChild.innerHTML === "Unfollow")||(website==='busy'&&$('.my-5')[0].innerHTML.match("Followed"))) {
+            if ((website==='steemit'&&$.inArray(document.getElementsByClassName("UserProfile__buttons")[0].firstChild.firstChild.innerHTML,["Unfollow","Se désabonner","Dejar de seguir","Отписаться","Non seguire&nbsp;più"] )>-1)||(website==='busy'&&$('.my-5')[0].innerHTML.match("Followed"))) {
                 var user = tab.split("@")[1];
                 if (resteem === "blacklist_radio") {
                     var add_blacklist;

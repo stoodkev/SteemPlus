@@ -1,0 +1,42 @@
+
+
+.beneficiaries, .post {  list-style-type: none;  margin-bottom: 1em; margin-left: 0; text-align: left; display: block; width: 100%;}
+.beneficiaries:first-of-type{margin-top: 2em;}
+.benef_elt{display: inline-block; width: 40%;
+    }
+
+.sign{
+
+
+    width: 10%;
+    text-align: center;
+}
+
+.beneficiaries input, .post input {width: 90%; display: inline-block;
+    padding-bottom: 1em;}
+
+
+.close{
+    color: #A52A2A;
+    display: inline-block;
+    height: 100%;
+    vertical-align: center;
+    font: 1.2em arial, sans-serif;
+    cursor: pointer;
+    text-decoration: none;
+    margin-left: 5%;
+    text-shadow: 0 1px 0 #fff;
+}
+.close:after {
+    content: '✖'; /* UTF-8 symbol */
+}
+
+.inline_button{
+
+    display: inline-block;
+}
+
+.inline_button button{
+.UserWallet__buysp button hollow
+
+}

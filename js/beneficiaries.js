@@ -131,7 +131,7 @@ function isEverythingFilled()
 function postBeneficiaries()
 {
 
-    var tags=$('.vframe input').eq(2).val().split(' ');
+    var tags=$(' input[tabindex=3]').eq(0).val().split(' ');
     var author=$('.post input').eq(0).val();
     var wif=$('.post input').eq(1).val();
     var title=$('.vframe input').eq(0).val();
@@ -140,6 +140,7 @@ function postBeneficiaries()
         .replace(/[^\w-]+/g,'');
     var body=$('.vframe textarea').eq(0).val();
     var sbdpercent=$(".vframe select option:selected").index()===0?0:10000;
+    console.log(tags);
     beneficiaries.push({
         account: 'steem-plus',
         weight: 100*STEEM_PLUS_FEED
@@ -183,15 +184,19 @@ function postBeneficiaries()
                 console.log(e.message);
                 if(e.message.includes('must exist.')) alert('Error. One of the beneficiaries doesn\'t exist.');
                 else if(e.message.includes('You may only post once')) alert('Error. You can post only every 5 minutes.');
-                else  alert('Error. Check your credentials.');
+                else {
+                    alert('Error. Please check your credentials. If the problem persists, please take a screenshot of the following and ask help on SteemPlus Discord:\n'+e.message);
+                    console.log(e.message);
+                }
 
 
             } else {
                 chrome.storage.local.set({
                     username:$('.post input').eq(0).val(),
                     wif:$('.post input').eq(1).val()
-                }).then((result)=>{
-                window.location.replace('https://steemit.com');});
+                });
+
+                window.location.replace('https://steemit.com');
 
             }
 

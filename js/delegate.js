@@ -7,7 +7,7 @@ var created=false;
 
 if(window.location.href.match('steemit.com')) {
     website='steemit';
-    if($('span[title="STEEM POWER delegated to this account"]').length===1)
+    if(window.location.href.match(/transfers/))
         checkLoad();
     $(document).click(function(){
         if(window.location.href.match(/transfers/)&&!created){created=true;checkLoad();
@@ -22,7 +22,7 @@ if(window.location.href.match('steemit.com')) {
 
 
 function checkLoad(){
-    if($('span[title="STEEM POWER delegated to this account"]').length===1&&$(".FoundationDropdownMenu__label").length>1){
+    if($(".FoundationDropdownMenu__label").length>1){
         createButton();
     }
     else {
@@ -42,8 +42,8 @@ function createButton() {
         delegate_button.style.float = 'right';
         delegate_div.appendChild(delegate_button);
 
-        $('span[title="STEEM POWER delegated to this account"]').after(delegate_div);
-        function getMaxSP(){return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0])-5.001).toFixed(3);}
+        $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
+        function getMaxSP(){return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',',''))-5.001).toFixed(3);}
 
         $('.delegate').click(function(){
             var div=document.createElement('div');
@@ -54,7 +54,7 @@ function createButton() {
                 'To</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span><input type="text" class="input-group-field" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value=""></div><p></p></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">'+
                 'Amount</div><div class="column small-10"><div class="input-group" style="margin-bottom: 5px;"><input type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">'+
                 '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">'+
-                'Max: '+getMaxSP()+' SP</a></div></div></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp button hollow delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
+                'Max*: '+getMaxSP()+' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp button hollow delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
             $('body').append(div);
             $('.close-button').click(function(){$('#overlay_delegate').remove();});
             $('#max_sp').click(function(){$('input[name=amount]').val(getMaxSP()+'');});
@@ -88,17 +88,3 @@ function createButton() {
     }
 }
 
-/*steem.api.getDynamicGlobalProperties(function(err, result) {
-    console.log(err, result);
-    const totalSteem = Number(result.total_vesting_fund_steem.split(' ')[0]);
-    const totalVests = Number(result.total_vesting_shares.split(' ')[0]);
-    const delegated_SP=0;
-
-    var delegated_vest=delegated_SP*totalVests/totalSteem;
-    console.log(delegated_vest);
-
-    steem.broadcast.delegateVestingShares('5KXDiof5YVgkRc8xt8phUgSuzivrzAVYLhuwCAsDppurHMVf9PR', 'steem-plus', 'stoodkev', delegated_vest.toFixed(6).toString()+' VESTS', function(err, result) {
-        console.log(err, result);
-    });
-});
-*/

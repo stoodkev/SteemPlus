@@ -4,6 +4,7 @@ body {
     font-size: 100%;
     margin:5px;
     width:200px;
+    min-height: 300px;
 }
 #status {
     /* avoid an excessively wide status text */
@@ -92,5 +93,7 @@ h4{margin-top: 1em;}
     background: url(../img/more.png) center center no-repeat;
 }
 #logo{margin-bottom: 20px;      }
+#powered{ display: inline-block;
+    color: lightgrey;bottom: 0;right:0;position: absolute;margin-bottom: 5px; width: 100%; text-align: right;padding-right: 10px;}
 
 

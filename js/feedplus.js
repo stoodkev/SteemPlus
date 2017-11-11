@@ -13,19 +13,19 @@ var feedplus,a,img,menu_list,app_content,menu_feedplus,post_div,reblog,ad_post=n
 var first_display=true;
 var show_posts=0;
 var html_posts=[];
-steem.config.set('websocket','wss://steemd.minnowsupportproject.org');
+steem.config.set('websocket','wss://steemd.steemit.com');
 
 
 
 if(window.location.href.match('steemit.com')) {
     website='steemit';
-    app_content='.App__content';
+    app_content=$('.App__content').eq(0);;
     menu_feedplus=".PostsIndex__topics ";
     post_div='.PostsIndex__left';
     reblog=".PostSummary__reblogged_by";
     ad_post="li:first-child .entry-title a";
     feed_url = document.getElementsByClassName("Header__top-logo")[0].firstChild.href;
-    feedplus_url=feed_url+"#plus";
+    feedplus_url="#plus";
     user = feed_url.split('@')[1].split('/')[0];
     menu_list=document.getElementsByClassName("HorizontalMenu")[0];
 
@@ -45,25 +45,28 @@ if(window.location.href.match('steemit.com')) {
 }
 else if(window.location.href.match('busy.org')) {
     website='busy';
-    app_content='.main-panel';
-    menu_feedplus=".sidebar-content ";
-    post_div='.main-panel';
+    menu_feedplus=".rightContainer ";
+
     reblog='.busy_resteem';
     ad_post='.title_busy';
     check();
     function check(){
-        if(document.getElementsByClassName("my-1")[0]!==undefined){
+        if($('.Topnav__menu-container__menu')[0]!==undefined&&$('.Topnav__menu-container__menu')[0].childNodes.length===3&&$('.Topnav__item-user a')[0]!==undefined){
             createBusyFeedPlusButton();
         }
         else {
-            setTimeout(check, 1000); // addBeneficiariesButton again in a second
+            if($('.Topnav__menu-container__menu')[0]!==undefined)
+            console.log($('.Topnav__menu-container__menu')[0].childNodes.length);
+            setTimeout(check, 1000);
         }
     }
     function createBusyFeedPlusButton() {
-        feed_url = document.getElementsByClassName("my-1")[0].href + '/feed';
+        feed_url =$('.Topnav__item-user a')[0].href + '/feed';
+        app_content=$('.feed-layout .center').eq(0);
+        post_div=app_content;
         feedplus_url=feed_url+"#plus";
         user = feed_url.split('@')[1].split('/')[0];
-        menu_list = document.getElementsByClassName("logo")[0];
+        menu_list = $('.Topnav__menu-container__menu')[0];
         feedplus = document.createElement('li');
         feedplus.className = "";
         feedplus.id = 'FeedPlus';
@@ -74,9 +77,9 @@ else if(window.location.href.match('busy.org')) {
         img.style.width='24px';
         a.appendChild(img);
         feedplus.appendChild(a);
+        //menu_list.insertBefore(feedplus,menu_list.firstChild);
         SetFeedPlus();
         if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus();}
-
 
     }
 }
@@ -85,6 +88,7 @@ else{
 }
 
 function SetFeedPlus() {
+    if(website==='steemit')
     menu_list.appendChild(feedplus);
     feedplus.onclick = function () {
         window.history.pushState("", "", feedplus_url);
@@ -112,7 +116,7 @@ function StartFeedPlus() {
         else
             nb_posts=DEFAULT_FEED_SIZE;
         GetFeed('', '');
-            $(app_content).html('<div class="loader"></div><div id="loading_status"><p></p></div>');
+        app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
 
     });
 
@@ -317,9 +321,10 @@ function getParameters()
              '<div class="filters"><div class="category_filter"><img src="' + more + '"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed"><br>' +
              '<input type="checkbox" id="voted_check" ><label for="voted_check">Hide upvoted </label></div></div>' +
              '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr><div class="parameters">Posts: <input id="nb_posts" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
-             '</ul>';
+             '<button id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
 
              $(menu_feedplus).html(filters);
+             $('.loader_2').hide();
      }
 
          var posts = '';
@@ -450,6 +455,10 @@ function getParameters()
  function DisableMenu(isDisabled)
  {
    $(".PostsIndex__topics input,textarea,select").prop("disabled",isDisabled);
+   if(isDisabled)
+       $('.loader_2').show();
+   else
+       $('.loader_2').hide();
 
  }
 
@@ -483,8 +492,7 @@ function getParameters()
              tag:tag
          });
          HandleTagListsVisibility();
-         DisableMenu(true);
-         Filter();
+
 
      });
 
@@ -494,8 +502,7 @@ function getParameters()
          chrome.storage.local.set({
          list_tags: list_tags
      });
-         DisableMenu(true);
-         Filter();
+
      });
 
 //Handles Resteem Parameters
@@ -505,23 +512,20 @@ function getParameters()
              resteem:resteem
          });
          HandleListsVisibility();
-         DisableMenu(true);
-         Filter();
+
      });
      $("#blacklist").blur(function(){
          blacklist=document.getElementById('blacklist').value;
          chrome.storage.local.set({
          blacklist:blacklist
      });
-         DisableMenu(true);
-         Filter();});
+         });
      $("#whitelist").blur(function(){
          whitelist=document.getElementById('whitelist').value;
              chrome.storage.local.set({
          whitelist:whitelist
      });
-         DisableMenu(true);
-         Filter();});
+         });
 
 
 // Others
@@ -531,8 +535,7 @@ function getParameters()
          chrome.storage.local.set({
          rep_feed:rep_feed
      });
-         DisableMenu(true);
-         Filter();});
+         });
 
      document.getElementById("rep_feed_check").onclick = function() {
          rep_feed_check=document.getElementById('rep_feed_check').checked;
@@ -540,8 +543,6 @@ function getParameters()
              rep_feed_check:rep_feed_check
          });
          HandleRepDisabled();
-         DisableMenu(true);
-         Filter();
      }
 
      //Upvoted
@@ -550,8 +551,6 @@ function getParameters()
          chrome.storage.local.set({
              voted_check:voted_check
          });
-         DisableMenu(true);
-         Filter();
      }
 
      $("#nb_posts").blur(function(){
@@ -560,6 +559,12 @@ function getParameters()
          chrome.storage.local.set({
              nb_posts:nb_posts
          });});
+
+     $("#validate_settings").click(function(){
+
+         DisableMenu(true);
+         Filter();
+     });
 
  }
 function HandleTagListsVisibility(){

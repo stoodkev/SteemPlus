@@ -49,12 +49,15 @@ input::-webkit-inner-spin-button {
     text-align: center;
 
 }
+
+.menu li a {
+    display: inherit;}
 .sidebar-content select{}
 .sidebar-content option{color: #3756a0;background-color: white; }
 .sidebar-content .category_filter{font-size: 1.2em; margin-left: 1em;}
 .sidebar-content .filter_content, .sidebar-content .parameters{font-size: 1.1em; margin-left: 1em;}
 
-.sidebar-content #nb_posts, .filter_content input,.sidebar-content .filter_content textarea{background-color: hsla(0,0%,100%,.05);font-size: 1em; color: white;}
+.sidebar-content #nb_posts, .filter_content input,.sidebar-content .filter_content textarea{background-color: hsla(0,0%,100%,.05);font-size: 1em; }
 .sidebar-content .filter_content label{margin-left: 0.5em; font-size: 1.1em;}
 
 .sidebar-content .select_box{
@@ -86,4 +89,22 @@ input::-webkit-inner-spin-button {
     padding-right: 10px;
     outline: none;
 
+}
+#validate_settings{
+    margin-top: 3em;
+    border: solid #3498db 3px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 1em;
+}
+.loader_2{vertical-align: middle;
+    display: inline-block;}
+.loader_2 div{
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 30px;
+    margin-left: 0em;
+    height: 30px;
+    animation: spin 2s linear infinite;
 }

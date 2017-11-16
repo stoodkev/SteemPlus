@@ -62,7 +62,7 @@ else if(window.location.href.match('busy.org')) {
     }
     function createBusyFeedPlusButton() {
         feed_url =$('.Topnav__item-user a')[0].href + '/feed';
-        app_content=$('.feed-layout .center').eq(0);
+        app_content=$('.content').eq(0);
         post_div=app_content;
         feedplus_url=feed_url+"#plus";
         user = feed_url.split('@')[1].split('/')[0];
@@ -77,7 +77,7 @@ else if(window.location.href.match('busy.org')) {
         img.style.width='24px';
         a.appendChild(img);
         feedplus.appendChild(a);
-        //menu_list.insertBefore(feedplus,menu_list.firstChild);
+        menu_list.insertBefore(feedplus,menu_list.firstChild);
         SetFeedPlus();
         if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus();}
 
@@ -91,9 +91,12 @@ function SetFeedPlus() {
     if(website==='steemit')
     menu_list.appendChild(feedplus);
     feedplus.onclick = function () {
-        window.history.pushState("", "", feedplus_url);
-        feedplus.class += "active";
-        StartFeedPlus();
+        if(website==='steemit') {
+            window.history.pushState("", "", feedplus_url);
+            feedplus.class += "active";
+            StartFeedPlus();
+        }
+        else window.open('https://steemit.com/@'+user+'/feed#plus', '_blank');
     };
 }
 
@@ -369,19 +372,14 @@ function getParameters()
                     //if(i%20) {html_posts.push(posts);posts='';}
              }
          else if(website==='busy') {
-                 if(elt.voted){upvoted='active'}
-                 posts+='<div class="PostFeedCard" style="margin-top: 2em;"">';
+                 var active="";
+                 if(elt.voted) active="active";
+                 posts+='<div class="Story">';
                  if(elt.resteem !== '')
-                     posts+='<div class="PostFeedCard__cell PostFeedCard__cell--top"><ul><li><i class="material-icons Icon Icon--sm ">repeat</i><!-- react-text: 857 --> Reblogged by <!-- /react-text --><span class="busy_resteem"><a target="_blank" href="/@'+elt.resteem+'">'+elt.resteem+'</a></span></li></ul></div>';
-                 posts+='<div class="PostFeedCard__cell PostFeedCard__cell--top"><ul><li><span><a target="_blank" href="/@'+elt.username+'">'+
-                     '<!-- react-text: 824 --> '+elt.username+'<!-- /react-text --></a>'+
-                     '</span><span class="hidden-xs"><!-- react-text: 826 --> <!-- /react-text --><span>in</span><!-- react-text: 828 --> <!-- /react-text --><a target="_blank" href="/hot/'+elt.tags[0]+'"><!-- react-text: 830 -->#<!-- /react-text --><!-- react-text: 831 -->'+elt.tags[0]+'<!-- /react-text -->'+
-                     '</a></span></li><li class="pull-right"><span>'+timeago().format(Date.parse(elt.date) - offset * 60 * 1000) +'</span><!-- react-text: 834 --> <!-- /react-text -->'+
-                     '</li></ul></div><div class="PostFeedCard__cell PostFeedCard__cell--body"><h2><a class="title_busy" target="_blank" href="'+elt.url+'"><!-- react-text: 841 -->'+elt.title+'<!-- /react-text --><!-- react-empty: 842 --></a></h2></div><div class="PostFeedCard__thumbs"'+
-                     '><a target="_blank" href="'+elt.url+'"><img alt="post" src="'+elt.img+'"></a></div><div class="PostFeedCard__cell PostFeedCard__cell--text"><span><span ">'+bd.substring(0,120)+'...</span></span></div><div class="PostFeedCard__cell PostFeedCard__cell--bottom"><ul><li>'+
-                     '<div class="LikeBar--container"><a class="'+upvoted+'"><i class="material-icons Icon Icon--sm ">thumb_up</i><span><span class="hidden-xs"><!-- react-text: 857 --> <!-- /react-text --><span></span></span></span></a></div></li><li><a>'+
-                     '<span class="hidden-xs"><i class="material-icons Icon Icon--sm ">attach_money</i></span><span class="false">'+elt.payout.split(' ')[0]+'</span></a></li><li><a><span class="hidden-xs"><span>'+elt.votes+' votes'+'</span></span></a></li></div></div>';
-                      //if(i%20) {html_posts.push(posts);posts='';}
+                     posts+='<div class="Story__reblog"><i class="iconfont icon-share1"></i><span><a target="_blank" href="/@'+elt.resteem+'">'+elt.resteem+'</a><!-- react-text: 1904 --> reblogged<!-- /react-text --></span></div>';
+                 posts+='<div class="Story__content"><div class="Story__header"><a target="_blank" href="/@'+elt.username+'"><img class="Avatar" alt="'+elt.username+'" src="https://img.busy.org/@'+elt.username+'" style="min-width: 40px; width: 40px; height: 40px;"></a><div class="Story__header__text"><a target="_blank" href="/@'+elt.username+'"><h4><!-- react-text: 1913 -->@'+elt.username+'<!-- /react-text --><div data-show="true" class="ant-tag"><span class="ant-tag-text">53</span><!-- react-text: 1916 --><!-- /react-text --></div></h4></a><span class="Story__date"><span>'+timeago().format(Date.parse(elt.date) - offset * 60 * 1000)+'</span></span></div><div class="Story__topics"><a target="_blank" class="Topic" href="/trending/'+elt.tags[0]
+                 +'"><!-- react-text: 1921 -->'+elt.tags[0]+'<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="'+elt.url+'"><h2>'+elt.title+'</h2></a><a target="_blank" class="Story__content__preview" href="'+elt.url+'"><div><div class="Story__content__img-container"><img alt="post" src="'+elt.img+'"></div><div class="Story__content__body">'
+                 +bd.substring(0,138)+'...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>'+elt.payout.split(' ')[0]+'</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link '+active+'"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>'+elt.votes+'</span><span></span></span></span></span></div></div></div></div></div></div>'
              }
 
          });

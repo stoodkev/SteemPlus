@@ -1,5 +1,5 @@
 document.getElementById('vote').addEventListener("click", Upvote);
-
+;
 var username;
 var wif;
 var weight;

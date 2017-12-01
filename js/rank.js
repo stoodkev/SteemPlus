@@ -5,7 +5,7 @@ if($('.UserProfile__banner ').length!==0)
     getAccountData(username).then(function (result){
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         const rank=getUserRank(vesting_shares);
-        const medal_url='img/medals/'+rank+'.png';
+        const medal_url='img/medals/'+rank.toLowerCase()+'.png';
         console.log(medal_url);
         var div= document.createElement('div');
         div.className="ranker";
@@ -13,7 +13,7 @@ if($('.UserProfile__banner ').length!==0)
         img.src=chrome.extension.getURL(medal_url);
         img.title=rank;
         div.appendChild(img);
-        $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
+        $('.UserProfile__banner ')[0].childNodes[0].append(div);
     });
 
 

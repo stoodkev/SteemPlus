@@ -1,23 +1,23 @@
-
-if($('.UserProfile__banner ').length!==0)
-{
-    const username=getUsernameFromProfile();
-    getAccountData(username).then(function (result){
-        const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
-        const rank=getUserRank(vesting_shares);
-        const medal_url='img/medals/'+rank.toLowerCase()+'.png';
-        console.log(medal_url);
-        var div= document.createElement('div');
-        div.className="ranker";
-        var img=document.createElement('img');
-        img.src=chrome.extension.getURL(medal_url);
-        img.title=rank;
-        div.appendChild(img);
-        $('.UserProfile__banner ')[0].childNodes[0].append(div);
+chrome.storage.local.get(['badge'], function (items) {
+  console.log(items.badge);
+      if($('.UserProfile__banner ').length!==0&&(items.badge==undefined||items.badge=="show"))
+      {
+          const username=getUsernameFromProfile();
+          getAccountData(username).then(function (result){
+            const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
+            const rank=getUserRank(vesting_shares);
+            const medal_url='img/medals/'+rank.toLowerCase()+'.png';
+            console.log(medal_url);
+            var div= document.createElement('div');
+            div.className="ranker";
+            var img=document.createElement('img');
+            img.src=chrome.extension.getURL(medal_url);
+            img.title=rank;
+            div.appendChild(img);
+            $('.UserProfile__banner ')[0].childNodes[0].append(div);
     });
-
-
 }
+});
 
 
 function getUserRank (vests) {

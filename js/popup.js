@@ -6,15 +6,17 @@ var wif;
 var weight;
 var vpow;
 var width=0;
+var badge;
 
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['username','wif','weight','resteem','blacklist','whitelist','reputation','rep'], function (items) {
+chrome.storage.local.get(['username','wif','weight','resteem','blacklist','whitelist','reputation','rep','badge'], function (items) {
     username=items.username;
     wif=items.wif;
     weight=items.weight;
+    badge=items.badge==undefined?'show':items.badge;
     //console.log(items.resteem);
     if(weight!==undefined)
         {
@@ -25,6 +27,8 @@ chrome.storage.local.get(['username','wif','weight','resteem','blacklist','white
                document.getElementById('username').value=username;
     if(wif!==undefined)
     document.getElementById('wif').value=wif;
+    $('input[name=badges][value='+badge+']').prop('checked',true);
+
 
 
    getAccounts();
@@ -68,7 +72,13 @@ $("#wif").blur(function(){chrome.storage.local.set({
 $("#myRange").blur(function(){chrome.storage.local.set({
     weight:document.getElementById('weight').value
 });});
+$("")
 
+$(document).on("change","input[name=badges]",function(){
+    chrome.storage.local.set({
+        badge:$("input[name=badges]:checked").val()
+    });
+});
 
 
 

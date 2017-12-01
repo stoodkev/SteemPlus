@@ -1,0 +1,10 @@
+.ranker{
+   width: 100%;
+    float:left;
+    margin:1em;
+}
+
+.ranker img{
+    width: 128px;
+    height:128px;
+}

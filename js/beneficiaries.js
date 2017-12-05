@@ -10,25 +10,31 @@ const STEEM_PLUS_FEED=5;
 
 $(document).ready(function(){
 
+  chrome.storage.local.get(['ben'], function (items) {
+    console.log(items.ben);
+        if(items.ben==undefined||items.ben=="show")
+        {
+          if(window.location.href.match('steemit.com')) {
+              website='steemit';
+              if(window.location.href.match(/submit/))
+                  addBeneficiariesButton();
+              $(document).click(function(){
+                  if(window.location.href.match(/submit/)&&!created_benef){addBeneficiariesButton();
+                  }
+                  if(!window.location.href.match(/submit/)){created_benef=false;
+                  }
+              });
 
-if(window.location.href.match('steemit.com')) {
-    website='steemit';
-    if(window.location.href.match(/submit/))
-        addBeneficiariesButton();
-    $(document).click(function(){
-        if(window.location.href.match(/submit/)&&!created_benef){addBeneficiariesButton();
-        }
-        if(!window.location.href.match(/submit/)){created_benef=false;
-        }
-    });
+          }
+          else if(window.location.href.match('steemit.com'))
+          {
+              website='busy';
+          }
+          }
+          });
 
-}
-else if(window.location.href.match('steemit.com'))
-{
-    website='busy';
-}
+      });
 
-});
 
 function addBeneficiariesButton(){
 
@@ -203,6 +209,3 @@ function postBeneficiaries()
         });
 
 }
-
-
-

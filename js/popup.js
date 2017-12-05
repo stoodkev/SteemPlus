@@ -6,17 +6,20 @@ var wif;
 var weight;
 var vpow;
 var width=0;
-var badge;
+var badge,ben,feedp,del;
 
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['username','wif','weight','resteem','blacklist','whitelist','reputation','rep','badge'], function (items) {
+chrome.storage.local.get(['username','wif','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp'], function (items) {
     username=items.username;
     wif=items.wif;
     weight=items.weight;
     badge=items.badge==undefined?'show':items.badge;
+    feedp=items.feedp==undefined?'show':items.feedp;
+    ben=items.ben==undefined?'show':items.ben;
+    del=items.del==undefined?'show':items.del;
     //console.log(items.resteem);
     if(weight!==undefined)
         {
@@ -28,6 +31,9 @@ chrome.storage.local.get(['username','wif','weight','resteem','blacklist','white
     if(wif!==undefined)
     document.getElementById('wif').value=wif;
     $('input[name=badges][value='+badge+']').prop('checked',true);
+    $('input[name=feedp][value='+feedp+']').prop('checked',true);
+    $('input[name=del][value='+del+']').prop('checked',true);
+    $('input[name=ben][value='+ben+']').prop('checked',true);
 
 
 
@@ -77,6 +83,21 @@ $("")
 $(document).on("change","input[name=badges]",function(){
     chrome.storage.local.set({
         badge:$("input[name=badges]:checked").val()
+    });
+});
+$(document).on("change","input[name=ben]",function(){
+    chrome.storage.local.set({
+        ben:$("input[name=ben]:checked").val()
+    });
+});
+$(document).on("change","input[name=feedp]",function(){
+    chrome.storage.local.set({
+        feedp:$("input[name=feedp]:checked").val()
+    });
+});
+$(document).on("change","input[name=del]",function(){
+    chrome.storage.local.set({
+        del:$("input[name=del]:checked").val()
     });
 });
 

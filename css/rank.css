@@ -1,10 +1,16 @@
 .ranker{
-   width: 100%;
     float:left;
-    margin:1em;
+    margin-top:2em;
+    margin-left: 30px;
 }
 
 .ranker img{
     width: auto;
     height:128px;
+}
+
+.wrapper
+{
+  display: inline-block;
+  margin-right: 120px;
 }

@@ -14,7 +14,8 @@ chrome.storage.local.get(['badge'], function (items) {
             img.src=chrome.extension.getURL(medal_url);
             img.title=rank;
             div.appendChild(img);
-            $('.UserProfile__banner ')[0].childNodes[0].append(div);
+            $('.UserProfile__banner ').first().children().first().wrapInner('<div class="wrapper"></div>');
+            $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
     });
 }
 });

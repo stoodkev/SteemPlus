@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "1.8.3.0",
+  "version": "1.9.0.0",
 
   "browser_action": {
     "default_icon": "img/logo.png",
@@ -58,7 +58,7 @@
         "js/third-party/steemjs.js",
         "js/utils/utils.js",
         "js/third-party/steemconnect.js",
-      "js/beneficiaries.js","js/rank.js"],
+      "js/beneficiaries.js","js/rank.js","js/dropdown.js"],
       "css":["css/beneficiaries.css","css/rank.css"],
       "permissions": [
         "activeTab",

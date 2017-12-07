@@ -15,6 +15,7 @@ chrome.storage.local.get(['badge'], function (items) {
             img.title=rank;
             div.appendChild(img);
             $('.UserProfile__banner ').first().children().first().wrapInner('<div class="wrapper"></div>');
+            $('.wrapper ').first().children().first().insertBefore($('.wrapper'));
             $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
     });
 }

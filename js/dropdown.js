@@ -1,3 +1,7 @@
+steem.api.getDynamicGlobalProperties(function(err, result) {
+  console.log(err, result);
+});
+
 $(document).click(function(){
 
   setTimeout(function(){

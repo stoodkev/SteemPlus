@@ -12,7 +12,6 @@ var classButton;
 var timeout=0;
 
 chrome.storage.local.get(['del'], function (items) {
-  console.log(items.del);
       if(items.del==undefined||items.del=="show")
       {
         if(window.location.href.match('steemit.com')) {

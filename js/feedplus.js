@@ -16,7 +16,6 @@ var html_posts=[];
 steem.config.set('websocket','wss://steemd.steemit.com');
 
 chrome.storage.local.get(['feedp'], function (items) {
-  console.log(items.feedp);
       if(items.feedp==undefined||items.feedp=="show")
       {
         if(window.location.href.match('steemit.com')) {

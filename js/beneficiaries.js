@@ -11,7 +11,6 @@ const STEEM_PLUS_FEED=5;
 $(document).ready(function(){
 
   chrome.storage.local.get(['ben'], function (items) {
-    console.log(items.ben);
         if(items.ben==undefined||items.ben=="show")
         {
           if(window.location.href.match('steemit.com')) {

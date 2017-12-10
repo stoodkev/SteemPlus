@@ -1,5 +1,4 @@
 chrome.storage.local.get(['badge'], function (items) {
-  console.log(items.badge);
   displayBadges(items);
   $(document).click(function(){
 
@@ -19,7 +18,6 @@ function displayBadges(items)
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         const rank=getUserRank(vesting_shares);
         const medal_url='img/medals/'+rank.toLowerCase()+'.png';
-        console.log(medal_url);
         var div= document.createElement('div');
         div.className="ranker";
         var img=document.createElement('img');

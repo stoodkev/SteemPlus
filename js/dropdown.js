@@ -46,7 +46,7 @@ chrome.storage.local.get(['drop'], function (items) {
       {
         xhttp.open("GET", "https://api.coinmarketcap.com/v1/ticker/steem/", false);
         xhttp.send();
-        $(".price").html('1 STEEM = '+JSON.parse(xhttp.responseText)[0].price_usd+'$');
+        $(".price").html('1 STEEM = '+Math.round(parseFloat(JSON.parse(xhttp.responseText)[0].price_usd)*1000)/1000+'$');
         $(".daily_change").html(' ('+JSON.parse(xhttp.responseText)[0].percent_change_1h+'%) ');
         if(parseFloat(JSON.parse(xhttp.responseText)[0].percent_change_1h)>=0)
           $(".daily_change").css('color','green');
@@ -58,7 +58,7 @@ chrome.storage.local.get(['drop'], function (items) {
       {
         xhttp.open("GET", "https://api.cryptonator.com/api/ticker/sbd-usd", false);
         xhttp.send();
-        $(".price").html('1 SBD = '+JSON.parse(xhttp.responseText).ticker.price+'$');
+        $(".price").html('1 SBD = '+Math.round(parseFloat(JSON.parse(xhttp.responseText).ticker.price)*1000)/1000+'$');
         $(".daily_change").html(' ('+Math.round(parseFloat(JSON.parse(xhttp.responseText).ticker.change)*100)/100+'%) ');
         if(parseFloat(JSON.parse(xhttp.responseText).ticker.change)>=0)
           $(".daily_change").css('color','green');

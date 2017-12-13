@@ -37,7 +37,7 @@ chrome.storage.local.get(['drop'], function (items) {
       if(i%3===0)
       {
         steem.api.getCurrentMedianHistoryPrice(function(err, result) {
-          $(".price").html('1 STEEM = '+parseFloat(result.base)/10+' SBD');
+          $(".price").html('1 STEEM = '+Math.round(parseFloat(result.base)*100)/1000+' SBD');
           $(".daily_change").html("");
             });
             $(".price").parent().prop('href',"/market");

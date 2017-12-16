@@ -14,7 +14,7 @@ var timeout=0;
 chrome.storage.local.get(['del'], function (items) {
       if(items.del==undefined||items.del=="show")
       {
-        if(window.location.href.match('steemit.com')) {
+        if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
             website='steemit';
             load_check=/transfers/;
             wallet_elt=".FoundationDropdownMenu__label";

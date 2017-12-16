@@ -18,7 +18,7 @@ steem.config.set('websocket','wss://steemd.steemit.com');
 chrome.storage.local.get(['feedp'], function (items) {
       if(items.feedp==undefined||items.feedp=="show")
       {
-        if(window.location.href.match('steemit.com')) {
+        if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
             website='steemit';
             app_content=$('.App__content').eq(0);;
             menu_feedplus=".PostsIndex__topics ";

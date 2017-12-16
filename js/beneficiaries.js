@@ -2,7 +2,6 @@
  * Created by quent on 10/27/2017.
  */
 
-
 var website='';
 var created_benef=false;
 var beneficiaries;
@@ -13,7 +12,7 @@ $(document).ready(function(){
   chrome.storage.local.get(['ben'], function (items) {
         if(items.ben==undefined||items.ben=="show")
         {
-          if(window.location.href.match('steemit.com')) {
+          if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
               website='steemit';
               if(window.location.href.match(/submit/))
                   addBeneficiariesButton();
@@ -145,6 +144,8 @@ function postBeneficiaries()
         .replace(/[^\w-]+/g,'');
     var body=$('.vframe textarea').eq(0).val();
     var sbdpercent=$(".vframe select option:selected").index()===0?0:10000;
+
+    console.log($(".vframe select option:selected").index()===0?0:10000);
     console.log(tags);
     beneficiaries.push({
         account: 'steem-plus',

@@ -30,7 +30,7 @@ chrome.storage.local.get(['username', 'resteem', 'reputation', 'rep', 'whitelist
 
 // Handle resteems according to user preferences
 function ResteemManager() {
-    if(window.location.href.match('steemit.com')) {
+    if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
         website='steemit';
     spliter='.com/';}
         else if(window.location.href.match('busy.org')) {
@@ -126,4 +126,3 @@ function ResteemManager() {
         }, 10000);
     }
 }
-

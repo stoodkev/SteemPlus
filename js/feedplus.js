@@ -1,5 +1,4 @@
 console.log("Starting FeedPlus");
-
 const DEFAULT_FEED_SIZE=3;
 const LIMIT_PER_CALL=100;
 var feed=false;

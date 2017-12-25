@@ -48,7 +48,7 @@
         "js/third-party/steemjs.js",
         "js/third-party/timeago.js","js/feedplus.js","js/resteem.js",
         "js/delegate.js"],
-      "css":["css/resteem.css","css/feedplus.css"],
+      "css":["css/resteem.css","css/feedplus.css","css/delegate.css"],
       "permissions": [
         "activeTab",
         "storage"

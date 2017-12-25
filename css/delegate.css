@@ -1,0 +1,11 @@
+.stop_del{
+  position:absolute;
+  cursor: pointer;
+  right:0;
+}
+
+.delegations li{
+  width:100%;
+}
+
+.delegations h3{margin-bottom: 1em;}

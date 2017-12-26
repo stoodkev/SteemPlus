@@ -9,3 +9,15 @@
 }
 
 .delegations h3{margin-bottom: 1em;}
+
+.del_busy button {
+
+  background: none !important;
+    color: inherit;
+    border: none;
+    padding: 0! important;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit !important;
+    margin-right:1em;
+}

@@ -12,7 +12,7 @@ var xhttp = new XMLHttpRequest();
 var url="";
 
 chrome.storage.local.get(['acc_v'], function (items) {
-      if(items.acc_v==undefined||items.del=="show")
+      if(items.acc_v==undefined||items.acc_v=="show")
       {
         if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
             website='steemit';

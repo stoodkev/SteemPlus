@@ -4,7 +4,7 @@
 
 var website='';
 var created=false;
-var load_check='';
+var load_check='',load_check2='';
 var wallet_elt;
 var classButton;
 var timeout=0;
@@ -16,6 +16,7 @@ chrome.storage.local.get(['del'], function (items) {
         if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
             website='steemit';
             load_check=/transfers/;
+            load_check2=/transfers/;
             account=window.location.href.split('@')[1].split('/')[0];
             wallet_elt=".FoundationDropdownMenu__label";
             classButton="'UserWallet__buysp button hollow delegate";
@@ -25,6 +26,7 @@ chrome.storage.local.get(['del'], function (items) {
         {
             website='busy';
             load_check=/wallet/;
+            load_check2=/transfers/;
             wallet_elt=".UserWalletSummary__item ";
             account=$('.Topnav__user__username').html();
             classButton="Action ant-btn-lg Action--primary delegate";
@@ -32,15 +34,15 @@ chrome.storage.local.get(['del'], function (items) {
 
         }
 
-        if(window.location.href.match(load_check))
+        if(window.location.href.match(load_check)||window.location.href.match(load_check2))
             checkLoad();
         $(document).click(function(){
             setTimeout(function() {
-                if (window.location.href.match(load_check) && !created) {
+                if ((window.location.href.match(load_check)||window.location.href.match(load_check2)) && !created) {
                     created = true;
                     checkLoad();
                 }
-                if (!window.location.href.match(load_check)) {
+                if (!window.location.href.match(load_check)&&!window.location.href.match(load_check2)) {
                     created = false;
                 }
             },timeout);
@@ -49,6 +51,7 @@ chrome.storage.local.get(['del'], function (items) {
         function checkLoad(){
 
             if($(wallet_elt).length>1){
+
                 createButton();
             }
             else {
@@ -71,7 +74,7 @@ chrome.storage.local.get(['del'], function (items) {
                 if(website==='steemit')
                     $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
                 else
-                {$('.Action ')[0].parentNode.appendChild(delegate_div);console.log(delegate_div);}
+                {$('.Action--primary ')[0].parentNode.appendChild(delegate_div);console.log(delegate_div);}
 
                 function getMaxSP(){if(website==='steemit')return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',',''))-5.001).toFixed(3);
                 else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',',''))-5.001).toFixed(3);}

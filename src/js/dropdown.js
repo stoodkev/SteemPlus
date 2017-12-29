@@ -1,7 +1,8 @@
-chrome.storage.local.get(['drop'], function (items) {
-  if(items.drop==undefined||items.drop=="show")
-  {
-    $(document).click(function(){
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if(request.to==='drop'&&request.order==='click')
+      startDropdown(request.data.market_d);
+});
+    function startDropdown(market_d){
 
       setTimeout(function(){
           if($('.dropdown-pane').length!==0)
@@ -11,7 +12,7 @@ chrome.storage.local.get(['drop'], function (items) {
             var li2=document.createElement('li');
             var xhttp = new XMLHttpRequest();
 
-            li.innerHTML='<a href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("/img/steemblack.svg")+'"/></span>Market</a>';
+            li.innerHTML='<a href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("src/img/steemblack.svg")+'"/></span>Market</a>';
             li2.innerHTML='<a  href="/market"><span class="price" style="font-size:0.9em;"></span><span class="daily_change" style="font-size:0.75em; margin-left:2px"></span></a>';
             if($('.dropdown-pane .VerticalMenu .title').length!==0)
             {
@@ -19,16 +20,16 @@ chrome.storage.local.get(['drop'], function (items) {
                 $('.dropdown-pane .VerticalMenu').append(li2);
             }
             var intr= null;
-              DisplayPriceFeed(intr,i,xhttp);
+              DisplayPriceFeed(intr,i,market_d);
              intr = setInterval(function() {
                i++;
-              DisplayPriceFeed(intr,i,xhttp);
+              DisplayPriceFeed(intr,i,market_d);
 
             },5000,0);
           }
       },200);
+    }
 
-    });
 
     function DisplayPriceFeed(intr,i,xhttp)
     {
@@ -36,19 +37,15 @@ chrome.storage.local.get(['drop'], function (items) {
         clearInterval(intr);
       if(i%3===0)
       {
-        steem.api.getCurrentMedianHistoryPrice(function(err, result) {
-          $(".price").html('1 STEEM = '+Math.round(parseFloat(result.base)*100)/1000+' SBD');
+          $(".price").html('1 STEEM = '+market_d.SBDperSteem+' SBD');
           $(".daily_change").html("");
-            });
-            $(".price").parent().prop('href',"/market");
+          $(".price").parent().prop('href',"/market");
       }
       else if(i%3===1)
       {
-        xhttp.open("GET", "https://api.coinmarketcap.com/v1/ticker/steem/", false);
-        xhttp.send();
-        $(".price").html('1 STEEM = '+Math.round(parseFloat(JSON.parse(xhttp.responseText)[0].price_usd)*1000)/1000+'$');
-        $(".daily_change").html(' ('+JSON.parse(xhttp.responseText)[0].percent_change_1h+'%) ');
-        if(parseFloat(JSON.parse(xhttp.responseText)[0].percent_change_1h)>=0)
+        $(".price").html('1 STEEM = '+Math.round(market_d.priceSteem*1000)/1000+'$');
+        $(".daily_change").html(' ('+market_d.changeSteem+'%) ');
+        if(market_d.changeSteem>=0)
           $(".daily_change").css('color','green');
         else
           $(".daily_change").css('color','red');
@@ -56,11 +53,9 @@ chrome.storage.local.get(['drop'], function (items) {
       }
       else if(i%3===2)
       {
-        xhttp.open("GET", "https://api.cryptonator.com/api/ticker/sbd-usd", false);
-        xhttp.send();
-        $(".price").html('1 SBD = '+Math.round(parseFloat(JSON.parse(xhttp.responseText).ticker.price)*1000)/1000+'$');
-        $(".daily_change").html(' ('+Math.round(parseFloat(JSON.parse(xhttp.responseText).ticker.change)*100)/100+'%) ');
-        if(parseFloat(JSON.parse(xhttp.responseText).ticker.change)>=0)
+        $(".price").html('1 SBD = '+Math.round(market_d.priceSBD*1000)/1000+'$');
+        $(".daily_change").html(' ('+Math.round(market_d.changeSBD*100)/100+'%) ');
+        if(market_d.changeSBD>=0)
           $(".daily_change").css('color','green');
         else
           $(".daily_change").css('color','red');
@@ -68,5 +63,3 @@ chrome.storage.local.get(['drop'], function (items) {
       }
 
     }
-  }
-});

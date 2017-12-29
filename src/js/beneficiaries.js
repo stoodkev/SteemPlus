@@ -7,32 +7,25 @@ var created_benef=false;
 var beneficiaries;
 const STEEM_PLUS_FEED=5;
 
-$(document).ready(function(){
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if(request.to==='ben'&&request.order==='start')
+      startBeneficiaries();
+    if(request.to==='ben'&&request.order==='click')
+      onClickB();
+});
+function startBeneficiaries(){
+  if(window.location.href.match(/submit/))
+    addBeneficiariesButton();
+}
 
-  chrome.storage.local.get(['ben'], function (items) {
-        if(items.ben==undefined||items.ben=="show")
-        {
-          if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
-              website='steemit';
-              if(window.location.href.match(/submit/))
-                  addBeneficiariesButton();
-              $(document).click(function(){
-                  if(window.location.href.match(/submit/)&&!created_benef){addBeneficiariesButton();
-                  }
-                  if(!window.location.href.match(/submit/)){created_benef=false;
-                  }
-              });
-
-          }
-          else if(window.location.href.match('steemit.com'))
-          {
-              website='busy';
-          }
-          }
-          });
-
-      });
-
+function onClickB(){
+  if(window.location.href.match(/submit/)&&!created_benef){
+    addBeneficiariesButton();
+  }
+  if(!window.location.href.match(/submit/)){
+    created_benef=false;
+  }
+}
 
 function addBeneficiariesButton(){
 

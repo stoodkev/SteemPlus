@@ -1,23 +1,26 @@
-chrome.storage.local.get(['badge'], function (items) {
-  displayBadges(items);
-  $(document).click(function(){
+var username=null;
 
-    setTimeout(function(){
-      displayBadges(items);
-},2000);
-});
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if(request.to==='rank'&&request.order==='start')
+      displayBadges();
+    if(request.to==='rank'&&request.order==='click'){
+      console.log('cl');
+      setTimeout(function(){
+        displayBadges();
+      },2000);
+    }
 });
 
-function displayBadges(items)
+
+function displayBadges()
 {
-  if($('.UserProfile__banner ').length!==0&&(items.badge==undefined||items.badge=="show"))
+  console.log('display');
+  if($('.UserProfile__banner ').length!==0)
   {
-
-      const username=getUsernameFromProfile();
-      getAccountData(username).then(function (result){
+      getAccountData(getUsernameFromProfile()).then(function (result){
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         const rank=getUserRank(vesting_shares);
-        const medal_url='img/medals/'+rank.toLowerCase()+'.png';
+        const medal_url='src/img/medals/'+rank.toLowerCase()+'.png';
         var div= document.createElement('div');
         div.className="ranker";
         var img=document.createElement('img');
@@ -49,3 +52,17 @@ function getUserRank (vests) {
     }
     return rank;
 };
+
+function getUsernameFromProfile()
+{
+    return window.location.href.split('@')[1].split('/')[0];
+}
+
+function getAccountData(username)
+{
+   return new Promise (function(resolve,reject){
+     steem.api.getAccounts([username], function(err, response){
+    resolve(response);
+   });
+  });
+}

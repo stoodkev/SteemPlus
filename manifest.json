@@ -3,16 +3,18 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "1.13.1.0",
+  "version": "1.13.2.0",
 
   "browser_action": {
-    "default_icon": "img/logo.png",
+    "default_icon": "src/img/logo.png",
     "default_popup": "popup.html"
   }  ,
-  "background": {"scripts": ["js/background.js"]},
+  "background": {
+    "persistent": false,"scripts": ["background.js"]},
   "permissions": [
     "activeTab",
     "storage",
+    "tabs",
     "http://*/*",
     "https://*/*",
     "webNavigation"
@@ -37,37 +39,25 @@
   },
 
   "web_accessible_resources": [
-    "img/*"
-
+    "src/img/*"
   ],
 
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*"],
-      "js": ["js/third-party/jquery.js",
-        "js/third-party/steemjs.js",
-        "js/third-party/timeago.js","js/feedplus.js","js/resteem.js",
-        "js/delegate.js","js/account_val.js"],
-      "css":["css/resteem.css","css/feedplus.css","css/delegate.css","css/account_val.css"],
+      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js",
+        "main.js",
+        "src/js/delegate.js",
+        "src/js/account_val.js",
+        "src/js/beneficiaries.js",
+        "src/js/dropdown.js",
+        "src/js/rank.js"],
+      "css":["src/css/delegate.css","src/css/account_val.css","src/css/beneficiaries.css","src/css/rank.css"],
       "permissions": [
         "activeTab",
         "storage"
-      ]
-
-    },
-    {
-      "matches": ["https://steemit.com/*","https://mspsteem.com/*"],
-      "js": ["js/third-party/jquery.js",
-        "js/third-party/steemjs.js",
-        "js/utils/utils.js",
-        "js/third-party/sc2.min.js",
-      "js/beneficiaries.js","js/rank.js","js/dropdown.js"],
-      "css":["css/loginSteemPlus.css","css/beneficiaries.css","css/rank.css"],
-      "permissions": [
-        "activeTab",
-        "storage"
-      ]
-
+      ],
+      "run_at": "document_idle"
     }
   ]
 

@@ -2,64 +2,77 @@
  * Created by @stoodkev on 10/23/2017.
  */
 
-var website='';
 var created=false;
 var load_check='',load_check2='';
-var wallet_elt;
+var wallet_elt_d;
 var classButton;
-var timeout=0;
+var timeoutD=2000;
 var account;
 
-chrome.storage.local.get(['del'], function (items) {
-      if(items.del==undefined||items.del=="show")
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  console.log(request.data,request.to);
+    if(request.to==='delegation'&&request.order==='start')
+      startDelegation(request.data.steemit,request.data.busy,request.data.global);
+    if(request.to==='delegation'&&request.order==='click')
+      onClickD(request.data.steemit,request.data.busy,request.data.global);
+});
+
+
+      function startDelegation(isSteemit,busy,globalP)
       {
-        if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
-            website='steemit';
+        console.log('Start Delegation');
+        if(isSteemit) {
             load_check=/transfers/;
             load_check2=/transfers/;
             account=window.location.href.split('@')[1].split('/')[0];
-            wallet_elt=".FoundationDropdownMenu__label";
+            wallet_elt_d=".FoundationDropdownMenu__label";
             classButton="'UserWallet__buysp button hollow delegate";
-
         }
-            else if(window.location.href.match('busy.org'))
+            else if(busy)
         {
-            website='busy';
             load_check=/wallet/;
             load_check2=/transfers/;
-            wallet_elt=".UserWalletSummary__item ";
+            wallet_elt_d=".UserWalletSummary__item ";
             account=$('.Topnav__user__username').html();
             classButton="Action ant-btn-lg Action--primary delegate";
-            timeout=1000;
 
         }
 
         if(window.location.href.match(load_check)||window.location.href.match(load_check2))
-            checkLoad();
-        $(document).click(function(){
+            checkLoadDel(isSteemit,busy,globalP);
+
+    }
+
+        function onClickD(isSteemit,busy,globalPisSteemit,busy,globalP){
             setTimeout(function() {
+
+                console.log('clic');
                 if ((window.location.href.match(load_check)||window.location.href.match(load_check2)) && !created) {
                     created = true;
-                    checkLoad();
+                    checkLoadDel(isSteemit,busy,globalP);
                 }
                 if (!window.location.href.match(load_check)&&!window.location.href.match(load_check2)) {
                     created = false;
                 }
-            },timeout);
-        });
+            },timeoutD);
+        }
+var ii=0;
+        function checkLoadDel(isSteemit,busy,globalP){
+          console.log('wa',$(wallet_elt_d));
+          ii++;
 
-        function checkLoad(){
-
-            if($(wallet_elt).length>1){
-
-                createButton();
+            if($(wallet_elt_d).length>1){
+              console.log('wallet');
+                createButton(isSteemit,busy,globalP);
             }
             else {
-                setTimeout(checkLoad, 1000); // addBeneficiariesButton again in a second
+              console.log('no wallet',wallet_elt_d);
+              if(ii<5)
+                setTimeout(checkLoadDel, 2000);
             }
         }
 
-        function createButton() {
+        function createButton(isSteemit,busy,globalP) {
             if($('.delegate').length===0) {
                 var delegate_div = document.createElement('div');
                 delegate_div.style.width = '100%';
@@ -69,14 +82,14 @@ chrome.storage.local.get(['del'], function (items) {
                 delegate_button.className = classButton;
                 delegate_button.style.display = 'block';
                 delegate_button.style.float = 'right';
-                if(website==='busy')delegate_button.style.marginTop= '10px';
-                delegate_div.appendChild(delegate_button);
-                if(website==='steemit')
+                if(busy)delegate_button.style.marginTop= '10px';
+                  delegate_div.appendChild(delegate_button);
+                if(isSteemit)
                     $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
                 else
                 {$('.Action--primary ')[0].parentNode.appendChild(delegate_div);console.log(delegate_div);}
 
-                function getMaxSP(){if(website==='steemit')return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',',''))-5.001).toFixed(3);
+                function getMaxSP(){if(isSteemit)return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',',''))-5.001).toFixed(3);
                 else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',',''))-5.001).toFixed(3);}
 
                 $('.delegate').click(function(){
@@ -87,7 +100,7 @@ chrome.storage.local.get(['del'], function (items) {
                     var div = document.createElement('div');
                     div.id = 'overlay_delegate';
                     var inner="";
-                    if(website==='steemit') {
+                    if(isSteemit) {
                         inner = '<div data-reactroot="" role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;"><div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;"><button class="close-button" type="button"><span aria-hidden="true" class="">×</span></button><div><div class="row"><h3 class="column">Delegate</h3>' +
                             '</div><form ><div><div class="row"><div class="column small-12">Delegate SP to another Steemit account.</div></div><br></div><div class="row"><div class="column small-2" style="padding-top: 5px;">From</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span>' +
                             '<input type="text" class="input-group-field bold"  placeholder="Your account"value='+account+' style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=&quot;);"></div></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
@@ -129,20 +142,11 @@ chrome.storage.local.get(['del'], function (items) {
 
                     $('#bd').click(function () {
 
-                        steem.api.getDynamicGlobalProperties( {
-
-
-                        }).then((result)=>
-                        {
-                            const totalSteem = Number(result.total_vesting_fund_steem.split(' ')[0]);
-                            const totalVests = Number(result.total_vesting_shares.split(' ')[0]);
-                            const delegated_SP = $('input[name=amount]').val();
-
-                            var delegated_vest = delegated_SP * totalVests / totalSteem;
-                            delegated_vest=delegated_vest.toFixed(6);
-                            var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_vest+'%20VESTS';
-                            window.open(url, '_blank');
-                        });
+                      const delegated_SP = $('input[name=amount]').val();
+                      var delegated_vest = delegated_SP * global.totalVests / global.totalSteem;
+                      delegated_vest=delegated_vest.toFixed(6);
+                      var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_vest+'%20VESTS';
+                      window.open(url, '_blank');
                     });
 
 
@@ -151,8 +155,3 @@ chrome.storage.local.get(['del'], function (items) {
               });
             }
         }
-
-
-
-      }
-    });

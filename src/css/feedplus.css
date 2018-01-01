@@ -33,7 +33,9 @@ cursor:pointer; display:inline-block;
 }
 .PostsIndex__topics{width:12em;}
 .filter_content{display:none; max-width: inherit;margin-top: 1em;}
-
+.PostSummary__image{margin-right: 1em;}
+.PostsIndex__left li{margin-bottom: 1em;}
+.PostSummary__reblogged_by{margin-left: 1em;}
 .category_filter{cursor: pointer;}
 
 input::-webkit-outer-spin-button,

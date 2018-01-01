@@ -1,12 +1,10 @@
 console.log("Starting FeedPlus");
-const DEFAULT_FEED_SIZE=3;
 const LIMIT_PER_CALL=100;
 var feed=false;
-var feed_url,user,website,feedplus_url=null;
+var feed_url,user_fp,feedplus_url=null;
 var list_posts=[];
 var list_authors=[];
 var filtered_list=[];
-var resteem,blacklist,whitelist,rep_feed_check,rep_feed,sort,tag,list_tags,voted_check,nb_posts=null;
 var ad,terminate=false;
 var feedplus,a,img,menu_list,app_content,menu_feedplus,post_div,reblog,ad_post=null;
 var first_display=true;
@@ -14,11 +12,13 @@ var show_posts=0;
 var html_posts=[];
 steem.config.set('websocket','wss://steemd.steemit.com');
 
-chrome.storage.local.get(['feedp'], function (items) {
-      if(items.feedp==undefined||items.feedp=="show")
-      {
-        if(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com')) {
-            website='steemit';
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if(request.to==='feedp'&&request.order==='start')
+      FeedPlus(request.data.steemit,request.data.busy,request.data.feedp);
+});
+
+function FeedPlus(isSteemit,isBusy,feedp) {
+        if(isSteemit) {
             app_content=$('.App__content').eq(0);;
             menu_feedplus=".PostsIndex__topics ";
             post_div='.PostsIndex__left';
@@ -26,9 +26,8 @@ chrome.storage.local.get(['feedp'], function (items) {
             ad_post="li:first-child .entry-title a";
             feed_url = document.getElementsByClassName("Header__logo")[0].firstChild.href;
             feedplus_url="#plus";
-            user = feed_url.split('@')[1].split('/')[0];
+            user_fp = feed_url.split('@')[1].split('/')[0];
             menu_list=document.getElementsByClassName("HorizontalMenu")[0];
-
             feedplus=document.createElement('li');
             feedplus.className="";
             feedplus.id='FeedPlus';
@@ -36,17 +35,14 @@ chrome.storage.local.get(['feedp'], function (items) {
             a.innerHTML='feed';
             img=document.createElement('img');
             img.id='img_plus';
-            img.src=chrome.extension.getURL("/img/logo.png");
+            img.src=chrome.extension.getURL("src/img/logo.png");
             a.appendChild(img);
             feedplus.appendChild(a);
-            SetFeedPlus();
-            if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus();}
-
+            SetFeedPlus(isSteemit,isBusy,feedp);
+            if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus(isSteemit,isBusy,feedp);}
         }
-        else if(window.location.href.match('busy.org')) {
-            website='busy';
+        else if(isBusy) {
             menu_feedplus=".rightContainer ";
-
             reblog='.busy_resteem';
             ad_post='.title_busy';
             check();
@@ -65,44 +61,43 @@ chrome.storage.local.get(['feedp'], function (items) {
                 app_content=$('.content').eq(0);
                 post_div=app_content;
                 feedplus_url=feed_url+"#plus";
-                user = feed_url.split('@')[1].split('/')[0];
+                user_fp = feed_url.split('@')[1].split('/')[0];
                 menu_list = $('.Topnav__menu-container__menu')[0];
                 feedplus = document.createElement('li');
                 feedplus.className = "";
                 feedplus.id = 'FeedPlus';
                 a = document.createElement('a');
                 img = document.createElement('img');
-                img.src=chrome.extension.getURL("/img/logo.png");
+                img.src=chrome.extension.getURL("src/img/logo.png");
                 img.style.height='24px';
                 img.style.width='24px';
                 a.appendChild(img);
                 feedplus.appendChild(a);
                 menu_list.insertBefore(feedplus,menu_list.firstChild);
-                SetFeedPlus();
-                if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus();}
-
+                SetFeedPlus(isSteemit,isBusy,feedp);
+                if(window.location.href.match(/#plus/)&&!terminate){ StartFeedPlus(isSteemit,isBusy,feedp);}
             }
         }
         else{
             terminate=true;
         }
 
-        function SetFeedPlus() {
-            if(website==='steemit')
+        function SetFeedPlus(isSteemit,isBusy,feedp) {
+            if(isSteemit)
             menu_list.appendChild(feedplus);
             feedplus.onclick = function () {
-                if(website==='steemit') {
+                if(isSteemit) {
                     window.history.pushState("", "", feedplus_url);
                     feedplus.class += "active";
-                    StartFeedPlus();
+                    StartFeedPlus(isSteemit,isBusy,feedp);
                 }
-                else window.open('https://steemit.com/@'+user+'/feed#plus', '_blank');
+                else window.open('https://steemit.com/@'+user_fp+'/feed#plus', '_blank');
             };
         }
 
         $(document).click(function(){if(!window.location.href.match(/#plus/)&&feed){location.reload();}});
 
-        function StartFeedPlus() {
+        function StartFeedPlus(isSteemit,isBusy,feedp) {
 
 
             feed = true;
@@ -112,24 +107,14 @@ chrome.storage.local.get(['feedp'], function (items) {
             $('.HorizontalMenu  li').removeClass('active');
             $('#FeedPlus').addClass('active');
 
-            chrome.storage.local.get(['nb_posts'], function (items) {
-
-                if(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')
-                    nb_posts=items.nb_posts;
-                else
-                    nb_posts=DEFAULT_FEED_SIZE;
-                GetFeed('', '');
-                app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
-
-            });
-
-
+            GetFeed('', '',isSteemit,isBusy,feedp);
+            app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
 
             function GetFeed(author, perm) {
 
                 steem.api.getDiscussionsByFeed({
                     limit: LIMIT_PER_CALL,
-                    tag: user,
+                    tag: user_fp,
                     start_author: author,
                     start_permlink: perm
                 }).then((result) => {
@@ -139,56 +124,24 @@ chrome.storage.local.get(['feedp'], function (items) {
                     if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                         var voted=false;
-                        elt.active_votes.forEach(function(e){if(e.voter===user)voted=true;});
+                        elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
 
                         list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
-                        $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+nb_posts*100);
+                        $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+feedp.nb_posts*100);
                     }
                 });
-                if (feed_calls < nb_posts) GetFeed(result[LIMIT_PER_CALL-1].author, result[LIMIT_PER_CALL-1].permlink);
+                if (feed_calls < feedp.nb_posts) GetFeed(result[LIMIT_PER_CALL-1].author, result[LIMIT_PER_CALL-1].permlink,isSteemit,isBusy,feedp);
                 else {
-                    getParameters();
+                    Filter(isSteemit,isBusy,feedp);
                 }
             })
             }
         }
 
 
-
-        function getParameters()
-        {
-            chrome.storage.local.get(['resteem','blacklist','whitelist','rep_feed_check','rep_feed','sort','tag','list_tags','voted_check'], function (items) {
-                if(items.resteem!==undefined)
-                    resteem=items.resteem;
-                else
-                    resteem='show';
-                if(items.whitelist!==undefined)
-                    whitelist=items.whitelist;
-                if(items.blacklist!==undefined)
-                    blacklist=items.blacklist;
-                if(items.rep_feed_check!==undefined)
-                    rep_feed_check=items.rep_feed_check;
-                if(items.rep_feed!==undefined)
-                    rep_feed=items.rep_feed;
-                if(items.sort!==undefined)
-                    sort=items.sort;
-                if(items.tag!==undefined)
-                    tag=items.tag;
-                else
-                    tag="show";
-                if(items.list_tags!==undefined)
-                    list_tags=items.list_tags;
-                if(items.voted_check!==undefined)
-                    voted_check=items.voted_check;
-                else voted_check=false;
-
-                Filter();
-            });
-        }
-
-         function Filter(){
+         function Filter(isSteemit,isBusy,feedp){
                  show_posts=0;
-                 if (tag ==="list" && list_tags !== "" && list_tags!=null)
+                 if (feedp.tag ==="list" && feedp.list_tags !== "" && feedp.list_tags!=null)
                  {
 
                      var tags = list_tags.split(' ');
@@ -208,24 +161,24 @@ chrome.storage.local.get(['feedp'], function (items) {
                      filtered_list=list_posts;
 
 
-                if (rep_feed_check===true && rep_feed !== "") {
+                if (feedp.rep_feed_check===true && feedp.rep_feed !== "") {
                      filtered_list = filtered_list.filter(function (elt) {
                          return list_authors.find(function (e) {
                                  return e.username === elt.username
-                             }).reputation >= rep_feed;
+                             }).reputation >= feedp.rep_feed;
                      });
                  }
 
-             if (voted_check) {
+             if (feedp.voted_check) {
                  filtered_list = filtered_list.filter(function (elt) {
                      return !elt.voted
 
                  });
              }
 
-                 if (resteem !== "show")
+                 if (feedp.resteem !== "show")
                      filtered_list = filtered_list.filter(function (elt) {
-                         switch (resteem) {
+                         switch (feedp.resteem) {
 
                              //Hide all
                              case "hide":
@@ -234,24 +187,24 @@ chrome.storage.local.get(['feedp'], function (items) {
                              //Show all except blacklist, also addBeneficiariesButton rep
                              case "blacklist_radio":
 
-                                 return (elt.resteem === '' || !blacklist.split(' ').includes(elt.resteem));
+                                 return (elt.resteem === '' || !feedp.blacklist.split(' ').includes(elt.resteem));
                                  break;
                              //Show only from whitelist
                              case "whitelist_radio":
-                                 return (elt.resteem === '' || whitelist.split(' ').includes(elt.resteem));
+                                 return (elt.resteem === '' || feedp.whitelist.split(' ').includes(elt.resteem));
                                  break;
                          }
                      });
 
 
-                 Sort();
+                 Sort(isSteemit,isBusy,feedp);
 
          }
 
-         function Sort()
+         function Sort(isSteemit,isBusy,feedp)
          {
              filtered_list=filtered_list.sort(function(a,b){
-                 switch(sort)
+                 switch(feedp.sort)
                  {
                      case "recent":
                          return Date.parse(b.date)-Date.parse(a.date);
@@ -268,7 +221,7 @@ chrome.storage.local.get(['feedp'], function (items) {
              tmp.push(list_posts.find(function (e){return (e.username==='steem-plus')}));
 
              if(tmp.length!==0&&tmp[0]!==undefined)
-                {if(tmp[0].voted===false){filtered_list=[tmp[0]].concat(filtered_list); ad=true; }Display();}
+                {if(tmp[0].voted===false){filtered_list=[tmp[0]].concat(filtered_list); ad=true; }Display(isSteemit,isBusy,feedp);}
                 else
              {
 
@@ -279,29 +232,29 @@ chrome.storage.local.get(['feedp'], function (items) {
                              var elt=result[0];
                              list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                              var voted=false;
-                             elt.active_votes.forEach(function(e){if(e.voter===user)voted=true;});
+                             elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
                              tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
                              if(elt.pending_payout_value!=='0.000 SBD'&&voted===false)
                              {filtered_list=tmp.concat(filtered_list);
                              ad=true;}
                          }
 
-                         Display();
+                         Display(isSteemit,isBusy,feedp);
                      });
              }
 
 
          }
 
-         function Display()
+         function Display(isSteemit,isBusy,feedp)
          {
              document.title ='Feed+';
 
              if(first_display) {
-                 if(website==='steemit')
+                 if(isSteemit)
                  $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink "></div></div>');
-                 if(website==='busy') $('.list-selector').hide();
-                 var more = chrome.extension.getURL("/img/more.png");
+                 if(isBusy) $('.list-selector').hide();
+                 var more = chrome.extension.getURL("src/img/more.png");
                  var filters = '<ul class="Topics"><li  class="Topics__title" >Sort By</li><hr><div class="select_box"><select id="sort" >' +
                      '<option value="recent">Recent</option>' +
                      ' <option value="old">Old</option>' +
@@ -341,7 +294,7 @@ chrome.storage.local.get(['feedp'], function (items) {
                      bd = bd.replace(/\*+/g, '');
                      bd = bd.replace(/\#+/g, '');
                      var upvoted = '';
-                     if(website==='busy') {
+                     if(isBusy) {
                              var active="";
                              if(elt.voted) active="active";
                              posts+='<div class="Story">';
@@ -351,7 +304,7 @@ chrome.storage.local.get(['feedp'], function (items) {
                              +'"><!-- react-text: 1921 -->'+elt.tags[0]+'<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="'+elt.url+'"><h2>'+elt.title+'</h2></a><a target="_blank" class="Story__content__preview" href="'+elt.url+'"><div><div class="Story__content__img-container"><img alt="post" src="'+elt.img+'"></div><div class="Story__content__body">'
                              +bd.substring(0,138)+'...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>'+elt.payout.split(' ')[0]+'</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link '+active+'"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>'+elt.votes+'</span><span></span></span></span></span></div></div></div></div></div></div>'
                          }
-                     else if(website==='steemit') {
+                     else if(isSteemit) {
                          if (elt.voted) {
                              upvoted = "Voting__button--upvoted";
                          }
@@ -367,7 +320,7 @@ chrome.storage.local.get(['feedp'], function (items) {
                              }).reputation + '</span></span><!-- react-text: 201 --> <!-- /react-text --><!-- react-text: 202 -->in<!-- /react-text --><!-- react-text: 203 --> <!-- /react-text --><strong><a target="_blank" href="/trending/' +
                              elt.tags[0] + '">' + elt.tags[0] + '</a></strong></span></div><span class="PostSummary__image" style="background-image: url(' + elt.img + ');"></span><div class="PostSummary__content"><div class="PostSummary__header show-for-medium"><h3 class="entry-title">' +
                              '<a target="_blank" href="' + elt.url + '"><!-- react-text: 211 -->' + elt.title + '<!-- /react-text --></a></h3></div><div class="PostSummary__body entry-content"><a target="_blank" href="' + elt.url + '">' + bd.substring(0,120) + '</a></div><div class="PostSummary__footer">' +
-                             '<span class="Voting"><span class="Voting__inner"><span class="Voting__button Voting__button-up ' + upvoted + '"><a  href="#" title="Upvote"><span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span></a></span><div class="DropdownMenu"><a href="#"><span style="opacity: 1;"><span class="prefix">$</span>' + elt.payout.split(' ')[0] + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span></a><ul class="VerticalMenu menu vertical VerticalMenu"><li>' +
+                             '<span class="Votin"><span class="Voting__inner"><span class="Voting__button Voting__button-up ' + upvoted + '"><a  href="#" title="Upvote"><span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span></a></span><div class="DropdownMenu"><a href="#"><span style="opacity: 1;"><span class="prefix">$</span>' + elt.payout.split(' ')[0] + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span></a><ul class="VerticalMenu menu vertical VerticalMenu"><li>' +
                              '<span><!-- react-text: 231 -->Pending Payout ' + elt.payout.split(' ')[0] + '<!-- /react-text --></span></li><li><span><span title="' + elt.date.replace('T', ' ') + '"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></span></li><li><span></span></li></ul></div></span></span><span class="VotesAndComments"><span class="VotesAndComments__votes" title="' +
                              elt.votes + ' votes"><span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span><!-- react-text: 242 --><!-- /react-text --><!-- react-text: 243 -->' +
                              elt.votes + '<!-- /react-text --></span>' +
@@ -385,21 +338,21 @@ chrome.storage.local.get(['feedp'], function (items) {
 
                  $(post_div).html(posts);
 
-                 if (resteem === "blacklist_radio") {
+                 if (feedp.resteem === "blacklist_radio") {
                      for (var i = 0; i < $(reblog).length; i++) {
                          var add_blacklist = document.createElement("p");
                          add_blacklist.className += "AddBlackList";
                          add_blacklist.innerHTML = "Add To Resteem Blacklist";
                          add_blacklist.onclick = function (arg) {
                              return function () {
-                                 if(website==='steemit')
-                                 blacklist += " " + $(reblog)[arg].childNodes[$(reblog)[arg].childNodes.length - 2].firstChild.innerHTML;
+                                 if(isSteemit)
+                                 feedp.blacklist += " " + $(reblog)[arg].childNodes[$(reblog)[arg].childNodes.length - 2].firstChild.innerHTML;
                                  else
-                                     blacklist += " " +$(reblog)[arg].firstChild.innerHTML;
+                                     feedp.blacklist += " " +$(reblog)[arg].firstChild.innerHTML;
                                  chrome.storage.local.set({
-                                     blacklist: blacklist
+                                     blacklist: feedp.blacklist
                                  });
-                                 Filter();
+                                 Filter(isSteemit,isBusy,feedp);
 
                              };
                          }(i);
@@ -418,34 +371,34 @@ chrome.storage.local.get(['feedp'], function (items) {
 
              first_display=false;
              DisableMenu(false);
-             LoadParameters();
-             SetListeners();
+             LoadParameters(isSteemit,isBusy,feedp);
+             SetListeners(isSteemit,isBusy,feedp);
              HandleTagListsVisibility();
              HandleListsVisibility();
              HandleRepDisabled();
          }
 
-         function LoadParameters()
+         function LoadParameters(isSteemit,isBusy,feedp)
          {
-             if(resteem!==null)
-                 $('input[name=resteem][value='+resteem+']').prop('checked',true);
-             if (blacklist!==null)
-                 $('#blacklist').val(blacklist);
-             if (whitelist!==null)
-                $('#whitelist').val(whitelist);
-             if(rep_feed_check!==null)
-                 $('#rep_feed_check').prop('checked',rep_feed_check);
-             if (rep_feed!==null)
-                 $('#rep_feed').val(rep_feed);
-             if(tag!==null)
-                 $('input[name=tag][value='+tag+']').prop('checked',true);
-             if (list_tags!==null)
-                 $('#list_tags').val(list_tags);
-             if(sort!==null)
+             if(feedp.resteem!==null)
+                 $('input[name=resteem][value='+feedp.resteem+']').prop('checked',true);
+             if (feedp.blacklist!==null)
+                 $('#blacklist').val(feedp.blacklist);
+             if (feedp.whitelist!==null)
+                $('#whitelist').val(feedp.whitelist);
+             if(feedp.rep_feed_check!==null)
+                 $('#rep_feed_check').prop('checked',feedp.rep_feed_check);
+             if (feedp.rep_feed!==null)
+                 $('#rep_feed').val(feedp.rep_feed);
+             if(feedp.tag!==null)
+                 $('input[name=tag][value='+feedp.tag+']').prop('checked',true);
+             if (feedp.list_tags!==null)
+                 $('#list_tags').val(feedp.list_tags);
+             if(feedp.sort!==null)
                  $('#sort option[value='+sort+']').prop('selected',true);
-             $('#nb_posts').val(nb_posts);
-             if(voted_check!==null)
-                 $('#voted_check').prop('checked',voted_check);
+             $('#nb_posts').val(feedp.nb_posts);
+             if(feedp.voted_check!==null)
+                 $('#voted_check').prop('checked',feedp.voted_check);
 
          }
 
@@ -459,7 +412,7 @@ chrome.storage.local.get(['feedp'], function (items) {
 
          }
 
-         function SetListeners(){
+         function SetListeners(isSteemit,isBusy,feedp){
              $( ".category_filter" ).each(function(i) {
                  $(this).on("click", function(){
                      if ($(".filter_content")[i].style.display === "none") {
@@ -473,20 +426,20 @@ chrome.storage.local.get(['feedp'], function (items) {
 
         //Sort by
              $("#sort").change(function() {
-                 sort=$( "#sort option:selected" ).val();
+                 feedp.sort=$( "#sort option:selected" ).val();
                  chrome.storage.local.set({
-                     sort:sort
+                     sort:feedp.sort
                  });
 
                  DisableMenu(true);
-                 Sort();
+                 Sort(isSteemit,isBusy,feedp);
              });
 
         //Tags
              $(document).on("change","input[name=tag]",function(){
-                 tag=$("input[name=tag]:checked").val();
+                 feedp.tag=$("input[name=tag]:checked").val();
                  chrome.storage.local.set({
-                     tag:tag
+                     tag:feedp.tag
                  });
                  HandleTagListsVisibility();
 
@@ -495,32 +448,32 @@ chrome.storage.local.get(['feedp'], function (items) {
 
 
              $("#list_tags").blur(function(){
-                list_tags =document.getElementById('list_tags').value;
+                feedp.list_tags =document.getElementById('list_tags').value;
                  chrome.storage.local.set({
-                 list_tags: list_tags
+                 list_tags: feedp.list_tags
              });
 
              });
 
         //Handles Resteem Parameters
              $(document).on("change","input[name=resteem]",function(){
-                 resteem=$("input[name=resteem]:checked").val();
+                 feedp.resteem=$("input[name=resteem]:checked").val();
                  chrome.storage.local.set({
-                     resteem:resteem
+                     resteem:feedp.resteem
                  });
                  HandleListsVisibility();
 
              });
              $("#blacklist").blur(function(){
-                 blacklist=document.getElementById('blacklist').value;
+                 feedp.blacklist=document.getElementById('blacklist').value;
                  chrome.storage.local.set({
-                 blacklist:blacklist
+                 blacklist:feedp.blacklist
              });
                  });
              $("#whitelist").blur(function(){
-                 whitelist=document.getElementById('whitelist').value;
+                 feedp.whitelist=document.getElementById('whitelist').value;
                      chrome.storage.local.set({
-                 whitelist:whitelist
+                 whitelist:feedp.whitelist
              });
                  });
 
@@ -528,39 +481,39 @@ chrome.storage.local.get(['feedp'], function (items) {
         // Others
             //Reputation
              $("#rep_feed").blur(function(){
-                 rep_feed=document.getElementById('rep_feed').value;
+                 feedp.rep_feed=document.getElementById('rep_feed').value;
                  chrome.storage.local.set({
-                 rep_feed:rep_feed
+                 rep_feed:feedp.rep_feed
              });
                  });
 
              document.getElementById("rep_feed_check").onclick = function() {
-                 rep_feed_check=document.getElementById('rep_feed_check').checked;
+                 feedp.rep_feed_check=document.getElementById('rep_feed_check').checked;
                  chrome.storage.local.set({
-                     rep_feed_check:rep_feed_check
+                     rep_feed_check:feedp.rep_feed_check
                  });
                  HandleRepDisabled();
              }
 
              //Upvoted
              document.getElementById("voted_check").onclick = function() {
-                 voted_check=document.getElementById('voted_check').checked;
+                 feedp.voted_check=document.getElementById('voted_check').checked;
                  chrome.storage.local.set({
-                     voted_check:voted_check
+                     voted_check:feedp.voted_check
                  });
              }
 
              $("#nb_posts").blur(function(){
-                 nb_posts=document.getElementById('nb_posts').value;
-                 if(nb_posts!=='')
+                 feedp.nb_posts=document.getElementById('nb_posts').value;
+                 if(feedp.nb_posts!=='')
                  chrome.storage.local.set({
-                     nb_posts:nb_posts
+                     nb_posts:feedp.nb_posts
                  });});
 
              $("#validate_settings").click(function(){
 
                  DisableMenu(true);
-                 Filter();
+                 Filter(isSteemit,isBusy,feedp);
              });
 
          }
@@ -604,8 +557,8 @@ chrome.storage.local.get(['feedp'], function (items) {
             "body":body,
             "title":title,
             "resteem":resteem,
-            "date":date,
             "payout":payout,
+            "date":date,
             "comments":comments,
             "votes":votes,
             "username":username,
@@ -620,5 +573,4 @@ chrome.storage.local.get(['feedp'], function (items) {
 
 
 
-      }
-    });
+}

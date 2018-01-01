@@ -51,8 +51,15 @@
         "src/js/account_val.js",
         "src/js/beneficiaries.js",
         "src/js/dropdown.js",
-        "src/js/rank.js"],
-      "css":["src/css/delegate.css","src/css/account_val.css","src/css/beneficiaries.css","src/css/rank.css"],
+        "src/js/rank.js",
+        "src/js/resteem.js",
+        "src/js/feedplus.js"],
+      "css":["src/css/delegate.css",
+        "src/css/account_val.css",
+        "src/css/beneficiaries.css",
+        "src/css/rank.css",
+        "src/css/resteem.css",
+        "src/css/feedplus.css"],
       "permissions": [
         "activeTab",
         "storage"

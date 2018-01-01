@@ -3,6 +3,7 @@ const steemit =(window.location.href.match('steemit.com')||window.location.href.
 const busy =window.location.href.match('busy.org');
 const user=steemit?document.getElementsByClassName("Header__logo")[0].firstChild.href.split('@')[1].split('/')[0]:($('.Topnav__item-user a')[0].href + '/feed').split('@')[1].split('/')[0];
 var market =null,SBDperSteem=0;
+const DEFAULT_FEED_SIZE=3;
 var url=window.location.href;
 
 steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
@@ -10,12 +11,23 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
     const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
     updateSteemPrice();
-  chrome.storage.local.get(['del','acc_v','ben','drop','badge'], function (items) {
+  chrome.storage.local.get(['del','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp'], function (items) {
       const delegation=(items.del==undefined||items.del=="show");
       const account_value=(items.acc_v==undefined||items.acc_v=="show");
       const beneficiaries=(items.ben==undefined||items.ben=="show");
       const dropdown=(items.drop==undefined||items.drop=="show");
       const rank=(items.badge==undefined||items.badge=="show");
+      const feedp=(items.feedp==undefined||items.feedp=="show");
+      const resteem= (items.resteem !== undefined)?items.resteem:'show';
+      var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
+      var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
+      var rep_feed_check=(items.rep_feed_check!==undefined)?items.rep_feed_check:null;
+      var rep_feed=(items.rep_feed!==undefined)?items.rep_feed:null;
+      var sort=(items.sort!==undefined)?items.sort:null;
+      var tag=(items.tag!==undefined)?items.tag:'show';
+      var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
+      var voted_check=(items.voted_check!==undefined)?items.voted_check:false;
+      var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
 
       if(delegation)
         chrome.runtime.sendMessage({ to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}} });
@@ -25,6 +37,10 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
         chrome.runtime.sendMessage({ to: 'ben', order: 'start'});
       if(rank&&steemit)
         chrome.runtime.sendMessage({ to: 'rank', order: 'start'});
+      if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
+        chrome.runtime.sendMessage({ to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
+      if(steemit&&feedp)
+        chrome.runtime.sendMessage({ to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
 
         $(document).click(function(){
         setTimeout(function(){

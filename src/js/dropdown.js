@@ -1,6 +1,6 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='drop'&&request.order==='click')
-      startDropdown(request.data.market_d);
+      startDropdown(request.data.market);
 });
     function startDropdown(market_d){
 
@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 
 
-    function DisplayPriceFeed(intr,i,xhttp)
+    function DisplayPriceFeed(intr,i,market_d)
     {
       if($('.dropdown-pane').length===0||$('.dropdown-pane .VerticalMenu .title').length===0)
         clearInterval(intr);

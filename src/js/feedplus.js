@@ -143,7 +143,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  if (feedp.tag ==="list" && feedp.list_tags !== "" && feedp.list_tags!=null)
                  {
 
-                     var tags = list_tags.split(' ');
+                     var tags = feedp.list_tags.split(' ');
 
                    filtered_list=  list_posts.filter(function (elt) {
                          var r=false;
@@ -393,7 +393,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              if (feedp.list_tags!==null)
                  $('#list_tags').val(feedp.list_tags);
              if(feedp.sort!==null)
-                 $('#sort option[value='+sort+']').prop('selected',true);
+                 $('#sort option[value='+feedp.sort+']').prop('selected',true);
              $('#nb_posts').val(feedp.nb_posts);
              if(feedp.voted_check!==null)
                  $('#voted_check').prop('checked',feedp.voted_check);

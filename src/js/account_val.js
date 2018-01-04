@@ -4,11 +4,15 @@ var wallet_elt_a;
 var timeout_a=1000;
 var account_v;
 var STEEM_A,SBD_A;
+var token_a=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='acc_v'&&request.order==='start')
+    if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
+    {
+      token_a=request.token;
       startAccountValue(request.data.steemit,request.data.busy,request.data.global,request.data.market);
-    if(request.to==='acc_v'&&request.order==='click')
+    }
+    if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token)
       onClickA(request.data.steemit,request.data.busy,request.data.global,request.data.market);
 });
 

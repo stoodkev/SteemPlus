@@ -10,11 +10,14 @@ var feedplus,a,img,menu_list,app_content,menu_feedplus,post_div,reblog,ad_post=n
 var first_display=true;
 var show_posts=0;
 var html_posts=[];
+var token_fp=null;
 steem.config.set('websocket','wss://steemd.steemit.com');
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='feedp'&&request.order==='start')
+    if(request.to==='feedp'&&request.order==='start'&&token_fp==null){
+      token_fp=request.token;
       FeedPlus(request.data.steemit,request.data.busy,request.data.feedp);
+    }
 });
 
 function FeedPlus(isSteemit,isBusy,feedp) {

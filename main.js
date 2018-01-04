@@ -12,8 +12,9 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
     updateSteemPrice();
   chrome.storage.local.get(['del','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+    const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
-    chrome.runtime.sendMessage({ to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy}} );
+    chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy}} );
 
     if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
       initializeSteemConnect(steemConnect.sessionToken);
@@ -39,35 +40,35 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
         var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
 
         if(delegation)
-          chrome.runtime.sendMessage({ to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
+          chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
         if(account_value)
-          chrome.runtime.sendMessage({ to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market}});
+          chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market}});
         if(beneficiaries&&steemit)
-          chrome.runtime.sendMessage({ to: 'ben', order: 'start',data:{user:user}});
+          chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user}});
         if(rank&&steemit)
-          chrome.runtime.sendMessage({ to: 'rank', order: 'start'});
+          chrome.runtime.sendMessage({ token:token, to: 'rank', order: 'start'});
         if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
-          chrome.runtime.sendMessage({ to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
+          chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
         if(steemit&&feedp)
-          chrome.runtime.sendMessage({ to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
+          chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
 
           $(document).click(function(){
           setTimeout(function(){
             if(url!==window.location.href)
             {
               if(delegation)
-                chrome.runtime.sendMessage({ to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
+                chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
               if(account_value)
-                chrome.runtime.sendMessage({ to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market} });
+                chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market} });
               if(beneficiaries&&steemit)
-                chrome.runtime.sendMessage({ to: 'ben', order: 'click',data:{user:user}});
+                chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
-                chrome.runtime.sendMessage({ to: 'rank', order: 'click'});
+                chrome.runtime.sendMessage({ token:token, to: 'rank', order: 'click'});
 
               url=window.location.href;
             }
             if(dropdown&&steemit)
-              chrome.runtime.sendMessage({ to: 'drop', order: 'click',data:{market:market} });
+              chrome.runtime.sendMessage({ token:token,to: 'drop', order: 'click',data:{market:market} });
           },200);
         });
       });
@@ -109,4 +110,14 @@ function getSteemPrice(){
      market={SBDperSteem:SBDperSteem,priceSteem:priceSteem,changeSteem:changeSteem,priceSBD:priceSBD,changeSBD:changeSBD};
 
     });
+}
+
+function makeToken() {
+  var text = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < 10; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
 }

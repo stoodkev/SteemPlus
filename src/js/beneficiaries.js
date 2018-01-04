@@ -6,12 +6,16 @@ var created_benef=false;
 var beneficiaries;
 const STEEM_PLUS_FEED=5;
 var aut=null;
+var token_benef=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='ben'){
     aut=request.data.user;
-    if(request.order==='start')
+    if(request.order==='start'&&token_benef==null)
+    {
+      token_benef=request.token;
       startBeneficiaries();
-    if(request.order==='click')
+    }
+    if(request.order==='click'&&token_benef==request.token)
       onClickB();
   }
 });

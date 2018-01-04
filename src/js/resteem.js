@@ -1,12 +1,14 @@
 
 var first=true;
 var spliter=null;
-
+var token_resteem=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='resteem'&&request.order==='start')
+    if(request.to==='resteem'&&request.order==='start'&&token_resteem==null){
+      token_resteem=request.token;
       ResteemManager(request.data.steemit,request.data.busy,request.data.resteem);
-    if(request.to==='resteem'&&request.order==='click')
+    }
+    if(request.to==='resteem'&&request.order==='click'&&token_resteem==request.token)
       ResteemManager(request.data.steemit,request.data.busy,request.data.resteem);
 });
 

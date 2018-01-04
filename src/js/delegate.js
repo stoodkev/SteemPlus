@@ -7,11 +7,16 @@ var load_check='',load_check2='';
 var wallet_elt_d;
 var classButton;
 var timeoutD=2000;
+var token_del=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='delegation'&&request.order==='start')
+    if(request.to==='delegation'&&request.order==='start'&&token_del==null)
+    {
+      token_del=request.token;
       startDelegation(request.data.steemit,request.data.busy,request.data.global,request.data.user);
-    if(request.to==='delegation'&&request.order==='click')
+    }
+
+    if(request.to==='delegation'&&request.order==='click'&&token_del===request.token)
       onClickD(request.data.steemit,request.data.busy,request.data.global,request.data.user);
 });
 

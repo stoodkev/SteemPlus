@@ -1,9 +1,11 @@
 var username=null;
-
+var token_rank=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='rank'&&request.order==='start')
+    if(request.to==='rank'&&request.order==='start'&&token_rank==null){
+      token_rank=request.token;
       displayBadges();
-    if(request.to==='rank'&&request.order==='click'){
+    }
+    if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       setTimeout(function(){
         displayBadges();
       },2000);

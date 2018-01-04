@@ -1,7 +1,9 @@
 var uri_login,classbutton;
+var token_log=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-      if(request.to==='steemConnect'&&request.order==='start')
+      if(request.to==='steemConnect'&&request.order==='start'&&token_log==null)
       {
+        token_log=request.token;
         if(request.data.steemit)
         {
           uri_login='https://steemit.com/@steem-plus';

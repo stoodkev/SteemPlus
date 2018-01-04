@@ -2,16 +2,18 @@
  * Created by quent on 10/27/2017.
  */
 
-var website='';
 var created_benef=false;
 var beneficiaries;
 const STEEM_PLUS_FEED=5;
-
+var aut=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='ben'&&request.order==='start')
+  if(request.to=='ben'){
+    aut=request.data.user;
+    if(request.order==='start')
       startBeneficiaries();
-    if(request.to==='ben'&&request.order==='click')
+    if(request.order==='click')
       onClickB();
+  }
 });
 function startBeneficiaries(){
   if(window.location.href.match(/submit/))
@@ -45,13 +47,8 @@ function addBeneficiariesButton(){
         if($('.close').length===1) {
             $('.vframe__section--shrink button').hide();
             if($('.post').length===0) {
-                $('.beneficiaries').after('<h5 style="text-align: left;">Posted By</h5><li class="post"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="author"></div><div class="benef_elt" "><input  type="password" placeholder="Private Posting WIF*"></div><div class="inline_button"><input type="button" class="UserWallet__buysp button hollow postbutton" value="Post"/></div> <p>* Your WIF is stored locally for your safety. SteemConnect integration coming soon.</p></li>');
+                $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button hollow postbutton" value="Post"/></div></li>');
                 $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
-                chrome.storage.local.get(['username','wif'], function (items) {
-                    $('.post input').eq(0).val(items.username);
-                    $('.post input').eq(1).val(items.wif);
-                });
-
                 }
                 else
                  $('h5,.post').show();
@@ -117,11 +114,6 @@ function isEverythingFilled()
         alert("Total beneficiary rewards must be smaller are equal to 95%!");
         return false;
     }
-    if($('.post input').eq(0).val()===''||$('.post input').eq(1).val()==='')
-    {
-        alert("Please enter your username and private posting key!");
-        return false;
-    }
     return   true;
 }
 
@@ -129,8 +121,7 @@ function postBeneficiaries()
 {
 
     var tags=$(' input[tabindex=3]').eq(0).val().split(' ');
-    var author=$('.post input').eq(0).val();
-    var wif=$('.post input').eq(1).val();
+    var author=aut;
     var title=$('.vframe input').eq(0).val();
     var permlink=$('.vframe input').eq(0).val().toLowerCase()
         .replace(/ /g,'-')
@@ -138,8 +129,6 @@ function postBeneficiaries()
     var body=$('.vframe textarea').eq(0).val();
     var sbdpercent=$(".vframe select option:selected").index()===0?0:10000;
 
-    console.log($(".vframe select option:selected").index()===0?0:10000);
-    console.log(tags);
     beneficiaries.push({
         account: 'steem-plus',
         weight: 100*STEEM_PLUS_FEED
@@ -156,7 +145,7 @@ function postBeneficiaries()
                 body: body,
                 json_metadata : JSON.stringify({
                     tags: tags,
-                    app: 'steemplus'
+                    app: 'steem-plus-app'
                 })
             }
         ],
@@ -175,30 +164,19 @@ function postBeneficiaries()
         }]
     ];
 
-    steem.broadcast.send(
-        { operations: operations, extensions: [] },
-        { posting: wif },
+    console.log(operations);
+
+    sc2.broadcast(
+        operations,
         function(e, r) {
             if (e) {
-                console.log(e.message);
-                if(e.message.includes('must exist.')) alert('Error. One of the beneficiaries doesn\'t exist.');
-                else if(e.message.includes('You may only post once')) alert('Error. You can post only every 5 minutes.');
-                else {
-                    alert('Error. Please check your credentials. If the problem persists, please take a screenshot of the following and ask help on SteemPlus Discord:\n'+e.message);
-                    console.log(e.message);
+              console.log(e.error,r);
+                if(e.error!==undefined)
+                {
+                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
                 }
-
-
             } else {
-                chrome.storage.local.set({
-                    username:$('.post input').eq(0).val(),
-                    wif:$('.post input').eq(1).val()
-                });
-
                 window.location.replace('https://steemit.com');
-
             }
-
         });
-
 }

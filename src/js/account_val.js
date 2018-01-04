@@ -3,7 +3,6 @@ var load_check_a='',load_check2_a='';
 var wallet_elt_a;
 var timeout_a=1000;
 var account_v;
-var url_a="";
 var STEEM_A,SBD_A;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -34,7 +33,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
 
   function onClickA(isSteemit,busy,globalP,market){
     setTimeout(function() {
-      if(window.location.href!==url_a)
+      if(window.location.href!=='')
       {
         account_v=isSteemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
         wallet_elt_a=isSteemit?$('.medium-4')[4]:".UserWalletSummary__item ";
@@ -78,7 +77,6 @@ function startAccountValue(isSteemit,busy,globalP,market){
       value=value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       if(isSteemit){
         real_val.append('$ '+value);
-      console.log(wallet_elt_a,real_val);
       wallet_elt_a.append(real_val);
       if($('.real_value').length>1)
         $('.real_value')[0].remove();}

@@ -4,7 +4,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start')
       displayBadges();
     if(request.to==='rank'&&request.order==='click'){
-      console.log('cl');
       setTimeout(function(){
         displayBadges();
       },2000);
@@ -14,7 +13,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function displayBadges()
 {
-  console.log('display');
   if($('.UserProfile__banner ').length!==0)
   {
       getAccountData(getUsernameFromProfile()).then(function (result){

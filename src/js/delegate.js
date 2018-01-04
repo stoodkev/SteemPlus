@@ -7,24 +7,20 @@ var load_check='',load_check2='';
 var wallet_elt_d;
 var classButton;
 var timeoutD=2000;
-var account;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  console.log(request.data,request.to);
     if(request.to==='delegation'&&request.order==='start')
-      startDelegation(request.data.steemit,request.data.busy,request.data.global);
+      startDelegation(request.data.steemit,request.data.busy,request.data.global,request.data.user);
     if(request.to==='delegation'&&request.order==='click')
-      onClickD(request.data.steemit,request.data.busy,request.data.global);
+      onClickD(request.data.steemit,request.data.busy,request.data.global,request.data.user);
 });
 
 
-      function startDelegation(isSteemit,busy,globalP)
+      function startDelegation(isSteemit,busy,globalP,account)
       {
-        console.log('Start Delegation');
         if(isSteemit) {
             load_check=/transfers/;
             load_check2=/transfers/;
-            account=window.location.href.split('@')[1].split('/')[0];
             wallet_elt_d=".FoundationDropdownMenu__label";
             classButton="'UserWallet__buysp button hollow delegate";
         }
@@ -33,23 +29,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             load_check=/wallet/;
             load_check2=/transfers/;
             wallet_elt_d=".UserWalletSummary__item ";
-            account=$('.Topnav__user__username').html();
             classButton="Action ant-btn-lg Action--primary delegate";
 
         }
 
         if(window.location.href.match(load_check)||window.location.href.match(load_check2))
-            checkLoadDel(isSteemit,busy,globalP);
+            checkLoadDel(isSteemit,busy,globalP,account);
 
     }
 
-        function onClickD(isSteemit,busy,globalPisSteemit,busy,globalP){
+        function onClickD(isSteemit,busy,globalP,account){
             setTimeout(function() {
-
-                console.log('clic');
                 if ((window.location.href.match(load_check)||window.location.href.match(load_check2)) && !created) {
                     created = true;
-                    checkLoadDel(isSteemit,busy,globalP);
+                    checkLoadDel(isSteemit,busy,globalP,account);
                 }
                 if (!window.location.href.match(load_check)&&!window.location.href.match(load_check2)) {
                     created = false;
@@ -57,22 +50,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             },timeoutD);
         }
 var ii=0;
-        function checkLoadDel(isSteemit,busy,globalP){
-          console.log('wa',$(wallet_elt_d));
+        function checkLoadDel(isSteemit,busy,globalP,account){
           ii++;
 
             if($(wallet_elt_d).length>1){
-              console.log('wallet');
-                createButton(isSteemit,busy,globalP);
+                createButton(isSteemit,busy,globalP,account);
             }
             else {
-              console.log('no wallet',wallet_elt_d);
               if(ii<5)
                 setTimeout(checkLoadDel, 2000);
             }
         }
 
-        function createButton(isSteemit,busy,globalP) {
+        function createButton(isSteemit,busy,globalP,account) {
+            console.log('Create Delegation Button');
             if($('.delegate').length===0) {
                 var delegate_div = document.createElement('div');
                 delegate_div.style.width = '100%';
@@ -87,15 +78,12 @@ var ii=0;
                 if(isSteemit)
                     $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
                 else
-                {$('.Action--primary ')[0].parentNode.appendChild(delegate_div);console.log(delegate_div);}
+                {$('.Action--primary ')[0].parentNode.appendChild(delegate_div);}
 
                 function getMaxSP(){if(isSteemit)return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',',''))-5.001).toFixed(3);
                 else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',',''))-5.001).toFixed(3);}
 
                 $('.delegate').click(function(){
-                  steem.api.getDynamicGlobalProperties(function(err, res) {
-                    const total_vesting_shares=res.total_vesting_shares;
-                    const total_vesting_fund=res.total_vesting_fund_steem;
                     steem.api.getVestingDelegations(account, null, 10, function(err, result) {
                     var div = document.createElement('div');
                     div.id = 'overlay_delegate';
@@ -109,7 +97,7 @@ var ii=0;
                             '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">' +
                             'Max*: ' + getMaxSP() + ' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="delegations"><div class="row"><h3 class="column">Current delegations</h3></div><ul>';
                             for (resul of result){
-                              inner +='<div class="row"><div class="column "><li>'+Math.round(steem.formatter.vestToSteem(resul.vesting_shares,total_vesting_shares ,total_vesting_fund)*100)/100 +' SP delegated to @'+resul.delegatee+'<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares='+0+'%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></li></div></div>';
+                              inner +='<div class="row"><div class="column "><li>'+Math.round(steem.formatter.vestToSteem(resul.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated to @'+resul.delegatee+'<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares='+0+'%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></li></div></div>';
                             }
                             inner +='</ul></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp button hollow delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
                             div.innerHTML=inner;
@@ -123,10 +111,9 @@ var ii=0;
                             '<span id="max_sp">Max*: <span role="presentation" class="balance">'+getMaxSP()+'</span>.<br/>* Maximum delegation available if no SP is currently delegated.'
                             +'</span></div></div></div></form><div class="del_busy" style="margin-bottom:1em;"><div class="ant-modal-header" style="padding:0;"><div class="ant-modal-title" id="rcDialogTitle0">Current delegations</div></div><ul>';
                             for (resul of result){
-                              inner +='<li>'+Math.round(steem.formatter.vestToSteem(resul.vesting_shares,total_vesting_shares ,total_vesting_fund)*100)/100 +' SP delegated to @'+resul.delegatee+'<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares='+0+'%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; " class="">×</span></button></a></li>';
+                              inner +='<li>'+Math.round(steem.formatter.vestToSteem(resul.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated to @'+resul.delegatee+'<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares='+0+'%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; " class="">×</span></button></a></li>';
                             }
                             inner+='</div><span>Click the button below to be redirected to SteemConnect to complete your transaction.</span></div><div class="ant-modal-footer"><button type="button" class="ant-btn ant-btn-lg close-button"><span>Cancel</span></button><input type="button" id="bd" style="margin-left: 1em;"disabled="" class="ant-btn ant-btn-primary ant-btn-lg delegate" value="Send"/></div></div><div tabindex="0" style="width: 0px; height: 0px; overflow: hidden;">sentinel</div></div></div></div></div>';
-
                             div.innerHTML=inner;
                     }
 
@@ -143,15 +130,12 @@ var ii=0;
                     $('#bd').click(function () {
 
                       const delegated_SP = $('input[name=amount]').val();
-                      var delegated_vest = delegated_SP * global.totalVests / global.totalSteem;
+                      var delegated_vest = delegated_SP * globalP.totalVests / globalP.totalSteem;
                       delegated_vest=delegated_vest.toFixed(6);
                       var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_vest+'%20VESTS';
                       window.open(url, '_blank');
                     });
-
-
                 });
-              });
               });
             }
         }

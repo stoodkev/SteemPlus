@@ -52,7 +52,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                 }
                 else {
                     if($('.Topnav__menu-container__menu')[0]!==undefined)
-                    console.log($('.Topnav__menu-container__menu')[0].childNodes.length);
                     setTimeout(check, 1000);
                 }
             }
@@ -226,7 +225,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              {
 
                      steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
-                        //console.log(result);
                          if(result[0]!==undefined) {
                              tmp= [];
                              var elt=result[0];
@@ -569,8 +567,4 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             };
             return post;
         }
-
-
-
-
 }

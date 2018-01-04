@@ -25,6 +25,21 @@ body {
     transition: opacity .2s;
 }
 
+#disconnected img
+{
+  display: inline-block;
+  width:100px;
+  margin:auto;
+  height:auto;
+  margin-top: 2em;
+  margin-bottom: 2em;
+}
+#disconnected{
+  text-align: center;
+}
+
+#connected{display:none;}
+
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;

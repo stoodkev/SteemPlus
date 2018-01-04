@@ -1,0 +1,45 @@
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+      if(request.to==='steemConnect'&&request.order==='start')
+      {
+        if(window.location.href.includes('?access_token='))
+        {
+          console.log('create');
+          var url = new URL(window.location.href);
+          chrome.storage.local.set({
+              tokenExpire: Date.now()+7*24*3600*1000,
+              sessionToken:url.searchParams.get("access_token")
+          },
+          function(){
+            window.location.replace(url.searchParams.get("state"));
+          });
+        }
+        else {
+          var loginURL="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options&state=";
+          loginURL+=window.location.href;
+          var loginIcon=$('<a></a>').append($('<img/>').attr('class','loginIcon'));
+        }
+        if(request.data.steemConnect.connect===false||request.data.steemConnect.tokenExpire<Date.now()){
+          $(loginIcon).children().first().attr('src',chrome.extension.getURL("src/img/unlogged.png"))
+          .attr('title','Login to SteemPlus?');
+          $(loginIcon).attr('href',loginURL);
+          if(request.data.steemConnect.connect===true)
+            chrome.storage.local.remove(['sessionToken','tokenExpire'],function(){
+              window.location.replace(window.location.href);
+            });
+        }
+        else {
+          $(loginIcon).children().first().attr('src',chrome.extension.getURL("src/img/logged.png"))
+          .attr('title','Log out of SteemPlus?');
+          $(loginIcon).click(function(){
+            sc2.revokeToken(function (err, res) {
+              console.log(err, res);
+              chrome.storage.local.remove(['sessionToken','tokenExpire'],function(){
+                window.location.replace(window.location.href);
+              });
+            });
+          });
+        }
+
+      $('.Header__top').children().first().children().eq(1).children().first().prepend(loginIcon);
+    }
+  });

@@ -17,25 +17,22 @@
   </head>
   <body>
     <div>
+      <div id='disconnected'>
+          <h1>SteemPlus</h1>
+          <img src='src/img/unlogged.png'/>
+          <p>Please connect to SteemPlus via SteemConnect.</p>
+      </div>
+      <div id='connected'>
       <img id="logo" src="src/img/steemplus.png" width="200px">
       <div class="menu">Upvote<div class="more"></div></div>
       <div class="content">
         <div class="back_menu">Back</div>
         <div id="vote" >Upvote</div>
-        <br/><h4>Voting weight (%)</h4>
-        <div id="slidecontainer">
-          <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
-        </div>
-        <input id="weight" type="number">
-        <br/><h4>Username</h4>
-        <input id="username" type="text">
-        <br/><div class="w3-light-grey w3-round" style="margin-top: 10px;">
-          <div id="bar" class="w3-container w3-round w3-blue w3-center" style="width:0%">0%</div>
-        </div>
-        <h4>Private Posting WIF</h4>
-        <input id="wif" type="password" type="text">
-        <br/><br/>
-        <p style=" text-align: justify;">All this data will be stored on your PC, nothing is kept online.</p>
+          <br/><h4>Voting weight (%)</h4>
+          <div id="slidecontainer">
+            <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
+          </div>
+          <input id="weight" type="number">
       </div>
       <div class="menu">Options<div class="more"></div></div>
       <div class="content">
@@ -60,7 +57,7 @@
         <input type="radio" name="acc_v" value="show" id="show"> <label for="show">Show</label> <br>
         <input type="radio" name="acc_v" value="hide" id="hide"> <label for="hide">Hide</label> <br>
       </div>
-
+    </div>
       <div id="powered"><p>Powered by <b>Adsactly</b></p></div>
     <script src="vendor/sc2.min.js"></script>
     <script src="vendor/jquery.js"></script>

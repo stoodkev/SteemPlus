@@ -13,7 +13,7 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
     updateSteemPrice();
   chrome.storage.local.get(['del','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
-    chrome.runtime.sendMessage({ to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect}} );
+    chrome.runtime.sendMessage({ to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy}} );
 
     if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
       initializeSteemConnect(steemConnect.sessionToken);

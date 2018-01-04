@@ -1,6 +1,17 @@
+var uri_login,classbutton;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if(request.to==='steemConnect'&&request.order==='start')
       {
+        if(request.data.steemit)
+        {
+          uri_login='https://steemit.com/@steem-plus';
+          classbutton='loginIcon';
+        }
+        else if (request.data.busy){
+          uri_login='https://busy.org/@steem-plus';
+          classbutton='loginIconBusy';
+        }
+
         if(window.location.href.includes('?access_token='))
         {
           console.log('create');
@@ -14,9 +25,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           });
         }
         else {
-          var loginURL="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options&state=";
+          var loginURL="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri="+uri_login+"&scope=vote,comment,comment_options&state=";
           loginURL+=window.location.href;
-          var loginIcon=$('<a></a>').append($('<img/>').attr('class','loginIcon'));
+          var loginIcon=$('<a></a>').append($('<img/>').attr('class',classbutton));
         }
         if(request.data.steemConnect.connect===false||request.data.steemConnect.tokenExpire<Date.now()){
           $(loginIcon).children().first().attr('src',chrome.extension.getURL("src/img/unlogged.png"))
@@ -39,7 +50,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
           });
         }
-
-      $('.Header__top').children().first().children().eq(1).children().first().prepend(loginIcon);
+      if(request.data.steemit)
+        $('.Header__top').children().first().children().eq(1).children().first().prepend(loginIcon);
+      else
+        $('.Topnav__version').after(loginIcon);
     }
   });

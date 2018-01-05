@@ -29,7 +29,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             ad_post="li:first-child .entry-title a";
             feed_url = document.getElementsByClassName("Header__logo")[0].firstChild.href;
             feedplus_url="#plus";
-            user_fp = feed_url.split('@')[1].split('/')[0];
+            user_fp = feedp.user;
             menu_list=document.getElementsByClassName("HorizontalMenu")[0];
             feedplus=document.createElement('li');
             feedplus.className="";
@@ -125,8 +125,10 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                 result.forEach(function (elt, i, array) {
                     if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
-                        var voted=false;
-                        elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
+                        var voted=false,checked=false;
+                        if(elt.author=='utopian-io')
+                        console.log(elt.active_votes);
+                        elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
 
                         list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
                         $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+feedp.nb_posts*100);
@@ -294,7 +296,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                      bd = bd.replace(/!?\[[^\]]*\]\([^\)]*\)/g, '');
                      bd = bd.replace(/\*+/g, '');
                      bd = bd.replace(/\#+/g, '');
-                     var upvoted = '';
+                     var upvoted = 'no_upvoted';
                      if(isBusy) {
                              var active="";
                              if(elt.voted) active="active";
@@ -321,7 +323,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              }).reputation + '</span></span><!-- react-text: 201 --> <!-- /react-text --><!-- react-text: 202 -->in<!-- /react-text --><!-- react-text: 203 --> <!-- /react-text --><strong><a target="_blank" href="/trending/' +
                              elt.tags[0] + '">' + elt.tags[0] + '</a></strong></span></div><span class="PostSummary__image" style="background-image: url(' + elt.img + ');"></span><div class="PostSummary__content"><div class="PostSummary__header show-for-medium"><h3 class="entry-title">' +
                              '<a target="_blank" href="' + elt.url + '"><!-- react-text: 211 -->' + elt.title + '<!-- /react-text --></a></h3></div><div class="PostSummary__body entry-content"><a target="_blank" href="' + elt.url + '">' + bd.substring(0,120) + '</a></div><div class="PostSummary__footer">' +
-                             '<span class="Votin"><span class="Voting__inner"><span class="Voting__button Voting__button-up ' + upvoted + '"><a  href="#" title="Upvote"><span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span></a></span><div class="DropdownMenu"><a href="#"><span style="opacity: 1;"><span class="prefix">$</span>' + elt.payout.split(' ')[0] + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span></a><ul class="VerticalMenu menu vertical VerticalMenu"><li>' +
+                             '<span class="Votin"><span class="Voting__inner"><span id="'+i+'"class="Voting__button Voting__button-up ' + upvoted + '"><span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span></span><div class="DropdownMenu"><a href="#"><span style="opacity: 1;"><span class="prefix">$</span>' + elt.payout.split(' ')[0] + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span></a><ul class="VerticalMenu menu vertical VerticalMenu"><li>' +
                              '<span><!-- react-text: 231 -->Pending Payout ' + elt.payout.split(' ')[0] + '<!-- /react-text --></span></li><li><span><span title="' + elt.date.replace('T', ' ') + '"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></span></li><li><span></span></li></ul></div></span></span><span class="VotesAndComments"><span class="VotesAndComments__votes" title="' +
                              elt.votes + ' votes"><span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span><!-- react-text: 242 --><!-- /react-text --><!-- react-text: 243 -->' +
                              elt.votes + '<!-- /react-text --></span>' +
@@ -334,10 +336,40 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              }).reputation + ' ) </span></span><!-- react-text: 266 --> <!-- /react-text --><!-- react-text: 267 -->in<!-- /react-text --><!-- react-text: 268 --> <!-- /react-text --><strong><a target="_blank" href="/trending/' + elt.tags[0] + '">' + elt.tags[0] + '</a></strong></span></span></span></div></div></article></li>';
                             //if(i%20) {html_posts.push(posts);posts='';}
                      }
-
                  });
 
-                 $(post_div).html(posts);
+
+              $(post_div).html(posts);
+              $('.Voting__button').click(function()
+              {
+                var elt=filtered_list[this.id];
+                var that=this;
+                if(elt.voted)
+                {
+                  sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function (err, res) {
+                    console.log(err, res);
+
+                    if(res!==null){
+                      $(that).removeClass('Voting__button--upvoted');
+
+                      filtered_list[that.id].voted=true;}
+                  });
+                }
+                else {
+                  {
+                    sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function (err, res) {
+                      console.log(err, res);
+                      if(res!==null){
+                        $(that).addClass('Voting__button--upvoted');
+                        console.log('should add class',$(this));
+                        filtered_list[that.id].voted=true;
+                      }
+
+                    });
+                  }
+                }
+
+              });
 
                  if (feedp.resteem === "blacklist_radio") {
                      for (var i = 0; i < $(reblog).length; i++) {
@@ -377,6 +409,8 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              HandleTagListsVisibility();
              HandleListsVisibility();
              HandleRepDisabled();
+
+
          }
 
          function LoadParameters(isSteemit,isBusy,feedp)
@@ -566,7 +600,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             "tags":tags,
             "img":img,
             "url":url,
-                "voted":voted
+            "voted":voted
             };
             return post;
         }

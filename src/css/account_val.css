@@ -3,3 +3,7 @@
       height: 15px;
       margin-right: 1em;
 }
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+    width: 15em;
+}

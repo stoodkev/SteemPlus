@@ -20,6 +20,7 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
         scope: ['vote', 'comment','comment_options']
       });
       sc2.me().then((mee)=> {
+
         me=mee.name;
         acc=mee.account;
         console.log(me,acc,mee);

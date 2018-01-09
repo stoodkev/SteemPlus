@@ -11,7 +11,6 @@ var first_display=true;
 var show_posts=0;
 var html_posts=[];
 var token_fp=null;
-steem.config.set('websocket','wss://steemd.steemit.com');
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='feedp'&&request.order==='start'&&token_fp==null){

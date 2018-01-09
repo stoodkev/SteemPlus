@@ -5,8 +5,9 @@ var market =null,SBDperSteem=0;
 const DEFAULT_FEED_SIZE=3;
 var url=window.location.href;
 
+steem.api.setOptions({ url: 'https://api.steemit.com' });
 
-steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
+steem.api.getDynamicGlobalProperties( function(err,globalProp)
 {
     const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
@@ -39,7 +40,7 @@ steem.api.getDynamicGlobalProperties( {}).then((globalProp)=>
         var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
         var voted_check=(items.voted_check!==undefined)?items.voted_check:false;
         var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
-
+				console.log(steemConnect);
         if(delegation)
           chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
         if(account_value)

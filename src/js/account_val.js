@@ -67,6 +67,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
     var real_val=document.createElement('span');
     var logo=document.createElement('img');
     logo.src=chrome.extension.getURL("src/img/logo.png");
+    logo.id='logovalue';
     if(isSteemit)
       logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
     if(isSteemit&& $('.medium-4 .dropdown-arrow').length!==0)

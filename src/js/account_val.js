@@ -27,7 +27,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
         {
             load_check_a=/wallet/;
             load_check2_a=/transfers/;
-            wallet_elt_a=".UserWalletSummary__item ";
+            wallet_elt_a=$('.UserWalletSummary__value')[4];
             account_v=(window.location.href.match(load_check))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
         }
 
@@ -63,11 +63,12 @@ function startAccountValue(isSteemit,busy,globalP,market){
   }
 
   function createTitle(isSteemit,busy,globalP,market) {
+    var title='<h5>Details</h5>';
     var real_val=document.createElement('span');
-    real_val.href="#";
     var logo=document.createElement('img');
     logo.src=chrome.extension.getURL("src/img/logo.png");
-    logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
+    if(isSteemit)
+      logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
     if(isSteemit&& $('.medium-4 .dropdown-arrow').length!==0)
       real_val.style.marginRight='1em';
     real_val.className='real_value';
@@ -87,31 +88,37 @@ function startAccountValue(isSteemit,busy,globalP,market){
       const TOTAL_VALUE=SBD+STEEM;
       value=postProcess(TOTAL_VALUE);
 
-      if(isSteemit){
-        var pop=document.createElement('a');
-        pop.innerHTML=value;
-        pop.style.cursor='pointer';
-        real_val.append(pop);
-        wallet_elt_a.append(real_val);
 
-      $('.real_value a').attr('data-toggle','popover');
-      $('.real_value a').attr('data-content','<h5>STEEM:  <span class="value_of">'+postProcess(STEEM)+'</span>'
-        +'</h5><hr/> Balance: <span class="value_of">'+postProcess(STEEM_BALANCE)+'</span>'
-        +'<br/> SP: <span class="value_of">'+postProcess(STEEM_POWER)+'</span>'
-        +'<br/> Savings: <span class="value_of">'+postProcess(STEEM_SAVINGS)+'</span>'
-        +'<br/><br/> <h5>SBD: <span class="value_of">'+postProcess(SBD)+'</span>'
-        +'</h5><hr/> Balance: <span class="value_of">'+postProcess(SBD_BALANCE)+'</span>'
-        +'<br/> Savings: <span class="value_of">'+postProcess(SBD_SAVINGS)+'</span>');
-      $('.real_value a').attr('data-placement','bottom');
-      $('.real_value a').attr('title','<h5>Details</h5>');
-      $('.real_value a').attr('data-html','true');
-      $('.real_value a').attr('data-trigger','hover');
-      $('.real_value a').click(function(){
-      $('[data-toggle="popover"]').popover();});
+        var pop=document.createElement('a');
+        pop.style.cursor='pointer';
+        pop.id='popop';
+
+        if(isSteemit){
+          pop.innerHTML=value;
+          real_val.append(pop);
+          wallet_elt_a.append(real_val);
       if($('.real_value').length>1)
         $('.real_value')[0].remove();}
-      else $('.UserWalletSummary__value')[4].title='$ '+value+' according to SteemPlus calculation using Bittrex price for SBD and STEEM.';
-        url=window.location.href;
+      else {
+        wallet_elt_a.prepend(pop);
+        $('#popop').html(logo);
+        title='<h5>Total <span class="value_of">'+value+'</class></h5>';
+
+        url=window.location.href;}
+
+    $('#popop').attr('data-toggle','popover');
+    $('#popop').attr('data-content','<h5>STEEM:  <span class="value_of">'+postProcess(STEEM)+'</span>'
+      +'</h5><hr/> Balance: <span class="value_of">'+postProcess(STEEM_BALANCE)+'</span>'
+      +'<br/> SP: <span class="value_of">'+postProcess(STEEM_POWER)+'</span>'
+      +'<br/> Savings: <span class="value_of">'+postProcess(STEEM_SAVINGS)+'</span>'
+      +'<br/><br/> <h5>SBD: <span class="value_of">'+postProcess(SBD)+'</span>'
+      +'</h5><hr/> Balance: <span class="value_of">'+postProcess(SBD_BALANCE)+'</span>'
+      +'<br/> Savings: <span class="value_of">'+postProcess(SBD_SAVINGS)+'</span>');
+    $('#popop').attr('data-placement','bottom');
+    $('#popop').attr('title',title);
+    $('#popop').attr('data-html','true');
+    $('#popop').attr('data-trigger','hover');
+    $('[data-toggle="popover"]').popover();
 
   });
 }

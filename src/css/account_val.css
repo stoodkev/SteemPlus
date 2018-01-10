@@ -1,4 +1,4 @@
-.real_value img{
+img{
       width: 15px;
       height: 15px;
       margin-right: 1em;
@@ -10,7 +10,7 @@
     color:#788187;
 }
 
-.popover h5
+.popover h5, .popover-title h5
 {
   font-size: 1em;
   color:black;

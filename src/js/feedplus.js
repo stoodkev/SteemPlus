@@ -118,7 +118,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                     tag: user_fp,
                     start_author: author,
                     start_permlink: perm
-                }).then((result) => {
+                },function(err,result) {
                     feed_calls=feed_calls + 1;
 
                 result.forEach(function (elt, i, array) {

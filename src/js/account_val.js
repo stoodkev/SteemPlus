@@ -95,10 +95,17 @@ function startAccountValue(isSteemit,busy,globalP,market){
         wallet_elt_a.append(real_val);
 
       $('.real_value a').attr('data-toggle','popover');
-      $('.real_value a').attr('data-content','<h5>STEEM: '+postProcess(STEEM)+'</h5><hr/> Balance: '+postProcess(STEEM_BALANCE)+'<br/> SP: '+postProcess(STEEM_POWER)+'<br/> Savings: '+postProcess(STEEM_SAVINGS)+'<br/><br/> <h5>SBD: '+postProcess(SBD)+'</h5><hr/> Balance: '+postProcess(SBD_BALANCE)+'<br/> Savings: '+postProcess(SBD_SAVINGS));
+      $('.real_value a').attr('data-content','<h5>STEEM:  <span class="value_of">'+postProcess(STEEM)+'</span>'
+        +'</h5><hr/> Balance: <span class="value_of">'+postProcess(STEEM_BALANCE)+'</span>'
+        +'<br/> SP: <span class="value_of">'+postProcess(STEEM_POWER)+'</span>'
+        +'<br/> Savings: <span class="value_of">'+postProcess(STEEM_SAVINGS)+'</span>'
+        +'<br/><br/> <h5>SBD: <span class="value_of">'+postProcess(SBD)+'</span>'
+        +'</h5><hr/> Balance: <span class="value_of">'+postProcess(SBD_BALANCE)+'</span>'
+        +'<br/> Savings: <span class="value_of">'+postProcess(SBD_SAVINGS)+'</span>');
       $('.real_value a').attr('data-placement','bottom');
       $('.real_value a').attr('title','<h5>Details</h5>');
       $('.real_value a').attr('data-html','true');
+      $('.real_value a').attr('data-trigger','hover');
       $('.real_value a').click(function(){
       $('[data-toggle="popover"]').popover();});
       if($('.real_value').length>1)

@@ -6,4 +6,21 @@
 .popover{
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
     width: 15em;
+    font-size: 0.9em;
+    color:#788187;
+}
+
+.popover h5
+{
+  font-size: 1em;
+  color:black;
+  font-weight:bold;
+  width:100%;
+}
+
+.value_of
+{
+  text-align: right;
+  position: absolute;
+  right: 1em;
 }

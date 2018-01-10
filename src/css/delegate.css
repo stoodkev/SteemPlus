@@ -21,3 +21,9 @@
     outline: inherit !important;
     margin-right:1em;
 }
+
+.theme-dark #delegateButton{
+color:white;
+border-color: white;
+
+}

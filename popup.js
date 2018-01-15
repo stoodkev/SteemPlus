@@ -25,12 +25,21 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
         acc=mee.account;
         console.log(me,acc,mee);
       $('#connected').css('display','block');
-        $('#disconnected').css('display','none');
+      $('#disconnected').css('display','none');
+      $('#before_connect').css('display','none');
+      $('.id_user').html('@'+me);
+      $('.id_user').attr('href','https://steemit.com/@'+me);
+      $('.id_user').attr('target','_blank');
+      $('.rep_user').html(' ('+
+        steem.formatter.reputation(acc.reputation)+
+        ')');
+      getVotingPower();
       });
     }
     else {
       $('#disconnected').css('display','block');
         $('#connected').css('display','none');
+        $('#before_connect').css('display','none');
     }
     weight=items.weight;
     badge=items.badge==undefined?'2':items.badge;
@@ -126,7 +135,7 @@ $(document).on("change","input[name=drop]",function(){
 function SaveParameters(){
   if(document.getElementById('weight').value<0||document.getElementById('weight').value>100||document.getElementById('weight').value=='')
   {
-    alert('The voting power has to be between 0 and 100%');
+    alert('The voting weight has to be between 0 and 100%');
   }
   else
   {

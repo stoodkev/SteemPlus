@@ -6,17 +6,12 @@
     <link id="themecss" rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
     <link  rel="stylesheet" type="text/css" href="src/css/popup.css">
 
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-     -->
-
   </head>
   <body>
     <div>
+      <div id="before_connect">
+        <div class="loader"></div>
+      </div>
       <div id='disconnected'>
           <h1>SteemPlus</h1>
           <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options&state=https://steemit.com/@steem-plus"><img src='src/img/unlogged.png'/></a>
@@ -24,6 +19,12 @@
       </div>
       <div id='connected'>
       <img id="logo" src="src/img/steemplus.png" width="200px">
+      <div class="info_user">
+        <a class="id_user"></a><span class="rep_user"></span>
+        <div class="w3-light-grey w3-round">
+          <div id="bar"class="w3-container w3-round w3-blue" style="width:0%">0%</div>
+        </div>
+      </div>
       <div class="menu">Upvote<div class="more"></div></div>
       <div class="content">
         <div class="back_menu">Back</div>

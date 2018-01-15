@@ -6,6 +6,7 @@ body {
     width:200px;
     min-height: 400px;
 }
+
 #status {
     /* avoid an excessively wide status text */
     white-space: pre;
@@ -24,6 +25,11 @@ body {
     -webkit-transition: .2s;
     transition: opacity .2s;
 }
+.info_user
+{
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
 
 #disconnected img
 {
@@ -35,10 +41,30 @@ body {
   margin-bottom: 2em;
 }
 #disconnected{
-  text-align: center;
+  text-align: center; display: none;
 }
 
 #connected{display:none;}
+
+#before_connect
+{
+  height:inherit;
+    display: flex;
+    margin-top: 8em;
+}
+
+.loader {
+    margin:auto;
+    width: 100px;
+    height: 100px;
+    background: url("../img/logo.png") no-repeat  ;
+    background-size: contain;
+    animation: spin 2s  linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;

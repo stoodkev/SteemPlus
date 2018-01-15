@@ -27,7 +27,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
         const account_value=(items.acc_v==undefined||items.acc_v=="show");
         const beneficiaries=(items.ben==undefined||items.ben=="show");
         const dropdown=(items.drop==undefined||items.drop=="show");
-        const rank=(items.badge==undefined||items.badge=="show");
+        const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="show");
         const feedp=(items.feedp==undefined||items.feedp=="show");
         const resteem= (items.resteem !== undefined)?items.resteem:'show';
         const weight=(items.weight !== undefined)?items.weight*100:10000;
@@ -48,7 +48,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
         if(beneficiaries&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user}});
         if(rank&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'rank', order: 'start'});
+          chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start'});
         if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
           chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
         if(steemit&&feedp)
@@ -65,7 +65,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
               if(beneficiaries&&steemit)
                 chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
-                chrome.runtime.sendMessage({ token:token, to: 'rank', order: 'click'});
+                chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
 
               url=window.location.href;
             }

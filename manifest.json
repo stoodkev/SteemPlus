@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.1.2.0",
+  "version": "2.1.4.0",
 
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -65,7 +65,8 @@
         "src/css/loginSteemPlus.css"],
       "permissions": [
         "activeTab",
-        "storage"
+        "storage",
+        "tabs"
       ],
       "run_at": "document_idle"
     }

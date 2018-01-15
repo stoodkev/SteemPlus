@@ -3,24 +3,25 @@ var token_rank=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
       token_rank=request.token;
-      displayBadges();
+      displayBadges(request.badge);
     }
     if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       setTimeout(function(){
-        displayBadges();
+        displayBadges(request.badge);
       },2000);
     }
 });
 
 
-function displayBadges()
+function displayBadges(badge)
 {
   if($('.UserProfile__banner ').length!==0)
   {
       getAccountData(getUsernameFromProfile()).then(function (result){
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         const rank=getUserRank(vesting_shares);
-        const medal_url='src/img/medals/'+rank.toLowerCase()+'.png';
+        const badge_serie=badge==undefined?2:(badge=='show'?2:badge);
+        const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
         var div= document.createElement('div');
         div.className="ranker";
         var img=document.createElement('img');

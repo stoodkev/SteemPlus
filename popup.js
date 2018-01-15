@@ -33,7 +33,7 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
         $('#connected').css('display','none');
     }
     weight=items.weight;
-    badge=items.badge==undefined?'show':items.badge;
+    badge=items.badge==undefined?'2':items.badge;
     feedp=items.feedp==undefined?'show':items.feedp;
     ben=items.ben==undefined?'show':items.ben;
     del=items.del==undefined?'show':items.del;
@@ -181,10 +181,8 @@ function Upvote(){
                 if(err!==undefined&&err!==null&&err.cause!==undefined&&err.cause.toString().includes('Voting weight is too small, please accumulate more voting power or steem power.'))
                     alert('Voting weight is too small, please accumulate more voting power or steem power.');
                 else {
-                    chrome.tabs.getSelected(null, function (tab) {
                         var code = 'window.location.reload();';
                         chrome.tabs.executeScript(tab.id, {code: code});
-                    });
                 }
 
             }

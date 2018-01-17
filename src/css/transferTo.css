@@ -1,0 +1,13 @@
+.divTransfer
+{
+  display: inline-block;
+
+}
+.transfer_to
+{
+  display: inline-block;
+
+}
+.currency{
+  cursor: pointer;
+}

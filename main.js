@@ -12,7 +12,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
     const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
     updateSteemPrice();
-  chrome.storage.local.get(['weight','del','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy}} );
@@ -24,6 +24,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
         const account=me.account;
         const user=me.name;
         const delegation=(items.del==undefined||items.del=="show");
+        const transfers=(items.transfers==undefined||items.transfers=="show");
         const account_value=(items.acc_v==undefined||items.acc_v=="show");
         const beneficiaries=(items.ben==undefined||items.ben=="show");
         const dropdown=(items.drop==undefined||items.drop=="show");
@@ -43,6 +44,8 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
 				console.log(steemConnect);
         if(delegation)
           chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
+        if(transfers)
+          chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
         if(account_value)
           chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market}});
         if(beneficiaries&&steemit)
@@ -60,6 +63,8 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
             {
               if(delegation)
                 chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
+              if(transfers)
+                chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
               if(account_value)
                 chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},market:market} });
               if(beneficiaries&&steemit)

@@ -2,13 +2,13 @@ document.getElementById('vote').addEventListener("click", Upvote);
 var weight;
 var vpow;
 var width=0;
-var badge,ben,feedp,del,drop,acc_v;
+var badge,ben,feedp,del,drop,acc_v,transfers;
 var me,acc;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v'], function (items) {
+chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -46,6 +46,7 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
     feedp=items.feedp==undefined?'show':items.feedp;
     ben=items.ben==undefined?'show':items.ben;
     del=items.del==undefined?'show':items.del;
+    transfers=items.transfers==undefined?'show':items.transfers;
     acc_v=items.acc_v==undefined?'show':items.acc_v;
     drop=items.drop==undefined?'show':items.drop;
     //console.log(items.resteem);
@@ -61,6 +62,7 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
     $('input[name=ben][value='+ben+']').prop('checked',true);
     $('input[name=drop][value='+drop+']').prop('checked',true);
     $('input[name=acc_v][value='+acc_v+']').prop('checked',true);
+    $('input[name=transfers][value='+transfers+']').prop('checked',true);
 
 });
 
@@ -122,6 +124,11 @@ $(document).on("change","input[name=feedp]",function(){
 $(document).on("change","input[name=del]",function(){
     chrome.storage.local.set({
         del:$("input[name=del]:checked").val()
+    });
+});
+$(document).on("change","input[name=transfers]",function(){
+    chrome.storage.local.set({
+        transfers:$("input[name=transfers]:checked").val()
     });
 });
 

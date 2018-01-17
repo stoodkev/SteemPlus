@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.1.4.0",
+  "version": "2.2.0.0",
 
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -54,7 +54,8 @@
         "src/js/dropdown.js",
         "src/js/rank.js",
         "src/js/resteem.js",
-        "src/js/feedplus.js"],
+        "src/js/feedplus.js",
+        "src/js/transferTo.js"],
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",
         "src/css/account_val.css",
@@ -62,7 +63,8 @@
         "src/css/rank.css",
         "src/css/resteem.css",
         "src/css/feedplus.css",
-        "src/css/loginSteemPlus.css"],
+        "src/css/loginSteemPlus.css",
+        "src/css/transferTo.css"],
       "permissions": [
         "activeTab",
         "storage",

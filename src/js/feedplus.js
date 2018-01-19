@@ -257,7 +257,10 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink "></div></div>');
                  if(isBusy) $('.list-selector').hide();
                  var more = chrome.extension.getURL("src/img/more.png");
-                 var filters = '<ul class="Topics"><li  class="Topics__title" >Sort By</li><hr><div class="select_box"><select id="sort" >' +
+                 var gridfeedimg = chrome.extension.getURL('src/img/view-grid.png');
+                 var listfeedimg = chrome.extension.getURL('src/img/view-list.png');
+                 var bigfeedimg = chrome.extension.getURL('src/img/view-big.png');
+                 var filters = '<ul class="Topics"><div class="feedstyle"><span id="listfeed" class="iconfeedstyle active"><img src="' + listfeedimg + '"></span> <span id="gridfeed" class="iconfeedstyle"><img src="' + gridfeedimg + '"></span> <span id="bigfeed" class="iconfeedstyle"><img src="' + bigfeedimg + '"></span></div><li class="Topics__title">View:</li><hr><li  class="Topics__title" >Sort By</li><hr><div class="select_box"><select id="sort" >' +
                      '<option value="recent">Recent</option>' +
                      ' <option value="old">Old</option>' +
                      '<option value="payout">Payout</option>' +
@@ -549,6 +552,28 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  DisableMenu(true);
                  Filter(isSteemit,isBusy,feedp);
              });
+             
+             $( '#listfeed' ).click(function() {
+               $( '.feedstyle span' ).removeClass('active');
+               $('.PostsIndex__left li').removeClass('grid-view');
+               $('.PostsIndex__left li').removeClass('big-view');
+               $(this).addClass('active');
+
+             }); // click on list button
+             $( '#gridfeed' ).click(function() {
+               $( '.feedstyle span' ).removeClass('active');
+               $('.PostsIndex__left li').removeClass('big-view');
+               $('.PostsIndex__left li').addClass('grid-view');
+               $(this).addClass('active');
+
+             }); // click on grid button
+
+             $( '#bigfeed' ).click(function() {
+               $( '.feedstyle span' ).removeClass('active');
+               $('.PostsIndex__left li').removeClass('grid-view');
+               $('.PostsIndex__left li').addClass('big-view');
+               $(this).addClass('active');
+             }); // click on big button
 
          }
         function HandleTagListsVisibility(){

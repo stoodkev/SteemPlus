@@ -111,3 +111,93 @@ input::-webkit-inner-spin-button {
     height: 30px;
     animation: spin 2s linear infinite;
 }
+
+/* changing to grid/list/big view */
+.feedstyle{text-align: right; position:absolute; min-width:160px;}
+.feedstyle span{
+  cursor: pointer;
+  display: inline-block;
+  padding: 0 6px;
+  background: #f2f2f2;
+  border-radius: 2px;
+  height: 31px;
+  line-height: 25px;
+}
+.feedstyle span img{height:13px;}
+.feedstyle span:hover{background:#06D6A9;}
+.feedstyle span.active{background:#CCC}
+
+  .PostsIndex__left li.grid-view {
+      width:50%;
+        margin-bottom:0px;
+        float:left;
+      position:relative;
+  }
+  @media screen and (min-width: 1024px) {
+  .PostsIndex__left li.grid-view {
+      width:33.33%;
+  }
+  }
+
+@media screen and (min-width: 1200px) {
+.PostsIndex__left li.grid-view {
+    width:25%;
+}
+}
+
+li.grid-view .PostSummary__reblogged_by, li.big-view .PostSummary__reblogged_by{
+  position:absolute;
+  top: 9px;
+  left: 1px;
+  border-radius:3px;
+  background:rgba(0, 0, 0, .7);
+  padding-right:10px;
+  font-size:0;
+}
+li.grid-view .Icon.reblog, li.big-view .Icon.reblog{margin-top:-10px; padding:0 20px 0 5px;}
+li.grid-view .PostSummary__reblogged_by .UserNames, li.big-view .PostSummary__reblogged_by .UserNames{font-size:12px;}
+li.grid-view .PostSummary.with-image .PostSummary__reblogged_by .Icon.reblog, li.big-view .PostSummary.with-image .PostSummary__reblogged_by .Icon.reblog{ margin-left:0;}
+li.grid-view .PostSummary.with-image .PostSummary__image, li.big-view .PostSummary.with-image .PostSummary__image{
+  width:100%;
+  height:130px;
+  float:none;
+  display:block;
+  border-radius:5px;
+  overflow:hidden;
+  margin-bottom:3px;
+}
+li.grid-view .PostSummary.with-image .PostSummary__reblogged_by, li.grid-view .PostSummary.with-image .PostSummary__content, li.big-view .PostSummary.with-image .PostSummary__reblogged_by, li.big-view .PostSummary.with-image .PostSummary__content{
+  margin-left:0;
+  padding:2px;
+}
+
+li.grid-view .PostSummary__header{height:41px; overflow: hidden;}
+li.grid-view .PostSummary__body{display:none;}
+
+li.grid-view .VotesAndComments {
+     white-space:normal;
+     font-size:11px;
+}
+li.grid-view .Voting__button, li.big-view .Voting__button{cursor:pointer;}
+li.grid-view .PostSummary__footer .DropdownMenu, li.grid-view .VotesAndComments .Reputation{font-size:11px;}
+li.grid-view .PostSummary__footer .DropdownMenu{
+  top: -3px;
+  left: 3px;
+}
+li.grid-view .VotesAndComments{margin-top:-3px;}
+
+/* big view*/
+.PostsIndex__left li.big-view {
+    width:70%;
+    position:relative;
+    margin:auto;
+    margin-bottom: 1em;
+}
+li.big-view .PostSummary.with-image .PostSummary__image{
+  height:300px;
+
+}
+li.big-view .PostSummary__footer{
+  padding-bottom:15px;
+  padding-top:15px;
+  border-bottom:#CCC 2px solid;}

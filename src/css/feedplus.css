@@ -139,12 +139,6 @@ input::-webkit-inner-spin-button {
   }
   }
 
-@media screen and (min-width: 1200px) {
-.PostsIndex__left li.grid-view {
-    width:25%;
-}
-}
-
 li.grid-view .PostSummary__reblogged_by, li.big-view .PostSummary__reblogged_by{
   position:absolute;
   top: 9px;
@@ -167,7 +161,7 @@ li.grid-view .PostSummary.with-image .PostSummary__image, li.big-view .PostSumma
   margin-bottom:3px;
 }
 li.grid-view .PostSummary.with-image .PostSummary__reblogged_by, li.grid-view .PostSummary.with-image .PostSummary__content, li.big-view .PostSummary.with-image .PostSummary__reblogged_by, li.big-view .PostSummary.with-image .PostSummary__content{
-  margin-left:0;
+  margin-left:5px;
   padding:2px;
 }
 
@@ -176,12 +170,12 @@ li.grid-view .PostSummary__body{display:none;}
 
 li.grid-view .VotesAndComments {
      white-space:normal;
-     font-size:11px;
+     font-size:13px;
 }
 li.grid-view .Voting__button, li.big-view .Voting__button{cursor:pointer;}
 li.grid-view .PostSummary__footer .DropdownMenu, li.grid-view .VotesAndComments .Reputation{font-size:11px;}
 li.grid-view .PostSummary__footer .DropdownMenu{
-  top: -3px;
+  top: -1px;
   left: 3px;
 }
 li.grid-view .VotesAndComments{margin-top:-3px;}
@@ -200,4 +194,4 @@ li.big-view .PostSummary.with-image .PostSummary__image{
 li.big-view .PostSummary__footer{
   padding-bottom:15px;
   padding-top:15px;
-  border-bottom:#CCC 2px solid;}
+  border-bottom:#06D6A9 2px solid;}

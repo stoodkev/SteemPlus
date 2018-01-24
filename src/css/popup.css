@@ -14,6 +14,22 @@ body {
     overflow: hidden;
     max-width: 400px;
 }
+
+#shortcuts{
+  width:100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#shortcuts img{
+  height:20px;
+  cursor: pointer;
+}
+#shortcuts img:hover{
+  border-bottom: solid 2px #2196F3;
+  padding-bottom: 6px;
+}
 .slider {
     -webkit-appearance: none;
     width: 100%;

@@ -26,14 +26,27 @@
         "default": "Alt+Shift+B",
         "mac": "Alt+Shift+B"
       },
-      "description": "Steemit <-> Busy"
+      "description": "-> Busy"
+    },
+    "steemify": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "Alt+Shift+S"
+      },
+      "description": "-> Steemit"
+    },"utopify": {
+      "suggested_key": {
+        "default": "Alt+Shift+U",
+        "mac": "Alt+Shift+U"
+      },
+      "description": "-> Utopian"
     },
     "steemdify": {
       "suggested_key": {
         "default": "Alt+Shift+D",
         "mac": "Alt+Shift+D"
       },
-      "description": "Steemit <-> Steemd"
+      "description": "-> Steemd"
     }
 
   },

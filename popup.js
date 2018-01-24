@@ -7,6 +7,8 @@ var me,acc;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
+
+$('#shortcuts').hide();
 // Get local parameters stored using Chrome Storage API
 chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
@@ -20,6 +22,8 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
         scope: ['vote', 'comment','comment_options']
       });
       sc2.me().then((mee)=> {
+
+        $('#shortcuts').show();
 
         me=mee.name;
         acc=mee.account;
@@ -180,6 +184,11 @@ function getVotingPower() {
     }
 }
 
+$('#shortcuts img').click(function(){
+  var command=this.id;
+  chrome.runtime.sendMessage({command: command},
+        function (response) {});
+});
 
 // Upvote current url according to parameters
 function Upvote(){

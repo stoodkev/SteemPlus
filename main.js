@@ -1,6 +1,7 @@
 var xhttp = new XMLHttpRequest();
 const steemit =(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com'));
 const busy =window.location.href.match('busy.org');
+const utopian =window.location.href.match('utopian.io');
 var market =null,SBDperSteem=0;
 const DEFAULT_FEED_SIZE=3;
 var url=window.location.href;
@@ -9,10 +10,11 @@ steem.api.setOptions({ url: 'https://api.steemit.com' });
 
 steem.api.getDynamicGlobalProperties( function(err,globalProp)
 {
+  console.log(err,globalProp);
     const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
     updateSteemPrice();
-  chrome.storage.local.get(['weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy}} );
@@ -21,6 +23,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
       initializeSteemConnect(steemConnect.sessionToken);
       sc2.me().then((me)=> {
         console.log(me);
+
         const account=me.account;
         const user=me.name;
         const delegation=(items.del==undefined||items.del=="show");
@@ -31,6 +34,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
         const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="show");
         const feedp=(items.feedp==undefined||items.feedp=="show");
         const resteem= (items.resteem !== undefined)?items.resteem:'show';
+        const oneup= (items.oneup !== undefined)?items.oneup:'show';
         const weight=(items.weight !== undefined)?items.weight*100:10000;
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
@@ -103,20 +107,18 @@ function updateSteemPrice()
 }
 
 function getSteemPrice(){
-  xhttp.open("GET", "https://api.coinmarketcap.com/v1/ticker/steem/", false);
+  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC", false);
   xhttp.send();
-  const priceSteem=parseFloat(JSON.parse(xhttp.responseText)[0].price_usd);
-  const changeSteem=parseFloat(JSON.parse(xhttp.responseText)[0].percent_change_1h);
-  xhttp.open("GET", "https://api.cryptonator.com/api/ticker/sbd-usd", false);
+  const btc_price=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
+  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM", false);
   xhttp.send();
-  const priceSBD=parseFloat(JSON.parse(xhttp.responseText).ticker.price);
-  const changeSBD=JSON.parse(xhttp.responseText).ticker.change;
-  market={SBDperSteem:SBDperSteem,priceSteem:priceSteem,changeSteem:changeSteem,priceSBD:priceSBD,changeSBD:changeSBD};
-  steem.api.getCurrentMedianHistoryPrice(function(err, result) {
-     SBDperSteem=Math.round(parseFloat(result.base)*100)/1000;
-     market={SBDperSteem:SBDperSteem,priceSteem:priceSteem,changeSteem:changeSteem,priceSBD:priceSBD,changeSBD:changeSBD};
+  const priceSteem=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
+  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD", false);
+  xhttp.send();
+  const priceSBD=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
+  market={SBDperSteem:priceSteem/priceSBD,priceSteem:priceSteem*btc_price,priceSBD:priceSBD*btc_price};
+  console.log(market);
 
-    });
 }
 
 function makeToken() {

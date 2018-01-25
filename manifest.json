@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.2.0.0",
+  "version": "2.3.0.0",
 
   "browser_action": {
     "default_icon": "src/img/logo.png",

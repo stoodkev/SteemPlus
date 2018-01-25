@@ -37,29 +37,29 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         clearInterval(intr);
       if(i%3===0)
       {
-          $(".price").html('1 STEEM = '+market_d.SBDperSteem+' SBD');
+          $(".price").html('1 STEEM = '+Math.round(market_d.SBDperSteem*1000)/1000+' SBD');
           $(".daily_change").html("");
           $(".price").parent().prop('href',"/market");
       }
       else if(i%3===1)
       {
         $(".price").html('1 STEEM = '+Math.round(market_d.priceSteem*1000)/1000+'$');
-        $(".daily_change").html(' ('+market_d.changeSteem+'%) ');
+        /*$(".daily_change").html(' ('+market_d.changeSteem+'%) ');
         if(market_d.changeSteem>=0)
           $(".daily_change").css('color','green');
         else
-          $(".daily_change").css('color','red');
-        $(".price").parent().prop('href',"https://coinmarketcap.com/currencies/steem/");
+          $(".daily_change").css('color','red');*/
+        $(".price").parent().prop('href',"https://bittrex.com/Market/Index?MarketName=BTC-steem");
       }
       else if(i%3===2)
       {
         $(".price").html('1 SBD = '+Math.round(market_d.priceSBD*1000)/1000+'$');
-        $(".daily_change").html(' ('+Math.round(market_d.changeSBD*100)/100+'%) ');
+        /*$(".daily_change").html(' ('+Math.round(market_d.changeSBD*100)/100+'%) ');
         if(market_d.changeSBD>=0)
           $(".daily_change").css('color','green');
         else
-          $(".daily_change").css('color','red');
-        $(".price").parent().prop('href',"https://coinmarketcap.com/currencies/steem-dollars/");
+          $(".daily_change").css('color','red');*/
+        $(".price").parent().prop('href',"https://bittrex.com/Market/Index?MarketName=BTC-sbd");
       }
 
     }

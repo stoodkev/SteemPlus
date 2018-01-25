@@ -4,9 +4,13 @@
 
 var created_benef=false;
 var beneficiaries;
-const STEEM_PLUS_FEED=5;
+const STEEM_PLUS_FEE=5;
 var aut=null;
 var token_benef=null;
+var communities=['minnowsupport',
+                'utopian-io',
+                'adsactly'
+              ];
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='ben'){
     aut=request.data.user;
@@ -110,12 +114,12 @@ function isEverythingFilled()
     }
     if(hasWrongPercent!==0)
     {
-        alert("Percentage should be greater than 0 and smaller are equal to 100!");
+        alert("Percentage should be greater than 0 and smaller or equal to 100!");
         return false;
     }
     if(total_percent>95)
     {
-        alert("Total beneficiary rewards must be smaller are equal to 95%!");
+        alert("Total beneficiary rewards must be smaller or equal to 95%!");
         return false;
     }
     return   true;
@@ -133,54 +137,64 @@ function postBeneficiaries()
     var body=$('.vframe textarea').eq(0).val();
     var sbdpercent=$(".vframe select option:selected").index()===0?0:10000;
 
-    beneficiaries.push({
-        account: 'steem-plus',
-        weight: 100*STEEM_PLUS_FEED
-    });
+    if(communities.includes(aut))
+      console.log('no fee');
+    else
+      beneficiaries.push({
+          account: 'steem-plus',
+          weight: 100*STEEM_PLUS_FEE
+      });
+    if(beneficiaries.length>6)
+    {
+        alert("You have set up too many beneficiaries (max number=5, 6 for registered communities)");
+    }
+    else {
+      var operations = [
+          ['comment',
+              {
+                  parent_author: '',
+                  parent_permlink: tags[0],
+                  author: author,
+                  permlink: permlink,
+                  title: title,
+                  body: body,
+                  json_metadata : JSON.stringify({
+                      tags: tags,
+                      app: 'steem-plus-app'
+                  })
+              }
+          ],
+          ['comment_options', {
+              author: author,
+              permlink: permlink,
+              max_accepted_payout: '100000.000 SBD',
+              percent_steem_dollars: sbdpercent,
+              allow_votes: true,
+              allow_curation_rewards: true,
+              extensions: [
+                  [0, {
+                      beneficiaries: beneficiaries
+                  }]
+              ]
+          }]
+      ];
 
-    var operations = [
-        ['comment',
-            {
-                parent_author: '',
-                parent_permlink: tags[0],
-                author: author,
-                permlink: permlink,
-                title: title,
-                body: body,
-                json_metadata : JSON.stringify({
-                    tags: tags,
-                    app: 'steem-plus-app'
-                })
-            }
-        ],
-        ['comment_options', {
-            author: author,
-            permlink: permlink,
-            max_accepted_payout: '100000.000 SBD',
-            percent_steem_dollars: sbdpercent,
-            allow_votes: true,
-            allow_curation_rewards: true,
-            extensions: [
-                [0, {
-                    beneficiaries: beneficiaries
-                }]
-            ]
-        }]
-    ];
-
-    console.log(operations);
+      console.log(operations);
 
     sc2.broadcast(
-        operations,
-        function(e, r) {
-            if (e) {
-              console.log(e.error,r);
-                if(e.error!==undefined)
-                {
-                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
-                }
-            } else {
-                window.location.replace('https://steemit.com');
-            }
-        });
+          operations,
+          function(e, r) {
+              if (e) {
+                console.log(e.error,r);
+                  if(e.error!==undefined)
+                  {
+                    alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
+                  }
+              } else {
+                  window.location.replace('https://steemit.com');
+              }
+          });
+    }
+
+
 }

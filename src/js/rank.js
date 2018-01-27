@@ -41,6 +41,7 @@ function displayBadges(badge)
 }
 
 function getUserRank (vests) {
+  console.log('User vests: ',vests);
     var rank = 'Plankton';
     if (vests >= 1000000000) {
         rank = 'Whale';

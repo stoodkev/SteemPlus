@@ -8,7 +8,6 @@ const STEEM_PLUS_FEED=5;
 var aut=null;
 var token_benef=null;
 var communities=['minnowsupport',
-                'stoodkev',
                 'utopian-io',
                 'adsactly'
               ];
@@ -145,7 +144,10 @@ function postBeneficiaries()
           account: 'steem-plus',
           weight: 100*STEEM_PLUS_FEED
       });
-    if(beneficiaries.length)
+      if(beneficiaries.length>6)
+     {
+        alert("You have set up too many beneficiaries (max number=5, 6 for registered communities)");
+      }
 
     var operations = [
         ['comment',
@@ -179,7 +181,7 @@ function postBeneficiaries()
 
     console.log(operations);
 
-  /*  sc2.broadcast(
+   sc2.broadcast(
         operations,
         function(e, r) {
             if (e) {
@@ -191,5 +193,5 @@ function postBeneficiaries()
             } else {
                 window.location.replace('https://steemit.com');
             }
-        });*/
+        });
 }

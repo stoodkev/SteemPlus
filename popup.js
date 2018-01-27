@@ -2,7 +2,7 @@ document.getElementById('vote').addEventListener("click", Upvote);
 var weight;
 var vpow;
 var width=0;
-var badge,ben,feedp,del,drop,acc_v,transfers;
+var badge,ben,feedp,del,drop,acc_v,transfers,oneup;
 var me,acc;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -50,6 +50,7 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
     feedp=items.feedp==undefined?'show':items.feedp;
     ben=items.ben==undefined?'show':items.ben;
     del=items.del==undefined?'show':items.del;
+    oneup=items.oneup==undefined?'show':items.oneup;
     transfers=items.transfers==undefined?'show':items.transfers;
     acc_v=items.acc_v==undefined?'show':items.acc_v;
     drop=items.drop==undefined?'show':items.drop;
@@ -60,13 +61,88 @@ chrome.storage.local.get(['sessionToken','tokenExpire','weight','resteem','black
         document.getElementById("myRange").value=weight;
     }
 
-    $('input[name=badges][value='+badge+']').prop('checked',true);
-    $('input[name=feedp][value='+feedp+']').prop('checked',true);
-    $('input[name=del][value='+del+']').prop('checked',true);
-    $('input[name=ben][value='+ben+']').prop('checked',true);
-    $('input[name=drop][value='+drop+']').prop('checked',true);
-    $('input[name=acc_v][value='+acc_v+']').prop('checked',true);
-    $('input[name=transfers][value='+transfers+']').prop('checked',true);
+    $('option[name=badges][value='+badge+']').prop('selected',true);
+    $('input[name=feedp]').prop('checked',feedp=='show');
+    $('input[name=del]').prop('checked',del=='show');
+    $('input[name=ben]').prop('checked',ben=='show');
+    $('input[name=drop]').prop('checked',drop=='show');
+    $('input[name=acc_v]').prop('checked',acc_v=='show');
+    $('input[name=oneup]').prop('checked',oneup=='show');
+    $('input[name=transfers]').prop('checked',transfers=='show');
+
+    var x, i, j, selElmnt, a, b, c;
+    /*look for any elements with the class "custom-select":*/
+    x = document.getElementsByClassName("custom-select");
+    for (i = 0; i < x.length; i++) {
+      selElmnt = x[i].getElementsByTagName("select")[0];
+      /*for each element, create a new DIV that will act as the selected item:*/
+      a = document.createElement("DIV");
+      a.setAttribute("class", "select-selected");
+      a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+      x[i].appendChild(a);
+      /*for each element, create a new DIV that will contain the option list:*/
+      b = document.createElement("DIV");
+      b.setAttribute("class", "select-items select-hide");
+      for (j = 1; j < selElmnt.length; j++) {
+        /*for each option in the original select element,
+        create a new DIV that will act as an option item:*/
+        c = document.createElement("DIV");
+        c.innerHTML = selElmnt.options[j].innerHTML;
+        c.addEventListener("click", function(e) {
+            /*when an item is clicked, update the original select box,
+            and the selected item:*/
+            var i, s, h;
+            s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+            this.parentNode.parentNode.getElementsByTagName("select")[0];
+
+
+            h = this.parentNode.previousSibling;
+            for (i = 0; i < s.length; i++) {
+              if (s.options[i].innerHTML == this.innerHTML) {
+                s.selectedIndex = i;
+                h.innerHTML = this.innerHTML;
+                break;
+              }
+            }
+            chrome.storage.local.set({
+                badge:s[s.selectedIndex].value
+            });
+            h.click();
+        });
+        b.appendChild(c);
+      }
+      x[i].appendChild(b);
+      a.addEventListener("click", function(e) {
+          /*when the select box is clicked, close any other select boxes,
+          and open/close the current select box:*/
+          e.stopPropagation();
+          closeAllSelect(this);
+          this.nextSibling.classList.toggle("select-hide");
+          this.classList.toggle("select-arrow-active");
+        });
+    }
+    function closeAllSelect(elmnt) {
+      /*a function that will close all select boxes in the document,
+      except the current select box:*/
+      var x, y, i, arrNo = [];
+      x = document.getElementsByClassName("select-items");
+      y = document.getElementsByClassName("select-selected");
+      for (i = 0; i < y.length; i++) {
+        if (elmnt == y[i]) {
+          arrNo.push(i)
+        } else {
+          y[i].classList.remove("select-arrow-active");
+        }
+      }
+      for (i = 0; i < x.length; i++) {
+        if (arrNo.indexOf(i)) {
+          x[i].classList.add("select-hide");
+        }
+      }
+    }
+    /*if the user clicks anywhere outside the select box,
+    then close all select boxes:*/
+    document.addEventListener("click", closeAllSelect);
 
 });
 
@@ -76,6 +152,7 @@ Array.from(menus).forEach(function(element, i, arr) {
         content[i].style.display='block';
         Array.from(menus).forEach(function(element, i, arr) {element.style.display="none";});
         document.getElementById("logo").style.display="none";
+        $('#powered').css('display','none');
     });
 });
 
@@ -83,6 +160,7 @@ Array.from(back).forEach(function(element, i, arr) {
     element.addEventListener('click', function(){
         content[i].style.display='none';
         Array.from(menus).forEach(function(element, i, arr) {element.style.display="block";});
+        $('#powered').css('display','block');
 
         document.getElementById("logo").style.display="block";
     });
@@ -99,46 +177,46 @@ document.getElementById("weight").onblur = function() {
     });
 }
 
-
 $("#myRange").blur(function(){chrome.storage.local.set({
     weight:document.getElementById('weight').value
 });});
 $("")
 
-$(document).on("change","input[name=badges]",function(){
+
+$(document).on("change","input[name=oneup]",function(){
     chrome.storage.local.set({
-        badge:$("input[name=badges]:checked").val()
+        oneup:$("input[name=oneup]").prop('checked')?'show':'hide'
     });
 });
 $(document).on("change","input[name=ben]",function(){
     chrome.storage.local.set({
-        ben:$("input[name=ben]:checked").val()
+        ben:$("input[name=ben]").prop('checked')?'show':'hide'
     });
 });
 $(document).on("change","input[name=acc_v]",function(){
     chrome.storage.local.set({
-        acc_v:$("input[name=acc_v]:checked").val()
+        acc_v:$("input[name=acc_v]").prop('checked')?'show':'hide'
     });
 });
 $(document).on("change","input[name=feedp]",function(){
     chrome.storage.local.set({
-        feedp:$("input[name=feedp]:checked").val()
+        feedp:$("input[name=feedp]").prop('checked')?'show':'hide'
     });
 });
 $(document).on("change","input[name=del]",function(){
     chrome.storage.local.set({
-        del:$("input[name=del]:checked").val()
+        del:$("input[name=del]").prop('checked')?'show':'hide'
     });
 });
 $(document).on("change","input[name=transfers]",function(){
     chrome.storage.local.set({
-        transfers:$("input[name=transfers]:checked").val()
+        transfers:$("input[name=transfers]").prop('checked')?'show':'hide'
     });
 });
 
 $(document).on("change","input[name=drop]",function(){
     chrome.storage.local.set({
-        drop:$("input[name=drop]:checked").val()
+        drop:$("input[name=drop]").prop('checked')?'show':'hide'
     });
 });
 
@@ -214,5 +292,6 @@ function Upvote(){
         );
     else alert('The current URL does not correspond to a post. Click to "... ago" on the post summary to change the url.')
     });
+
 
 }

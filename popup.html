@@ -5,7 +5,6 @@
 
     <link id="themecss" rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
     <link  rel="stylesheet" type="text/css" href="src/css/popup.css">
-
   </head>
   <body>
     <div>
@@ -39,34 +38,81 @@
       <div class="content">
         <div class="back_menu">Back</div>
         <h3>Options</h3>
-        <h4>Badges</h4>
-        <input type="radio" name="badges" value="1" id="1"/> <label for="1">@hag228</label> <br>
-        <input type="radio" name="badges" value="2" id="2"/> <label for="2">@fabiyamada</label> <br>
-        <input type="radio" name="badges" value="hide" id="hide"/> <label for="hide">Hide</label> <br>
-        <h4>Feed+</h4>
-        <input type="radio" name="feedp" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="feedp" value="hide" id="hide"> <label for="hide">Hide</label> <br>
-        <h4>Delegation</h4>
-        <input type="radio" name="del" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="del" value="hide" id="hide"> <label for="hide">Hide</label> <br>
-        <h4>Transfers</h4>
-        <input type="radio" name="transfers" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="transfers" value="hide" id="hide"> <label for="hide">Hide</label> <br>
-        <h4>Beneficiaries</h4>
-        <input type="radio" name="ben" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="ben" value="hide" id="hide"> <label for="hide">Hide</label> <br>
-        <h4>Dropdown</h4>
-        <input type="radio" name="drop" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="drop" value="hide" id="hide"> <label for="hide">Hide</label> <br>
-        <h4>Account Value</h4>
-        <input type="radio" name="acc_v" value="show" id="show"> <label for="show">Show</label> <br>
-        <input type="radio" name="acc_v" value="hide" id="hide"> <label for="hide">Hide</label> <br>
+
+        <div class="sp_option">
+          <div class="custom-select" style="width:100%;">
+            <select id="badges" >
+              <option name="badges" value="2" id="q">Show badges?</option>
+              <option name="badges" value="hide" id="hide">Don't show badges</option>
+              <option name="badges" value="1" id="1">Badges @hag228</option>
+              <option name="badges" value="2" id="2">Badges @fabiyamada</option>
+            </select>
+          </div>
+        </div>
+
+      <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="oneup"  id="oneup">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Utopian 1UP</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="feedp"  id="feedp">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Feed+</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="del"  id="del">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Delegation</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="transfers"  id="transfers">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Transfers</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="drop"  id="drop">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Dropdown</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="ben"  id="ben">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Beneficiaries</p>
+        </div>
+
+        <div class="sp_option">
+          <label class="switch">
+            <input type="checkbox" name="acc_v"  id="acc_v">
+            <span class="slider2 round"></span>
+          </label>
+            <p>Account Value</p>
+        </div>
       </div>
     </div>
       <div id="powered">
-        <div id="shortcuts"><img src="/src/img/shortcuts/steemit.png" id="steemify"/><img src="/src/img/shortcuts/utopian.png" id="utopify"/><img src="/src/img/shortcuts/busy.png" id="busyfy"/><img src="/src/img/shortcuts/steemd.png" id="steemdify"/>
+        <div id="shortcuts">
+          <img src="/src/img/shortcuts/steemit.png" id="steemify"/><img src="/src/img/shortcuts/utopian.png" id="utopify"/><img src="/src/img/shortcuts/busy.png" id="busyfy"/><img src="/src/img/shortcuts/steemd.png" id="steemdify"/>
+        </div>
+        <p>Powered by <b>Adsactly</b></p>
       </div>
-        <p>Powered by <b>Adsactly</b></p></div>
     <script src="vendor/sc2.min.js"></script>
     <script src="vendor/jquery.js"></script>
     <script src="vendor/steemjs.js"></script>

@@ -35,7 +35,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             load_check2=/transfers/;
             wallet_elt_d=".UserWalletSummary__item ";
             classButton="Action ant-btn-lg Action--primary delegate";
-
         }
 
         if(window.location.href.match(load_check)||window.location.href.match(load_check2))

@@ -4,10 +4,11 @@
 
 var created_benef=false;
 var beneficiaries;
-const STEEM_PLUS_FEE=5;
+const STEEM_PLUS_FEED=5;
 var aut=null;
 var token_benef=null;
 var communities=['minnowsupport',
+                'stoodkev',
                 'utopian-io',
                 'adsactly'
               ];
@@ -142,59 +143,53 @@ function postBeneficiaries()
     else
       beneficiaries.push({
           account: 'steem-plus',
-          weight: 100*STEEM_PLUS_FEE
+          weight: 100*STEEM_PLUS_FEED
       });
-    if(beneficiaries.length>6)
-    {
-        alert("You have set up too many beneficiaries (max number=5, 6 for registered communities)");
-    }
-    else {
-      var operations = [
-          ['comment',
-              {
-                  parent_author: '',
-                  parent_permlink: tags[0],
-                  author: author,
-                  permlink: permlink,
-                  title: title,
-                  body: body,
-                  json_metadata : JSON.stringify({
-                      tags: tags,
-                      app: 'steem-plus-app'
-                  })
-              }
-          ],
-          ['comment_options', {
-              author: author,
-              permlink: permlink,
-              max_accepted_payout: '100000.000 SBD',
-              percent_steem_dollars: sbdpercent,
-              allow_votes: true,
-              allow_curation_rewards: true,
-              extensions: [
-                  [0, {
-                      beneficiaries: beneficiaries
-                  }]
-              ]
-          }]
-      ];
+    if(beneficiaries.length)
 
-      console.log(operations);
+    var operations = [
+        ['comment',
+            {
+                parent_author: '',
+                parent_permlink: tags[0],
+                author: author,
+                permlink: permlink,
+                title: title,
+                body: body,
+                json_metadata : JSON.stringify({
+                    tags: tags,
+                    app: 'steem-plus-app'
+                })
+            }
+        ],
+        ['comment_options', {
+            author: author,
+            permlink: permlink,
+            max_accepted_payout: '100000.000 SBD',
+            percent_steem_dollars: sbdpercent,
+            allow_votes: true,
+            allow_curation_rewards: true,
+            extensions: [
+                [0, {
+                    beneficiaries: beneficiaries
+                }]
+            ]
+        }]
+    ];
 
-    sc2.broadcast(
-          operations,
-          function(e, r) {
-              if (e) {
-                console.log(e.error,r);
-                  if(e.error!==undefined)
-                  {
-                    alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
-                  }
-              } else {
-                  window.location.replace('https://steemit.com');
-              }
-          });
-    }
+    console.log(operations);
 
-
+  /*  sc2.broadcast(
+        operations,
+        function(e, r) {
+            if (e) {
+              console.log(e.error,r);
+                if(e.error!==undefined)
+                {
+                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
+                }
+            } else {
+                window.location.replace('https://steemit.com');
+            }
+        });*/
 }

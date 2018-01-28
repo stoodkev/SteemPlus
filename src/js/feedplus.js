@@ -11,6 +11,7 @@ var first_display=true;
 var show_posts=0;
 var html_posts=[];
 var token_fp=null;
+var style_view='list';
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='feedp'&&request.order==='start'&&token_fp==null){
@@ -411,8 +412,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              HandleTagListsVisibility();
              HandleListsVisibility();
              HandleRepDisabled();
-
-
+             changeStyle(style_view);
          }
 
          function LoadParameters(isSteemit,isBusy,feedp)
@@ -552,27 +552,19 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  DisableMenu(true);
                  Filter(isSteemit,isBusy,feedp);
              });
-             
+
              $( '#listfeed' ).click(function() {
-               $( '.feedstyle span' ).removeClass('active');
-               $('.PostsIndex__left li').removeClass('grid-view');
-               $('.PostsIndex__left li').removeClass('big-view');
-               $(this).addClass('active');
-
+                changeStyle('list');
              }); // click on list button
-             $( '#gridfeed' ).click(function() {
-               $( '.feedstyle span' ).removeClass('active');
-               $('.PostsIndex__left li').removeClass('big-view');
-               $('.PostsIndex__left li').addClass('grid-view');
-               $(this).addClass('active');
 
+
+
+             $( '#gridfeed' ).click(function() {
+                  changeStyle('grid');
              }); // click on grid button
 
              $( '#bigfeed' ).click(function() {
-               $( '.feedstyle span' ).removeClass('active');
-               $('.PostsIndex__left li').removeClass('grid-view');
-               $('.PostsIndex__left li').addClass('big-view');
-               $(this).addClass('active');
+                changeStyle('big');
              }); // click on big button
 
          }
@@ -627,5 +619,26 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             "voted":voted
             };
             return post;
+        }
+        function changeStyle(style)
+        {
+          style_view=style;
+          $( '.feedstyle span' ).removeClass('active');
+          if(style=='list'){
+            $('.PostsIndex__left li').removeClass('grid-view');
+            $('.PostsIndex__left li').removeClass('big-view');
+            $('#listfeed').addClass('active');
+          }
+          else if(style=='grid'){
+            console.log('change to grid');
+            $('.PostsIndex__left li').addClass('grid-view');
+            $('.PostsIndex__left li').removeClass('big-view');
+            $('#gridfeed').addClass('active');
+          }
+          else if(style=='big'){
+            $('.PostsIndex__left li').removeClass('grid-view');
+            $('.PostsIndex__left li').addClass('big-view');
+            $('#bigfeed').addClass('active');
+          }
         }
 }

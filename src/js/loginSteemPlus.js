@@ -13,6 +13,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           uri_login='https://busy.org/@steem-plus';
           classbutton='loginIconBusy';
         }
+        else if (request.data.utopian){
+          uri_login='https://utopian.io/@steem-plus';
+          classbutton='loginIconBusy';
+        }
 
         if(window.location.href.includes('?access_token='))
         {
@@ -54,7 +58,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
       if(request.data.steemit)
         $('.Header__top').children().first().children().eq(1).children().first().prepend(loginIcon);
-      else
+      else if(request.data.busy)
         $('.Topnav__version').after(loginIcon);
+      else if(request.data.utopian)
+        $('.Topnav__version').eq(0).after(loginIcon);
     }
   });

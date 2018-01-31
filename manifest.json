@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.3.2.1",
+  "version": "2.4.0.0",
 
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -57,7 +57,7 @@
 
   "content_scripts": [
     {
-      "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*"],
+      "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
       "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js",
         "main.js",
         "src/js/loginSteemPlus.js",
@@ -68,7 +68,8 @@
         "src/js/rank.js",
         "src/js/resteem.js",
         "src/js/feedplus.js",
-        "src/js/transferTo.js"],
+        "src/js/transferTo.js",
+        "src/js/oneup.js"],
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",
         "src/css/account_val.css",
@@ -77,7 +78,8 @@
         "src/css/resteem.css",
         "src/css/feedplus.css",
         "src/css/loginSteemPlus.css",
-        "src/css/transferTo.css"],
+        "src/css/transferTo.css",
+        "src/css/oneup.css"],
       "permissions": [
         "activeTab",
         "storage",

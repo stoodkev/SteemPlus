@@ -6,12 +6,15 @@ var MIN_REP=45;
 var postButtons='div .Buttons';
 var sToken=null;
 var post_voted=[];
+const POST_API="https://utopian-1up.herokuapp.com/parse/classes/Posts";
+const VOTE_API="https://utopian-1up.herokuapp.com/parse/classes/Votes";
+const APP_ID="efonwuhf7i2h4f72h3o8fho23fh7";
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='oneup'&&request.order==='start'&&token_oneup==null){
       token_oneup=request.token;
       sToken=request.data.sessionToken;
-      console.log('Start 1up');
+      username=request.data.account.name;
       if(isReputationEnough(request.data.account))
         getVotes();
     }
@@ -40,20 +43,19 @@ function checkOneUp(){
 }
 
 function getVotes(){
+  console.log('Get votes from @',username);
   $.ajax({
     type: "GET",
     beforeSend: function(xhttp) {
       xhttp.setRequestHeader("Content-type", "application/json");
       xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
     },
-    url: "https://utopian-1up.herokuapp.com/parse/classes/Votes"+'?where={"from":"stoodkev"}',
+    url: VOTE_API+'?where={"from":"'+username+'"}',
     success: function(msg) {
-      console.log(msg);
       if(msg.results.length!==0){
         post_voted=msg.results.map(function(e){
           return e.url;
         });
-        console.log(post_voted);
         checkOneUp();
       }
       else checkOneUp();
@@ -71,9 +73,12 @@ function createOneUpButton(){
     var classOneUp='oneup';
     if(!post_voted.includes(link))
       classOneUp+=' greyscale';
-    if($(buttons).find('.oneup').length!==0)
+    if($(buttons).find('.oneup').length!==0){
       $('.oneup').remove();
+      $('.oneup_nb').remove();
+    }
     $(buttons).append('<img id="'+link+'" class="'+classOneUp+'" src="'+chrome.extension.getURL("src/img/oneup.svg")+'"/>');
+    getVoteNumber(buttons,link);
   }
 
   $('.oneup').click(function(){
@@ -84,7 +89,7 @@ function createOneUpButton(){
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
       },
-      url: "https://utopian-1up.herokuapp.com/parse/classes/Votes",
+      url: VOTE_API,
       data:JSON.stringify({"token":sToken,"url":url}),
       processData: false,
       success: function(msg) {
@@ -94,5 +99,24 @@ function createOneUpButton(){
         alert(msg.responseJSON.error);
       }
     });
+  });
+}
+
+function getVoteNumber(buttons,link)
+{
+  $.ajax({
+    type: "GET",
+    beforeSend: function(xhttp) {
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.setRequestHeader("X-Parse-Application-Id", APP_ID);
+    },
+    url: POST_API+'?where={"url":"'+link+'"}',
+    success: function(msg) {
+      if(msg.results.length!==0)
+        $(buttons).append('<span class="Buttons__number oneup_nb">'+msg.results["0"].from_length+'</span>');
+    },
+    error: function(msg) {
+      console.log(msg.responseJSON.error);
+    }
   });
 }

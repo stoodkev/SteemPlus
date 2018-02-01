@@ -1,7 +1,8 @@
 var xhttp = new XMLHttpRequest();
-const steemit =(window.location.href.match('steemit.com')||window.location.href.match('mspsteem.com'));
-const busy =window.location.href.match('busy.org');
-const utopian =window.location.href.match('utopian.io');
+const steemit =(window.location.href.includes('steemit.com')||window.location.href.includes('mspsteem.com'));
+const busy =window.location.href.includes('busy.org');
+const utopian =window.location.href.includes('utopian.io');
+console.log(steemit,busy,utopian);
 var market =null,SBDperSteem=0;
 const DEFAULT_FEED_SIZE=3;
 var url=window.location.href;

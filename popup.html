@@ -8,108 +8,153 @@
   </head>
   <body>
     <div>
-      <div id="before_connect">
-        <div class="loader"></div>
-      </div>
-      <div id='disconnected'>
-          <h1>SteemPlus</h1>
-          <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options&state=https://steemit.com/@steem-plus"><img src='src/img/unlogged.png'/></a>
-          <p>Please connect to SteemPlus via SteemConnect (click on the logo)</p>
-      </div>
-      <div id='connected'>
-      <img id="logo" src="src/img/steemplus.png" width="200px">
-      <div class="info_user">
-        <a class="id_user"></a><span class="rep_user"></span>
-        <div class="w3-light-grey w3-round">
-          <div id="bar"class="w3-container w3-round w3-blue" style="width:0%">0%</div>
+        <div id="before_connect">
+            <div class="loader"></div>
         </div>
-      </div>
-      <div class="menu">Upvote<div class="more"></div></div>
-      <div class="content">
-        <div class="back_menu">Back</div>
-        <div id="vote" >Upvote</div>
-          <br/><h4>Voting weight (%)</h4>
-          <div id="slidecontainer">
-            <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
-          </div>
-          <input id="weight" type="number">
-      </div>
-      <div class="menu">Options<div class="more"></div></div>
-      <div class="content">
-        <div class="back_menu">Back</div>
-        <h3>Options</h3>
+        <div id="onboarding">
+            <img src="src/img/steemplus.png" class="onboard-logo">
+            <img class="onboard-image" src="src/img/onboarding/welcome.png">
+            <span class="onboard-title">Welcome to Steem+</span>
+            <p class="onboard-text">Steem+ lets you take control of your feed, minnows can choose their voting weight and upvote posts in one click on both Steemit and Busy and there's more, let's show you a few...</p>
 
-        <div class="sp_option">
-          <div class="custom-select" style="width:100%;">
-            <select id="badges" >
-              <option name="badges" value="2" id="q">Show badges?</option>
-              <option name="badges" value="hide" id="hide">Don't show badges</option>
-              <option name="badges" value="1" id="1">Badges @hag228</option>
-              <option name="badges" value="2" id="2">Badges @fabiyamada</option>
-            </select>
-          </div>
+            <div class="onboarding-controls"><span id="onboard-restart" class="onboard-directon">Restart</span>
+                <div class="onboarding-indicator>"><span id="dot-1" class="progress-dot progress-dot-active"></span><span id="dot-2" class="progress-dot"></span><span id="dot-3" class="progress-dot"></span><span id="dot-4" class="progress-dot"></span><span id="dot-5" class="progress-dot"></span></div> <span id="onboard-forward" class="onboard-directon">Next</span>
+            </div>
         </div>
+        <div id='disconnected'>
+            <img src="src/img/steemplus.png">
+            <h3>Login</h3>
+            <p>In order to enable the features within Steem+ we need you to login to your Steem account, don't worry we'll never see your password.</p>
+            <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options&state=https://steemit.com/@steem-plus"><input type="button" class="blue-button" value="Sign in via SteemConnect"></a>
 
-      <div class="sp_option">
-          <label class="switch">
+        </div>
+        <div id='connected'>
+            <img id="logo" src="src/img/steemplus.png" width="200px">
+            <div class="info_user">
+                <a class="id_user"></a>
+                <div class="rep-container"><span class="rep_user"></span></div>
+                <span class="voting-label">Your Voting Power</span>
+                <div>
+                    <div class="w3-light-grey w3-round">
+                        <div id="bar" class="w3-container w3-round w3-blue" style="width:0%"></div>
+                    </div><span id="vote-power-stat">0%</span></div>
+                <p id="main-description">You can use our upvote option to quickly vote on your favourite posts, or click on options to find out more about what Steem+ has to offer.</p>
+            </div>
+            <div class="menu" style="border-bottom: 1px solid whitesmoke"><img class="menu-icon" src="src/img/up.png">Upvote
+                <div class="more"></div>
+            </div>
+            <div class="content">
+
+                <div class="back_menu">Back to Main Menu</div>
+                <hr/>
+               <p class="option-title">Vote Weight</p>
+                <p class="option-description">Use the slider below to set your vote weight per post:</p>
+                <div id="slidecontainer">
+                    <input type="range" min="0" max="100" value="0" class="slider" id="myRange"> <input id="weight" type="number" placeholder="%">
+                </div>
+                <div id="vote">Upvote</div>
+            </div>
+            <div id="user-options" class="menu"><img class="menu-icon" src="src/img/options.png">Options
+                <div class="more"></div>
+            </div>
+            <div class="content">
+
+                <div class="back_menu">Back to Main Menu</div>
+
+                <hr/>
+                <div class="options-content">
+                    <div class="sp_option">
+                        <label class="switch">
             <input type="checkbox" name="oneup"  id="oneup">
             <span class="slider2 round"></span>
           </label>
-            <p>Utopian 1UP</p>
-        </div>
+                        <p class="option-title">Utopian 1UP</p>
+                        <div class="new-indicator"><span>New</span></div>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/utopian.png"></div>
+                        <p class="option-description">Join the curation trail for the best Utopian contributions.</p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
+                    <div class="sp_option">
+                        <label class="switch">
             <input type="checkbox" name="feedp"  id="feedp">
             <span class="slider2 round"></span>
           </label>
-            <p>Feed+</p>
-        </div>
+                        <p class="option-title">Feed+</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
+                        <p class="option-description">Enhance your feed on Steem and put finding the content you love in your hands.</p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
+                    <div class="sp_option">
+                        <label class="switch">
             <input type="checkbox" name="del"  id="del">
             <span class="slider2 round"></span>
           </label>
-            <p>Delegation</p>
-        </div>
+                        <p class="option-title">Beneficiaries</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
+                        <p class="option-description">Share the love with other users when you post. This feature helps Steem+ grow, we receive a 5% share too. </p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
+                    <div class="sp_option">
+                        <p class="option-title">Badges</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Add badges to yours and other users profiles. The badges have been created by the Steem community.</p>
+                        <div class="custom-select" style="width:100%;">
+                            <select id="badges">
+              <option name="badges" value="2" id="q">Show badges?</option>
+              <option name="badges" value="hide" id="hide">Don't show badges</option>
+              <option name="badges" value="1" id="1">Badge created by @hag228</option>
+              <option name="badges" value="2" id="2">Badge created by @fabiyamada</option>
+            </select>
+                        </div>
+                    </div>
+
+                    <div class="sp_option">
+                        <label class="switch">
             <input type="checkbox" name="transfers"  id="transfers">
             <span class="slider2 round"></span>
           </label>
-            <p>Transfers</p>
-        </div>
+                        <p class="option-title">Dropdown</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
+                        <p class="option-description">Speed up your navigation by adding additional options to your menus.</p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
-            <input type="checkbox" name="drop"  id="drop">
+                    <div class="sp_option">
+                        <label class="switch">
+            <input type="checkbox" name="del"  id="del">
             <span class="slider2 round"></span>
           </label>
-            <p>Dropdown</p>
-        </div>
+                        <p class="option-title">Delegation</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Delegate your Steem power at the click of a button without leaving your favourite Steem sites.</p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
-            <input type="checkbox" name="ben"  id="ben">
+                    <div class="sp_option">
+                        <label class="switch">
+            <input type="checkbox" name="transfers"  id="transfers">
             <span class="slider2 round"></span>
           </label>
-            <p>Beneficiaries</p>
-        </div>
+                        <p class="option-title">Transfers</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Access transfers quickly from a user's profile, no more going back to your wallet.</p>
+                    </div>
 
-        <div class="sp_option">
-          <label class="switch">
+                    <div class="sp_option">
+                        <label class="switch">
             <input type="checkbox" name="acc_v"  id="acc_v">
             <span class="slider2 round"></span>
           </label>
-            <p>Account Value</p>
+                        <p class="option-title">Account Value</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Know the true value of your account with real-time price data for your STEEM and SBD holdings.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-      <div id="powered">
+    <div id="powered">
+        <span class="switch-text">Quick Switcher</span>
         <div id="shortcuts">
-          <img src="/src/img/shortcuts/steemit.png" id="steemify"/><img src="/src/img/shortcuts/utopian.png" id="utopify"/><img src="/src/img/shortcuts/busy.png" id="busyfy"/><img src="/src/img/shortcuts/steemd.png" id="steemdify"/>
+            <img src="/src/img/platform-logos/steemit.png" id="steemify" /><img src="/src/img/platform-logos/utopian.png" id="utopify" /><img src="src/img/platform-logos/busy.png" id="busyfy" /><img src="/src/img/platform-logos/steemd.png" id="steemdify" />
         </div>
         <p>Powered by <b>Adsactly</b></p>
       </div>

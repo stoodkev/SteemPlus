@@ -8,7 +8,7 @@ var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
 
-$('#shortcuts').hide();
+$('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
 chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
@@ -23,7 +23,7 @@ chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem
       });
       sc2.me().then((mee)=> {
 
-        $('#shortcuts').show();
+        $('#shortcuts, .switch-text').show();
 
         me=mee.name;
         acc=mee.account;
@@ -34,16 +34,22 @@ chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem
       $('.id_user').html('@'+me);
       $('.id_user').attr('href','https://steemit.com/@'+me);
       $('.id_user').attr('target','_blank');
-      $('.rep_user').html(' ('+
+      $('.rep_user').html(' '+
         steem.formatter.reputation(acc.reputation)+
-        ')');
+        '');
       getVotingPower();
       });
-    }
-    else {
-      $('#disconnected').css('display','block');
-        $('#connected').css('display','none');
-        $('#before_connect').css('display','none');
+    } else {
+        if (items.onboarding == 'complete') {
+            $('#onboarding').css('display', 'none');
+            $('#disconnected').css('display', 'block');
+            $('#connected').css('display', 'none');
+            $('#before_connect').css('display', 'none');
+        } else {
+            $('#onboarding').css('display', 'block');
+            $('#before_connect').css('display', 'none');
+            $('#connected').css('display', 'none');
+        }
     }
     weight=items.weight;
     badge=items.badge==undefined?'2':items.badge;
@@ -247,18 +253,18 @@ function getVotingPower() {
             if (width >= vpow) {
                 clearInterval(id);
                 document.getElementById('bar').style.width = vpow + '%';
-                document.getElementById('bar').innerHTML = vpow + '% VP';
+                document.getElementById('vote-power-stat').innerHTML = vpow + '% VP';
             } else {
                 width++;
                 document.getElementById('bar').style.width = width + '%';
-                document.getElementById('bar').innerHTML = width + '%';
+                document.getElementById('vote-power-stat').innerHTML = width + '%';
             }
         }, 20);
     }
 
     else {
         document.getElementById('bar').style.width = vpow + '%';
-        document.getElementById('bar').innerHTML = vpow + '% VP';
+        document.getElementById('vote-power-stat').innerHTML = vpow + '% VP';
     }
 }
 
@@ -267,6 +273,65 @@ $('#shortcuts img').click(function(){
   chrome.runtime.sendMessage({command: command},
         function (response) {});
 });
+
+
+$('.menu').click(function () {
+  $('#main-description').hide();
+});
+
+$('.back_menu').click(function () {
+  $('#main-description, .info_user').show();
+ });
+
+$('#user-options').click(function () {  
+    $('.info_user').hide();
+    document.getElementById("logo").style.display = "none";
+});
+
+            //Oboarding Flow
+
+            var onBoardingID = 0
+
+            $('#onboard-forward').click(function () {
+
+                onboard(onBoardingID++)
+
+            });
+
+            $('#onboard-restart').click(function () {
+                onBoardingID = 0
+                setOnboardingScreen('Welcome to Steem+', 'Steem+ lets you take control of your feed, minnows can choose their voting weight and upvote posts in one click on both Steemit and Busy and there\'s more, let\'s show you a few...', 'src/img/onboarding/welcome.png', '#dot-1')
+                $('#onboard-restart').css('visibility', 'hidden');
+            });
+
+            function setOnboardingScreen(title, text, image, dot) {
+                $('.onboard-title').html(title);
+                $('.onboard-text').html(text);
+                $(".onboard-image").attr("src", image);
+                $("span").removeClass("progress-dot-active");
+                $(dot).addClass('progress-dot-active');
+                $('#onboard-restart').css('visibility', 'visible');
+            }
+
+            function onboard(onBoardingID) {
+                console.log(onBoardingID);
+                if (onBoardingID == 0) {
+                    setOnboardingScreen('Feed+', 'Search for what you want, how you want with advanced search options on Steemit.com', 'src/img/onboarding/plus.png', '#dot-2')
+                } else if (onBoardingID == 1) {
+                    setOnboardingScreen('Add New Features', 'Enhance your Steem experience with features such 1UP, Transfer, Delegate, True Value & Many More.  ', 'src/img/onboarding/extras.png', '#dot-3')
+                } else if (onBoardingID == 2) {
+                    setOnboardingScreen('Share the love', 'Share your post rewards with the authors you love, every time you use beneficaries you help Steem+ by rewarding us with 5%', 'src/img/onboarding/share.png', '#dot-4')
+                    onBoardingID == 3
+                } else if (onBoardingID == 3) {
+                    setOnboardingScreen('Switch easily', 'One click switching between Steemit, Busy.org, Steemit, Utopian.io and Steemd', 'src/img/onboarding/switch.png', '#dot-5')
+                } else {
+                    $('#onboarding').hide();
+                    $('#disconnected').show();
+                    chrome.storage.local.set({
+                        onboarding: 'complete'
+                    });
+                };
+            };
 
 // Upvote current url according to parameters
 function Upvote(){

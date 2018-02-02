@@ -36,11 +36,10 @@ function checkOneUp(){
     createOneUpButton();
   }
   else {
-    console.log('Wait');
     if(it<MAX_IT)
       setTimeout(checkOneUp, 1000);
   }
-}
+} 
 
 function getVotes(){
   console.log('Get votes from @',username);

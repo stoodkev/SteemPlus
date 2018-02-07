@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -23,14 +23,23 @@ chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem
       });
       sc2.me().then((mee)=> {
 
-        $('#shortcuts, .switch-text').show();
 
         me=mee.name;
         acc=mee.account;
         console.log(me,acc,mee);
-      $('#connected').css('display','block');
-      $('#disconnected').css('display','none');
-      $('#before_connect').css('display','none');
+      if (items.onboarding == 'complete') {
+        $('#connected').css('display','block');
+        $('#onboarding').css('display', 'none');
+        $('#disconnected').css('display','none');
+        $('#before_connect').css('display','none');
+        $('#shortcuts, .switch-text').show();
+      }
+      else {
+        $('#onboarding').css('display', 'block');
+        $('#before_connect').css('display', 'none');
+        $('#connected').css('display', 'none');
+        $('#disconnected').css('display', 'none');
+      }
       $('.id_user').html('@'+me);
       $('.id_user').attr('href','https://steemit.com/@'+me);
       $('.id_user').attr('target','_blank');
@@ -49,6 +58,7 @@ chrome.storage.local.get(['oneup','sessionToken','tokenExpire','weight','resteem
             $('#onboarding').css('display', 'block');
             $('#before_connect').css('display', 'none');
             $('#connected').css('display', 'none');
+            $('#disconnected').css('display', 'none');
         }
     }
     weight=items.weight;
@@ -259,7 +269,7 @@ function getVotingPower() {
                 document.getElementById('bar').style.width = width + '%';
                 document.getElementById('vote-power-stat').innerHTML = width + '%';
             }
-        }, 20);
+        }, 10);
     }
 
     else {
@@ -283,7 +293,7 @@ $('.back_menu').click(function () {
   $('#main-description, .info_user').show();
  });
 
-$('#user-options').click(function () {  
+$('#user-options').click(function () {
     $('.info_user').hide();
     document.getElementById("logo").style.display = "none";
 });
@@ -300,7 +310,7 @@ $('#user-options').click(function () {
 
             $('#onboard-restart').click(function () {
                 onBoardingID = 0
-                setOnboardingScreen('Welcome to Steem+', 'Steem+ lets you take control of your feed, minnows can choose their voting weight and upvote posts in one click on both Steemit and Busy and there\'s more, let\'s show you a few...', 'src/img/onboarding/welcome.png', '#dot-1')
+                setOnboardingScreen('Welcome to SteemPlus', 'SteemPlus lets you take control of your feed, choose your voting weight as minnow and much much more, let\'s take a tour of the features', 'src/img/onboarding/welcome.png', '#dot-1')
                 $('#onboard-restart').css('visibility', 'hidden');
             });
 
@@ -316,15 +326,18 @@ $('#user-options').click(function () {
             function onboard(onBoardingID) {
                 console.log(onBoardingID);
                 if (onBoardingID == 0) {
-                    setOnboardingScreen('Feed+', 'Search for what you want, how you want with advanced search options on Steemit.com', 'src/img/onboarding/plus.png', '#dot-2')
+                    setOnboardingScreen('Feed+', 'Search for the content that fits you, using advanced filters and sorting options.', 'src/img/onboarding/plus.png', '#dot-2')
                 } else if (onBoardingID == 1) {
-                    setOnboardingScreen('Add New Features', 'Enhance your Steem experience with features such 1UP, Transfer, Delegate, True Value & Many More.  ', 'src/img/onboarding/extras.png', '#dot-3')
+                    setOnboardingScreen('Add New Features', 'Enhance your Steem experience with new features such as Utopian-1UP (curation trail for Utopian), Direct Transfer, Delegation, True Account Value, STEEM/SBD price & much more.  ', 'src/img/onboarding/extras.png', '#dot-3')
                 } else if (onBoardingID == 2) {
-                    setOnboardingScreen('Share the love', 'Share your post rewards with the authors you love, every time you use beneficaries you help Steem+ by rewarding us with 5%', 'src/img/onboarding/share.png', '#dot-4')
+                    setOnboardingScreen('Share the love', 'Share your post rewards with the authors you love. Beneficiaries receive automatically a share of your post (specified by yourself) in Steem Power.', 'src/img/onboarding/share.png', '#dot-4')
                     onBoardingID == 3
                 } else if (onBoardingID == 3) {
-                    setOnboardingScreen('Switch easily', 'One click switching between Steemit, Busy.org, Steemit, Utopian.io and Steemd', 'src/img/onboarding/switch.png', '#dot-5')
-                } else {
+                    setOnboardingScreen('Switch easily', 'One click switch between Steemit, Busy.org, Steemit, Utopian.io and Steemd', 'src/img/onboarding/switch.png', '#dot-5')
+                }
+                else if (onBoardingID == 4) {
+                  setOnboardingScreen('Witness', 'You like this extension and want to support its development?<br/> Vote for his creator @stoodkev as a <a target="_blank" href="https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&amp;approve=1"> witness</a>!', 'src/img/onboarding/welcome.png', '#dot-6')
+              } else {
                     $('#onboarding').hide();
                     $('#disconnected').show();
                     chrome.storage.local.set({

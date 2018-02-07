@@ -39,7 +39,7 @@ function checkOneUp(){
     if(it<MAX_IT)
       setTimeout(checkOneUp, 1000);
   }
-} 
+}
 
 function getVotes(){
   console.log('Get votes from @',username);
@@ -76,7 +76,7 @@ function createOneUpButton(){
       $('.oneup').remove();
       $('.oneup_nb').remove();
     }
-    $(buttons).append('<img id="'+link+'" class="'+classOneUp+'" src="'+chrome.extension.getURL("src/img/oneup.svg")+'"/>');
+    $(buttons).append('<div class="oneup" id="'+link+'"><span class="icon icon-1up"></span></div>');
     getVoteNumber(buttons,link);
   }
 
@@ -112,7 +112,10 @@ function getVoteNumber(buttons,link)
     url: POST_API+'?where={"url":"'+link+'"}',
     success: function(msg) {
       if(msg.results.length!==0)
+      {
         $(buttons).append('<span class="Buttons__number oneup_nb">'+msg.results["0"].from_length+'</span>');
+        $(buttons).find($('.icon')).addClass('has-oneup');
+      }
     },
     error: function(msg) {
       console.log(msg.responseJSON.error);

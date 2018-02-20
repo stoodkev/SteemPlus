@@ -59,7 +59,7 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js",
+      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js", "vendor/underscore-min.js",
         "main.js",
         "src/js/loginSteemPlus.js",
         "src/js/delegate.js",
@@ -70,7 +70,8 @@
         "src/js/resteem.js",
         "src/js/feedplus.js",
         "src/js/transferTo.js",
-        "src/js/oneup.js"],
+        "src/js/oneup.js",
+        "src/js/postVoteList.js"],
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",
         "src/css/account_val.css",
@@ -80,7 +81,8 @@
         "src/css/feedplus.css",
         "src/css/loginSteemPlus.css",
         "src/css/transferTo.css",
-        "src/css/oneup.css"],
+        "src/css/oneup.css",
+        "src/css/steemit_more_info.css"],
       "permissions": [
         "activeTab",
         "storage",

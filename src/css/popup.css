@@ -264,6 +264,21 @@ overflow: hidden;}
     border-bottom: 0;
 }
 
+.sp_option_list_title{
+  padding-bottom: 0.5em;
+}
+
+.sp_option_list{
+  display: inline-block;
+  width: 100%;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid whitesmoke;
+  margin-left: 5%;
+  width: 95%;
+}
+
+
 .option-title {
     display: inline;
     margin-bottom: 2px;

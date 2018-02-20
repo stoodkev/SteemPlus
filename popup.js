@@ -2,7 +2,7 @@ document.getElementById('vote').addEventListener("click", Upvote);
 var weight;
 var vpow;
 var width=0;
-var badge,ben,feedp,del,drop,acc_v,transfers,oneup;
+var badge,ben,feedp,del,drop,acc_v,transfers,oneup,post_votes_list;
 var me,acc;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -70,6 +70,11 @@ chrome.storage.local.get(['onboarding','oneup','sessionToken','tokenExpire','wei
     transfers=items.transfers==undefined?'show':items.transfers;
     acc_v=items.acc_v==undefined?'show':items.acc_v;
     drop=items.drop==undefined?'show':items.drop;
+
+
+    steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
+    post_votes_list=items.post_votes_list==undefined?'show':items.post_votes_list;
+
     //console.log(items.resteem);
     if(weight!==undefined)
     {
@@ -85,6 +90,16 @@ chrome.storage.local.get(['onboarding','oneup','sessionToken','tokenExpire','wei
     $('input[name=acc_v]').prop('checked',acc_v=='show');
     $('input[name=oneup]').prop('checked',oneup=='show');
     $('input[name=transfers]').prop('checked',transfers=='show');
+
+    $('input[name=steemit_more_info]').prop('checked',steemit_more_info=='show');
+    $('input[name=post_votes_list]').prop('checked',post_votes_list=='show');
+
+    if(steemit_more_info=='hide')
+    {
+      $(".sp_option_list").each(function(){
+          $(this).hide();
+      });
+    }
 
     var x, i, j, selElmnt, a, b, c;
     /*look for any elements with the class "custom-select":*/
@@ -235,6 +250,35 @@ $(document).on("change","input[name=drop]",function(){
         drop:$("input[name=drop]").prop('checked')?'show':'hide'
     });
 });
+
+$(document).on("change","input[name=post_votes_list]",function(){
+
+    chrome.storage.local.set({
+        post_votes_list:$("input[name=post_votes_list]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=steemit_more_info]",function(){
+
+    chrome.storage.local.set({
+        steemit_more_info:$("input[name=steemit_more_info]").prop('checked')?'show':'hide'
+    });
+
+    if(!$("input[name=steemit_more_info]").prop('checked'))
+    {
+      $(".sp_option_list").each(function(){
+          $(this).hide();
+      });
+    }
+    else
+    {
+      $(".sp_option_list").each(function(){
+          $(this).show();
+      });
+    }
+});
+
+
 
 // Save all parameters locally before upvote
 function SaveParameters(){

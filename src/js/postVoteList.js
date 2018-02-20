@@ -15,8 +15,8 @@
     {
       token_post_vote_list=request.token;
       rewardBalance=request.data.rewardBalance;
- 	  recentClaims=request.data.recentClaims;
- 	  steemPrice=request.data.steemPrice;
+ 	    recentClaims=request.data.recentClaims;
+ 	    steemPrice=request.data.steemPrice;
 
       startPostVoteList();
     }
@@ -129,7 +129,7 @@ function addPostVoteList(votersList)
               newElCount++;
               voteEls.push(newEl);
             }
-            else
+            //else
             _.each(voteEls, function(voteEl) {
               voteEl.find('.vote-weight').text(votePercent + '%');
               voteEl.find('.vote-dollar').text('≈ ' + voteDollar.toFixed(2) + '$');

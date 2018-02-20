@@ -27,7 +27,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
     const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
     const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
     updateSteemPrice();
-  chrome.storage.local.get(['steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
@@ -52,6 +52,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
 
         const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
         const post_votes_list=(items.post_votes_list == undefined || items.post_votes_list=='show');
+        const vote_tab=(items.vote_tab == undefined || items.vote_tab=='show');
 
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
@@ -83,7 +84,11 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
         if (steemit_more_info) {
           if(steem&&post_votes_list)
             chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
+          if(steem&&vote_tab)
+            chrome.runtime.sendMessage({ token:token, to: 'vote_tab', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
         }
+
+        
         $(document).click(function(){
           setTimeout(function(){
             if(url!==window.location.href)

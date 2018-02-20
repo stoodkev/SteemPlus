@@ -17,7 +17,9 @@ function displayBadges(badge)
 {
   if($('.UserProfile__banner ').length!==0)
   {
-      getAccountData(getUsernameFromProfile()).then(function (result){
+    getAccountData(getUsernameFromProfile()).then(function (result){
+      if (result.length > 0)
+      {
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         const rank=getUserRank(vesting_shares);
         const badge_serie=badge==undefined?2:(badge=='show'?2:badge);
@@ -36,12 +38,14 @@ function displayBadges(badge)
           $('.wrapper ').first().children().first().insertBefore($('.wrapper'));
         }
         $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
-});
-}
+      }
+
+    });  
+  }
 }
 
 function getUserRank (vests) {
-  console.log('User vests: ',vests);
+  //console.log('User vests: ',vests);
     var rank = 'Plankton';
     if (vests >= 1000000000) {
         rank = 'Whale';

@@ -1,10 +1,137 @@
-.vote-weight, .vote-dollar{
-	padding: 0px !important;
- 	padding-top: 2px !important;
- 	padding-left: 5px !important;
- 	color:#376FA7 !important;
+.Voting__voters_list ul.VerticalMenu li span.vote-weight,
+.Voting__voters_list ul.VerticalMenu li span.vote-dollar {
+  padding: 0px;
+  padding-top: 2px;
+  padding-left: 5px;
+  color:#376FA7 !important;
 }
 
 .Voting__voters_list ul.VerticalMenu li {
     display: flex;
+}
+
+.votes-history-type {
+	margin-right: 0px !important;
+	margin-left: 0px !important;
+}
+
+.switch-field {
+  display: inline-block;
+  overflow: hidden;
+}
+.switch-title {
+  margin-bottom: 6px;
+}
+.switch-field input {
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  width: 1px;
+  border: 0;
+  overflow: hidden;
+}
+.switch-field label {
+  float: left;
+  display: inline-block;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  text-shadow: none;
+  padding: 0px 14px;
+  margin: 0px;
+  border: 1px solid rgba(0, 0, 0, 0.2);  
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition:    all 0.1s ease-in-out;
+  -ms-transition:     all 0.1s ease-in-out;
+  -o-transition:      all 0.1s ease-in-out;
+  transition:         all 0.1s ease-in-out;
+}
+.switch-field label:hover {
+  cursor: pointer;
+}
+.switch-field input:checked + label {
+  background-color: #1a5099;
+  color: white;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.switch-field label:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+.switch-field label:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+.UserProfile__tab_content_VotesTab {
+  padding-bottom: 60px;
+}
+.UserProfile__tab_content_VotesTab .VotesTab {
+  padding-bottom: 20px;
+}
+.UserProfile__tab_content_VotesTab .VotesTabLoadMore button {
+  background-color: transparent;
+  border-radius: 6px;
+  border: 1px solid rgb(220, 220, 220);
+  display: inline-block;
+  cursor: pointer;
+  color: rgb(119, 119, 119);
+  font-size: 17px;
+  padding: 10px 24px;
+  text-decoration: none;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote {
+  display: flex;
+  align-items: center;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .votes-container:not(.show-incoming) .vote.vote-incoming {
+  display: none;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .votes-container:not(.show-outgoing) .vote.vote-outgoing {
+  display: none;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .Userpic {
+  margin: 5px; 
+  border: solid 1px #cacaca;
+  min-width: 48px;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .vote-info {
+  flex-shrink: 10; 
+  max-width: calc(100% - 55px);
+  display: inline-block;
+  padding: 0px 10px; 
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .action {
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  display: block;
+  max-width: 100%;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .timeago {
+  white-space: nowrap;
+  padding: 0px;
+  color: #888;
+  display: inline-block;
+  font-size: 0.9em;
+  vertical-align: top;
+  margin-top: -5px;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .vote-weight {
+  white-space: nowrap;
+  padding-left: 20px;
+  color: #888;
+  display: inline-block;
+  font-size: 0.9em;
+  vertical-align: top;
+  margin-top: -5px;
+}
+.UserProfile__tab_content_VotesTab .VotesTab .vote .vote-dollar {
+}
+
+@media screen and (max-width: 500px) {
+  .UserProfile__tab_content_VotesTab .VotesTab .vote .smi-vote-permlink {
+    display: block;
+    margin-top: -7px;
+  }
 }

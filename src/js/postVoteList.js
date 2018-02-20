@@ -8,9 +8,6 @@
  var rewardBalance=null;
  var recentClaims=null;
  var steemPrice=null;
-
-
-
  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='post_votes_list'){
     aut=request.data.user;

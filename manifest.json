@@ -72,6 +72,7 @@
         "src/js/transferTo.js",
         "src/js/oneup.js",
         "src/js/postVoteList.js"],
+
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",
         "src/css/account_val.css",

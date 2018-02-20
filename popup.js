@@ -279,7 +279,6 @@ $(document).on("change","input[name=steemit_more_info]",function(){
 });
 
 
-
 // Save all parameters locally before upvote
 function SaveParameters(){
   if(document.getElementById('weight').value<0||document.getElementById('weight').value>100||document.getElementById('weight').value=='')

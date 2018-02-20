@@ -84,7 +84,6 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
           if(steem&&post_votes_list)
             chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
         }
-
         $(document).click(function(){
           setTimeout(function(){
             if(url!==window.location.href)

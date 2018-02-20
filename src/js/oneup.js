@@ -9,7 +9,7 @@ var post_voted=[];
 const POST_API="https://utopian-1up.herokuapp.com/parse/classes/Posts";
 const VOTE_API="https://utopian-1up.herokuapp.com/parse/classes/Votes";
 const APP_ID="efonwuhf7i2h4f72h3o8fho23fh7";
-
+var isVoting,isProcessingClick=false;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='oneup'&&request.order==='start'&&token_oneup==null){
       token_oneup=request.token;
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='oneup'&&request.order==='click'&&token_oneup==request.token){
       it=0;
       if(isReputationEnough(request.data.account))
-        setTimeout(function(){checkOneUp();},2000);
+        setTimeout(function(){isProcessingClick=true;checkOneUp();},2000);
     }
 });
 
@@ -81,23 +81,28 @@ function createOneUpButton(){
   }
 
   $('.oneup').click(function(){
-    var url=this.id;
-    $.ajax({
-      type: "POST",
-      beforeSend: function(xhttp) {
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-      },
-      url: VOTE_API,
-      data:JSON.stringify({"token":sToken,"url":url}),
-      processData: false,
-      success: function(msg) {
-        post_voted.push(url);
-      },
-      error: function(msg) {
-        alert(msg.responseJSON.error);
-      }
-    });
+    if(!isVoting){
+      var url=this.id;
+      isVoting=true;
+      $.ajax({
+        type: "POST",
+        beforeSend: function(xhttp) {
+          xhttp.setRequestHeader("Content-type", "application/json");
+          xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+        },
+        url: VOTE_API,
+        data:JSON.stringify({"token":sToken,"url":url}),
+        processData: false,
+        success: function(msg) {
+          post_voted.push(url);
+          isVoting=false;
+        },
+        error: function(msg) {
+          alert(msg.responseJSON.error);
+          isVoting=false;
+        }
+      });
+    }
   });
 }
 
@@ -115,10 +120,12 @@ function getVoteNumber(buttons,link)
       {
         $(buttons).append('<span class="Buttons__number oneup_nb">'+msg.results["0"].from_length+'</span>');
         $(buttons).find($('.icon')).addClass('has-oneup');
+        isProcessingClick=false;
       }
     },
     error: function(msg) {
       console.log(msg.responseJSON.error);
+      isProcessingClick=false;
     }
   });
 }

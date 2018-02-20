@@ -59,7 +59,8 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js", "vendor/underscore-min.js",
+      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js", "vendor/underscore-min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/chrome_addons.js", "vendor/moment.min.js",
+        "vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js",
         "main.js",
         "src/js/loginSteemPlus.js",
         "src/js/delegate.js",
@@ -71,7 +72,8 @@
         "src/js/feedplus.js",
         "src/js/transferTo.js",
         "src/js/oneup.js",
-        "src/js/postVoteList.js"],
+        "src/js/postVoteList.js",
+        "src/js/vote_tab.js"],
 
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",

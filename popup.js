@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -74,6 +74,7 @@ chrome.storage.local.get(['steemit_more_info','post_votes_list','onboarding','on
 
     steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
     post_votes_list=items.post_votes_list==undefined?'show':items.post_votes_list;
+    vote_tab=items.vote_tab==undefined?'show':items.vote_tab;
 
     //console.log(items.resteem);
     if(weight!==undefined)
@@ -93,6 +94,7 @@ chrome.storage.local.get(['steemit_more_info','post_votes_list','onboarding','on
 
     $('input[name=steemit_more_info]').prop('checked',steemit_more_info=='show');
     $('input[name=post_votes_list]').prop('checked',post_votes_list=='show');
+    $('input[name=vote_tab]').prop('checked',vote_tab=='show');
 
     if(steemit_more_info=='hide')
     {
@@ -255,6 +257,13 @@ $(document).on("change","input[name=post_votes_list]",function(){
 
     chrome.storage.local.set({
         post_votes_list:$("input[name=post_votes_list]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=vote_tab]",function(){
+
+    chrome.storage.local.set({
+        vote_tab:$("input[name=vote_tab]").prop('checked')?'show':'hide'
     });
 });
 

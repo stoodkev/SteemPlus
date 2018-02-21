@@ -1,3 +1,5 @@
+/* Vote list post */
+
 .Voting__voters_list ul.VerticalMenu li span.vote-weight,
 .Voting__voters_list ul.VerticalMenu li span.vote-dollar {
   padding: 0px;
@@ -9,6 +11,9 @@
 .Voting__voters_list ul.VerticalMenu li {
     display: flex;
 }
+
+
+/* vote tab */
 
 .votes-history-type {
 	margin-right: 0px !important;
@@ -133,5 +138,39 @@
   .UserProfile__tab_content_VotesTab .VotesTab .vote .smi-vote-permlink {
     display: block;
     margin-top: -7px;
+  }
+}
+
+/* External link tab */
+
+.UserProfile__top-nav .smi-external-links-menu .dropdown-pane > span {
+  padding-left: 15px;
+  font-weight: 600;
+  display: block;
+  padding-top: 3px;
+  font-size: 0.8em;
+}
+.UserProfile__top-nav .smi-external-links-menu .menu>li>a {
+  transition: none;
+  -webkit-transform: none;
+  transform: none;
+  padding: .7rem 1rem;
+  color: #333;
+  background-color: transparent;
+}
+.UserProfile__top-nav .smi-external-links-menu .VerticalMenu>li>a:hover {
+  background-color: #f0f0f0;
+}
+.UserProfile__top-nav .smi-external-links-menu .menu>li>a.active {
+  background-color: inherit;
+  color: inherit;
+  font-weight: inherit;
+}
+@media screen and (min-width: 40em) and (max-width: 1300px) {  
+  .UserProfile__top-menu {
+    position: relative;
+  }
+  .UserProfile__top-nav .smi-external-links-menu.not-me .dropdown-pane {
+    right: 0px;
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Created by quent on 02/09/2018.
+ * Created by quent on 02/09/2018..
  */
 
  var created_post_vote_list=false;

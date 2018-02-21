@@ -73,6 +73,7 @@
         "src/js/transferTo.js",
         "src/js/oneup.js",
         "src/js/postVoteList.js",
+        "src/js/external_link_tab.js",
         "src/js/vote_tab.js"],
 
       "css":["vendor/bootstrap.css",

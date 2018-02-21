@@ -74,7 +74,8 @@
         "src/js/oneup.js",
         "src/js/postVoteList.js",
         "src/js/external_link_tab.js",
-        "src/js/vote_tab.js"],
+        "src/js/vote_tab.js",
+        "src/js/search_bar.js"],
 
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",

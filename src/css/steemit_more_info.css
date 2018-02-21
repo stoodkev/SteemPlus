@@ -174,3 +174,47 @@
     right: 0px;
   }
 }
+
+
+/* Search Bar */
+
+
+html.smi-header-search .show-for-medium.Header__search > a {
+  display: none !important;
+}
+.smi-search-container {
+  display: flex;
+  padding-right: 14px;
+  margin-left: 20px;
+}
+.smi-search-container .smi-input-container {
+  display: inline-block;
+  width: 0px;
+  overflow: hidden;
+  transition: width 0.3s;
+}
+.smi-search-container.smi-search-open .smi-input-container {
+  width: 300px;
+}
+.smi-search-container .smi-search-button {
+  margin: auto 1px !important;
+}
+.smi-search-container .smi-search-result-container {
+  display: none;
+}
+.smi-search-container.smi-search-open .smi-search-result-container {
+  position: absolute;
+  display: block;
+  position: absolute;
+  height: 80vh;
+  width: 450px;
+  margin-left: -80px;
+  border: none;
+  box-shadow: 0 0 5px 0 #404040;
+  background: white;
+}
+.smi-search-result-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}

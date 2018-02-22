@@ -54,6 +54,16 @@
     href: function(username) { 
       return 'http://www.steemreports.com/top-voters/@' + username;
     }
+  }, {
+    title: 'Utopian',
+    href: function(username) { 
+      return 'https://utopian.io/@' + username;
+    }
+  }, {
+    title: 'Steemian Wit',
+    href: function(username) { 
+      return 'https://steemian.info/witnesses';
+    }
   }];
 
 

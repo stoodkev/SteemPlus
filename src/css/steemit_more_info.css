@@ -252,3 +252,9 @@ html.smi-header-search .show-for-medium.Header__search > a {
   vertical-align: top;
   margin-top: 8px;
 }
+
+.PostSummary__image {
+  height: 78px !important;
+  background-color: #fefefe !important;
+  background-size: cover !important;
+}

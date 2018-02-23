@@ -31,6 +31,8 @@
           $('.smi-search-container').removeClass('smi-search-open');
         });
         $('.show-for-large').find('form').remove();
+        $('.show-for-large').toggleClass('show-for-large');
+        $('.hide-for-large').remove();
       }
     }
   });

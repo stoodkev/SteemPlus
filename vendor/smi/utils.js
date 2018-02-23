@@ -7,6 +7,8 @@
   var pageAccountNameRegexp = /^\/@([a-z0-9\-\.]*)([\/\#].*)?$/;
   var domCheckTimeout = 100;
 
+  const noImageAvailable = "src/img/no-image-available-hi.png";
+
   var getPageAccountName = function() {
     var parseLocation = window.location.pathname.match(pageAccountNameRegexp);
     if(!parseLocation){
@@ -282,6 +284,8 @@
 
     var imgUrl = null;
     var imgUrl2 = null;
+    var displayedImageUrl = null;
+
     try{
       var json_metadata = (typeof post.json_metadata === 'object' ? post.json_metadata : JSON.parse(post.json_metadata));
       if(typeof json_metadata == 'string') {
@@ -319,6 +323,17 @@
           imgUrl2 = Array.from(rtags.images)[0];
     }
     
+    var hasImage = true;
+    if( (imgUrl === null || imgUrl === undefined ) && (imgUrl2 === null || imgUrl2 === undefined ) )
+    {
+      displayedImageUrl = chrome.extension.getURL(noImageAvailable);
+      hasImage = false;
+    }
+    else 
+    {
+      displayedImageUrl = ( imgUrl !== null && imgUrl !== undefined ) ? '\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\'' : '\'https://steemitimages.com/256x512/' + imgUrl2 + '\'';
+    }
+
 
     var date = moment(post.created + 'Z');
     if(!date.isValid()){
@@ -391,7 +406,7 @@
     </span>';
 
     var el = $('<li>\
-      <article class="PostSummary hentry' + (imgUrl ? ' with-image' : '') + '" itemscope="" itemtype="http://schema.org/blogPost">' +
+      <article class="PostSummary hentry' + (hasImage ? ' with-image' : '') + '" itemscope="" itemtype="http://schema.org/blogPost">' +
         (isRepost ? '<div class="PostSummary__reblogged_by">\
           <span class="Icon reblog" style="display: inline-block; width: 1.12rem; height: 1.12rem;">\
             <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg>\
@@ -406,7 +421,7 @@
         <div class="PostSummary__time_author_category_small show-for-small-only">\
           ' + vcard + '\
         </div>' + 
-        ( ( imgUrl !== null ) ? '<span name="imgUrl" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\');"></span>' : '<span name="imgUrl2" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/' + imgUrl2 + '\');"></span>') +
+        '<span name="imgUrl" class="PostSummary__image" style="background-image: url(' + displayedImageUrl + ');"></span>' +
         '<div class="PostSummary__content">\
           <div class="PostSummary__header show-for-medium">\
             <h3 class="entry-title">\

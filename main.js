@@ -94,7 +94,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
           if(steem&&search_bar)
             chrome.runtime.sendMessage({ token:token, to: 'search_bar', order: 'start',data:{}});
           if(steem&&mentions_tab)
-            chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{}});
+            chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
         }
 
         

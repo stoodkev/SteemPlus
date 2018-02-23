@@ -222,6 +222,11 @@ html.smi-header-search .show-for-medium.Header__search > a {
 
 /* Mentions tab */
 
+.mentions-type {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
 .UserProfile__tab_content_MentionsTab {
   padding-bottom: 60px;
 }

@@ -36,11 +36,11 @@
               Mentions\
               <div class="switch-field" style="margin-bottom: -4px; margin-left: 20px;">\
                 <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="0" checked/>\
-                <label for="mentions-type-posts">Posts</label>\
+                <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
                 <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="1" />\
-                <label for="mentions-type-comments">Comments</label>\
+                <label for="mentions-type-comments" class="mentions-type">Comments</label>\
                 <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="2" />\
-                <label for="mentions-type-both">Both</label>\
+                <label for="mentions-type-both" class="mentions-type">Both</label>\
               </div>\
               <div class="thanks-furion">\
                 Thanks <a href="/@furion" class="smi-navigate">@furion</a> for the SteemData API\
@@ -135,6 +135,7 @@
 
     var done = 0;
     var successCb = function(what, data){
+      console.log(what + ' => ' + data);
       done++;
       if(data){
         var buffer = info.buffer[what] || [];
@@ -164,14 +165,20 @@
         if(buffer.length >= index + 50){
           successCb(what, null);
         }else{
-          window.SMI_AJAX({
-            url: 'https://query.steemdata.com/' + what + '?where={"$text":{"$search":"\\"@' + name + '\\""}}&sort=-created&page=' + (from+1),
-            type: 'GET',
-            error: function(err){
-              //TODO: error
+
+          $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+              xhttp.setRequestHeader("Content-type", "application/json");
+              xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
             },
-            success: function(data) {
-              successCb(what, data);
+            url: 'https://query.steemdata.com/' + what + '?where={"$text":{"$search":"\\"@' + name + '\\""}}&sort=-created&page=' + (from+1),
+            success: function(msg) {
+              console.log(msg);
+              successCb(what, msg)
+            },
+            error: function(msg) {
+              alert(msg.responseJSON.error);
             }
           });
         }

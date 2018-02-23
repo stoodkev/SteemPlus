@@ -17,7 +17,9 @@
     "tabs",
     "http://*/*",
     "https://*/*",
-    "webNavigation"
+    "webNavigation",
+    "webRequest",
+    "webRequestBlocking"
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "commands": {
@@ -59,7 +61,7 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js", "vendor/underscore-min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/chrome_addons.js", "vendor/moment.min.js",
+      "js": ["vendor/jquery.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js", "vendor/underscore-min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js", "vendor/HtmlReady.js",
         "vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js",
         "main.js",
         "src/js/loginSteemPlus.js",
@@ -92,9 +94,7 @@
       "permissions": [
         "activeTab",
         "storage",
-        "tabs",
-        "webRequest",
-        "webRequestBlocking"
+        "tabs"
       ],
       "run_at": "document_idle"
     }

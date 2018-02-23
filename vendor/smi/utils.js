@@ -280,7 +280,8 @@
 
     url = (category ? `/${category}/` : '/') + url;
 
-    var imgUrl;
+    var imgUrl = null;
+    var imgUrl2 = null;
     try{
       var json_metadata = (typeof post.json_metadata === 'object' ? post.json_metadata : JSON.parse(post.json_metadata));
       if(typeof json_metadata == 'string') {
@@ -298,9 +299,26 @@
         var isHtml = /^<html>([\S\s]*)<\/html>$/.test(post.body)
         var htmlText = isHtml ? post.body : createPostSummary_remarkable.render(post.body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)'))
         var rtags = HtmlReady(htmlText, {mutate: false})
-
-        imgUrl = Array.from(rtags.images)[0] || null;
+        if(rtags.images == undefined || rtags.images === undefined )
+        {
+          var imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
+          var match = imgRegex.exec(post.body);
+          
+          if(match !== null)
+          {
+            imgUrl2 = match[1];
+          }
+          else
+          {
+            var mdRegex = /!\[.*\]\((.*)\)/g;
+            match = mdRegex.exec(post.body);
+            imgUrl2 = match[1];
+          }
+        } 
+        else
+          imgUrl2 = Array.from(rtags.images)[0];
     }
+    
 
     var date = moment(post.created + 'Z');
     if(!date.isValid()){
@@ -388,7 +406,7 @@
         <div class="PostSummary__time_author_category_small show-for-small-only">\
           ' + vcard + '\
         </div>' + 
-        (imgUrl ? '<span class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\');"></span>' : '') +
+        ( ( imgUrl !== null ) ? '<span name="imgUrl" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\');"></span>' : '<span name="imgUrl2" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/' + imgUrl2 + '\');"></span>') +
         '<div class="PostSummary__content">\
           <div class="PostSummary__header show-for-medium">\
             <h3 class="entry-title">\

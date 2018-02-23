@@ -9,24 +9,15 @@ var url=window.location.href;
 
 steem.api.setOptions({ url: 'https://api.steemit.com' });
 
-steem.api.getDynamicGlobalProperties( function(err,globalProp)
-{
+Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMedianHistoryPriceAsync(), steem.api.getRewardFundAsync("post")])
+.then(function(values) {
+  const totalSteem = Number(values["0"].total_vesting_fund_steem.split(' ')[0]);
+  const totalVests = Number(values["0"].total_vesting_shares.split(' ')[0]);
+  const rewardBalance = parseFloat(values["2"].reward_balance.replace(" STEEM", ""));
+  const recentClaims = values["2"].recent_claims;
+  const steemPrice = parseFloat(values["1"].base.replace(" SBD", "")) / parseFloat(values["1"].quote.replace(" STEEM", ""));
+  updateSteemPrice();
 
-  var rewardBalance, recentClaims, steemPrice =null;
-  steem.api.getRewardFund("post", function(e, t) {
-    rewardBalance = parseFloat(t.reward_balance.replace(" STEEM", ""));
-    recentClaims = t.recent_claims;
-
-    steem.api.getCurrentMedianHistoryPrice(function(e1, t1) {
-      steemPrice = parseFloat(t1.base.replace(" SBD", "")) / parseFloat(t1.quote.replace(" STEEM", ""));
-    });
-  });
-
-
-  console.log(err,globalProp);
-    const totalSteem = Number(globalProp.total_vesting_fund_steem.split(' ')[0]);
-    const totalVests = Number(globalProp.total_vesting_shares.split(' ')[0]);
-    updateSteemPrice();
   chrome.storage.local.get(['mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
@@ -97,7 +88,7 @@ steem.api.getDynamicGlobalProperties( function(err,globalProp)
             chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
         }
 
-        
+
         $(document).click(function(){
           setTimeout(function(){
             if(url!==window.location.href)
@@ -156,7 +147,6 @@ function getSteemPrice(){
   const priceSBD=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
   market={SBDperSteem:priceSteem/priceSBD,priceSteem:priceSteem*btc_price,priceSBD:priceSBD*btc_price};
   console.log(market);
-
 }
 
 function makeToken() {
@@ -165,6 +155,5 @@ function makeToken() {
 
   for (var i = 0; i < 10; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-
   return text;
 }

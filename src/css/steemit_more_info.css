@@ -46,7 +46,7 @@
   text-shadow: none;
   padding: 0px 14px;
   margin: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.2);  
+  border: 1px solid rgba(0, 0, 0, 0.2);
   -webkit-transition: all 0.1s ease-in-out;
   -moz-transition:    all 0.1s ease-in-out;
   -ms-transition:     all 0.1s ease-in-out;
@@ -96,20 +96,20 @@
   display: none;
 }
 .UserProfile__tab_content_VotesTab .VotesTab .vote .Userpic {
-  margin: 5px; 
+  margin: 5px;
   border: solid 1px #cacaca;
   min-width: 48px;
 }
 .UserProfile__tab_content_VotesTab .VotesTab .vote .vote-info {
-  flex-shrink: 10; 
+  flex-shrink: 10;
   max-width: calc(100% - 55px);
   display: inline-block;
-  padding: 0px 10px; 
+  padding: 0px 10px;
 }
 .UserProfile__tab_content_VotesTab .VotesTab .vote .action {
   white-space: nowrap;
-  overflow: hidden; 
-  text-overflow: ellipsis; 
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: block;
   max-width: 100%;
 }
@@ -166,7 +166,7 @@
   color: inherit;
   font-weight: inherit;
 }
-@media screen and (min-width: 40em) and (max-width: 1300px) {  
+@media screen and (min-width: 40em) and (max-width: 1300px) {
   .UserProfile__top-menu {
     position: relative;
   }
@@ -195,6 +195,17 @@ html.smi-header-search .show-for-medium.Header__search > a {
 }
 .smi-search-container.smi-search-open .smi-input-container {
   width: 300px;
+}
+@media screen and (max-width: 1200px) {
+  .smi-search-container.smi-search-open .smi-input-container {
+    width: 170px;
+  }
+}
+
+@media screen and (max-width: 1000px) and (min-width:840px) {
+  .smi-search-container.smi-search-open .smi-input-container {
+    margin-top:55px;
+  }
 }
 .smi-search-container .smi-search-button {
   margin: auto 1px !important;
@@ -260,7 +271,7 @@ html.smi-header-search .show-for-medium.Header__search > a {
 }
 
 
-/* Vote weight slider */ 
+/* Vote weight slider */
 
 #Voting__power {
   font-size: 0.6em;
@@ -288,4 +299,3 @@ span.after-downvote-total-dollar {
   font-weight: bold;
   font-style: normal;
 }
-  

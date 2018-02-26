@@ -22,12 +22,18 @@
         account=request.data.account;
 
 
-		window.addEventListener('voting-weight-change', tryUpdateVotingSlider, false);
+		$('body').on('click', 'span.Voting__button > a', function(){
+		    var votingButton = $(this);
+		    console.log('Voting button clicked: ', votingButton);
+		    setTimeout(function() {
+		    	tryUpdateVotingSlider();
+		    }, 1);
+		  });
 
-		
-		$('.Voting__button-up').click(function(){
-			tryUpdateVotingSlider();
-		});
+		$("body").on('DOMSubtreeModified', ".weight-display", function() {
+    		tryUpdateVotingSlider();
+  		});
+
 		
 		console.log('vote_weight_slider ready!');
       }

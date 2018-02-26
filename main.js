@@ -11,6 +11,7 @@ steem.api.setOptions({ url: 'https://api.steemit.com' });
 
 Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMedianHistoryPriceAsync(), steem.api.getRewardFundAsync("post")])
 .then(function(values) {
+  const votePowerReserveRate = values["0"].vote_power_reserve_rate;
   const totalSteem = Number(values["0"].total_vesting_fund_steem.split(' ')[0]);
   const totalVests = Number(values["0"].total_vesting_shares.split(' ')[0]);
   const rewardBalance = parseFloat(values["2"].reward_balance.replace(" STEEM", ""));
@@ -18,16 +19,18 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   const steemPrice = parseFloat(values["1"].base.replace(" SBD", "")) / parseFloat(values["1"].quote.replace(" STEEM", ""));
   updateSteemPrice();
 
-  chrome.storage.local.get(['mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
 
+    console.log('Connecting...');
     if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
       initializeSteemConnect(steemConnect.sessionToken);
       sc2.me().then((me)=> {
         console.log(me);
 
+        console.log('Getting settings...');
         const account=me.account;
         const user=me.name;
         const delegation=(items.del==undefined||items.del=="show");
@@ -47,6 +50,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const external_link_tab=(items.external_link_tab == undefined || items.external_link_tab=='show');
         const search_bar=(items.search_bar == undefined || items.search_bar=='show');
         const mentions_tab=(items.mentions_tab == undefined || items.mentions_tab=='show');
+        const vote_weight_slider=(items.vote_weight_slider == undefined || items.vote_weight_slider=='show');
 
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
@@ -57,7 +61,8 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
         var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
         var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
-				console.log(steemConnect);
+        
+        console.log('Starting features...');
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
         if(transfers&&(steemit||busy))
@@ -86,9 +91,11 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
             chrome.runtime.sendMessage({ token:token, to: 'search_bar', order: 'start',data:{}});
           if(steem&&mentions_tab)
             chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
+          if(steem&&vote_weight_slider)
+            chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate, account:account}});
         }
 
-
+        console.log('Features started...');
         $(document).click(function(){
           setTimeout(function(){
             if(url!==window.location.href)

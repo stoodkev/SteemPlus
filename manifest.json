@@ -78,7 +78,8 @@
         "src/js/external_link_tab.js",
         "src/js/vote_tab.js",
         "src/js/search_bar.js",
-        "src/js/mentions_tab.js"],
+        "src/js/mentions_tab.js",
+        "src/js/vote_weight_slider.js"],
 
       "css":["vendor/bootstrap.css",
         "src/css/delegate.css",

@@ -81,7 +81,7 @@
       totalVestingShares = parseFloat(t.total_vesting_shares.replace(" VESTS", ""));
     });
 
-    var loggedUserName = getLoggedUserName()
+    var loggedUserName = getLoggedUserName();
     if(loggedUserName){
       var _loggedUserName = loggedUserName;
       steem.api.getAccounts([loggedUserName], function(err, result){
@@ -95,8 +95,6 @@
     setTimeout(updateSteemVariables, 180 * 1000)
   }
   //updateSteemVariables();
-
-
 
   var getVotingDollarsPerShares = function(rshares) {
     if(rewardBalance && recentClaims && steemPrice){
@@ -144,15 +142,16 @@
   };
 
 
-  var getVotingDollarsPerAccount = function(voteWeight, account) {
+  var getVotingDollarsPerAccount = function(voteWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate) {
+
     if(!account){
       account = currentUserAccount;
     }
     if(!account){
       return;
     }
-    if(rewardBalance && recentClaims && steemPrice && votePowerReserveRate){
 
+    if(rewardBalance && recentClaims && steemPrice && votePowerReserveRate){
       var effective_vesting_shares = Math.round(getEffectiveVestingSharesPerAccount(account) * 1000000);
       var voting_power = account.voting_power;
       var weight = voteWeight * 100;
@@ -173,6 +172,7 @@
         * rewardBalance / recentClaims
         * steemPrice;
   
+
       return voteValue;
 
     }

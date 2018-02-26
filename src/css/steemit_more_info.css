@@ -258,3 +258,34 @@ html.smi-header-search .show-for-medium.Header__search > a {
   background-color: #fefefe !important;
   background-size: cover !important;
 }
+
+
+/* Vote weight slider */ 
+
+#Voting__power {
+  font-size: 0.6em;
+}
+
+.voting_weight_dollars {
+  position: absolute;
+  margin-left: 2rem;
+  margin-top: 10px;
+  width: 3rem;
+  float: left;
+  text-align: right;
+  color: #8a8a8a;
+  line-height: 2.6rem;
+}
+.Voting__adjust_weight_down .voting_weight_dollars {
+  margin-left: 0;
+  margin-top: 6px;
+}
+p.smi-vote-total {
+  padding-top: 20px;
+  font-style: italic;
+}
+span.after-downvote-total-dollar {
+  font-weight: bold;
+  font-style: normal;
+}
+  

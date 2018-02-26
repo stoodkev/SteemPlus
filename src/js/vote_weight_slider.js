@@ -89,7 +89,7 @@
       if(!voteTotal.length){
         voteTotal = $('<p class="smi-vote-total"></p>');
         flagInfo.prepend(voteTotal);
-        var html = 'After your downvote the total reward for <br> this ' + (isComment ? 'comment' : 'post') + ' will be: <span class="after-downvote-total-dollar">' + window.SteemMoreInfo.Utils.getLoadingHtml({
+        var html = 'After your downvote the total reward for <br> this ' + (isComment ? 'comment' : 'post') + ' will be: <span class="after-downvote-total-dollar">' + window.SteemPlus.Utils.getLoadingHtml({
           text: true,
           backgroundColor: '#8a8a8a'
         }) + '</span>';

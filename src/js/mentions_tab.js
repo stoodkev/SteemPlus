@@ -5,7 +5,6 @@
   var recentClaims=null;
   var steemPrice=null;
 
-
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='mentions_tab'){
       aut=request.data.user;

@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -78,6 +78,7 @@ chrome.storage.local.get(['mentions_tab','search_bar','external_link_tab','vote_
     external_link_tab=items.external_link_tab==undefined?'show':items.external_link_tab;
     search_bar=items.search_bar==undefined?'show':items.search_bar;
     mentions_tab=items.mentions_tab==undefined?'show':items.mentions_tab;
+    vote_weight_slider=items.vote_weight_slider==undefined?'show':items.vote_weight_slider;
 
     //console.log(items.resteem);
     if(weight!==undefined)
@@ -102,6 +103,7 @@ chrome.storage.local.get(['mentions_tab','search_bar','external_link_tab','vote_
     $('input[name=external_link_tab]').prop('checked',external_link_tab=='show');
     $('input[name=search_bar]').prop('checked',search_bar=='show');
     $('input[name=mentions_tab]').prop('checked',mentions_tab=='show');
+    $('input[name=vote_weight_slider]').prop('checked',vote_weight_slider=='show');
 
     // if steemit more info is not checked, hide all SMI options
     if(steemit_more_info=='hide')
@@ -293,6 +295,13 @@ $(document).on("change","input[name=mentions_tab]",function(){
 
     chrome.storage.local.set({
         mentions_tab:$("input[name=mentions_tab]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=vote_weight_slider]",function(){
+
+    chrome.storage.local.set({
+        vote_weight_slider:$("input[name=vote_weight_slider]").prop('checked')?'show':'hide'
     });
 });
 

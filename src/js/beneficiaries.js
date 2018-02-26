@@ -45,7 +45,7 @@ function addBeneficiariesButton(){
     var benef_button = document.createElement('input');
     benef_button.value = 'Add beneficiaries';
     benef_button.type='button';
-    benef_button.className = 'UserWallet__buysp button hollow benef';
+    benef_button.className = 'UserWallet__buysp button benef';
 
     benef_div.appendChild(benef_button);
     $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
@@ -55,7 +55,7 @@ function addBeneficiariesButton(){
         if($('.close').length===1) {
             $('.vframe__section--shrink button').hide();
             if($('.post').length===0) {
-                $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button hollow postbutton" value="Post"/></div></li>');
+                $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
                 $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
                 }
                 else

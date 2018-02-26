@@ -133,7 +133,7 @@
     return effective_vesting_shares;
   };
 
-  var getSteemPowerPerAccount = function(account) {
+  var getSteemPowerPerAccount = function(account, totalVestingFund, totalVestingShares) {
     if(totalVestingFund && totalVestingShares){
       var vesting_shares = getEffectiveVestingSharesPerAccount(account);
       var sp = steem.formatter.vestToSteem(vesting_shares, totalVestingShares, totalVestingFund);
@@ -574,11 +574,15 @@
 
 
   var findReact = function(dom) {
+    console.log(dom);
     for (var key in dom) {
         if (key.startsWith("__reactInternalInstance$")) {
             var compInternals = dom[key]._currentElement;
+            console.log(compInternals);
             var compWrapper = compInternals._owner;
+            console.log(compWrapper);
             var comp = compWrapper._instance;
+            console.log(comp);
             return comp;
         }
     }

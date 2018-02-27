@@ -28,12 +28,12 @@
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
         
-
         $(window).on('changestate', function(e) {
           setTimeout(function() {
             checkForFollowerPage();
           }, 100);
         });
+
 
         checkForFollowerPage();
 
@@ -41,6 +41,89 @@
       console.log('Followers table ready!');
     }
   });
+
+  function getFollowingList(username, lastFollowing, followingList, userList)
+  {
+
+      sendGetFollowingRequest(username, lastFollowing).then(function(result){
+        lastFollowing = result[result.length-1].following;
+        
+        if(result.length < 100){
+          if(followingList.length > 0){
+            result.shift();
+          }
+          result.forEach(function(element){
+            followingList.push(element);
+          });
+          checkFollowersTable(followingList, name, false, userList);
+          return;
+        }
+        if(followingList.length > 0)
+          result.shift();
+
+        result.forEach(function(element){
+          followingList.push(element);
+        });
+        getFollowingList(username, lastFollowing, followingList, userList);
+        
+      });
+  }
+
+  function getFollowersList(username, lastFollower, followersList, userList)
+  {
+      sendGetFollowersRequest(username, lastFollower).then(function(result){
+        lastFollower = result[result.length-1].follower;
+        if(result.length < 100){
+          if(followersList.length > 0){
+            result.shift();
+          }
+          result.forEach(function(element){
+            followersList.push(element);
+          });
+          checkFollowersTable(followersList, name, true, userList);
+          return;
+        }
+        if(followersList.length > 0)
+          result.shift();
+
+        result.forEach(function(element){
+          followersList.push(element);
+        });
+        getFollowersList(username, lastFollower, followersList, userList);
+        
+      });
+  }
+
+
+  function sendGetFollowingRequest(username, lastFollowing)
+  {
+    return new Promise (function(resolve,reject){
+      steem.api.getFollowing(username, lastFollowing, 'blog', 100, function(err, response){
+        console.log(err);
+        resolve(response);
+      });
+    });
+  }
+
+  function sendGetFollowersRequest(username, lastFollower)
+  {
+    return new Promise (function(resolve,reject){
+      steem.api.getFollowers(username, lastFollower, 'blog', 100, function(err, response){
+        console.log(err);
+        resolve(response);
+      });
+    });
+  }
+
+  function sendGetFollowCount(username)
+  {
+    return new Promise (function(resolve,rejectas){
+      steem.api.getFollowCount(username, function(err, response){
+        console.log(err);
+        resolve(response);
+      });
+    });
+  }
 
   function getFollowersAccounts(names, callback) {
     var chunks = _.chunk(names, 100);
@@ -73,6 +156,7 @@
               <th aria-label="Reputation: activate to sort column ascending">Reputation</th>\
               <th aria-label="STEEM Power: activate to sort column ascending">STEEM Power</th>\
               <th aria-label="Upvote Worth: activate to sort column ascending">Upvote Worth</th>\
+              <th aria-label="Actions: activate to sort column ascending">Actions</th>\
               <!-- <th aria-label="' + (isFollowers ? 'Follower': 'Following') + ' Since: activate to sort column ascending">' + (isFollowers ? 'Follower': 'Following') + ' Since</th> -->\
             </tr>\
           </thead>\
@@ -81,10 +165,7 @@
       </div>\
     </div>');
 
-
-    console.log(window.SteemPlus.Utils.findReact(userList[0]));
-
-    var followersNames = window.SteemPlus.Utils.findReact(userList[0]).props.users.toArray().sort();
+    var followersNames = getName(userList, isFollowers);
 
     var tableIdForDataTableStorage = 'DataTables_' + (isFollowers ? 'Follower': 'Following') + '_Table';
 
@@ -143,6 +224,12 @@
           return type === 'display' ?
             '$ ' + dollars.toFixed(2) :
             dollars;
+        }
+      }, {
+        // username
+        render: function ( data, type, row, meta ) {
+          return type === 'display' ?
+            "test":"test";
         }
       }],
       rowId: 'name',
@@ -204,17 +291,20 @@
 
 
 
-  function checkFollowersTable(userList, name, isFollowers) {
+  function checkFollowersTable(followList, name, isFollowers, userList) {
     if(!userList.length){      
       return false;
     }
-    if(userList.hasClass('smi-followers-table-added')){
-      console.log('followers table already added');
-      return true;
-    }
+    // if(userList.hasClass('smi-followers-table-added')){
+    //   console.log('followers table already added');
+    //   return true;
+    // }
     
-    userList.prepend(createFollowersTable(name, isFollowers, userList));
+    var result = createFollowersTable(name, isFollowers, followList);
+    console.log(result);
+    userList.prepend(result);
     userList.addClass('smi-followers-table-added');
+    userList.children('.row').css('display', 'none');
     console.log('followers table added');
     return true;
   };
@@ -226,17 +316,30 @@
     var match = (window.location.pathname || '').match(followerPageRegexp);
     if(match) {
       var name = match[1];
-      console.log(name);
       var isFollowers = match[2] === 'followers';
       var userList = $('.UserList');
-      var added = checkFollowersTable(userList, name, isFollowers);
-      if(added){
-        userList.children('.row').css('display', 'none');
-      }else{
-        // histogram UI not added, try again later
-        setTimeout(checkForFollowerPage, 100);
+      if(isFollowers)
+      {
+        getFollowersList(name, 0, [], userList);
       }
+      else
+      {
+        getFollowingList(name, 0, [], userList);
+      }
+
     }
+  };
+
+  function getName(list, isFollowers)
+  {
+    var names = [];
+    list.forEach(function(element){
+      if(isFollowers)
+        names.push(element.follower);
+      else
+        names.push(element.following);
+    });
+    return names;
   };
 
   

@@ -298,3 +298,30 @@ span.after-downvote-total-dollar {
   font-weight: bold;
   font-style: normal;
 }
+<<<<<<< HEAD
+=======
+
+
+/* Follower Following */
+
+.smi-followers-table-wrapper .dataTables_length select {
+  width: 100px;
+  display: inline-block;
+}
+.smi-followers-table-wrapper .dataTables_filter input {
+  width: 200px;
+  display: inline-block;
+}
+.smi-followers-table-wrapper .dataTables_length,
+.smi-followers-table-wrapper .dataTables_filter {
+  padding-bottom: 10px;
+}
+.smi-followers-table-wrapper .Userpic {
+  margin: 0px;
+  margin-right: 10px;
+  border: solid 1px #cacaca;
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+}
+>>>>>>> sp/master

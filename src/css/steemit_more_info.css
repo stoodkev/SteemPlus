@@ -178,7 +178,6 @@
 
 /* Search Bar */
 
-
 html.smi-header-search .show-for-medium.Header__search > a {
   display: none !important;
 }
@@ -194,7 +193,7 @@ html.smi-header-search .show-for-medium.Header__search > a {
   transition: width 0.3s;
 }
 .smi-search-container.smi-search-open .smi-input-container {
-  width: 300px;
+  width: 20%;
 }
 @media screen and (max-width: 1200px) {
   .smi-search-container.smi-search-open .smi-input-container {

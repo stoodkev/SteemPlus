@@ -10,7 +10,6 @@
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_weight_slider'){
-      console.log('Starting vote_weight_slider...');
       aut=request.data.user;
       if(request.order==='start'&&token_vote_weight_slider==null)
       {
@@ -22,20 +21,16 @@
         account=request.data.account;
 
 
-		$('body').on('click', 'span.Voting__button > a', function(){
-		    var votingButton = $(this);
-		    console.log('Voting button clicked: ', votingButton);
-		    setTimeout(function() {
-		    	tryUpdateVotingSlider();
-		    }, 1);
-		  });
+  		  $('body').on('click', 'span.Voting__button > a', function(){
+  		    var votingButton = $(this);
+  		    setTimeout(function() {
+  		    	tryUpdateVotingSlider();
+  		    }, 1);
+  		  });
 
-		$("body").on('DOMSubtreeModified', ".weight-display", function() {
-    		tryUpdateVotingSlider();
-  		});
-
-
-		console.log('vote_weight_slider ready!');
+  		  $("body").on('DOMSubtreeModified', ".weight-display", function() {
+      		tryUpdateVotingSlider();
+    		});
       }
     }
   });

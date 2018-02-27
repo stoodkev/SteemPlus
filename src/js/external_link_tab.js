@@ -64,6 +64,11 @@
     href: function(username) { 
       return 'https://steemian.info/witnesses';
     }
+  }, {
+    title: 'Steem Bot Tracker',
+    href: function(username) { 
+      return 'https://steembottracker.com';
+    }
   }];
 
 

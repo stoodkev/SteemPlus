@@ -133,7 +133,7 @@ function initializeSteemConnect(sessionToken){
     app: 'steem-plus',
     callbackURL: 'https://steemit.com/@stoodkev',
     accessToken: sessionToken,
-    scope: ['vote', 'comment','comment_options','custom_json	']
+    scope: ['vote', 'comment','comment_options','custom_json']
   });
 }
 

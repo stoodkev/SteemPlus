@@ -62,7 +62,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
         var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
         var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
-        
+
         console.log('Starting features...');
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
@@ -113,6 +113,8 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
                 chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
+              if(rank&&followers_table)
+                chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
               url=window.location.href;
             }
             if(oneup&&utopian)
@@ -131,7 +133,7 @@ function initializeSteemConnect(sessionToken){
     app: 'steem-plus',
     callbackURL: 'https://steemit.com/@stoodkev',
     accessToken: sessionToken,
-    scope: ['vote', 'comment','comment_options']
+    scope: ['vote', 'comment','comment_options','custom_json	']
   });
 }
 

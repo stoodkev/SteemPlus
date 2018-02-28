@@ -19,7 +19,7 @@ chrome.storage.local.get(['followers_table','vote_weight_slider','mentions_tab',
         app: 'steem-plus',
         callbackURL: 'https://steemit.com/@stoodkev',
         accessToken: steemConnect.sessionToken,
-        scope: ['vote', 'comment','comment_options']
+        scope: ['vote', 'comment','comment_options, custom_json']
       });
       sc2.me().then((mee)=> {
 

@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           });
         }
         else {
-          var loginURL="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri="+uri_login+"&scope=vote,comment,comment_options&state=";
+          var loginURL="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri="+uri_login+"&scope=vote,comment,custom_json,comment_options&state=";
           loginURL+=window.location.href;
           var loginIcon=$('<a></a>').append($('<img/>').attr('class',classbutton));
         }

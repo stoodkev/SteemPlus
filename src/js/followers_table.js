@@ -102,7 +102,7 @@
   {
     return new Promise (function(resolve,reject){
       steem.api.getFollowing(username, lastFollowing, 'blog', 100, function(err, response){
-        console.log(err);
+        // console.log(err);
         resolve(response);
       });
     });
@@ -112,7 +112,7 @@
   {
     return new Promise (function(resolve,reject){
       steem.api.getFollowers(username, lastFollower, 'blog', 100, function(err, response){
-        console.log(err);
+        // console.log(err);
         resolve(response);
       });
     });
@@ -122,7 +122,7 @@
   {
     return new Promise (function(resolve,rejectas){
       steem.api.getFollowCount(username, function(err, response){
-        console.log(err);
+        // console.log(err);
         resolve(response);
       });
     });
@@ -234,11 +234,11 @@
 
         render: function ( data, type, row, meta ) {
           if (type === 'display' && row.accountName === row.pageName && !row.isFollowers)
-            return '<label class="button slim hollow primary unfollowLink" name="' + row.name + '">Unfollow</label>';
+            return '<label class="button slim hollow primary unfollowLink" id="' + row.name + '">Unfollow</label>';
           else if(type === 'display' && row.accountName === row.pageName && row.isFollowers && !row.followedHim)
-            return '<label class="button slim hollow primary followLink" name="' + row.name + '">Follow</label>';
+            return '<label class="button slim hollow primary followLink" id="' + row.name + '">Follow</label>';
           else if(type === 'display' && row.accountName === row.pageName && row.isFollowers && row.followedHim)
-            return '<label class="button slim hollow primary unfollowLink" name="' + row.name + '">Unfollow</label>';          
+            return '<label class="button slim hollow primary unfollowLink" id="' + row.name + '">Unfollow</label>';          
           else
             return '';
         }
@@ -310,19 +310,33 @@
         });
 
 
-      dataTable.rows().invalidate().draw();
-      
-      $('.unfollowLink').click(function(){
-        sc2.unfollow(myaccount.name, $(this)[0].name, function (err, res) {
-          console.log(err, res)
+        dataTable.rows().invalidate().draw();
+        
+        $('.unfollowLink').click(function(event){
+          var btn = $(this)[0];
+          sc2.unfollow(myaccount.name, btn.id, function (err, res) {
+            if(err===null)
+            {
+              console.log('Unfollowed!!');
+              $('#'+btn.id).addClass("followLink");
+              $('#'+btn.id).removeClass("unfollowLink");
+              $('#'+btn.id).innerHTML = 'Follow';
+            }
+          });
         });
-      });
 
-      $('.followLink').click(function(){
-        sc2.unfollow(myaccount.name, $(this)[0].name, function (err, res) {
-          console.log(err, res)
+        $('.followLink').click(function(event){
+          var btn = $(this)[0];
+          sc2.follow(myaccount.name, btn.id, function (err, res) {
+            if(err===null)
+            {
+              console.log('Followed!!');
+              $('#'+btn.id).removeClass("followLink");
+              $('#'+btn.id).addClass("unfollowLink");
+              $('#'+btn.id).innerHTML = 'Unfollow';
+            }
+          });
         });
-      });
       });
     });
 

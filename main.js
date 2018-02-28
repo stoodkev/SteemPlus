@@ -113,6 +113,8 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
                 chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
+              if(rank&&followers_table)
+                chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
               url=window.location.href;
             }
             if(oneup&&utopian)

@@ -9,7 +9,9 @@
   var votePowerReserveRate=null;
   var totalVestingFund=null;
   var totalVestingShares=null;
-  var account=null;
+  var myaccount=null;
+
+  var currentPage=null;
 
   var followerPageRegexp = /\/@([a-z0-9\-\.]*)\/(followers|followed)$/;
 
@@ -24,19 +26,20 @@
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
-        account=request.data.account;
+        myaccount=request.data.account;
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
         
-        $(window).on('changestate', function(e) {
-          setTimeout(function() {
-            checkForFollowerPage();
-          }, 100);
-        });
-
 
         checkForFollowerPage();
 
+      }
+      if(request.order==='click')
+      {
+        var match = (window.location.pathname || '').match(followerPageRegexp);
+        if(match && match[2] !== currentPage) {
+           checkForFollowerPage();
+        }
       }
       console.log('Followers table ready!');
     }
@@ -55,7 +58,7 @@
           result.forEach(function(element){
             followingList.push(element);
           });
-          checkFollowersTable(followingList, name, false, userList);
+          checkFollowersTable(followingList, username, false, userList);
           return;
         }
         if(followingList.length > 0)
@@ -80,7 +83,7 @@
           result.forEach(function(element){
             followersList.push(element);
           });
-          checkFollowersTable(followersList, name, true, userList);
+          checkFollowersTable(followersList, username, true, userList);
           return;
         }
         if(followersList.length > 0)
@@ -129,7 +132,7 @@
     var chunks = _.chunk(names, 100);
 
     _.each(chunks, function(chunk, index) {
-      console.log('getting accounts at ' + index);
+      // console.log('getting accounts at ' + index);
       window.SteemPlus.Utils.getAccounts(chunk, function(err, accounts){
         if(err){
           callback(err);
@@ -144,7 +147,7 @@
 
   }
 
-  var createFollowersTable = function(name, isFollowers, userList) {
+  var createFollowersTable = function(username, isFollowers, userList) {
     var container = $('<div class="smi-followers-table-container">\
       <h3>' + (isFollowers ? 'Followers' : 'Followed') + '</h3>' + 
       (createAlertApi() || '') +
@@ -227,9 +230,17 @@
         }
       }, {
         // username
+        row:['name','isFollowers','accountName', 'pageName'],
+
         render: function ( data, type, row, meta ) {
-          return type === 'display' ?
-            "test":"test";
+          if (type === 'display' && row.accountName === row.pageName && !row.isFollowers)
+            return '<label class="button slim hollow primary unfollowLink" name="' + row.name + '">Unfollow</label>';
+          else if(type === 'display' && row.accountName === row.pageName && row.isFollowers && !row.followedHim)
+            return '<label class="button slim hollow primary followLink" name="' + row.name + '">Follow</label>';
+          else if(type === 'display' && row.accountName === row.pageName && row.isFollowers && row.followedHim)
+            return '<label class="button slim hollow primary unfollowLink" name="' + row.name + '">Unfollow</label>';          
+          else
+            return '';
         }
       }],
       rowId: 'name',
@@ -263,7 +274,10 @@
     followersNames.forEach(function(followerName) {
       var data = {
         name: followerName,
-        reputation: null
+        reputation: null,
+        isFollowers: isFollowers,
+        accountName: myaccount.name,
+        pageName: username
       };
       dataTable.row.add(data);
     });
@@ -275,15 +289,44 @@
       if(err2){
         return;
       }
-      console.log('Account ' + name + ' followers: ', followers);
-      followers.forEach(function(follower) {
-        follower.loaded = true;
-        dataTable
-          .row( '#' + follower.name )
-          .data( follower );
-      });
+
+      getFollowingListName(username, 0, [], function(err, myFollowersList){
+        
+        followers.forEach(function(follower) {
+          follower.loaded = true;
+          follower.isFollowers = isFollowers;
+          follower.accountName = myaccount.name;
+          follower.pageName = username;
+
+          if(isFollowers)
+          {
+            var myFollowersNames = getName(myFollowersList, false);
+            follower.followedHim = myFollowersNames.includes(follower.name);
+          }
+
+          dataTable
+            .row( '#' + follower.name )
+            .data( follower );
+        });
+
+
       dataTable.rows().invalidate().draw();
+      
+      $('.unfollowLink').click(function(){
+        sc2.unfollow(myaccount.name, $(this)[0].name, function (err, res) {
+          console.log(err, res)
+        });
+      });
+
+      $('.followLink').click(function(){
+        sc2.unfollow(myaccount.name, $(this)[0].name, function (err, res) {
+          console.log(err, res)
+        });
+      });
+      });
     });
+
+    
     
 
     return container;
@@ -295,17 +338,11 @@
     if(!userList.length){      
       return false;
     }
-    // if(userList.hasClass('smi-followers-table-added')){
-    //   console.log('followers table already added');
-    //   return true;
-    // }
     
     var result = createFollowersTable(name, isFollowers, followList);
-    console.log(result);
     userList.prepend(result);
     userList.addClass('smi-followers-table-added');
     userList.children('.row').css('display', 'none');
-    console.log('followers table added');
     return true;
   };
 
@@ -317,6 +354,7 @@
     if(match) {
       var name = match[1];
       var isFollowers = match[2] === 'followers';
+      currentPage = match[2];
       var userList = $('.UserList');
       if(isFollowers)
       {
@@ -343,3 +381,29 @@
   };
 
   
+function getFollowingListName(username, lastFollowing, followingList, callback)
+{
+
+  sendGetFollowingRequest(username, lastFollowing).then(function(result){
+    lastFollowing = result[result.length-1].following;
+    
+    if(result.length < 100){
+      if(followingList.length > 0){
+        result.shift();
+      }
+      result.forEach(function(element){
+        followingList.push(element);
+      });
+      callback(null, followingList);
+      return;
+    }
+    if(followingList.length > 0)
+      result.shift();
+
+    result.forEach(function(element){
+      followingList.push(element);
+    });
+    getFollowingListName(username, lastFollowing, followingList, callback);
+    
+  });
+}

@@ -3,9 +3,25 @@
   var aut=null;
   
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
     if(request.to=='boost_button'){
       aut=request.data.user;
       if(request.order==='start'&&token_boost_button==null)
+      {
+        token_boost_button=request.token;
+
+        // $('body').attrchange(function(attrName) {
+        //   if(attrName === 'class'){
+        //     if($('body').hasClass('with-post-overlay')) {
+        //       addPostBoostButton();
+        //     }
+        //   }
+        // });
+
+        addPostBoostButton();
+      }
+
+      if(request.order==='click')
       {
         token_boost_button=request.token;
 

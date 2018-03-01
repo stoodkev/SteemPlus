@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -80,6 +80,8 @@ chrome.storage.local.get(['followers_table','vote_weight_slider','mentions_tab',
     mentions_tab=items.mentions_tab==undefined?'show':items.mentions_tab;
     vote_weight_slider=items.vote_weight_slider==undefined?'show':items.vote_weight_slider;
     followers_table=items.followers_table==undefined?'show':items.followers_table;
+    boost_button=items.boost_button==undefined?'show':items.boost_button;
+    gif_picker=items.gif_picker==undefined?'show':items.gif_picker;
 
     //console.log(items.resteem);
     if(weight!==undefined)
@@ -106,6 +108,8 @@ chrome.storage.local.get(['followers_table','vote_weight_slider','mentions_tab',
     $('input[name=mentions_tab]').prop('checked',mentions_tab=='show');
     $('input[name=vote_weight_slider]').prop('checked',vote_weight_slider=='show');
     $('input[name=followers_table]').prop('checked',followers_table=='show');
+    $('input[name=boost_button]').prop('checked',boost_button=='show');
+    $('input[name=gif_picker]').prop('checked',gif_picker=='show');
 
     // if steemit more info is not checked, hide all SMI options
     if(steemit_more_info=='hide')
@@ -311,6 +315,20 @@ $(document).on("change","input[name=followers_table]",function(){
 
     chrome.storage.local.set({
         followers_table:$("input[name=followers_table]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=boost_button]",function(){
+
+    chrome.storage.local.set({
+        boost_button:$("input[name=boost_button]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=gif_picker]",function(){
+
+    chrome.storage.local.set({
+        gif_picker:$("input[name=gif_picker]").prop('checked')?'show':'hide'
     });
 });
 

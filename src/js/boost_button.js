@@ -1,7 +1,7 @@
 
   var token_boost_button=null;
   var aut=null;
-  
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='boost_button'){
       aut=request.data.user;
@@ -72,7 +72,6 @@
       var accountInfoUI = '<div class="column small-12">\
         <strong>About the author: <a href="/@' + author + '" target="_blank" rel="noopener">@' + author + '</a></strong><br>\
         <small>Daily Limit: ' + parseFloat(accountInfo.user_daily_usage).toFixed(2) + ' / ' + parseFloat(globalInfo.daily_limit).toFixed(2) + ' SBD</small> <br>\
-        <small>Weekly Limit: ' + parseFloat(accountInfo.user_weekly_usage).toFixed(2) + ' / ' + parseFloat(globalInfo.weekly_limit).toFixed(2) + ' SBD</small> <br>\
       </div>';
 
       if(alreadyBoosted) {
@@ -86,7 +85,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@armandocat" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -114,7 +113,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@armandocat" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -140,7 +139,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@armandocat" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -170,7 +169,7 @@
             <div>\
               <div class="row">\
                 <div class="column small-12">\
-                The boost functionality is provided by <a href="/@armandocat" target="_blank" rel="noopener">@armandocat</a>\
+                The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
                 with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
                 We don\'t have access to your private key, and the payment is made through SteemConnect.\
                 <br>\
@@ -243,7 +242,7 @@
             transferUI.find('button[type="submit"]').attr('disabled', 'disabled');
             transferUI.find('.amount-upvote').html('');
           }else{
-            transferUI.find('.amount-error').css('color', '#333');        
+            transferUI.find('.amount-error').css('color', '#333');
             transferUI.find('button[type="submit"]').attr('disabled', null);
             var upvote = amount * multiplier;
             transferUI.find('.amount-upvote').html('<small>You will receive an upvote worth ~' + upvote.toFixed(2) + '$</small>');
@@ -273,7 +272,7 @@
         validate();
 
       }
-      
+
       loading.remove();
       modal.find('.reveal').append(transferUI);
 
@@ -368,12 +367,8 @@
         var author = match[2];
         var permlink = match[3];
         createTransferUI(category, author, permlink);
-      });      
+      });
 
     }
 
   };
-
-
-
-  

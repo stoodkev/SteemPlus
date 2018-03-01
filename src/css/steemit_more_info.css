@@ -298,8 +298,6 @@ span.after-downvote-total-dollar {
   font-weight: bold;
   font-style: normal;
 }
-<<<<<<< HEAD
-=======
 
 
 /* Follower Following */
@@ -324,4 +322,6 @@ span.after-downvote-total-dollar {
   width: 32px;
   height: 32px;
 }
->>>>>>> sp/master
+.dtff{
+  width: 100% !important;
+}

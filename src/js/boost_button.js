@@ -85,7 +85,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@steem-plus</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -113,7 +113,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@steem-plus</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -139,7 +139,7 @@
           <div>\
             <div class="row">\
               <div class="column small-12">\
-              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
+              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@steem-plus</a>\
               with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
               We don\'t have access to your private key, and the payment is made through SteemConnect.\
               <br>\
@@ -169,7 +169,7 @@
             <div>\
               <div class="row">\
                 <div class="column small-12">\
-                The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@armandocat</a>\
+                The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@steem-plus</a>\
                 with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
                 We don\'t have access to your private key, and the payment is made through SteemConnect.\
                 <br>\

@@ -76,7 +76,7 @@
   {
       sendGetFollowersRequest(username, lastFollower).then(function(result){
         lastFollower = result[result.length-1].follower;
-        if(result.length < 100){
+        if(result.length < 1000){
           if(followersList.length > 0){
             result.shift();
           }
@@ -102,7 +102,7 @@
   {
     return new Promise (function(resolve,reject){
       steem.api.getFollowing(username, lastFollowing, 'blog', 100, function(err, response){
-        // console.log(err);
+        console.log(err);
         resolve(response);
       });
     });
@@ -111,8 +111,7 @@
   function sendGetFollowersRequest(username, lastFollower)
   {
     return new Promise (function(resolve,reject){
-      steem.api.getFollowers(username, lastFollower, 'blog', 100, function(err, response){
-        // console.log(err);
+      steem.api.getFollowers(username, lastFollower, 'blog', 1000, function(err, response){
         resolve(response);
       });
     });
@@ -120,7 +119,7 @@
 
   function sendGetFollowCount(username)
   {
-    return new Promise (function(resolve,rejectas){
+    return new Promise (function(resolve,reject){
       steem.api.getFollowCount(username, function(err, response){
         // console.log(err);
         resolve(response);
@@ -152,7 +151,7 @@
       <h3>' + (isFollowers ? 'Followers' : 'Followed') + '</h3>' +
       (createAlertApi() || '') +
       '<div class="smi-followers-table-wrapper">\
-        <table class="table table-striped table-bordered dataTable no-footer" role="grid">\
+        <table class="table table-striped table-bordered dataTable no-footer dtff" role="grid">\
           <thead>\
             <tr role="row">\
               <th aria-label="Username: activate to sort column descending">Username</th>\
@@ -228,7 +227,7 @@
             '$ ' + dollars.toFixed(2) :
             dollars;
         }
-      }, {
+      },{
         // username
         row:['name','isFollowers','accountName', 'pageName'],
 
@@ -281,7 +280,13 @@
       };
       dataTable.row.add(data);
     });
+    
 
+    if(myaccount.name!==username)
+    {
+      console.log('ici');
+      dataTable.column(4).visible(false);
+    }
     dataTable.rows().invalidate().draw();
 
 
@@ -376,6 +381,7 @@
       var isFollowers = match[2] === 'followers';
       currentPage = match[2];
       var userList = $('.UserList');
+      console.log(userList);
       if(isFollowers)
       {
         getFollowersList(name, 0, [], userList);

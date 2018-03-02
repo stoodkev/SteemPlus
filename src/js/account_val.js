@@ -20,8 +20,13 @@ function startAccountValue(isSteemit,busy,globalP,market){
         if(isSteemit) {
             load_check_a=/transfers/;
             load_check2_a=/transfers/;
-            account_v=window.location.href.split('@')[1].split('/')[0];
-            wallet_elt_a=$('.medium-4')[4];
+            if(window.location.href.includes('@') && window.location.href.includes('/')){
+              account_v=window.location.href.split('@')[1].split('/')[0];
+              wallet_elt_a=$('.medium-4')[4];
+            }
+            else
+              return;
+            
         }
             else if(busy)
         {

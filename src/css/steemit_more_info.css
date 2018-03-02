@@ -325,3 +325,180 @@ span.after-downvote-total-dollar {
 .dtff{
   width: 100% !important;
 }
+
+
+/* Submit page */
+
+/* Markup editor */
+@media screen and (min-width: 900px) {
+  .SubmitPost.smi-advanced-editor > .ReplyEditor {
+    width: 100%;
+    max-width: 100%;
+  }
+  .SubmitPost.smi-advanced-editor form.vframe {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+  }
+  .SubmitPost.smi-advanced-editor form.vframe > div {
+    width: calc(50% - 10px);
+    max-width: calc(50% - 10px);
+  }
+  .SubmitPost.smi-advanced-editor form.vframe > div.Preview {
+    position: absolute;
+    top: 28px;
+    left: calc(50% + 5px);
+  }
+  .SubmitPost.smi-advanced-editor .ReplyEditor__body textarea {
+    height: calc(100vh - 380px);
+    padding-bottom: calc(100vh - 380px - 80px);
+  }
+  .SubmitPost.smi-advanced-editor form.vframe > div.Preview .MarkdownViewer {
+    height: calc(100vh - 380px);  
+    overflow-y: auto;
+  }
+  @-moz-document url-prefix() {
+    .SubmitPost.smi-advanced-editor .ReplyEditor__body textarea {
+      padding-bottom: 0px;
+    }
+  }
+}
+
+
+/* GIF PICKER */
+.smi-gif-picker-button-container {
+  position: relative;
+  width: 100%;
+  height: 0px;
+  margin-top: 7px;
+  margin-bottom: 40px;
+}
+.smi-gif-picker-button-container > button,
+.smi-gif-picker-button-container > button:focus {
+  background-color: #9933FF;
+  position: absolute;
+  border-radius: 10px;
+  font-size: 14px;
+  text-align: center;
+  padding: 3px 6px;
+  margin: 0px;
+  outline: none;
+}
+.smi-gif-picker-button-container > button:hover {
+  background-color: #6b29ad;
+  color: #fefefe;
+}
+.smi-gif-picker-container {
+  display: none;
+}
+.smi-gif-picker-opened .smi-gif-picker-container {
+  display: block;
+}
+.smi-gif-picker-container {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  z-index: 10000;
+}
+.PostsList__post_container .smi-gif-picker-container {
+  bottom: auto;
+}
+.smi-gif-picker-container2 {
+  position: relative;
+  border-radius: 3px;
+  width: 100%;
+  max-width: 56rem;
+  box-shadow: 0 0 5px 0 #404040;
+  padding: 20px;
+  padding-bottom: 10px;
+  margin: 0 auto;
+  height: 700px;
+  max-height: 100vh;
+  bottom: 10px;
+  background-color: #fcfcfc;
+  display: flex;
+  flex-direction: column;
+}
+@media print, screen and (max-width: 960px) {
+  .smi-gif-picker-container2 {
+    max-width: 100%;
+    bottom: 0px;
+  }
+}
+.smi-gif-picker-container .close-button {
+  top: -3px;
+  right: -8px;
+}
+.smi-gif-picker-container2 .gif-form {
+  flex-grow: 0;
+  flex-shrink: 0;
+  padding-bottom: 10px;
+}
+.smi-gif-picker-container .gif-form label p {
+  margin-bottom: 2px;
+}
+.smi-gif-picker-container .gif-form label p a.button {
+  padding: 3px;
+  margin: 0px;
+  outline: none;
+  margin-top: -9px;
+  margin-left: 20px;
+}
+.smi-gif-picker-container .res-container {
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow-y: auto;
+}
+.smi-gif-picker-container .res-container-wrapper {
+  margin: -13px;
+}
+.smi-gif-picker-container .res-container .results {
+  min-height: 100px;
+}
+/* https://codepen.io/badwolf7/pen/xOxBEx?page=2 */
+.smi-gif-picker-container .res-container {
+  transition: all 0.4s ease;
+}
+.smi-gif-picker-container .res-container .title{
+  font-size: 1.2em;
+  padding: 0px 10px;
+  text-transform: capitalize;
+}
+.smi-gif-picker-container .res-container .title span{
+  text-transform: initial;
+  color: #9933FF;
+}
+.smi-gif-picker-container .res-container .results
+  .caption{
+    text-transform: capitalize;
+    opacity: 0 !important;
+  }
+.smi-gif-picker-container .res-container .results
+  img{
+    cursor: pointer;
+  }
+.smi-gif-picker-container .res-container .results  
+  a.still:after{
+    position: absolute;
+    top: calc(50% - 25px);
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 100;
+    width: 50px;
+    height: 50px;
+    background: #18181A;
+    color: #FFFAFA;
+    border-radius: 50%;
+    content:"►";
+    font-size: 1.4em;
+    text-align: center;
+    padding-left: 3px;
+    line-height: 50px;
+    box-sizing: border-box;
+  }
+.smi-gif-picker-container .res-container .results  
+  a.still .caption{
+    opacity: 1 !important;
+  }

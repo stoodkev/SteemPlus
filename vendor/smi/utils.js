@@ -574,16 +574,11 @@
 
 
   var findReact = function(dom) {
-    console.log(dom);
     for (var key in dom) {
-        console.log(key);
         if (key.startsWith("__reactInternalInstance$")) {
             var compInternals = dom[key]._currentElement;
-            console.log(compInternals);
             var compWrapper = compInternals._owner;
-            console.log(compWrapper);
             var comp = compWrapper._instance;
-            console.log(comp);
             return comp;
         }
     }

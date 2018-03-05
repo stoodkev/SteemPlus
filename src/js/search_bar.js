@@ -19,7 +19,6 @@
       aut=request.data.user;
       if(request.order==='start'&&token_search_bar==null)
       {
-
         token_search_bar=request.token;
         replaceHeaderSearch();
 
@@ -37,12 +36,13 @@
     }
   });
 
+  var openSearch=_.debounce(_openSearch, 100);
 
   function setupIframe(iframeWindow, doc){
     var html = doc.find('html');
-    if(html.hasClass('smi-search-iframe-style')){
-      return;
-    }
+    // if(html.hasClass('smi-search-iframe-style')){
+    //   return;
+    // }
     html.addClass('smi-search-iframe-style');
 
     html.append('<style>' + iframeStyle + '</style>');
@@ -97,7 +97,7 @@
     }
   };
 
-  var openSearch = _.debounce(_openSearch, 100);
+  
 
 
   function createSearchUI() {
@@ -151,11 +151,6 @@
 
     return container;
   };
-
-
-  
-
-
 
   function replaceHeaderSearch() {
     var searchEl = $('.Header__search'); 

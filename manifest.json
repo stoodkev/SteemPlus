@@ -62,7 +62,7 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js", "vendor/HtmlReady.js",
+      "js": ["vendor/jquery.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js", "vendor/HtmlReady.js",
         "vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js",
         "main.js",
         "src/js/loginSteemPlus.js",
@@ -82,9 +82,11 @@
         "src/js/mentions_tab.js",
         "src/js/vote_weight_slider.js",
         "src/js/followers_table.js",
-        "src/js/boost_button.js"],
+        "src/js/boost_button.js",
+        "src/js/gif_picker.js",
+        "src/js/wallet_transfer_filter.js"],
 
-      "css":["vendor/bootstrap.css","vendor/datatables.min.css",
+      "css":["vendor/bootstrap.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css",
         "src/css/delegate.css",
         "src/css/account_val.css",
         "src/css/beneficiaries.css",

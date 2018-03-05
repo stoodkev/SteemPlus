@@ -20,8 +20,13 @@ function startAccountValue(isSteemit,busy,globalP,market){
         if(isSteemit) {
             load_check_a=/transfers/;
             load_check2_a=/transfers/;
-            account_v=window.location.href.split('@')[1].split('/')[0];
-            wallet_elt_a=$('.medium-4')[4];
+            if(window.location.href.includes('@') && window.location.href.includes('/')){
+              account_v=window.location.href.split('@')[1].split('/')[0];
+              wallet_elt_a=$('.medium-4')[4];
+            }
+            else
+              return;
+            
         }
             else if(busy)
         {
@@ -78,7 +83,6 @@ function startAccountValue(isSteemit,busy,globalP,market){
     SBD_A=market.priceSBD;
     steem.api.getAccounts([account_v], function(err, result) {
       var value=0;
-      console.log(err,result);
       const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
       const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
       const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, globalP.totalVests, globalP.totalSteem);

@@ -17,7 +17,6 @@
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='followers_table'){
-      console.log('Starting followers table...');
       aut=request.data.user;
       if(request.order==='start'&&token_followers_table==null)
       {
@@ -41,7 +40,6 @@
            checkForFollowerPage();
         }
       }
-      console.log('Followers table ready!');
     }
   });
 

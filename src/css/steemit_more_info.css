@@ -604,3 +604,136 @@ div.wrapper .value_of
   position: absolute;
   right: 15px;
 }
+
+
+/* Blog Histogram */
+
+.smi-posts-histogram-container {
+  position: relative;
+  width: 100%;
+  border-bottom: solid 1px #aaa;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+.smi-posts-histogram-container .smi-posts-histogram-title {
+  text-align: center;
+}  
+.smi-posts-histogram-container .smi-posts-histogram-legend {
+    font-size: 0.8em;
+    font-weight: 300;
+}
+.smi-posts-histogram-container .smi-posts-histogram-legend > span {
+  margin-left: 20px;
+  display: inline-block;
+  height: 8px;
+  width: 15px;
+  margin-bottom: 0px;
+  margin-right: 2px;
+  border: solid 1px;
+}
+
+.chartWrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.chartWrapper > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;  
+  pointer-events:none;
+  background: white;
+}
+.chartAreaWrapper {
+  overflow-x: scroll;
+  position: relative;
+  width: 100%;
+}
+.chartAreaWrapper2 {
+  position: relative;
+  height: 200px;
+}
+
+.smi-posts-histogram-posts-container {
+  position: absolute;
+  width: 100%;
+  margin-top: 15px;
+  z-index: 200;
+}
+.smi-posts-histogram-posts-container2 {
+  position: relative;
+  border-radius: 3px;
+  max-width: 56rem;
+  box-shadow: 0 0 5px 0 #404040;
+  background: white;
+  padding: 20px;
+  margin: 0 auto;
+}
+.smi-posts-histogram-posts-container2 h5 {
+  margin-bottom: 22px;
+}
+.smi-posts-histogram-posts-container .close-button {
+  top: -3px;
+  right: -8px;
+}
+.smi-posts-histogram-posts-list {
+  max-height: 900px;
+  max-height: calc(100vh - 480px);
+  overflow-y: auto;
+  padding-top: 10px;
+  padding-bottom: 60px;
+}
+
+.smi-posts-histogram-container .smi-posts-settings-bar {
+  position: absolute;
+  width: 100%;
+}
+.smi-posts-histogram-container .smi-posts-settings-bar .smi-posts-show-settings {
+  right: 0px;
+  top: 0px;
+  position: absolute;
+  display: none;
+}
+html.smi-mobile .smi-posts-histogram-container .smi-posts-settings-bar .smi-posts-show-settings,
+.smi-posts-histogram-container .smi-posts-settings-bar:hover .smi-posts-show-settings {
+  display: block;
+}
+html.smi-mobile:not(.smi-mobile-tablet) .smi-posts-histogram-container .smi-posts-settings-bar .smi-posts-show-settings {
+  display: none;
+}
+.smi-posts-histogram-container .smi-posts-settings-bar .smi-posts-show-settings label {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 12px;
+}
+.smi-posts-histogram-container .smi-posts-settings-bar .smi-posts-show-settings select {
+  height: 28px;
+  font-size: 12px;
+  line-height: 12px;
+  width: 70px;
+}
+
+html.smi-mobile .smi-posts-histogram-posts-container {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding: 10px;
+  margin: 0px;
+  background-color: hsla(0, 0%, 59%, .9);
+}
+html.smi-mobile .smi-posts-histogram-posts-container2 {
+  max-height: calc(100vh - 20px);
+}
+html.smi-mobile .smi-posts-histogram-posts-list {
+  max-height: calc(100vh - 120px);
+  overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
+}
+html.smi-mobile.smi-posts-histogram-posts-list-shown,
+html.smi-mobile.smi-posts-histogram-posts-list-shown body {
+  overflow-y: hidden;
+  height: 100%;
+}

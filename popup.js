@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -83,6 +83,7 @@ chrome.storage.local.get(['user_info_popover','gif_picker','boost_button','follo
     boost_button=items.boost_button==undefined?'show':items.boost_button;
     gif_picker=items.gif_picker==undefined?'show':items.gif_picker;
     user_info_popover=items.user_info_popover==undefined?'show':items.user_info_popover;
+    blog_histogram=items.blog_histogram==undefined?'hide':items.blog_histogram; //default hidden
 
     //console.log(items.resteem);
     if(weight!==undefined)
@@ -112,6 +113,7 @@ chrome.storage.local.get(['user_info_popover','gif_picker','boost_button','follo
     $('input[name=boost_button]').prop('checked',boost_button=='show');
     $('input[name=gif_picker]').prop('checked',gif_picker=='show');
     $('input[name=user_info_popover]').prop('checked',user_info_popover=='show');
+    $('input[name=blog_histogram]').prop('checked',blog_histogram=='show');
 
     // if steemit more info is not checked, hide all SMI options
     if(steemit_more_info=='hide')
@@ -338,6 +340,13 @@ $(document).on("change","input[name=user_info_popover]",function(){
 
     chrome.storage.local.set({
         user_info_popover:$("input[name=user_info_popover]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=blog_histogram]",function(){
+
+    chrome.storage.local.set({
+        blog_histogram:$("input[name=blog_histogram]").prop('checked')?'show':'hide'
     });
 });
 

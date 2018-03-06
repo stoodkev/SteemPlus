@@ -574,16 +574,11 @@
 
 
   var findReact = function(dom) {
-    console.log(dom);
     for (var key in dom) {
-        console.log(key);
         if (key.startsWith("__reactInternalInstance$")) {
             var compInternals = dom[key]._currentElement;
-            console.log(compInternals);
             var compWrapper = compInternals._owner;
-            console.log(compWrapper);
             var comp = compWrapper._instance;
-            console.log(comp);
             return comp;
         }
     }
@@ -624,6 +619,23 @@
     }
   };
 
+  var getReputation = function(reputation, round) {
+    reputation = parseInt(reputation);
+    let rep = String(reputation);
+    const neg = rep.charAt(0) === "-";
+    rep = neg ? rep.substring(1) : rep;
+    const str = rep;
+    const leadingDigits = parseInt(str.substring(0, 4));
+    const log = Math.log(leadingDigits) / Math.log(10);
+    const n = str.length - 1;
+    let out = n + (log - parseInt(log));
+    if (isNaN(out)) out = 0;
+    out = Math.max(out - 9, 0);
+    out = (neg ? -1 : 1) * out;
+    out = out * 9 + 25;
+    return out.toFixed(round);
+  };
+
 
 
   var Utils = {
@@ -657,7 +669,8 @@
     findReact: findReact,
     addSettings: addSettings,
     getSettingsValue: getSettingsValue,
-    setSettingsValue: setSettingsValue
+    setSettingsValue: setSettingsValue,
+    getReputation: getReputation
   };
 
 

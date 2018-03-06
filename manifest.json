@@ -83,7 +83,8 @@
         "src/js/vote_weight_slider.js",
         "src/js/followers_table.js",
         "src/js/boost_button.js",
-        "src/js/gif_picker.js"],
+        "src/js/gif_picker.js",
+        "src/js/user_info_popover.js"],
 
       "css":["vendor/bootstrap.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css",
         "src/css/delegate.css",

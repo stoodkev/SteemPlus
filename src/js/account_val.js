@@ -83,7 +83,6 @@ function startAccountValue(isSteemit,busy,globalP,market){
     SBD_A=market.priceSBD;
     steem.api.getAccounts([account_v], function(err, result) {
       var value=0;
-      console.log(err,result);
       const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
       const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
       const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, globalP.totalVests, globalP.totalSteem);

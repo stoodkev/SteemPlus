@@ -42,7 +42,7 @@ function displayPopover(userName){
       
       $('.wrapper > h1').append(pop);
 
-			var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 3);
+			var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 2);
 			$('.UserProfile__rep').text('(' + reputation + ')');
 			
 			var title='<h5>User Informations</h5>';

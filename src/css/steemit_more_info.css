@@ -766,3 +766,10 @@ form.vframe2{
 .UserProfile__top-nav div.UserProfile__top-menu {
     max-width: 71.42857rem !important;
   }
+
+
+  /* Popup */
+
+#toast-container.toast-top-full-width>div {
+  width:50% !important;
+}

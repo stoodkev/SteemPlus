@@ -26,7 +26,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function displayPopover(userName){
 
 	window.SteemPlus.Utils.getAccounts([userName], function(err, result){
-		console.log(result);
 		if($('.UserProfile__banner').hasClass('smi-profile-banner-1')){
 		  return;
 		}
@@ -36,8 +35,8 @@ function displayPopover(userName){
  			
 			
  			var pop=document.createElement('a');
-      pop.style.cursor='pointer';
-      pop.id='popover';
+		    pop.style.cursor='pointer';
+		    pop.id='popover';
 			var img=document.createElement('img');
 			img.src=chrome.extension.getURL("src/img/info.png");
 			pop.append(img);

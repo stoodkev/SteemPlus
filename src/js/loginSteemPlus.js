@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           });
         }
       if(request.data.steemit)
-        $('.Header__top').children().first().children().eq(1).children().first().prepend(loginIcon);
+        $('.Header__userpic').before(loginIcon);
       else if(request.data.busy)
         $('.Topnav__version').after(loginIcon);
       else if(request.data.utopian)

@@ -1,6 +1,3 @@
-
-
-
   var token_followers_table=null;
   var aut=null;
   var rewardBalance=null;
@@ -379,6 +376,13 @@
       var isFollowers = match[2] === 'followers';
       currentPage = match[2];
       var userList = $('.UserList');
+      if(userList.length === 0)
+      {
+        setTimeout(function(){
+          checkForFollowerPage();
+        }, 1000);
+      }
+      
       console.log(userList);
       if(isFollowers)
       {

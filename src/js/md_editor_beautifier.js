@@ -18,6 +18,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startMDEditorPreview()
 {
+
   if($('textarea').length > 0 && $('textarea')[0].textLength === 0)
   {
     waitingForPreview = true;
@@ -78,6 +79,7 @@ function setupPreview(){
   markdownSource=$('.Preview');
   preview = markdownSource.clone();
   preview.id = 'mypreview';
+  preview.addClass('Preview2');
   markdownSource.hide();
 
   if($('.myrow').length > 0)
@@ -95,6 +97,8 @@ function setupPreview(){
     $('.column').removeClass('column');
 
     $('.ReplyEditor').removeClass('row');
+    $('.ReplyEditor').addClass('ReplyEditor2');
+    $('.vframe').addClass('vframe2');
   }
 }
 

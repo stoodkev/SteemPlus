@@ -205,11 +205,6 @@ html.smi-header-search .show-for-medium.Header__search > a {
   }
 }
 
-@media screen and (max-width: 1000px) and (min-width:840px) {
-  .smi-search-container.smi-search-open .smi-input-container {
-    margin-top:55px;
-  }
-}
 .smi-search-container .smi-search-button {
   margin: auto 1px !important;
 }

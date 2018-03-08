@@ -17,6 +17,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       token_blog_histogram=request.token;
       checkForBlogPage();
     }
+
+    if(request.to==='blog_histogram'&&request.order==='click'&&token_del===request.token)
+      checkForBlogPage();
 });
 
 

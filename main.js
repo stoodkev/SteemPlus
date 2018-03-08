@@ -19,7 +19,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   const steemPrice = parseFloat(values["1"].base.replace(" SBD", "")) / parseFloat(values["1"].quote.replace(" STEEM", ""));
   updateSteemPrice();
 
-  chrome.storage.local.get(['blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
@@ -56,6 +56,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
         const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
         const blog_histogram=(items.blog_histogram !== undefined || items.blog_histogram=='show'); //default hidden
+        const md_editor_beautifier=(items.md_editor_beautifier === undefined || items.md_editor_beautifier=='show');
 
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
@@ -107,7 +108,9 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
           if(steem&&user_info_popover)
             chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
           if(steem&&blog_histogram)
-            chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
+            chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{}});
+          if(steem&&md_editor_beautifier)
+            chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
         }
 
         console.log('Features started...');
@@ -125,10 +128,12 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
                 chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
-              if(rank&&followers_table)
+              if(steemit&&followers_table)
                 chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
-              if(rank&&boost_button)
+              if(steemit&&boost_button)
                 chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'click', data:{user:user}});
+              if(steemit&&md_editor_beautifier)
+                chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'click', data:{}});
               url=window.location.href;
             }
             if(oneup&&utopian)

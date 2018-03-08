@@ -580,7 +580,7 @@ table tbody tr.Trans.smi-transaction-filtered-in:nth-of-type(2n) {
 }
 
 div.wrapper div.popover{
-  width:8em;
+  width:10em;
 }
 
 div.wrapper .popover h5,div.wrapper .popover-title h5
@@ -736,4 +736,30 @@ html.smi-mobile.smi-posts-histogram-posts-list-shown,
 html.smi-mobile.smi-posts-histogram-posts-list-shown body {
   overflow-y: hidden;
   height: 100%;
+}
+
+
+/* MD Editor Preview */
+
+.Preview {
+  margin-top: 1.5em;
+  width: 48%;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+form.vframe{
+  width: 48%;
+  margin-left: 1em;
+  margin-right: 0.5em;
+}
+
+.ReplyEditor{
+  width: 100%;
+  max-width: 100% !important;
+}
+
+.row{
+  width: 100%;
+  max-width: 100% !important;
 }

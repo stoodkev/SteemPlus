@@ -44,9 +44,12 @@ function startAccountValue(isSteemit,busy,globalP,market){
     setTimeout(function() {
       if(window.location.href!=='')
       {
-        account_v=isSteemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-        wallet_elt_a=isSteemit?$('.medium-4')[4]:".UserWalletSummary__item ";
-        created_a=false;
+        if(window.location.href.includes('@')){
+          account_v=isSteemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
+          wallet_elt_a=isSteemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+          created_a=false;
+        }
+        
       }
       if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) && !created_a) {
         created_a = true;

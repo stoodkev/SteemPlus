@@ -39,6 +39,10 @@
           closeGifPicker($('.ReplyEditor__body textarea')); // close all gif picker
         });
 
+        $('.float-right.secondary').click(function(){
+          $('.smi-gif-picker-button-container').remove();
+        });
+
         setInterval(function(){
           $('.ReplyEditor__body textarea').each(function() {
             var textarea = $(this);
@@ -235,8 +239,6 @@
 
     return pickerContainer;
   };
-
-
 
   function setupGifPickerIfNeeded(textarea) {
 

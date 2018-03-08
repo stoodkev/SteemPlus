@@ -16,7 +16,7 @@
     }
     if(parseLocation[2] && parseLocation[2].startsWith('/feed')){
       return;
-    } 
+    }
     return parseLocation[1];
   };
 
@@ -56,8 +56,8 @@
       setTimeout(function() {
         getUserTopMenusForAccountName(accountName, cb);
       }, domCheckTimeout);
-    }   
-  }; 
+    }
+  };
 
 
   var steemPrice;
@@ -98,22 +98,22 @@
 
   var getVotingDollarsPerShares = function(rshares) {
     if(rewardBalance && recentClaims && steemPrice){
-      var voteValue = rshares 
+      var voteValue = rshares
         * rewardBalance / recentClaims
         * steemPrice;
-  
+
       return voteValue;
-    } 
+    }
   };
 
   var getVotingDollarsPerShares = function(rshares, rewardBalance, recentClaims, steemPrice) {
     if(rewardBalance && recentClaims && steemPrice){
-      var voteValue = rshares 
+      var voteValue = rshares
         * rewardBalance / recentClaims
         * steemPrice;
-  
+
       return voteValue;
-    } 
+    }
   };
 
 
@@ -127,8 +127,8 @@
   };
 
   var getEffectiveVestingSharesPerAccount = function(account) {
-    var effective_vesting_shares = parseFloat(account.vesting_shares.replace(" VESTS", "")) 
-      + parseFloat(account.received_vesting_shares.replace(" VESTS", "")) 
+    var effective_vesting_shares = parseFloat(account.vesting_shares.replace(" VESTS", ""))
+      + parseFloat(account.received_vesting_shares.replace(" VESTS", ""))
       - parseFloat(account.delegated_vesting_shares.replace(" VESTS", ""));
     return effective_vesting_shares;
   };
@@ -168,10 +168,10 @@
       var rshares = Math.round((effective_vesting_shares * used_power) / (STEEMIT_100_PERCENT))
 
 
-      var voteValue = rshares 
+      var voteValue = rshares
         * rewardBalance / recentClaims
         * steemPrice;
-  
+
 
       return voteValue;
 
@@ -185,7 +185,7 @@
     }
     var from = from || -1; // the index of the last transaction / -1 for last transaction
     var maxVotes = 100;
-    var to = from === -1 ? maxVotes : Math.min(maxVotes, from); // number of transactions to get other than the last one... 2 -> 3 transactions 
+    var to = from === -1 ? maxVotes : Math.min(maxVotes, from); // number of transactions to get other than the last one... 2 -> 3 transactions
     steem.api.getAccountHistory(accountName, from, to, function(err, result) {
       cb(err, result);
     });
@@ -295,7 +295,7 @@
       if(json_metadata && json_metadata.image && Array.isArray(json_metadata.image)){
         imgUrl = json_metadata.image[0] || null;
       }
-    }catch(err){      
+    }catch(err){
     }
 
     // If nothing found in json metadata, parse body and check images/links
@@ -307,7 +307,7 @@
         {
           var imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
           var match = imgRegex.exec(post.body);
-          
+
           if(match !== null)
           {
             imgUrl2 = match[1];
@@ -316,20 +316,21 @@
           {
             var mdRegex = /!\[.*\]\((.*)\)/g;
             match = mdRegex.exec(post.body);
-            imgUrl2 = match[1];
+            if(match!=null)
+              imgUrl2 = match[1];
           }
-        } 
+        }
         else
           imgUrl2 = Array.from(rtags.images)[0];
     }
-    
+
     var hasImage = true;
     if( (imgUrl === null || imgUrl === undefined ) && (imgUrl2 === null || imgUrl2 === undefined ) )
     {
       displayedImageUrl = chrome.extension.getURL(noImageAvailable);
       hasImage = false;
     }
-    else 
+    else
     {
       displayedImageUrl = ( imgUrl !== null && imgUrl !== undefined ) ? '\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\'' : '\'https://steemitimages.com/256x512/' + imgUrl2 + '\'';
     }
@@ -420,7 +421,7 @@
         </div>\
         <div class="PostSummary__time_author_category_small show-for-small-only">\
           ' + vcard + '\
-        </div>' + 
+        </div>' +
         '<span name="imgUrl" class="PostSummary__image" style="background-image: url(' + displayedImageUrl + ');"></span>' +
         '<div class="PostSummary__content">\
           <div class="PostSummary__header show-for-medium">\
@@ -434,14 +435,14 @@
           <div class="PostSummary__footer">\
             <span class="Voting">\
               <span class="Voting__inner">' +
-                // can't vote.. so can't put a voting button here :( 
+                // can't vote.. so can't put a voting button here :(
                 // '<span class="Voting__button Voting__button-up Voting__button--upvoted">\
                 //   <a href="#" title="Remove Vote">\
                 //     <span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;">\
                 //       <svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg>\
                 //     </span>\
                 //   </a>\
-                // </span>' + 
+                // </span>' +
                 '<div class="DropdownMenu">\
                   <a href="#">\
                     <span>\
@@ -513,7 +514,7 @@
                     <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg>\
                   </span>\
                 </a>\
-              </span>' : '') + 
+              </span>' : '') +
               '<span class="show-for-medium">\
                 ' + vcard + '\
               </span>\
@@ -522,12 +523,12 @@
         </div>\
       </article>\
     </li>');
-    
+
     var openPost = (options && options.openPost) || function(url) {
       var PostList = window.SteemPlus.Utils.findReact($('#posts_list')[0]);
       PostList.onPostClick(author + '/' + permlink, url);
     };
-  
+
     el.find('a').on('click', function(e){
       if(e.ctrlKey || e.metaKey) {
         return;
@@ -551,7 +552,7 @@
 
 
   var navigate = function(url) {
-    //hack to use react to navigate 
+    //hack to use react to navigate
     var a = $('.smi-hack-navigate-a');
     if(!a.length){
       a = $('<a class="smi-hack-navigate-a" style="display: none;">');
@@ -590,7 +591,7 @@
   var settingsObj;
   try {
     var settingsObj = JSON.parse(window.localStorage && window.localStorage.SteemMoreInfoSettings);
-  }catch(err){    
+  }catch(err){
   }
   settingsObj = settingsObj || {};
 

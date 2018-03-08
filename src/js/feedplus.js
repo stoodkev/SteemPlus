@@ -35,7 +35,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             feedplus.className="nav__block-list-item";
             feedplus.id='FeedPlus';
             a=document.createElement('a');
-            a.innerHTML='feed';
+            a.innerHTML='Feed';
             img=document.createElement('img');
             img.id='img_plus';
             img.src=chrome.extension.getURL("src/img/logo.png");

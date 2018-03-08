@@ -71,6 +71,11 @@
 .UserProfile__tab_content_VotesTab {
   padding-bottom: 60px;
 }
+.UserProfile__tab_content_smi{
+
+  padding-right: 0.9375rem !important;
+  padding-left: 0.9375rem !important;
+}
 .UserProfile__tab_content_VotesTab .VotesTab {
   padding-bottom: 20px;
 }
@@ -200,11 +205,6 @@ html.smi-header-search .show-for-medium.Header__search > a {
   }
 }
 
-@media screen and (max-width: 1000px) and (min-width:840px) {
-  .smi-search-container.smi-search-open .smi-input-container {
-    margin-top:55px;
-  }
-}
 .smi-search-container .smi-search-button {
   margin: auto 1px !important;
 }
@@ -353,7 +353,7 @@ span.after-downvote-total-dollar {
     padding-bottom: calc(100vh - 380px - 80px);
   }
   .SubmitPost.smi-advanced-editor form.vframe > div.Preview .MarkdownViewer {
-    height: calc(100vh - 380px);  
+    height: calc(100vh - 380px);
     overflow-y: auto;
   }
   @-moz-document url-prefix() {
@@ -477,7 +477,7 @@ span.after-downvote-total-dollar {
   img{
     cursor: pointer;
   }
-.smi-gif-picker-container .res-container .results  
+.smi-gif-picker-container .res-container .results
   a.still:after{
     position: absolute;
     top: calc(50% - 25px);
@@ -497,14 +497,14 @@ span.after-downvote-total-dollar {
     line-height: 50px;
     box-sizing: border-box;
   }
-.smi-gif-picker-container .res-container .results  
+.smi-gif-picker-container .res-container .results
   a.still .caption{
     opacity: 1 !important;
   }
 
 
 
-  /* filter wallet */ 
+  /* filter wallet */
 
   .Trans.smi-transaction-filtered-out {
   display: none;
@@ -616,7 +616,7 @@ div.wrapper .value_of
 }
 .smi-posts-histogram-container .smi-posts-histogram-title {
   text-align: center;
-}  
+}
 .smi-posts-histogram-container .smi-posts-histogram-legend {
     font-size: 0.8em;
     font-weight: 300;
@@ -640,7 +640,7 @@ div.wrapper .value_of
 .chartWrapper > canvas {
   position: absolute;
   left: 0;
-  top: 0;  
+  top: 0;
   pointer-events:none;
   background: white;
 }
@@ -762,3 +762,7 @@ form.vframe{
   width: 100%;
   max-width: 100% !important;
 }
+
+.UserProfile__top-nav div.UserProfile__top-menu {
+    max-width: 71.42857rem !important;
+  }

@@ -179,7 +179,7 @@ function postBeneficiaries()
         }]
     ];
 
-    console.log(operations);
+  console.log(operations);
 
    sc2.broadcast(
         operations,

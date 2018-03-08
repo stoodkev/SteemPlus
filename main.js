@@ -56,7 +56,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
         const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
         const blog_histogram=(items.blog_histogram !== undefined || items.blog_histogram=='show'); //default hidden
-        const md_editor_beautifier=(items.md_editor_beautifier === undefined || items.md_editor_beautifier=='show');
+        const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
 
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";

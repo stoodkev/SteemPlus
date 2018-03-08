@@ -30,22 +30,24 @@
 
   function createVotesTab(votesTab) {
     votesTab.html('<div class="row">\
-       <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_VotesTab column">\
+       <div class="UserProfile__tab_content UserProfile__tab_content_smi layout-list UserProfile__tab_content_VotesTab column">\
+          <article class="articles">\
           <div class="VotesTab" style="display: none;">\
              <div class="row">\
                 <div class="column small-12">\
-                  <h4 class="uppercase">\
+                  <h1 class="articles__h1" style="margin-bottom:20px">\
                     Votes History\
-                    <div class="switch-field" style="margin-bottom: -4px; margin-left: 20px;">\
-                      <input type="radio" id="votes-history-type-incoming" name="votes-history-type" class="votes-history-type" value="0" checked/>\
-                      <label for="votes-history-type-incoming" class="votes-history-type">Incoming</label>\
-                      <input type="radio" id="votes-history-type-outgoing" name="votes-history-type" class="votes-history-type" value="1" />\
-                      <label for="votes-history-type-outgoing" class="votes-history-type">Outgoing</label>\
-                      <input type="radio" id="votes-history-type-both" name="votes-history-type" class="votes-history-type" value="2" />\
-                      <label for="votes-history-type-both" class="votes-history-type">Both</label>\
-                    </div>\
-                  </h4>\
-                  <div class="votes-container show-incoming">\
+                  </h1>\
+                    <hr class="articles__hr">\
+                  <div class="switch-field" style="margin-bottom: -4px; ">\
+                    <input type="radio" id="votes-history-type-incoming" name="votes-history-type" class="votes-history-type" value="0" checked/>\
+                    <label for="votes-history-type-incoming" class="votes-history-type">Incoming</label>\
+                    <input type="radio" id="votes-history-type-outgoing" name="votes-history-type" class="votes-history-type" value="1" />\
+                    <label for="votes-history-type-outgoing" class="votes-history-type">Outgoing</label>\
+                    <input type="radio" id="votes-history-type-both" name="votes-history-type" class="votes-history-type" value="2" />\
+                    <label for="votes-history-type-both" class="votes-history-type">Both</label>\
+                  </div>\
+                  <div class="votes-container show-incoming" style="margin-top:30px">\
                   </div>\
                 </div>\
              </div>\
@@ -60,9 +62,10 @@
               Load more... \
             </button>\
           </center>\
+          <article/>\
        </div>\
     </div>');
-    
+
     votesTab.find('.VotesTabLoadMore button').on('click', function(){
       var loadMore = $(this).parent();
       loadMore.hide();
@@ -87,7 +90,7 @@
     });
 
     getVotes(votesTab, window.SteemPlus.Utils.getPageAccountName());
-  };  
+  };
 
 
   function createVoteEl(tx) {

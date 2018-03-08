@@ -1,6 +1,6 @@
 
 (function () {
-  
+
   var tabs = [];
   var tabsById = {};
 
@@ -30,7 +30,7 @@
     }
     tabDiv = $('<div class="smi-tabs-div ' + tab._tabClass + '"></div>');
     container.append(tabDiv);
- 
+
 
     tab.createTab(tabDiv);
 
@@ -55,7 +55,7 @@
     var name = window.SteemPlus.Utils.getPageAccountName();
     if(!name){
       return;
-    }    
+    }
     console.log('Adding tabs menu for account: ' + name);
 
     window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus){

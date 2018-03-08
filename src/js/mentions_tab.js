@@ -25,26 +25,28 @@
     }
   });
 
-  
+
 
   function createMentionsTab(mentionsTab) {
     mentionsTab.html('<div class="row">\
-       <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column">\
+       <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
+          <article class="articles">\
           <div class="MentionsTab" style="display: none;">\
-            <h4 class="uppercase">\
+            <h1 class="articles__h1" style="margin-bottom:20px">\
               Mentions\
-              <div class="switch-field" style="margin-bottom: -4px; margin-left: 20px;">\
-                <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="0" checked/>\
-                <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
-                <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="1" />\
-                <label for="mentions-type-comments" class="mentions-type">Comments</label>\
-                <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="2" />\
-                <label for="mentions-type-both" class="mentions-type">Both</label>\
-              </div>\
               <div class="thanks-furion">\
                 Thanks <a href="/@furion" class="smi-navigate">@furion</a> for the SteemData API\
               </div>\
-            </h4>\
+            </h1>\
+            <hr class="articles__hr"/>\
+            <div class="switch-field" style="margin-bottom: -4px;">\
+              <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="0" checked/>\
+              <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
+              <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="1" />\
+              <label for="mentions-type-comments" class="mentions-type">Comments</label>\
+              <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="2" />\
+              <label for="mentions-type-both" class="mentions-type">Both</label>\
+            </div>\
             <div id="posts_list" class="PostsList" style="margin-top: 30px;">\
               <ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts">\
               </ul>\
@@ -60,18 +62,19 @@
               Load more... \
             </button>\
           </center>\
+          </article>\
        </div>\
     </div>');
-    
+
     mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
       getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName());
-    });    
+    });
     mentionsTab.find('.mentions-type').on('change', function() {
       getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName(), true);
     });
 
     getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName());
-  };  
+  };
 
 
   function _getPostsAndComments(whats, name, info, cb) {
@@ -139,7 +142,7 @@
       if(data){
         var buffer = info.buffer[what] || [];
         buffer = buffer.concat(data._items);
-        info.buffer[what] = buffer;        
+        info.buffer[what] = buffer;
 
         if(data._links.next){
           info.from[what] = (info.from[what] || 0) + 1;
@@ -240,4 +243,3 @@
     });
 
   };
-

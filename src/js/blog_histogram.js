@@ -52,7 +52,7 @@ function setupHistogram(name, container) {
       dataMap[dataString] = dataMap[dataString] || [];
       dataMap[dataString].push(post);
     });
-    if(!min){        
+    if(!min){
       return;
     }
 
@@ -105,7 +105,7 @@ function setupHistogram(name, container) {
       datasets[1].data.push(r);
       d.add(1, 'd');
     }
-    
+
     var histogram = container.find('.smi-posts-histogram');
     var ctx = histogram[0].getContext("2d");
     var axis = container.find('.smi-posts-histogram-axis');
@@ -119,7 +119,7 @@ function setupHistogram(name, container) {
     chartAreaWrapper.scrollLeft(chartAreaWrapper[0].scrollWidth - chartAreaWrapper[0].clientWidth);
 
     var loading = container.find('.smi-spinner');
-    loading.remove();      
+    loading.remove();
 
     var chart = new Chart(ctx, {
         type: 'bar',
@@ -148,7 +148,7 @@ function setupHistogram(name, container) {
             legend: {
               display: false
             },
-            animation: {                  
+            animation: {
               onComplete: function(animation) {
                 var sourceCanvas = chart.chart.canvas;
                 var copyWidth = chart.scales['y-axis-0'].width + chart.scales['y-axis-0'].left + 2;
@@ -161,7 +161,7 @@ function setupHistogram(name, container) {
             }
         }
     });
-  
+
     ctx.canvas.onclick = function(evt) {
       var item = chart.getElementAtEvent(evt)[0];
 
@@ -213,15 +213,7 @@ function createHistogram(name) {
 
   var container = $('<div class="smi-posts-histogram-container">\
     <div class="smi-posts-settings-bar">\
-      <a class="smi-show-posts-histogram" href="#">Show posts histogram</a>\
-      <div class="smi-posts-show-settings">\
-        <label>On load: </label>\
-        <select class="smi-posts-show-select">\
-          <option value="show" ' + (showHistogram === 'show' ? ' selected' : '') + '>Show</option>\
-          <option value="hidden" ' + (showHistogram === 'hidden' ? ' selected' : '') + '>Hidden</option>\
-        </select>\
-      </div>\
-    </div>\
+      <a class="smi-show-posts-histogram" href="#">Show posts histogram</a>\    </div>\
     <h6 class="smi-posts-histogram-title">Posts by @' + name + '</h6>\
     <div class="chartWrapper">\
       <div class="chartAreaWrapper">\
@@ -246,7 +238,7 @@ function createHistogram(name) {
   });
   container.find('.smi-show-posts-histogram').on('click', function(e) {
     e.preventDefault();
-    showOrHideHistogram(name, container, true);      
+    showOrHideHistogram(name, container, true);
   });
   showOrHideHistogram(name, container, showHistogram === 'show');
 
@@ -373,7 +365,7 @@ function checkHistogram(postsList, name) {
   }
   postsList.prepend(createHistogram(name));
   postsList.addClass('smi-posts-histogram-added');
-  postsList.data('histogram-account', name); 
+  postsList.data('histogram-account', name);
   console.log('histogram added');
   return true;
 };
@@ -392,6 +384,3 @@ function checkForBlogPage() {
     }
   }
 };
-
-
-

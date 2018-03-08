@@ -27,12 +27,12 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             post_div='.PostsIndex__left';
             reblog=".PostSummary__reblogged_by";
             ad_post="li:first-child .entry-title a";
-            feed_url = document.getElementsByClassName("Header__logo")[0].firstChild.href;
+            feed_url = $(".Header__logotype")[0].href;
             feedplus_url="#plus";
             user_fp = feedp.user;
-            menu_list=document.getElementsByClassName("HorizontalMenu")[0];
+            menu_list=$('.nav__block-list')[0];
             feedplus=document.createElement('li');
-            feedplus.className="";
+            feedplus.className="nav__block-list-item";
             feedplus.id='FeedPlus';
             a=document.createElement('a');
             a.innerHTML='feed';
@@ -90,7 +90,9 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             feedplus.onclick = function () {
                 if(isSteemit) {
                     window.history.pushState("", "", feedplus_url);
-                    feedplus.class += "active";
+                    $('.nav__block-list-item--active').removeClass('nav__block-list-item--active');
+                    $('#FeedPlus').addClass('nav__block-list-item--active');
+                    feedplus.class += "nav__block-list-item--active";
                     StartFeedPlus(isSteemit,isBusy,feedp);
                 }
                 else window.open('https://steemit.com/@'+user_fp+'/feed#plus', '_blank');
@@ -113,7 +115,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
 
             function GetFeed(author, perm) {
-
                 steem.api.getDiscussionsByFeed({
                     limit: LIMIT_PER_CALL,
                     tag: user_fp,
@@ -127,14 +128,13 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                         var voted=false,checked=false;
                         if(elt.author=='utopian-io')
-                        console.log(elt.active_votes);
                         elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
 
                         list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
                         $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+feedp.nb_posts*100);
                     }
                 });
-                if (feed_calls < feedp.nb_posts) GetFeed(result[LIMIT_PER_CALL-1].author, result[LIMIT_PER_CALL-1].permlink,isSteemit,isBusy,feedp);
+                if (feed_calls < feedp.nb_posts) GetFeed(result[result.length-1].author, result[result.length-1].permlink,isSteemit,isBusy,feedp);
                 else {
                     Filter(isSteemit,isBusy,feedp);
                 }

@@ -190,10 +190,9 @@ html.smi-header-search .show-for-medium.Header__search > a {
   display: inline-block;
   width: 0px;
   overflow: hidden;
-  transition: width 0.3s;
 }
 .smi-search-container.smi-search-open .smi-input-container {
-  width: 20%;
+  width: 100%;
 }
 @media screen and (max-width: 1200px) {
   .smi-search-container.smi-search-open .smi-input-container {

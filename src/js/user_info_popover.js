@@ -22,27 +22,39 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function checkUserForInfoPopover()
 {
+  setTimeout(function(){
+      var userNameRegEx = /^.*@([a-z][a-z0-9\-]+[a-z0-9])\/*/;
+      if(window.location.href.match(userNameRegEx)!==null){
+        var userName = window.location.href.match(userNameRegEx)[1];
+        console.log(userName);
+        checkDisplayPopover(userName);
+      }
+    },100);
+}
 
-  var userPageRegexp = /\/@([a-z0-9\-\.]*)$/;
-  if($('.UserProfile__banner').length === 0)
-    return;
-  var userNameRegEx = /^.*@([a-z][a-z0-9\-]+[a-z0-9])\/*/;
-  var userName = window.location.href.match(userNameRegEx)[1];
-  displayPopover(userName);
+function checkDisplayPopover(userName)
+{
+  if($('.wrapper > h1').length!==0)
+    displayPopover(userName);
+  else
+  setTimeout(function() {
+    if($('.wrapper > h1').length!==0)
+      displayPopover(userName);
+    else {
+      checkDisplayPopover(userName);
+    }
+  },1000);
 }
 
 
 function displayPopover(userName){
 console.log('displaypopover');
 	window.SteemPlus.Utils.getAccounts([userName], function(err, result){
-		if($('.UserProfile__banner').hasClass('smi-profile-banner-1')){
-		  return;
-		}
-		$('.UserProfile__banner').addClass('smi-profile-banner-1');
+		if(!$('.UserProfile__banner').hasClass('smi-profile-banner-1'))
+		  $('.UserProfile__banner').addClass('smi-profile-banner-1');
 		Promise.all([window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]), window.SteemPlus.Utils.getVotingDollarsPerAccount(100, result[0], rewardBalance, recentClaims, steemPrice, votePowerReserveRate)])
 		.then(function(values) {
-
-
+      $("#popover").remove();
  			var pop=document.createElement('a');
 		    pop.style.cursor='pointer';
 		    pop.id='popover';

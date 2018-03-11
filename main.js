@@ -62,6 +62,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
         const last_post_url=items.last_post_url;
 
+
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
         var rep_feed_check=(items.rep_feed_check!==undefined)?items.rep_feed_check:null;

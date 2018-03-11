@@ -84,7 +84,7 @@ chrome.storage.local.get(['md_editor_beautifier','blog_histogram','user_info_pop
     gif_picker=items.gif_picker==undefined?'show':items.gif_picker;
     user_info_popover=items.user_info_popover==undefined?'show':items.user_info_popover;
     blog_histogram=items.blog_histogram==undefined?'hide':items.blog_histogram; //default hidden
-    md_editor_beautifier=items.md_editor_beautifier==undefined?'hide':items.md_editor_beautifier;
+    md_editor_beautifier=items.md_editor_beautifier==undefined?'show':items.md_editor_beautifier;
 
     //console.log(items.resteem);
     if(weight!==undefined)

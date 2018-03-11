@@ -740,20 +740,20 @@ html.smi-mobile.smi-posts-histogram-posts-list-shown body {
 
 /* MD Editor Preview */
 
-.Preview {
+.Preview2 {
   margin-top: 1.5em;
   width: 48%;
   margin-left: 1em;
   margin-right: 1em;
 }
 
-form.vframe{
+form.vframe2{
   width: 48%;
   margin-left: 1em;
   margin-right: 0.5em;
 }
 
-.ReplyEditor{
+.ReplyEditor2{
   width: 100%;
   max-width: 100% !important;
 }
@@ -766,3 +766,10 @@ form.vframe{
 .UserProfile__top-nav div.UserProfile__top-menu {
     max-width: 71.42857rem !important;
   }
+
+
+  /* Popup */
+
+#toast-container.toast-top-full-width>div {
+  width:50% !important;
+}

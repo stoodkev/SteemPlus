@@ -19,7 +19,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   const steemPrice = parseFloat(values["1"].base.replace(" SBD", "")) / parseFloat(values["1"].quote.replace(" STEEM", ""));
   updateSteemPrice();
 
-  chrome.storage.local.get(['md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+  chrome.storage.local.get(['last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     const token=makeToken();
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
@@ -55,8 +55,12 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const boost_button=(items.boost_button == undefined || items.boost_button=='show');
         const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
         const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
-        const blog_histogram=(items.blog_histogram !== undefined || items.blog_histogram=='show'); //default hidden
+        const blog_histogram=(items.blog_histogram !== undefined || items.blog_histogram=='hide'); //default hidden
         const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
+
+        const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
+        const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
+        const last_post_url=items.last_post_url;
 
         var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
         var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
@@ -67,6 +71,10 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
         var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
         var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
+
+
+        checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);
+        checkLastPost(last_post_url, me);
 
         console.log('Starting features...');
         if(delegation&&(steemit||busy))
@@ -112,6 +120,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
           if(md_editor_beautifier)
             chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
         }
+
 
         console.log('Features started...');
         $(document).click(function(){
@@ -192,4 +201,122 @@ function makeToken() {
   for (var i = 0; i < 10; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   return text;
+}
+
+function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time){
+
+  if(!smi_installed_remind_me)
+    return;
+
+  if(smi_installed_remind_me_time==undefined || date_diff_indays(smi_installed_remind_me_time, Date.now()) >= 1)
+
+  if($('body')[0].dataset.SteemitMoreInfoExtensionId !== null && $('body')[0].dataset.SteemitMoreInfoExtensionId !== undefined)
+  {
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-full-width",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": 0,
+        "extendedTimeOut": 0,
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "tapToDismiss": false
+      };
+      toastr.info('We detected that you also use Steemit More Info! </br> As of Version 2.5, SteemPlus has integrated and fixed all of the main Steemit More Info features. To avoid duplicate features, you can either uninstall Steemit More Info, or deactivate this feature SteemPlus (Click on the popup -> Settings -> Steemit More Info). </br>'+
+                    'You can get more information about this release <a href="https://steemit.com/@steem-plus">here</a>.</br>'+
+                    'Happy Steeming with SteemPlus!<br /><br /><button class="btn btn-primary" id="SMIRML">Remind Me Later</button> <button id="SMIGI" class="btn btn-primary">Got It</button>', "Message from SteemPlus");
+
+      $('#SMIGI').click(function(){
+        console.log('got it clicked');
+        // chrome.storage.local.set({
+        //   smi_installed_remind_me:false
+        // });
+        $(this).parent().parent().remove();
+      });
+
+      $('#SMIRML').click(function(){
+        console.log('remind me later clicked');
+        chrome.storage.local.set({
+          smi_installed_remind_me:true,
+          smi_installed_remind_me_time:Date.now()
+        });
+        $(this).parent().parent().remove();
+      });
+  }
+
+}
+
+function date_diff_indays(date1, date2) {
+  dt1 = new Date(date1);
+  dt2 = new Date(date2);
+  return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24));
+}
+
+function checkLastPost(last_post_url, me)
+{
+  console.log(last_post_url);
+  steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
+    console.log(result[0]);
+    console.log(me);
+    if(last_post_url == undefined || last_post_url !== result[0].url)
+    {
+      toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-full-width",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": 0,
+        "extendedTimeOut": 0,
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "tapToDismiss": false
+      };
+      toastr.info('Thanks for using SteemPlus!<br />'+
+                  'We just released a new post that you might be interested about: ' + result[0].title +
+                  '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
+                  (me.account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
+
+      $('#new_post_yes').click(function(){
+        chrome.storage.local.set({
+          last_post_url:result[0].url
+        });
+        $(this).parent().parent().remove();
+        window.location.replace("https://steemit.com"+result[0].url);
+      });
+
+      $('#new_post_no').click(function(){
+        chrome.storage.local.set({
+          last_post_url:result[0].url
+        });
+        $(this).parent().parent().remove();
+      });
+
+      $('#vote_as_witness').click(function(){
+        var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
+        if (win) {
+            //Browser has allowed it to be opened
+            win.focus();
+        } else {
+            //Browser has blocked it
+            alert('Please allow popups for this website');
+        }
+      });
+    }
+  });
+
 }

@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.5.0.2",
+  "version": "2.5.0.3",
 
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -21,7 +21,6 @@
     "webRequest",
     "webRequestBlocking"
   ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "commands": {
     "busyfy": {
       "suggested_key": {
@@ -62,8 +61,8 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js", "vendor/HtmlReady.js", "vendor/Chart.min.js", "vendor/toastr.min.js",
-        "vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js",
+      "js": ["vendor/jquery.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js",  "vendor/Chart.min.js", "vendor/toastr.min.js",
+        "vendor/smi/HtmlReady.js","vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js",
         "main.js",
         "src/js/loginSteemPlus.js",
         "src/js/delegate.js",
@@ -99,7 +98,6 @@
         "src/css/transferTo.css",
         "src/css/oneup.css",
         "src/css/steemit_more_info.css"],
-
       "run_at": "document_idle"
     }
   ]

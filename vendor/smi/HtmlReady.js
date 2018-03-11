@@ -238,9 +238,7 @@ const NATURAL_SIZE = '0x0/';
 
 
 const noop = function () {}
-const DOMParser = new xmldom.DOMParser({
-    errorHandler: {warning: noop, error: noop}
-})
+const DOMParser = new xmldom.DOMParser()
 const XMLSerializer = new xmldom.XMLSerializer()
 
 /**

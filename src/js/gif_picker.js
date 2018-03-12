@@ -245,6 +245,10 @@
     if(textarea.hasClass('smi-gif-picker-textarea')){
       return;
     }
+
+    if($('.smi-gif-picker-button-container').length > 0)
+      return;
+
     textarea.addClass('smi-gif-picker-textarea');
     var pickerButtonContainer = $('<div class="smi-gif-picker-button-container">\
       <button class="button">GIF</button>\

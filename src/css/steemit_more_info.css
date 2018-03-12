@@ -12,6 +12,11 @@
     display: flex;
 }
 
+.Voting__voters_list ul{
+  overflow: scroll;
+  max-height: 400px;
+}
+
 
 /* vote tab */
 

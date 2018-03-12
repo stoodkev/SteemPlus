@@ -73,6 +73,11 @@
 .switch-field label:last-of-type {
   border-radius: 0 4px 4px 0;
 }
+
+.theme-dark .switch-field label {
+  color: #1a5099;
+}
+
 .UserProfile__tab_content_VotesTab {
   padding-bottom: 60px;
 }
@@ -159,6 +164,10 @@
   display: block;
   padding-top: 3px;
   font-size: 0.8em;
+}
+
+.theme-dark .UserProfile__top-nav .smi-external-links-menu .dropdown-pane > span {
+  color: black;
 }
 .UserProfile__top-nav .smi-external-links-menu .menu>li>a {
   transition: none;
@@ -333,6 +342,34 @@ span.after-downvote-total-dollar {
 .dtff{
   width: 100% !important;
 }
+
+.theme-dark .smi-followers-table-body .odd td{
+  color: #1C252B;
+}
+
+.theme-dark .smi-followers-table-body .even .button.hollow.primary {
+  color: white;
+  border: 1px solid white;
+}
+.theme-dark .smi-followers-table-body .button.hollow.primary:hover {
+  color: #06D6A9;
+  border: 1px solid #06D6A9;
+}
+
+.theme-dark .smi-followers-table-wrapper .dataTables_info {
+  color: white;
+}
+
+.theme-dark .smi-followers-table-wrapper .dataTables_paginate .paginate_button{
+  color: white !important;
+}
+
+.theme-dark .smi-followers-table-wrapper .dataTables_paginate .paginate_button.current{
+  color: #1C252B !important;
+}
+
+
+
 
 
 /* Submit page */
@@ -784,7 +821,7 @@ form.vframe2{
 }
 
 
-/* test */
+/* search-bar theme-dark */
 
 .theme-light .icon-button__svg_sp {
   fill: white;

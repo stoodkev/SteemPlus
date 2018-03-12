@@ -87,9 +87,9 @@ console.log('displaypopover');
 				var fullInHours = parseInt((minutesNeeded - fullInDays*1440)/60);
 				var fullInMinutes = parseInt((minutesNeeded - fullInDays*1440 - fullInHours*60));
 
-				fullInString =  (fullInDays===0 ? '' : fullInDays + ' days ') +
-				 				(fullInHours===0 ? '' : fullInHours + ' hours ') +
-				 				(fullInMinutes===0 ? '' : fullInMinutes + ' minutes');
+				fullInString =  (fullInDays===0 ? '' : fullInDays + (fullInDays>1 ? ' days ' : 'day ')) +
+				 				(fullInHours===0 ? '' : fullInHours + (fullInHours>1 ? ' hours ' : 'hour ')) +
+				 				(fullInMinutes===0 ? '' : fullInMinutes + (fullInMinutes>1 ? ' minutes ' : 'minute'));
 			}
 
 

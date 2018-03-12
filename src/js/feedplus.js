@@ -283,7 +283,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                      '<div class="filters"><div class="category_filter"><img src="' + more + '"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed"><br>' +
                      '<input type="checkbox" id="voted_check" ><label for="voted_check">Hide upvoted </label></div></div>' +
                      '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr><div class="parameters">Posts: <input id="nb_posts" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
-                     '<button id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
+                     '<button class="button" id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
 
                      $(menu_feedplus).html(filters);
                      $('.loader_2').hide();
@@ -314,12 +314,12 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                          if (elt.voted) {
                              upvoted = "Voting__button--upvoted";
                          }
-
+                            
                          posts += '<li style="list-style-type: none;"><article class="PostSummary hentry with-image " itemscope="" itemtype="http://schema.org/blogPost"></div>';
                          if (elt.resteem !== '') posts += '<div class="PostSummary__reblogged_by"><span class="Icon reblog" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg></span><!-- react-text: 363 --> <!-- /react-text --><!-- react-text: 364 -->Resteemed by<!-- /react-text --><!-- react-text: 365 --> <!-- /react-text --><span class="UserNames"><a target="_blank" href="/@' + elt.resteem + '">' + elt.resteem + '</a></span></div>';
                          posts += '<div class="PostSummary__header show-for-small-only"><h3 class="entry-title"><a target="_blank" href="' +
                              elt.url + '"><!-- react-text: 187 -->' + elt.title + '<!-- /react-text --></a></h3></div><div class="PostSummary__time_author_category_small show-for-small-only">' +
-                             '<span class="vcard"><a target="_blank" href="' + elt.url + '"><span title="' + elt.date.replace('T', ' ') + '" class="updated"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></a>' +
+                             '<span class="vcard"><a class="" target="_blank" href="' + elt.url + '"><span title="' + elt.date.replace('T', ' ') + '" class="updated"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></a>' +
                              '<!-- react-text: 193 --> <!-- /react-text --><!-- react-text: 194 -->by<!-- /react-text --><!-- react-text: 195 --> <!-- /react-text --><span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person"><strong>' +
                              '<a target="_blank" href="/@' + elt.username + '">' + elt.username + '</a></strong><!-- react-text: 199 --> <!-- /react-text --><span class="Reputation" title="Reputation">' + list_authors.find(function (e) {
                                  return e.username === elt.username

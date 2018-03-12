@@ -235,7 +235,6 @@ function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time){
                       'Happy Steeming with SteemPlus!<br /><br /><button class="btn btn-primary" id="SMIRML">Remind Me Later</button> <button id="SMIGI" class="btn btn-primary">Got It</button>', "Message from SteemPlus");
 
         $('#SMIGI').click(function(){
-          console.log('got it clicked');
           chrome.storage.local.set({
             smi_installed_remind_me:false
           });
@@ -243,7 +242,6 @@ function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time){
         });
 
         $('#SMIRML').click(function(){
-          console.log('remind me later clicked');
           chrome.storage.local.set({
             smi_installed_remind_me:true,
             smi_installed_remind_me_time:Date.now()
@@ -286,7 +284,7 @@ function checkLastPost(last_post_url, me)
         "tapToDismiss": false
       };
       toastr.info('Thanks for using SteemPlus!<br />'+
-                  'We just released a new post that you might be interested about: ' + result[0].title +
+                  'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
                   '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
                   (me.account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
 

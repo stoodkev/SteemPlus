@@ -20,7 +20,7 @@
       if(request.order==='start'&&token_search_bar==null)
       {
         token_search_bar=request.token;
-        svg=$('.search-input__icon');
+        //svg=$('.search-input__icon');
         replaceHeaderSearch();
 
         $('body').on('click', function(e) {
@@ -108,14 +108,15 @@
           <iframe src="/static/search.html"></iframe>\
         </div>\
       </div>\
-      <a href="" class="smi-search-button">\
+      <a href="" class="search-input_sp">\
+        <svg class="icon-button__svg_sp" width="42" height="42" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g><circle class="icon-button_sp icon-button__border_sp" cx="16" cy="16" r="15"></circle><path stroke-width="1" class="icon-button icon-button__search" d="M14.3681591,18.5706017 L11.3928571,21.6 L14.3681591,18.5706017 C13.273867,17.6916019 12.5714286,16.3293241 12.5714286,14.8 C12.5714286,12.1490332 14.6820862,10 17.2857143,10 C19.8893424,10 22,12.1490332 22,14.8 C22,17.4509668 19.8893424,19.6 17.2857143,19.6 C16.1841009,19.6 15.1707389,19.215281 14.3681591,18.5706017 Z" id="icon-svg"></path></g></svg>\
       </a>\
     </div>');
 
-    var button = container.find('.smi-search-button');
+    var button = container.find('.search-input_sp');
     var input = container.find('.smi-input');
 
-    svg.appendTo(button);
+    // svg.appendTo(button);
 
     button.on('click', function(e){
       e.preventDefault();

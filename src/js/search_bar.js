@@ -1,6 +1,7 @@
 
   var token_search_bar=null;
   var aut=null;
+  var svg=null;
 
   var iframeStyle = `
     body, html { height: 100vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -19,6 +20,7 @@
       if(request.order==='start'&&token_search_bar==null)
       {
         token_search_bar=request.token;
+        svg=$('.search-input__icon');
         replaceHeaderSearch();
 
         $('body').on('click', function(e) {
@@ -28,6 +30,7 @@
           }
           $('.smi-search-container').removeClass('smi-search-open');
         });
+
         $('.Header__search--desktop').children()[0].remove();
         $('.Header__search').remove();
       }
@@ -95,7 +98,6 @@
     }
   };
 
-  
 
 
   function createSearchUI() {
@@ -107,14 +109,13 @@
         </div>\
       </div>\
       <a href="" class="smi-search-button">\
-        <span class="Icon search" style="display: inline-block; width: 1.12rem; height: 1.12rem;">\
-          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" xml:space="preserve"><path d="M344.5,298c15-23.6,23.8-51.6,23.8-81.7c0-84.1-68.1-152.3-152.1-152.3C132.1,64,64,132.2,64,216.3 c0,84.1,68.1,152.3,152.1,152.3c30.5,0,58.9-9,82.7-24.4l6.9-4.8L414.3,448l33.7-34.3L339.5,305.1L344.5,298z M301.4,131.2 c22.7,22.7,35.2,52.9,35.2,85c0,32.1-12.5,62.3-35.2,85c-22.7,22.7-52.9,35.2-85,35.2c-32.1,0-62.3-12.5-85-35.2 c-22.7-22.7-35.2-52.9-35.2-85c0-32.1,12.5-62.3,35.2-85c22.7-22.7,52.9-35.2,85-35.2C248.5,96,278.7,108.5,301.4,131.2z"></path></svg>\
-        </span>\
       </a>\
     </div>');
 
     var button = container.find('.smi-search-button');
     var input = container.find('.smi-input');
+
+    svg.appendTo(button);
 
     button.on('click', function(e){
       e.preventDefault();

@@ -210,49 +210,47 @@ function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time){
     return;
 
   if(smi_installed_remind_me_time==undefined || date_diff_indays(smi_installed_remind_me_time, Date.now()) >= 1)
+    if($('body')[0].dataset.SteemitMoreInfoExtensionId !== null && $('body')[0].dataset.SteemitMoreInfoExtensionId !== undefined)
+    {
+        toastr.options = {
+          "closeButton": false,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": false,
+          "positionClass": "toast-top-full-width",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": 0,
+          "extendedTimeOut": 0,
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut",
+          "tapToDismiss": false
+        };
+        toastr.info('We detected that you also use Steemit More Info! </br> As of Version 2.5, SteemPlus has integrated and fixed all of the main Steemit More Info features. To avoid duplicate features, you can either uninstall Steemit More Info, or deactivate this feature SteemPlus (Click on the popup -> Settings -> Steemit More Info). </br>'+
+                      'You can get more information about this release <a href="https://steemit.com/@steem-plus">here</a>.</br>'+
+                      'Happy Steeming with SteemPlus!<br /><br /><button class="btn btn-primary" id="SMIRML">Remind Me Later</button> <button id="SMIGI" class="btn btn-primary">Got It</button>', "Message from SteemPlus");
 
-  if($('body')[0].dataset.SteemitMoreInfoExtensionId !== null && $('body')[0].dataset.SteemitMoreInfoExtensionId !== undefined)
-  {
-      toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-full-width",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": 0,
-        "extendedTimeOut": 0,
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut",
-        "tapToDismiss": false
-      };
-      toastr.info('We detected that you also use Steemit More Info! </br> As of Version 2.5, SteemPlus has integrated and fixed all of the main Steemit More Info features. To avoid duplicate features, you can either uninstall Steemit More Info, or deactivate this feature SteemPlus (Click on the popup -> Settings -> Steemit More Info). </br>'+
-                    'You can get more information about this release <a href="https://steemit.com/@steem-plus">here</a>.</br>'+
-                    'Happy Steeming with SteemPlus!<br /><br /><button class="btn btn-primary" id="SMIRML">Remind Me Later</button> <button id="SMIGI" class="btn btn-primary">Got It</button>', "Message from SteemPlus");
-
-      $('#SMIGI').click(function(){
-        console.log('got it clicked');
-        // chrome.storage.local.set({
-        //   smi_installed_remind_me:false
-        // });
-        $(this).parent().parent().remove();
-      });
-
-      $('#SMIRML').click(function(){
-        console.log('remind me later clicked');
-        chrome.storage.local.set({
-          smi_installed_remind_me:true,
-          smi_installed_remind_me_time:Date.now()
+        $('#SMIGI').click(function(){
+          console.log('got it clicked');
+          chrome.storage.local.set({
+            smi_installed_remind_me:false
+          });
+          $(this).parent().parent().remove();
         });
-        $(this).parent().parent().remove();
-      });
-  }
 
+        $('#SMIRML').click(function(){
+          console.log('remind me later clicked');
+          chrome.storage.local.set({
+            smi_installed_remind_me:true,
+            smi_installed_remind_me_time:Date.now()
+          });
+          $(this).parent().parent().remove();
+        });
+    }
 }
 
 function date_diff_indays(date1, date2) {

@@ -245,12 +245,17 @@
     if(textarea.hasClass('smi-gif-picker-textarea')){
       return;
     }
+
+    console.log(textarea["0"].parentElement);
+    console.log(textarea["0"].parentElement.childNodes);
+    //if(textarea.parents.find('.smi-gif-picker-button-container'))
+
+
     textarea.addClass('smi-gif-picker-textarea');
     var pickerButtonContainer = $('<div class="smi-gif-picker-button-container">\
       <button class="button">GIF</button>\
     </div>');
-    $("div.ReplyEditor__body").after(pickerButtonContainer);
-    // textarea.after(pickerButtonContainer);
+    textarea.after(pickerButtonContainer);
 
     var button = pickerButtonContainer.find('button');
     button.on('click', function() {

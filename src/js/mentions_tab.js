@@ -177,10 +177,15 @@
             url: 'https://query.steemdata.com/' + what + '?where={"$text":{"$search":"\\"@' + name + '\\""}}&sort=-created&page=' + (from+1),
             success: function(msg) {
               console.log(msg);
-              successCb(what, msg)
+              successCb(what, msg);
             },
             error: function(msg) {
-              alert(msg.responseJSON.error);
+              console.log(msg);
+              var errorLabel = document.createElement('h2');
+              errorLabel.class = 'articles__h1';
+              errorLabel.innerHTML = 'Looks like we are having trouble retrieving information from steemData. Please try again later.'
+              $('.MentionsTabLoading').hide();
+              $('.articles').prepend(errorLabel);
             }
           });
         }

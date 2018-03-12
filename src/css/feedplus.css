@@ -95,11 +95,12 @@ input::-webkit-inner-spin-button {
 }
 #validate_settings{
     margin-top: 3em;
-    border: solid #3498db 3px;
+    /*border: solid #3498db 3px;*/
     cursor: pointer;
     display: inline-block;
     padding: 1em;
 }
+
 .loader_2{vertical-align: middle;
     display: inline-block;}
 .loader_2 div{

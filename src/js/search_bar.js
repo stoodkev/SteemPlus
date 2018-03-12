@@ -1,6 +1,7 @@
 
   var token_search_bar=null;
   var aut=null;
+  var svg=null;
 
   var iframeStyle = `
     body, html { height: 100vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -19,6 +20,7 @@
       if(request.order==='start'&&token_search_bar==null)
       {
         token_search_bar=request.token;
+        //svg=$('.search-input__icon');
         replaceHeaderSearch();
 
         $('body').on('click', function(e) {
@@ -28,6 +30,7 @@
           }
           $('.smi-search-container').removeClass('smi-search-open');
         });
+
         $('.Header__search--desktop').children()[0].remove();
         $('.Header__search').remove();
       }
@@ -95,7 +98,6 @@
     }
   };
 
-  
 
 
   function createSearchUI() {
@@ -106,15 +108,15 @@
           <iframe src="/static/search.html"></iframe>\
         </div>\
       </div>\
-      <a href="" class="smi-search-button">\
-        <span class="Icon search" style="display: inline-block; width: 1.12rem; height: 1.12rem;">\
-          <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" xml:space="preserve"><path d="M344.5,298c15-23.6,23.8-51.6,23.8-81.7c0-84.1-68.1-152.3-152.1-152.3C132.1,64,64,132.2,64,216.3 c0,84.1,68.1,152.3,152.1,152.3c30.5,0,58.9-9,82.7-24.4l6.9-4.8L414.3,448l33.7-34.3L339.5,305.1L344.5,298z M301.4,131.2 c22.7,22.7,35.2,52.9,35.2,85c0,32.1-12.5,62.3-35.2,85c-22.7,22.7-52.9,35.2-85,35.2c-32.1,0-62.3-12.5-85-35.2 c-22.7-22.7-35.2-52.9-35.2-85c0-32.1,12.5-62.3,35.2-85c22.7-22.7,52.9-35.2,85-35.2C248.5,96,278.7,108.5,301.4,131.2z"></path></svg>\
-        </span>\
+      <a href="" class="search-input_sp">\
+        <svg class="icon-button__svg_sp" width="42" height="42" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><g><circle class="icon-button_sp icon-button__border_sp" cx="16" cy="16" r="15"></circle><path stroke-width="1" class="icon-button icon-button__search" d="M14.3681591,18.5706017 L11.3928571,21.6 L14.3681591,18.5706017 C13.273867,17.6916019 12.5714286,16.3293241 12.5714286,14.8 C12.5714286,12.1490332 14.6820862,10 17.2857143,10 C19.8893424,10 22,12.1490332 22,14.8 C22,17.4509668 19.8893424,19.6 17.2857143,19.6 C16.1841009,19.6 15.1707389,19.215281 14.3681591,18.5706017 Z" id="icon-svg"></path></g></svg>\
       </a>\
     </div>');
 
-    var button = container.find('.smi-search-button');
+    var button = container.find('.search-input_sp');
     var input = container.find('.smi-input');
+
+    // svg.appendTo(button);
 
     button.on('click', function(e){
       e.preventDefault();

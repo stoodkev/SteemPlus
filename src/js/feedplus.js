@@ -452,7 +452,8 @@ function FeedPlus(isSteemit,isBusy,feedp) {
          function SetListeners(isSteemit,isBusy,feedp){
              $( ".category_filter" ).each(function(i) {
                  $(this).on("click", function(){
-                     if ($(".filter_content")[i].style.display === "none") {
+                    console.log($(".filter_content")[i].style.display);
+                     if ($(".filter_content")[i].style.display === "none" || $(".filter_content")[i].style.display === "") {
                          $(".filter_content")[i].style.display = "block";
                      } else {
                          $(".filter_content")[i].style.display = "none";

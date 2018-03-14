@@ -15,17 +15,24 @@
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
-
-        window.SteemPlus.Tabs.createTab({
-          id: 'votes',
-          title: 'Votes',
-          enabled: true,
-          createTab: createVotesTab
-        });
-
+        startVotesTab();
+      }
+      else if(request.order==='click'&&token_vote_tab==request.token)
+      {
+        startVotesTab();
       }
     }
   });
+
+  function startVotesTab(){
+
+            window.SteemPlus.Tabs.createTab({
+              id: 'votes',
+              title: 'Votes',
+              enabled: true,
+              createTab: createVotesTab
+            });
+  }
 
 
   function createVotesTab(votesTab) {

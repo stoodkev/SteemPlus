@@ -142,16 +142,24 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
               if(rank&&steemit)
                 chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
-              if(steemit&&followers_table)
+              if(steemit&&followers_table&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
-              if(steemit&&boost_button)
+              if(steemit&&boost_button&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'click', data:{user:user}});
-              if(steemit&&md_editor_beautifier)
+              if(steemit&&md_editor_beautifier&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'click', data:{}});
-              if(steemit&&user_info_popover)
+              if(steemit&&user_info_popover&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'click',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
-              if(steemit&&blog_histogram)
+              if(steemit&&blog_histogram&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'click',data:{}});
+              if(post_floating_bottom_bar&&steemit&&steemit_more_info)
+                chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{}});
+              if(external_link_tab&&steemit&&steemit_more_info)
+                chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'click',data:{}});
+              if(mentions_tab&&steemit&&steemit_more_info)
+                chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
+              if(vote_weight_slider&&steemit&&steemit_more_info)
+                chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate, account:account}});
 
               url=window.location.href;
             }

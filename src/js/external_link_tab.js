@@ -6,32 +6,32 @@
 
   var externalLinks = [{
     title: 'Steemd.com',
-    href: function(username) { 
-      return 'https://steemd.com/@' + username; 
+    href: function(username) {
+      return 'https://steemd.com/@' + username;
     }
   }, {
     title: 'SteemDB.com',
-    href: function(username) { 
-      return 'https://steemdb.com/@' + username; 
+    href: function(username) {
+      return 'https://steemdb.com/@' + username;
     }
   }, {
     title: 'SteemTracked',
-    href: function(username) { 
-      return 'https://steemtracked.com/@' + username; 
+    href: function(username) {
+      return 'https://steemtracked.com/@' + username;
     }
   }, {
     title: 'Steem Followers',
-    href: function(username) { 
+    href: function(username) {
       return 'https://steem.makerwannabe.com/@' + username + '/followers/4';
     }
   }, {
     title: 'Potential Rewards',
-    href: function(username) { 
+    href: function(username) {
       return 'http://steem.supply/@' + username;
     }
   }, {
     title: 'Mentions',
-    href: function(username) { 
+    href: function(username) {
       return 'http://steemistry.com/steemit-mentions-tool/?mention=@' + username;
     }
   }, {
@@ -41,32 +41,32 @@
     }
   }, {
     title: 'Steem Whales',
-    href: function(username) { 
+    href: function(username) {
       return 'http://steemwhales.com/' + username;
     }
   }, {
     title: 'Steemit Board',
-    href: function(username) { 
+    href: function(username) {
       return 'http://steemitboard.com/board.html?user=' + username;
     }
   }, {
     title: 'SteemReports <small style="padding-left: 5px;">Top Voters</small>',
-    href: function(username) { 
+    href: function(username) {
       return 'http://www.steemreports.com/top-voters/@' + username;
     }
   }, {
     title: 'Utopian',
-    href: function(username) { 
+    href: function(username) {
       return 'https://utopian.io/@' + username;
     }
   }, {
     title: 'Steemian Wit',
-    href: function(username) { 
+    href: function(username) {
       return 'https://steemian.info/witnesses';
     }
   }, {
     title: 'Steem Bot Tracker',
-    href: function(username) { 
+    href: function(username) {
       return 'https://steembottracker.com';
     }
   }];
@@ -88,9 +88,13 @@
           }
         });
       }
+      else if(request.order==='click'&&token_external_link_tab==request.token)
+      {
+                addExternalLinksMenu();
+      }
     }
   });
-  
+
   function createMenuLinks(username) {
     return externalLinks.map(function(link){
       return '<li>\
@@ -134,7 +138,7 @@
       el = createMenu(menu, name);
       el.find('a.smi-open-menu').on('click', function(e) {
         e.preventDefault();
-        
+
         if($('.' + menuClass + ' .dropdown-pane').hasClass('is-open'))
         {
           $('.' + menuClass + ' .dropdown-pane').removeClass('is-open');
@@ -144,11 +148,8 @@
           el.find('.dropdown-pane').addClass('is-open');
         }
 
-        
+
       });
       menu.prepend(el);
     });
   };
-
-
-  

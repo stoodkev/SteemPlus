@@ -85,7 +85,8 @@
         "src/js/gif_picker.js",
         "src/js/user_info_popover.js",
         "src/js/blog_histogram.js",
-        "src/js/md_editor_beautifier.js"],
+        "src/js/md_editor_beautifier.js",
+        "src/js/post_floating_bottom_bar.js"],
 
       "css":["vendor/bootstrap.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",

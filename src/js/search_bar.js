@@ -48,7 +48,10 @@
 
     html.append('<style>' + iframeStyle + '</style>');
 
-    html.on('click', 'a', function(e) {
+
+
+    html.unbind( "click" ).on('click', 'a', function(e) {
+      
       var a = $(e.currentTarget);
       if(a.parent().is('.gs-spelling')){
         return;
@@ -57,7 +60,15 @@
       var ctorig = a.data('ctorig');
       var url = a.attr('href');
       if(ctorig && ctorig.startsWith('https://steemit.com/')) {
-        window.SteemPlus.Utils.navigate(ctorig);
+
+        var win = window.open(ctorig, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            alert('Please allow popups for this website');
+        }
+
+
       }else{
         var openWindow = window.open();
         openWindow.opener = null;

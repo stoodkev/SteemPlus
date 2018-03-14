@@ -180,7 +180,7 @@ function postBeneficiaries()
 
   console.log(operations);
 
-   /*sc2.broadcast(
+   sc2.broadcast(
         operations,
         function(e, r) {
             if (e) {
@@ -192,5 +192,5 @@ function postBeneficiaries()
             } else {
                 window.location.replace('https://steemit.com');
             }
-        });*/
+        });
 }

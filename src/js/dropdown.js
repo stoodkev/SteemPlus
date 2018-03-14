@@ -8,7 +8,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return;
 
       setTimeout(function(){
-          if($('.dropdown-pane').length!==0)
+          console.log($('div > .dropdown-pane').parent());
+          if($('div > .dropdown-pane').length!==0)
           {
             var i=0;
             var li=document.createElement('li');
@@ -19,8 +20,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             li2.innerHTML='<a  href="/market"><span class="price" style="font-size:0.9em;"></span><span class="daily_change" style="font-size:0.75em; margin-left:2px"></span></a>';
             if($('.dropdown-pane .VerticalMenu .title').length!==0)
             {
-                $('.dropdown-pane .VerticalMenu').append(li);
-                $('.dropdown-pane .VerticalMenu').append(li2);
+                $('div > .dropdown-pane .VerticalMenu').append(li);
+                $('div > .dropdown-pane .VerticalMenu').append(li2);
             }
             var intr= null;
               DisplayPriceFeed(intr,i,market_d);

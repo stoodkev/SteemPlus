@@ -5,7 +5,7 @@
 var created_benef=false;
 var beneficiaries;
 const STEEM_PLUS_FEED=5;
-var aut=null;
+var autb=null;
 var token_benef=null;
 var communities=['minnowsupport',
                 'utopian-io',
@@ -13,7 +13,7 @@ var communities=['minnowsupport',
               ];
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='ben'){
-    aut=request.data.user;
+    autb=request.data.user;
     if(request.order==='start'&&token_benef==null)
     {
       token_benef=request.token;
@@ -127,17 +127,16 @@ function isEverythingFilled()
 
 function postBeneficiaries()
 {
-
+    console.log(autb);
     var tags=$(' input[tabindex=3]').eq(0).val().split(' ');
-    var author=aut;
+    var author=autb;
     var title=$('.vframe input').eq(0).val();
     var permlink=$('.vframe input').eq(0).val().toLowerCase()
         .replace(/ /g,'-')
         .replace(/[^\w-]+/g,'');
     var body=$('.vframe textarea').eq(0).val();
-    var sbdpercent=$(".vframe select option:selected").index()===0?0:10000;
-
-    if(communities.includes(aut))
+    var sbd_percent=$(".vframe select").eq(1).find(':selected').index()==0?0:10000;
+    if(communities.includes(autb))
       console.log('no fee');
     else
       beneficiaries.push({
@@ -168,7 +167,7 @@ function postBeneficiaries()
             author: author,
             permlink: permlink,
             max_accepted_payout: '100000.000 SBD',
-            percent_steem_dollars: sbdpercent,
+            percent_steem_dollars: sbd_percent,
             allow_votes: true,
             allow_curation_rewards: true,
             extensions: [
@@ -181,7 +180,7 @@ function postBeneficiaries()
 
   console.log(operations);
 
-   sc2.broadcast(
+   /*sc2.broadcast(
         operations,
         function(e, r) {
             if (e) {
@@ -193,5 +192,5 @@ function postBeneficiaries()
             } else {
                 window.location.replace('https://steemit.com');
             }
-        });
+        });*/
 }

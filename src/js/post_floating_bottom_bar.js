@@ -18,6 +18,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       makePostBottomBarFloating();
     }
 
+    if(request.to==='post_floating_bottom_bar'&&request.order==='click'&&token_post_floating_bottom_bar==request.token)
+    {
+      makePostBottomBarFloating();
+    }
+
+
 });
 
 
@@ -35,7 +41,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return;
       }
 
-      $('#post_overlay').on('scroll', function() {  
+      $('#post_overlay').on('scroll', function() {
         update();
       });
 
@@ -90,7 +96,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }else{
         if(footer.hasClass('smi-post-floating-footer')){
           footer.removeClass('smi-post-floating-footer');
-          if(isOverlay) {            
+          if(isOverlay) {
             footerWrapper.removeClass('smi-post-floating-footer-on-body').removeClass('row');
             footer.find('.smi-post-footer-wrapper-1').prepend(footerWrapper);
           }

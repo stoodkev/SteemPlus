@@ -15,17 +15,24 @@
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
 
-        window.SteemPlus.Tabs.createTab({
-          id: 'mentions',
-          title: 'Mentions',
-          enabled: true,
-          createTab: createMentionsTab
-        });
+        createTab();
+      }
+      if(request.order==='click'&&token_mention_tab==request.token)
+      {
+        createTab();
       }
     }
   });
 
-
+  function createTab()
+  {
+    window.SteemPlus.Tabs.createTab({
+      id: 'mentions',
+      title: 'Mentions',
+      enabled: true,
+      createTab: createMentionsTab
+    });
+  }
 
   function createMentionsTab(mentionsTab) {
     mentionsTab.html('<div class="row">\

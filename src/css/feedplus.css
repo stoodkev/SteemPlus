@@ -196,3 +196,7 @@ li.big-view .PostSummary__footer{
   padding-bottom:15px;
   padding-top:15px;
   border-bottom:#06D6A9 2px solid;}
+
+.theme-dark .filter_content input {
+  background-color: white;
+}

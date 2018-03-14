@@ -77,7 +77,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);
         checkLastPost(last_post_url, me);
 
-        console.log('Starting features...');
+        console.log('Starting features...',user);
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests},user:user} });
         if(transfers&&(steemit||busy))
@@ -121,7 +121,6 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
           if(md_editor_beautifier)
             chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
         }
-
 
         console.log('Features started...');
         $(document).click(function(){

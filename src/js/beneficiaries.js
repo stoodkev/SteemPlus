@@ -127,7 +127,7 @@ function isEverythingFilled()
 
 function postBeneficiaries()
 {
-
+    console.log(aut);
     var tags=$(' input[tabindex=3]').eq(0).val().split(' ');
     var author=aut;
     var title=$('.vframe input').eq(0).val();

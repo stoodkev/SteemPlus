@@ -3,7 +3,7 @@ var rewardBalance=null;
 var recentClaims=null;
 var steemPrice=null;
 var votePowerReserveRate=null;
-var userNameRegEx = /^.*@([a-z][a-z0-9\-]+[a-z0-9])\/*/;
+var userNameRegEx = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])\/*/;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='user_info_popover'&&request.order==='start'&&token_user_info_popover==null)

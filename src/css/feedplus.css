@@ -200,3 +200,17 @@ li.big-view .PostSummary__footer{
 .theme-dark .filter_content input {
   background-color: white;
 }
+
+.PostSummary__header > h3 > a {
+  color: #4ba2f2 !important;
+}
+
+.PostSummary__header > h3 > a:visited {
+  color: #4ba2f2 !important;
+}
+
+.PostSummary__header > h3 > a:hover {
+  color: #53a5ef !important;
+}
+
+

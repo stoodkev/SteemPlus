@@ -12,6 +12,8 @@ var show_posts=0;
 var html_posts=[];
 var token_fp=null;
 var style_view='list';
+const noImageAvailable = "src/img/no-image-available-hi.png";
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='feedp'&&request.order==='start'&&token_fp==null){
@@ -129,8 +131,10 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                         var voted=false,checked=false;
                         if(elt.author=='utopian-io')
                         elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
-
-                        list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
+                        var urlImage=null;
+                        urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
+                        if(urlImage==='') urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("thumbnail") ? JSON.parse(elt.json_metadata).thumbnail : '';
+                        list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage ,elt.url,voted));
                         $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+feedp.nb_posts*100);
                     }
                 });
@@ -220,30 +224,37 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                          return b.votes-a.votes;
                  }
              });
-
              var tmp= [];
-             tmp.push(list_posts.find(function (e){return (e.username==='steem-plus')}));
+             tmp.push(list_posts.find(function (e){return (e.username==='stoodkev')}));
+            if(tmp.length!==0&&tmp[0]!==undefined)
+            {
+                filtered_list.forEach(function (elt, i, a) {
+                    if(elt.url === tmp[0].url)
+                        a.splice(i, 1);
+                });
+                if(tmp[0].voted===false){
+                    filtered_list=[tmp[0]].concat(filtered_list);
+                    ad=true;
+                }
+                Display(isSteemit,isBusy,feedp);
+            }
+            else
+            {
+             steem.api.getDiscussionsByAuthorBeforeDate('stoodkev',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
+                 if(result[0]!==undefined) {
+                     tmp= [];
+                     var elt=result[0];
+                     list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
+                     var voted=false;
+                     elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
+                     tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
+                     if(elt.pending_payout_value!=='0.000 SBD'&&voted===false)
+                     {filtered_list=tmp.concat(filtered_list);
+                     ad=true;}
+                 }
 
-             if(tmp.length!==0&&tmp[0]!==undefined)
-                {if(tmp[0].voted===false){filtered_list=[tmp[0]].concat(filtered_list); ad=true; }Display(isSteemit,isBusy,feedp);}
-                else
-             {
-
-                     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
-                         if(result[0]!==undefined) {
-                             tmp= [];
-                             var elt=result[0];
-                             list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
-                             var voted=false;
-                             elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
-                             tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
-                             if(elt.pending_payout_value!=='0.000 SBD'&&voted===false)
-                             {filtered_list=tmp.concat(filtered_list);
-                             ad=true;}
-                         }
-
-                         Display(isSteemit,isBusy,feedp);
-                     });
+                 Display(isSteemit,isBusy,feedp);
+             });
              }
 
 
@@ -251,6 +262,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
          function Display(isSteemit,isBusy,feedp)
          {
+
              document.title ='Feed+';
 
              if(first_display) {
@@ -311,6 +323,24 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              +bd.substring(0,138)+'...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>'+elt.payout.split(' ')[0]+'</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link '+active+'"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>'+elt.votes+'</span><span></span></span></span></span></div></div></div></div></div></div>'
                          }
                      else if(isSteemit) {
+                        var imgUrlFeedPlus = null;
+                        
+                        if(elt.img.includes('imgur'))
+                        {
+                            imgUrlFeedPlus = 'https://steemitimages.com/0x0/' + elt.img;
+                        }
+                        else if(elt.img.includes('https') || elt.img.includes('http'))
+                        {
+                            imgUrlFeedPlus = elt.img;
+                        }
+                        else if(elt.img==='')
+                        {
+                            imgUrlFeedPlus = chrome.extension.getURL(noImageAvailable);
+                        }
+                        else
+                        {
+                            imgUrlFeedPlus = 'https://steemitimages.com/256x512/' + elt.img;
+                        }
                          if (elt.voted) {
                              upvoted = "Voting__button--upvoted";
                          }
@@ -324,7 +354,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              '<a target="_blank" href="/@' + elt.username + '">' + elt.username + '</a></strong><!-- react-text: 199 --> <!-- /react-text --><span class="Reputation" title="Reputation">' + list_authors.find(function (e) {
                                  return e.username === elt.username
                              }).reputation + '</span></span><!-- react-text: 201 --> <!-- /react-text --><!-- react-text: 202 -->in<!-- /react-text --><!-- react-text: 203 --> <!-- /react-text --><strong><a target="_blank" href="/trending/' +
-                             elt.tags[0] + '">' + elt.tags[0] + '</a></strong></span></div><span class="PostSummary__image" style="background-image: url(' + elt.img + ');"></span><div class="PostSummary__content"><div class="PostSummary__header show-for-medium"><h3 class="entry-title">' +
+                             elt.tags[0] + '">' + elt.tags[0] + '</a></strong></span></div><span class="PostSummary__image" style="background-image: url(\'' + imgUrlFeedPlus + '\');"></span><div class="PostSummary__content"><div class="PostSummary__header show-for-medium"><h3 class="entry-title">' +
                              '<a target="_blank" href="' + elt.url + '"><!-- react-text: 211 -->' + elt.title + '<!-- /react-text --></a></h3></div><div class="PostSummary__body entry-content"><a target="_blank" href="' + elt.url + '">' + bd.substring(0,120) + '</a></div><div class="PostSummary__footer">' +
                              '<span class="Votin"><span class="Voting__inner"><span id="'+i+'"class="Voting__button Voting__button-up ' + upvoted + '"><span class="Icon chevron-up-circle" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg></span></span><div class="DropdownMenu"><a href="#"><span style="opacity: 1;"><span class="prefix">$</span>' + elt.payout.split(' ')[0] + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span></a><ul class="VerticalMenu menu vertical VerticalMenu"><li>' +
                              '<span><!-- react-text: 231 -->Pending Payout ' + elt.payout.split(' ')[0] + '<!-- /react-text --></span></li><li><span><span title="' + elt.date.replace('T', ' ') + '"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></span></li><li><span></span></li></ul></div></span></span><span class="VotesAndComments"><span class="VotesAndComments__votes" title="' +
@@ -382,9 +412,13 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                          add_blacklist.onclick = function (arg) {
                              return function () {
                                  if(isSteemit)
-                                 feedp.blacklist += " " + $(reblog)[arg].childNodes[$(reblog)[arg].childNodes.length - 2].firstChild.innerHTML;
-                                 else
-                                     feedp.blacklist += " " +$(reblog)[arg].firstChild.innerHTML;
+                                 {
+                                    if(!feedp.blacklist.includes($(reblog)[arg].childNodes[$(reblog)[arg].childNodes.length - 2].firstChild.innerHTML))
+                                        feedp.blacklist += " " + $(reblog)[arg].childNodes[$(reblog)[arg].childNodes.length - 2].firstChild.innerHTML;
+                                 }
+                                 else{
+                                    feedp.blacklist += " " +$(reblog)[arg].firstChild.innerHTML;
+                                }
                                  chrome.storage.local.set({
                                      blacklist: feedp.blacklist
                                  });
@@ -401,6 +435,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  if (ad) {
                      ad = false;
                      $(ad_post).css('color', ' #4ba2f2');
+                     $(ad_post).css('margin-bottom', ' 4em');
                      $(ad_post).html($(ad_post).html() + ' - Sponsored');
                  }
 
@@ -441,7 +476,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
          function DisableMenu(isDisabled)
          {
-           $(".PostsIndex__topics input,textarea,select").prop("disabled",isDisabled);
+           // $(".PostsIndex__topics input,textarea,select").prop("disabled",isDisabled);
            if(isDisabled)
                $('.loader_2').show();
            else
@@ -451,8 +486,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
          function SetListeners(isSteemit,isBusy,feedp){
              $( ".category_filter" ).each(function(i) {
-                 $(this).on("click", function(){
-                    console.log($(".filter_content")[i].style.display);
+                 $(this).unbind('click').on("click", function(){
                      if ($(".filter_content")[i].style.display === "none" || $(".filter_content")[i].style.display === "") {
                          $(".filter_content")[i].style.display = "block";
                      } else {
@@ -463,7 +497,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
 
         //Sort by
-             $("#sort").change(function() {
+             $("#sort").unbind('change').change(function() {
                  feedp.sort=$( "#sort option:selected" ).val();
                  chrome.storage.local.set({
                      sort:feedp.sort
@@ -474,7 +508,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
         //Tags
-             $(document).on("change","input[name=tag]",function(){
+             $(document).unbind('change').on("change","input[name=tag]",function(){
                  feedp.tag=$("input[name=tag]:checked").val();
                  chrome.storage.local.set({
                      tag:feedp.tag
@@ -485,7 +519,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
 
-             $("#list_tags").blur(function(){
+             $("#list_tags").unbind('blur').blur(function(){
                 feedp.list_tags =document.getElementById('list_tags').value;
                  chrome.storage.local.set({
                  list_tags: feedp.list_tags
@@ -494,7 +528,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
         //Handles Resteem Parameters
-             $(document).on("change","input[name=resteem]",function(){
+             $(document).unbind('change').on("change","input[name=resteem]",function(){
                  feedp.resteem=$("input[name=resteem]:checked").val();
                  chrome.storage.local.set({
                      resteem:feedp.resteem
@@ -502,13 +536,13 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                  HandleListsVisibility();
 
              });
-             $("#blacklist").blur(function(){
+             $("#blacklist").unbind('blur').blur(function(){
                  feedp.blacklist=document.getElementById('blacklist').value;
                  chrome.storage.local.set({
                  blacklist:feedp.blacklist
              });
                  });
-             $("#whitelist").blur(function(){
+             $("#whitelist").unbind('blur').blur(function(){
                  feedp.whitelist=document.getElementById('whitelist').value;
                      chrome.storage.local.set({
                  whitelist:feedp.whitelist
@@ -518,53 +552,52 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
         // Others
             //Reputation
-             $("#rep_feed").blur(function(){
+             $("#rep_feed").unbind('blur').blur(function(){
                  feedp.rep_feed=document.getElementById('rep_feed').value;
                  chrome.storage.local.set({
                  rep_feed:feedp.rep_feed
-             });
-                 });
-
-             document.getElementById("rep_feed_check").onclick = function() {
-                 feedp.rep_feed_check=document.getElementById('rep_feed_check').checked;
+                    });
+            });
+             $("#rep_feed_check").unbind('click').click(function(){
+                feedp.rep_feed_check=document.getElementById('rep_feed_check').checked;
                  chrome.storage.local.set({
                      rep_feed_check:feedp.rep_feed_check
                  });
                  HandleRepDisabled();
-             }
+             });
 
              //Upvoted
-             document.getElementById("voted_check").onclick = function() {
-                 feedp.voted_check=document.getElementById('voted_check').checked;
+
+             $("#voted_check").unbind('click').click(function(){
+                feedp.voted_check=document.getElementById('voted_check').checked;
                  chrome.storage.local.set({
                      voted_check:feedp.voted_check
                  });
-             }
+             });
 
-             $("#nb_posts").blur(function(){
+             $("#nb_posts").unbind('blur').blur(function(){
                  feedp.nb_posts=document.getElementById('nb_posts').value;
                  if(feedp.nb_posts!=='')
                  chrome.storage.local.set({
                      nb_posts:feedp.nb_posts
                  });});
 
-             $("#validate_settings").click(function(){
-
+             $("#validate_settings").unbind('click').click(function(){
                  DisableMenu(true);
                  Filter(isSteemit,isBusy,feedp);
              });
 
-             $( '#listfeed' ).click(function() {
+             $( '#listfeed' ).unbind('click').click(function() {
                 changeStyle('list');
              }); // click on list button
 
 
 
-             $( '#gridfeed' ).click(function() {
+             $( '#gridfeed' ).unbind('click').click(function() {
                   changeStyle('grid');
              }); // click on grid button
 
-             $( '#bigfeed' ).click(function() {
+             $( '#bigfeed' ).unbind('click').click(function() {
                 changeStyle('big');
              }); // click on big button
 

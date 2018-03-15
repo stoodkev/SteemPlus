@@ -213,4 +213,15 @@ li.big-view .PostSummary__footer{
   color: #53a5ef !important;
 }
 
+.PostsIndex__left > li:first-child{
+  margin-bottom: 4em;
+}
+
+.PostsIndex__left > li.big-view:first-child {
+    margin-bottom: 0;
+}
+
+.PostsIndex__left > li.grid-view:first-child {
+    margin-bottom: 0;
+}
 

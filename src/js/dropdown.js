@@ -8,7 +8,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return;
 
       setTimeout(function(){
-          console.log($('div > .dropdown-pane').parent());
           if($('div > .dropdown-pane').length!==0)
           {
             var i=0;

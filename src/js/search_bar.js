@@ -41,16 +41,16 @@
 
   function setupIframe(iframeWindow, doc){
     var html = doc.find('html');
-    // if(html.hasClass('smi-search-iframe-style')){
-    //   return;
-    // }
+    if(html.hasClass('smi-search-iframe-style')){
+      return;
+    }
     html.addClass('smi-search-iframe-style');
 
     html.append('<style>' + iframeStyle + '</style>');
 
 
 
-    html.unbind( "click" ).on('click', 'a', function(e) {
+    html.on('click', 'a', function(e) {
       
       var a = $(e.currentTarget);
       if(a.parent().is('.gs-spelling')){
@@ -85,20 +85,21 @@
     var iframeDoc = iframeWindow && iframeWindow.document;
     if(iframeDoc){
       if(iframeDoc.readyState == 'complete') {
-
         var doc = $(iframeDoc);
         setupIframe(iframeWindow, doc);
 
         if(search){
           var input = doc.find('input.gsc-input');
-          var submit = doc.find('.gsc-search-button input'); 
+          var submit = doc.find('button.gsc-search-button'); 
           if(input.length && submit.length){
             input.val(search);
+            console.log('test');
             submit.click();
           }
         }
 
       }else{
+
         $( iframeDoc ).ready(function() {
 
           var doc = $(iframeDoc);
@@ -116,7 +117,7 @@
       <div class="smi-input-container">\
         <input type="text" class="smi-input" placeholder="Search...">\
         <div class="smi-search-result-container">\
-          <iframe src="/static/search.html"></iframe>\
+          <iframe id="iframeSB" src="/static/search.html"></iframe>\
         </div>\
       </div>\
       <a href="" class="search-input_sp">\
@@ -178,10 +179,8 @@
     }
 
     var ui = createSearchUI();
-
     $('html').addClass('smi-header-search')
     searchEl.append(ui);
 
     openSearch(ui); //initialize
-
   };

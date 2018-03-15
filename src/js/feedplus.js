@@ -131,10 +131,12 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                         var voted=false,checked=false;
                         if(elt.author=='utopian-io')
                         elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
+                        
+
                         var urlImage=null;
                         urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
                         if(urlImage==='') urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("thumbnail") ? JSON.parse(elt.json_metadata).thumbnail : '';
-                        list_posts.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage ,elt.url,voted));
+                        list_posts.push(Posts(window.SteemPlus.Sanitize.postBodyShort(elt.body), elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage ,elt.url,voted));
                         $('#loading_status').html('Fetching posts <br><br>'+((feed_calls-1)*100+i+1)+' / '+feedp.nb_posts*100);
                     }
                 });
@@ -305,7 +307,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
 
                  var offset = new Date().getTimezoneOffset();
                  filtered_list.forEach(function (elt, i, a) {
-
                      var bd = elt.body.replace(/<[^>]*>?/g, '');
                      bd = bd.replace(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi, '');
                      bd = bd.replace(/!?\[[^\]]*\]\([^\)]*\)/g, '');

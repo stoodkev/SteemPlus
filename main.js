@@ -55,7 +55,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         const boost_button=(items.boost_button == undefined || items.boost_button=='show');
         const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
         const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
-        const blog_histogram=(items.blog_histogram !== undefined || items.blog_histogram=='hide'); //default hidden
+        const blog_histogram=(items.blog_histogram !== undefined && items.blog_histogram=='show'); //default hidden
         const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
         const post_floating_bottom_bar=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
           const post_floating_bottom_bar_size=items.post_floating_bottom_bar_size==undefined?'small':items.post_floating_bottom_bar_size;

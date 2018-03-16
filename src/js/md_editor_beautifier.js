@@ -43,8 +43,16 @@ function bindTextArea()
       bindTextArea();
     }, 1000);
   }
-  
+
+  $('textarea').on('paste', function () {
+    console.log('paste');
+    setTimeout(function () {
+      $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+    }, 500);
+  });
+
   $('textarea').bind('input propertychange', function(event){
+    console.log(event);
     if(event.currentTarget.value.length === 0){
       preview.remove();
       waitingForPreview = true;
@@ -53,16 +61,17 @@ function bindTextArea()
     }
     else
     {
-      console.log('added letter');
+      setTimeout(function(){
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+        console.log($('.MarkdownViewer')[0].innerHTML);
+      }, 500);
       waitingForPreview = false;
     }
   });
+  
 } 
 
 function setupPreview(){
-  $('.MarkdownViewer').bind('DOMSubtreeModified', function(event) {
-    $('.MarkdownViewer > div')[1].innerHTML = $('.MarkdownViewer > div')[0].outerHTML;
-  });
 
   if(waitingForPreview || $('.Preview').length === 0)
   {
@@ -81,6 +90,7 @@ function setupPreview(){
   preview.id = 'mypreview';
   preview.addClass('Preview2');
   markdownSource.hide();
+  preview.find('MarkdownViewer').addClass('MarkdownViewer2');
 
   if($('.myrow').length > 0)
   {

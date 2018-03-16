@@ -407,6 +407,15 @@ span.after-downvote-total-dollar {
       padding-bottom: 0px;
     }
   }
+
+  .smi-gif-picker-textarea{
+    min-height: 400px;  
+  }
+
+  .MarkdownViewer {
+    max-height: 700px !important;
+    overflow: scroll !important;
+  }
 }
 
 

@@ -4,20 +4,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
     function startDropdown(market_d){
 
+      if($('.market-item').length > 0)
+        return;
+
       setTimeout(function(){
-          if($('.dropdown-pane').length!==0)
+          if($('div > .dropdown-pane').length!==0)
           {
             var i=0;
             var li=document.createElement('li');
             var li2=document.createElement('li');
             var xhttp = new XMLHttpRequest();
 
-            li.innerHTML='<a href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("src/img/steemblack.svg")+'"/></span>Market</a>';
+            li.innerHTML='<a class="market-item" href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("src/img/steemblack.svg")+'"/></span>Market</a>';
             li2.innerHTML='<a  href="/market"><span class="price" style="font-size:0.9em;"></span><span class="daily_change" style="font-size:0.75em; margin-left:2px"></span></a>';
             if($('.dropdown-pane .VerticalMenu .title').length!==0)
             {
-                $('.dropdown-pane .VerticalMenu').append(li);
-                $('.dropdown-pane .VerticalMenu').append(li2);
+                $('div > .dropdown-pane .VerticalMenu').append(li);
+                $('div > .dropdown-pane .VerticalMenu').append(li2);
             }
             var intr= null;
               DisplayPriceFeed(intr,i,market_d);

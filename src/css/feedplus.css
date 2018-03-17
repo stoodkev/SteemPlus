@@ -196,3 +196,32 @@ li.big-view .PostSummary__footer{
   padding-bottom:15px;
   padding-top:15px;
   border-bottom:#06D6A9 2px solid;}
+
+.theme-dark .filter_content input {
+  background-color: white;
+}
+
+.PostSummary__header > h3 > a {
+  color: #4ba2f2 !important;
+}
+
+.PostSummary__header > h3 > a:visited {
+  color: #4ba2f2 !important;
+}
+
+.PostSummary__header > h3 > a:hover {
+  color: #53a5ef !important;
+}
+
+.PostsIndex__left > li:first-child{
+  margin-bottom: 4em;
+}
+
+.PostsIndex__left > li.big-view:first-child {
+    margin-bottom: 0;
+}
+
+.PostsIndex__left > li.grid-view:first-child {
+    margin-bottom: 0;
+}
+

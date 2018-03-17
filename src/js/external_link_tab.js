@@ -15,11 +15,6 @@
       return 'https://steemdb.com/@' + username;
     }
   }, {
-    title: 'SteemTracked',
-    href: function(username) {
-      return 'https://steemtracked.com/@' + username;
-    }
-  }, {
     title: 'Steem Followers',
     href: function(username) {
       return 'https://steem.makerwannabe.com/@' + username + '/followers/4';
@@ -50,8 +45,8 @@
       return 'http://steemitboard.com/board.html?user=' + username;
     }
   }, {
-    title: 'SteemReports <small style="padding-left: 5px;">Top Voters</small>',
-    href: function(username) {
+    title: 'SteemReports',
+    href: function(username) { 
       return 'http://www.steemreports.com/top-voters/@' + username;
     }
   }, {

@@ -15,6 +15,11 @@
     "activeTab",
     "storage",
     "tabs",
+    // "https://steemit.com/*",
+    // "https://busy.org/*",
+    // "https://utopian.io/*",
+    // "https://bittrex.com/*",
+    // "https://v2.steemconnect.com",
     "http://*/*",
     "https://*/*",
     "webNavigation",
@@ -55,7 +60,8 @@
   "web_accessible_resources": [
     "src/img/*",
     "src/fonts/*",
-    "vendor/DataTables-1.10.16/images/*"
+    "vendor/DataTables-1.10.16/images/*",
+    "https://steemitimages.com/*"
   ],
 
   "content_scripts": [

@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.5.2.0",
+  "version": "2.5.3.0",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -15,11 +15,6 @@
     "activeTab",
     "storage",
     "tabs",
-    // "https://steemit.com/*",
-    // "https://busy.org/*",
-    // "https://utopian.io/*",
-    // "https://bittrex.com/*",
-    // "https://v2.steemconnect.com",
     "http://*/*",
     "https://*/*",
     "webNavigation",

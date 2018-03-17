@@ -201,11 +201,11 @@ li.big-view .PostSummary__footer{
   background-color: white;
 }
 
-.PostSummary__header > h3 > a {
+.theme-dark .PostSummary__header > h3 > a {
   color: #4ba2f2 !important;
 }
 
-.PostSummary__header > h3 > a:visited {
+.theme-dark .PostSummary__header > h3 > a:visited {
   color: #4ba2f2 !important;
 }
 
@@ -224,4 +224,3 @@ li.big-view .PostSummary__footer{
 .PostsIndex__left > li.grid-view:first-child {
     margin-bottom: 0;
 }
-

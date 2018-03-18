@@ -412,7 +412,7 @@ span.after-downvote-total-dollar {
     min-height: 400px;  
   }
 
-  .MarkdownViewer {
+  .MarkdownViewer2 {
     max-height: 700px !important;
     overflow: scroll !important;
   }

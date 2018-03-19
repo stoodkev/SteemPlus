@@ -1,5 +1,5 @@
 // Comment the following line in development mode to show logs in console.
-console.log = function() {};
+// console.log = function() {};
 
 
 

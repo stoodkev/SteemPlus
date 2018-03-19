@@ -19,6 +19,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startMDEditorPreview()
 {
 
+  $('textarea').addClass('smi-gif-picker-textarea2');
+
   if($('textarea').length > 0 && $('textarea')[0].textLength === 0)
   {
     waitingForPreview = true;

@@ -1,3 +1,8 @@
+// Comment the following line in development mode to show logs in console.
+console.log = function() {};
+
+
+
 var xhttp = new XMLHttpRequest();
 const steemit =(window.location.href.includes('steemit.com')||window.location.href.includes('mspsteem.com'));
 const busy =window.location.href.includes('busy.org');

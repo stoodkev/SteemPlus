@@ -131,7 +131,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                         var voted=false,checked=false;
                         if(elt.author=='utopian-io')
                         elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
-                        
+
 
                         var urlImage=null;
                         urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
@@ -323,9 +323,9 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              +'"><!-- react-text: 1921 -->'+elt.tags[0]+'<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="'+elt.url+'"><h2>'+elt.title+'</h2></a><a target="_blank" class="Story__content__preview" href="'+elt.url+'"><div><div class="Story__content__img-container"><img alt="post" src="'+elt.img+'"></div><div class="Story__content__body">'
                              +bd.substring(0,138)+'...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>'+elt.payout.split(' ')[0]+'</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link '+active+'"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>'+elt.votes+'</span><span></span></span></span></span></div></div></div></div></div></div>'
                          }
-                     else if(isSteemit) {
+                     else if(isSteemit&&elt.img!==undefined) {
                         var imgUrlFeedPlus = null;
-                        
+
                         if(elt.img.includes('imgur'))
                         {
                             imgUrlFeedPlus = 'https://steemitimages.com/0x0/' + elt.img;
@@ -345,7 +345,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                          if (elt.voted) {
                              upvoted = "Voting__button--upvoted";
                          }
-                            
+
                          posts += '<li style="list-style-type: none;"><article class="PostSummary hentry with-image " itemscope="" itemtype="http://schema.org/blogPost"></div>';
                          if (elt.resteem !== '') posts += '<div class="PostSummary__reblogged_by"><span class="Icon reblog" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg></span><!-- react-text: 363 --> <!-- /react-text --><!-- react-text: 364 -->Resteemed by<!-- /react-text --><!-- react-text: 365 --> <!-- /react-text --><span class="UserNames"><a target="_blank" href="/@' + elt.resteem + '">' + elt.resteem + '</a></span></div>';
                          posts += '<div class="PostSummary__header show-for-small-only"><h3 class="entry-title"><a target="_blank" href="' +
@@ -530,7 +530,7 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
         //Handles Resteem Parameters
-             
+
             $("input[name=resteem]").unbind('change');
             $(document).on("change","input[name=resteem]",function(){
                  feedp.resteem=$("input[name=resteem]:checked").val();

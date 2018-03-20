@@ -19,6 +19,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startMDEditorPreview()
 {
 
+  $('textarea').addClass('smi-gif-picker-textarea2');
+
   if($('textarea').length > 0 && $('textarea')[0].textLength === 0)
   {
     waitingForPreview = true;
@@ -34,6 +36,39 @@ function startMDEditorPreview()
   
 }
 
+function waitInsertedDropImage()
+{
+  if($('textarea')[0].textLength === 0)
+  {
+    console.log('textarea vide');
+    setTimeout(function () {
+      console.log('waiting for preview');
+      waitInsertedDropImage();
+    }, 200);
+  }
+  else
+  {
+    if($('.MarkdownViewer2').length === 0)
+    {
+      console.log('preview pas cree');
+      waitingForPreview = false;
+      setTimeout(function () {
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+        return;
+      }, 1000);
+
+    }
+    
+    $('.MarkdownViewer').bind("DOMNodeInserted",function(event){
+      setTimeout(function () {
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+        $('.MarkdownViewer').unbind("DOMNodeInserted");
+        return;
+      }, 1000);
+    });
+  }
+}
+
 function bindTextArea()
 {
   if($('textarea').length === 0)
@@ -43,11 +78,18 @@ function bindTextArea()
     }, 1000);
   }
 
+  $("html").on("drop", function(event) {
+    event.preventDefault();  
+    waitInsertedDropImage();
+  });
+
   $('textarea').on('paste', function () {
     setTimeout(function () {
+      waitingForPreview = false;
       $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
-    }, 500);
+    }, 200);
   });
+
 
   $('textarea').bind('input propertychange', function(event){
     if(event.currentTarget.value.length === 0){
@@ -59,7 +101,7 @@ function bindTextArea()
     {
       setTimeout(function(){
         $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
-      }, 500);
+      }, 200);
       waitingForPreview = false;
     }
   });
@@ -70,13 +112,11 @@ function setupPreview(){
 
   if(waitingForPreview || $('.Preview').length === 0)
   {
-      console.log('No preview (waiting==' + waitingForPreview + ' &&length==' + $('.Preview').length);
       setTimeout(function(){
         setupPreview();
       }, 200);
       return;
   }
-
 
   // Put editor next to preview
   markdownSource=$('.Preview');
@@ -84,8 +124,6 @@ function setupPreview(){
   preview.id = 'mypreview';
   preview.addClass('Preview2');
   markdownSource.hide();
-  console.log(preview);
-  console.log(preview.find('div.MarkdownViewer'));
   preview.find('div.MarkdownViewer').addClass('MarkdownViewer2');
 
 

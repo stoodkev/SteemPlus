@@ -284,17 +284,17 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                      //'<option value="cheerleader">Cheerleader</option>'+
                      //'<option value="idol">Idol</option>'+
                      '</select></div><li class="Topics__title" style="margin-top: 1.5em;">Filters</li><hr>' +
-                     '<div class="filters"><div class="category_filter"><img src="' + more + '"/> Tags </div></div><div class="filter_content">' +
+                     '<div class="filters"><div class="category_filter" id="tag_block"><img src="' + more + '"/> Tags </div></div><div class="filter_content">' +
                      '<input type="radio" name="tag" value="show" id="all_tag"><label for="all_tag">Show all tags</label> <br>' +
                      '<input type="radio" name="tag" value="list" id="show_tag"><label for="show_tag">Show only</label><textarea rows="4" id="list_tags" placeholder="steem life" style="width: 100%"></textarea><br>' +
                      '</div><hr>' +
-                     '<div class="filters"><div class="category_filter"><img src="' + more + '"/> Resteems </div><div class="filter_content"> <input type="radio" name="resteem" value="show" id="show"><label for="show">Show all</label> <br>' +
+                     '<div class="filters"><div class="category_filter" id="resteem_block"><img src="' + more + '"/> Resteems </div><div class="filter_content"> <input type="radio" name="resteem" value="show" id="show"><label for="show">Show all</label> <br>' +
                      '<input type="radio" name="resteem" value="hide" id="hide"><label for="hide">Hide all</label> <br>' +
                      '<input type="radio" name="resteem" value="blacklist_radio" id="blacklist_radio"><label for="blacklist_radio"> Blacklist</label><textarea rows="4" id="blacklist" style="width: 100%"></textarea><br>' +
                      '<input type="radio" name="resteem"  value="whitelist_radio" id="whitelist_radio"><label for="whitelist_radio"> Whitelist</label><textarea rows="4" id="whitelist" style="width: 100%"></textarea><br><br>' +
                      // '<div style="display: inline-block"><input type="checkbox" id="reputation"><label for="reputation" > Reputation <</label></div>  <input type="text" id="rep" style="width: 50px;"></div>'+
                      '</div><hr>' +
-                     '<div class="filters"><div class="category_filter"><img src="' + more + '"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed"><br>' +
+                     '<div class="filters"><div class="category_filter" id="other_block"><img src="' + more + '"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" id="rep_feed"><br>' +
                      '<input type="checkbox" id="voted_check" ><label for="voted_check">Hide upvoted </label></div></div>' +
                      '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr><div class="parameters">Posts: <input id="nb_posts" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
                      '<button class="button" id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
@@ -509,7 +509,8 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
         //Tags
-             $(document).unbind('change').on("change","input[name=tag]",function(){
+            $("input[name=tag]").unbind('change');
+            $(document).on("change","input[name=tag]",function(){
                  feedp.tag=$("input[name=tag]:checked").val();
                  chrome.storage.local.set({
                      tag:feedp.tag
@@ -529,7 +530,9 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              });
 
         //Handles Resteem Parameters
-             $(document).unbind('change').on("change","input[name=resteem]",function(){
+             
+            $("input[name=resteem]").unbind('change');
+            $(document).on("change","input[name=resteem]",function(){
                  feedp.resteem=$("input[name=resteem]:checked").val();
                  chrome.storage.local.set({
                      resteem:feedp.resteem
@@ -603,7 +606,9 @@ function FeedPlus(isSteemit,isBusy,feedp) {
              }); // click on big button
 
          }
+
         function HandleTagListsVisibility(){
+            console.log($("input[name=tag]:checked").val());
             if($("input[name=tag]:checked").val()=="list")
                 $("#list_tags").show();
             else $("#list_tags").hide();

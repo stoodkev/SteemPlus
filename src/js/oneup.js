@@ -31,8 +31,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
               getVotes();
               checkOneUp();
               scrollBottomReached=false;
-            }, 1500);
-            
+            }, 3000);
+
           }
         }
       });
@@ -125,17 +125,6 @@ function createOneUpButton(){
         error: function(msg) {
           alert(msg.responseJSON.error);
           isVoting=false;
-
-          if($(clickedButton).parent().find('.oneup_nb').length === 0)
-          {
-            $(clickedButton).after('<span class="Buttons__number oneup_nb">1</span>');
-            $(clickedButton).find($('.icon')).addClass('has-oneup');
-          }
-          else
-          {
-            $(clickedButton).parent().find('.oneup_nb')[0].innerHTML = parseInt($(clickedButton).parent().find('.oneup_nb')[0].innerHTML) + 1;
-            $(clickedButton).find($('.icon')).addClass('has-oneup');
-          }
         }
       });
     }

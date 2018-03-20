@@ -323,14 +323,14 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                              +'"><!-- react-text: 1921 -->'+elt.tags[0]+'<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="'+elt.url+'"><h2>'+elt.title+'</h2></a><a target="_blank" class="Story__content__preview" href="'+elt.url+'"><div><div class="Story__content__img-container"><img alt="post" src="'+elt.img+'"></div><div class="Story__content__body">'
                              +bd.substring(0,138)+'...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>'+elt.payout.split(' ')[0]+'</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link '+active+'"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>'+elt.votes+'</span><span></span></span></span></span></div></div></div></div></div></div>'
                          }
-                     else if(isSteemit&&elt.img!==undefined) {
+                     else if(isSteemit) {
                         var imgUrlFeedPlus = null;
 
-                        if(elt.img.includes('imgur'))
+                        if(elt.img!==undefined&&elt.img.includes('imgur'))
                         {
                             imgUrlFeedPlus = 'https://steemitimages.com/0x0/' + elt.img;
                         }
-                        else if(elt.img.includes('https') || elt.img.includes('http'))
+                        else if(elt.img!==undefined&&(elt.img.includes('https') || elt.img.includes('http')))
                         {
                             imgUrlFeedPlus = elt.img;
                         }

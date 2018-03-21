@@ -1,7 +1,7 @@
 // Comment the following line in development mode to show logs in console.
 // console.log = function() {};
 
-
+var DEBUG_MODE = false;
 
 var xhttp = new XMLHttpRequest();
 const steemit =(window.location.href.includes('steemit.com')||window.location.href.includes('mspsteem.com'));

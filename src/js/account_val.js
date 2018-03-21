@@ -5,15 +5,22 @@ var timeout_a=1000;
 var account_v;
 var STEEM_A,SBD_A;
 var token_a=null;
+var accountValStarted=false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
     {
       token_a=request.token;
       startAccountValue(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+      accountValStarted=true;
     }
-    if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token)
+    else if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token)
       onClickA(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+    else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
+    {
+      if(accountValStarted)
+        onClickA(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+    }
 });
 
 function startAccountValue(isSteemit,busy,globalP,market){

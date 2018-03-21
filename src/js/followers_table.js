@@ -12,6 +12,8 @@
 
   var followerPageRegexp = /\/@([a-z0-9\-\.]*)\/(followers|followed)$/;
 
+  var followersTabStarted=false;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='followers_table'){
       aut=request.data.user;
@@ -29,13 +31,28 @@
 
         checkForFollowerPage();
 
+        followersTabStarted=true;
+
       }
-      if(request.order==='click')
+      else if(request.order==='click')
       {
         var match = (window.location.pathname || '').match(followerPageRegexp);
         if(match && match[2] !== currentPage) {
            checkForFollowerPage();
         }
+      }
+      if(request.order==='notif'&&token_followers_table==request.token)
+      {
+        rewardBalance=request.data.rewardBalance;
+        recentClaims=request.data.recentClaims;
+        steemPrice=request.data.steemPrice;
+        votePowerReserveRate=request.data.votePowerReserveRate;
+        totalVestingFund=request.data.totalVestingFund;
+        totalVestingShares=request.data.totalVestingShares;
+
+        if(followersTabStarted)
+          checkForFollowerPage();
+
       }
     }
   });

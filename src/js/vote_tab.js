@@ -4,7 +4,7 @@
   var rewardBalance=null;
   var recentClaims=null;
   var steemPrice=null;
-
+  var voteTabStarted=false;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_tab'){
@@ -16,10 +16,20 @@
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
         startVotesTab();
+        voteTabStarted=true;
       }
       else if(request.order==='click'&&token_vote_tab==request.token)
       {
         startVotesTab();
+      }
+      else if(request.order==='notif'&&token_vote_tab==request.token)
+      {
+        rewardBalance=request.data.rewardBalance;
+        recentClaims=request.data.recentClaims;
+        steemPrice=request.data.steemPrice;
+        
+        if(voteTabStarted)
+          startVotesTab();
       }
     }
   });

@@ -8,6 +8,8 @@
   var votePowerReserveRate=null;
   var account=null;
 
+  var voteWeightSliderStarted=false;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_weight_slider'){
       aut=request.data.user;
@@ -20,21 +22,36 @@
         votePowerReserveRate=request.data.votePowerReserveRate;
         account=request.data.account;
 
-
-  		  $('body').on('click', 'span.Voting__button > a', function(){
-  		    var votingButton = $(this);
-  		    setTimeout(function() {
-  		    	tryUpdateVotingSlider();
-  		    }, 1);
-  		  });
-
-  		  $("body").on('DOMSubtreeModified', ".weight-display", function() {
-      		tryUpdateVotingSlider();
-    		});
+        startVoteWeightSlider();
+        voteWeightSliderStarted=true;
+  		  
+      }
+      else if(request.order==="notif"&&token_vote_weight_slider==request.token)
+      {
+        rewardBalance=request.data.rewardBalance;
+        recentClaims=request.data.recentClaims;
+        steemPrice=request.data.steemPrice;
+        votePowerReserveRate=request.data.votePowerReserveRate;
+        
+        if(voteWeightSliderStarted)
+          startVoteWeightSlider();
       }
     }
   });
 
+  function startVoteWeightSlider()
+  {
+    $('body').on('click', 'span.Voting__button > a', function(){
+      var votingButton = $(this);
+      setTimeout(function() {
+        tryUpdateVotingSlider();
+      }, 1);
+    });
+
+    $("body").on('DOMSubtreeModified', ".weight-display", function() {
+      tryUpdateVotingSlider();
+    });
+  }
 
  function updateVotingSlider(weightDisplay) {
 

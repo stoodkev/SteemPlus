@@ -8,17 +8,31 @@
  var rewardBalance=null;
  var recentClaims=null;
  var steemPrice=null;
+ var postVoteListStarted=false;
  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='post_votes_list'){
     aut=request.data.user;
     if(request.order==='start'&&token_post_vote_list==null)
     {
+      console.log("Start notified");
+      postVoteListStarted=true;
       token_post_vote_list=request.token;
       rewardBalance=request.data.rewardBalance;
  	    recentClaims=request.data.recentClaims;
  	    steemPrice=request.data.steemPrice;
-
       startPostVoteList();
+      postVoteListStarted=true;
+    }
+    else if(request.order==='notif'&&token_post_vote_list==request.token)
+    {
+      console.log("Update notified");
+
+      rewardBalance=request.data.rewardBalance;
+      recentClaims=request.data.recentClaims;
+      steemPrice=request.data.steemPrice;
+      
+      if(postVoteListStarted)
+        startPostVoteList();
     }
   }
 });

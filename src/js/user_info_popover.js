@@ -4,21 +4,35 @@ var recentClaims=null;
 var steemPrice=null;
 var votePowerReserveRate=null;
 var userNameRegEx = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])\/*/;
+var userInfoPopoverStarted=false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='user_info_popover'&&request.order==='start'&&token_user_info_popover==null)
     {
       	token_user_info_popover=request.token;
 		    rewardBalance=request.data.rewardBalance;
-		    recentClaims=request.data.recentClaims;;
-		    steemPrice=request.data.steemPrice;;
-		    votePowerReserveRate=request.data.votePowerReserveRate;;
+		    recentClaims=request.data.recentClaims;
+		    steemPrice=request.data.steemPrice;
+		    votePowerReserveRate=request.data.votePowerReserveRate;
         checkUserForInfoPopover();
+        userInfoPopoverStarted=true;
     }
-    if(request.to==='user_info_popover'&&request.order==='click'&&token_user_info_popover==request.token)
+    else if(request.to==='user_info_popover'&&request.order==='click'&&token_user_info_popover==request.token)
     {
       	checkUserForInfoPopover();
     }
+    else if(request.to==='user_info_popover'&&request.order==='notif'&&token_user_info_popover==request.token)
+    {
+        rewardBalance=request.data.rewardBalance;
+        recentClaims=request.data.recentClaims;
+        steemPrice=request.data.steemPrice;
+        votePowerReserveRate=request.data.votePowerReserveRate;
+
+        if(userInfoPopoverStarted)
+          checkUserForInfoPopover();
+    }
+
+
 });
 
 function checkUserForInfoPopover()

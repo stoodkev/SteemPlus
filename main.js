@@ -1,7 +1,5 @@
-// Comment the following line in development mode to show logs in console.
-// console.log = function() {};
 
-var DEBUG_MODE = false;
+var DEBUG_MODE = true;
 
 var xhttp = new XMLHttpRequest();
 const steemit =(window.location.href.includes('steemit.com')||window.location.href.includes('mspsteem.com'));
@@ -80,14 +78,13 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate, totalVestingFund:totalSteem, totalVestingShares:totalVests}});
       if(user_info_popover)
         chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
-                            
     }
   });
 
   
 });
 
-chrome.storage.local.get(['votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
 
@@ -134,6 +131,7 @@ chrome.storage.local.get(['votePowerReserveRateLS','totalSteemLS','totalVestsLS'
         const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
         const post_floating_bottom_bar=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
           const post_floating_bottom_bar_size=items.post_floating_bottom_bar_size==undefined?'small':items.post_floating_bottom_bar_size;
+        const favorite_section=(items.favorite_section == undefined || items.favorite_section=='show');
 
         const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
         const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
@@ -199,6 +197,8 @@ chrome.storage.local.get(['votePowerReserveRateLS','totalSteemLS','totalVestsLS'
             chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
           if(post_floating_bottom_bar)
             chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
+          if(favorite_section)
+            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{}});
         }
 
 
@@ -345,10 +345,7 @@ function date_diff_indays(date1, date2) {
 
 function checkLastPost(last_post_url, me)
 {
-  console.log(last_post_url);
   steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
-    console.log(result[0]);
-    console.log(me);
     if(last_post_url == undefined || last_post_url !== result[0].url)
     {
       toastr.options = {

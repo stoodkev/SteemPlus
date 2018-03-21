@@ -1149,3 +1149,46 @@ form.vframe2{
 .smi-post-footer-wrapper-2.smi-post-floating-footer-on-body {
   background-color: #1C252B;
 }
+
+
+/* Favorite section */
+
+.add-as-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/twitter_fave.png') no-repeat;
+  background-position: 0 0;
+}
+.add-as-favorite:hover {
+  background-position: -3519px 0;
+  transition: background 1s steps(55);
+}
+
+.is-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/twitter_fave.png') no-repeat;
+  background-position: -3519px 0;
+}
+
+.favorite-item:hover .span-delete-favorite {
+  display:block;
+}
+
+.span-delete-favorite {
+  font-weight: bold;
+  float: right;
+  display:none;
+}
+
+.new-indicator {
+    display: inline-block;
+    background: #46A0F5;
+    color: honeydew;
+    padding: 4px;
+    font-size: 9px;
+    vertical-align: middle;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-left: 5px;
+}

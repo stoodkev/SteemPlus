@@ -235,7 +235,9 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
                 chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
               if(vote_weight_slider&&steemit&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
-
+              if(favorite_section)
+                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{}});
+        
               url=window.location.href;
             }
             if(oneup&&utopian)

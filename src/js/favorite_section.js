@@ -30,7 +30,7 @@ function startFavoriteSection()
     // Display favorites
     favorite_list.forEach(function(favorite, indexFavList, fav_list)
     {
-      steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result) 
+      steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
       {
 
         if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
@@ -53,6 +53,7 @@ function startFavoriteSection()
       if(favorite_list.length>0)
         displayFavoriteSection();
     }
+
 
     // Display add to / remove from favorites
     if(window.location.href.match(userPageRegex)!==null){
@@ -84,16 +85,16 @@ function displayFavoriteSection()
 
   var divSideBarHeader = document.createElement('div');
   $(divSideBarHeader).addClass('c-sidebar__header');
-  
+
   var h3SideBarH3 = document.createElement('h3');
   $(h3SideBarH3).addClass('c-sidebar__h3');
-  
+
   var divSideBarContent = document.createElement('div');
   $(divSideBarContent).addClass('c-sidebar__content');
-  
+
   var ulSideBarList = document.createElement('ul');
   $(ulSideBarList).addClass('c-sidebar__list');
-  
+
 
   favorite_list.forEach(function(favorite, indexFavList, fav_list)
   {
@@ -101,7 +102,7 @@ function displayFavoriteSection()
     var liSideBarListItem = document.createElement('li');
     $(liSideBarListItem).addClass('c-sidebar__list-item');
     $(liSideBarListItem).addClass('favorite-item');
-  
+
     var aSideBarLink = document.createElement('a');
     $(aSideBarLink).addClass('c-sidebar__link');
     $(aSideBarLink).click(function(){
@@ -123,7 +124,7 @@ function displayFavoriteSection()
       $(div).remove();
       startFavoriteSection();
     });
-    
+
 
     if(!favorite.read)
     {
@@ -158,7 +159,7 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
   $(star).attr('title', 'Add ' + userNameCurrentPage + ' to your favorites');
   (isFavorite ? $(star).addClass('is-favorite') : $(star).addClass('add-as-favorite'));
   $('.articles__header-col')[0].after(star);
-  
+
   $('.favorite-star').click(function(){
     $('.favorite-star').prop('disabled', true);
 
@@ -193,16 +194,16 @@ function addToFavorites(userNameCurrentPage)
     {
       console.log('test');
       return true;
-    } 
+    }
     else{
-      steem.api.getDiscussionsByAuthorBeforeDate(userNameCurrentPage,null, new Date().toISOString().split('.')[0],1 , function(err, result) 
+      steem.api.getDiscussionsByAuthorBeforeDate(userNameCurrentPage,null, new Date().toISOString().split('.')[0],1 , function(err, result)
       {
         favorite_list.push({username:userNameCurrentPage, page:window.location.href, url:(result[0] === undefined ? '' : 'https://steemit.com'+result[0].url), read:true});
         chrome.storage.local.set({
           favorite_list:favorite_list
         });
         console.log(favorite_list);
-      }); 
+      });
       return true;
     }
   }
@@ -228,7 +229,7 @@ function addToFavorites(userNameCurrentPage)
     toastr.warning("You can't have more than 10 favorites. Please remove one before adding another one.", "SteemPlus");
     return false;
   }
-  
+
 }
 
 function deleteFromFavorites(userNameCurrentPage)

@@ -198,7 +198,7 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
           if(post_floating_bottom_bar)
             chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
           if(favorite_section)
-            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{}});
+            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
         }
 
 

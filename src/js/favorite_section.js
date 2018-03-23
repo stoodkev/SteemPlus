@@ -6,11 +6,13 @@ var isFavorite=false;
 var favorite_list=null;
 var indexFav=null;
 var nameFav=null;
+var myUsername=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='favorite_section'&&request.order==='start'&&token_favorite_section==null)
   {
     token_favorite_section=request.token;
+    myUsername=request.data.user;
     startFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
@@ -52,20 +54,22 @@ function startFavoriteSection()
         displayFavoriteSection();
     }
 
-    console.log(favorite_list);
-    
     // Display add to / remove from favorites
     if(window.location.href.match(userPageRegex)!==null){
       var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
-      favorite_list.forEach(function(favorite, indexFavList)
+      if(userNameCurrentPage!==myUsername)
       {
-        if(favorite.username===userNameCurrentPage)
+        favorite_list.forEach(function(favorite, indexFavList)
         {
-          isFavorite=true;
-          return;
-        }
-      });
-      displayButtonAddRemoveFavorites(userNameCurrentPage);
+          if(favorite.username===userNameCurrentPage)
+          {
+            isFavorite=true;
+            return;
+          }
+        });
+        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      }
+      
     }
 
   });

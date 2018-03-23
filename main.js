@@ -238,6 +238,11 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
               if(favorite_section)
                 chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
         
+              
+              if($('.favorite-star').length > 0){
+                $('.favorite-star').remove();
+              }
+
               url=window.location.href;
             }
             if(oneup&&utopian)

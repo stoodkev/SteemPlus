@@ -29,19 +29,22 @@
         steemPrice=request.data.steemPrice;
         
         if(voteTabStarted)
+        {
+          console.log("start again");
           startVotesTab();
+        }
       }
     }
   });
 
   function startVotesTab(){
 
-            window.SteemPlus.Tabs.createTab({
-              id: 'votes',
-              title: 'Votes',
-              enabled: true,
-              createTab: createVotesTab
-            });
+    window.SteemPlus.Tabs.createTab({
+      id: 'votes',
+      title: 'Votes',
+      enabled: true,
+      createTab: createVotesTab
+    });
   }
 
 
@@ -139,7 +142,7 @@
         <span class="action">\
           <a class="account" class="smi-navigate" href="/@' + voter + '">' + voter + '</a>\
           ' + verb + ' \
-          <a class="smi-navigate smi-vote-permlink" href="/@' + author + '/' + permlink + '" title="@' + author + '/' + permlink + '">@' + author + '/' + permlink + '</a>\
+          <a class="smi-vote-permlink" target="_blank" href="/@' + author + '/' + permlink + '" title="@' + author + '/' + permlink + '">@' + author + '/' + permlink + '</a>\
         </span>\
         <span class="timeago" title="' + timeagoTitle + '">' + timeago + '</span>\
         <span class="vote-weight" data-weight="' + tx.op[1].weight + '">\

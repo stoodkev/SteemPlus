@@ -41,7 +41,6 @@ function checkUserForInfoPopover()
 
       if(window.location.href.match(userNameRegEx)!==null){
         var userName = window.location.href.match(userNameRegEx)[1];
-        console.log(userName);
         checkDisplayPopover(userName);
       }
     },100);
@@ -64,7 +63,6 @@ function checkDisplayPopover(userName)
 
 
 function displayPopover(userName){
-console.log('displaypopover');
 	window.SteemPlus.Utils.getAccounts([userName], function(err, result){
 		if(!$('.UserProfile__banner').hasClass('smi-profile-banner-1'))
 		  $('.UserProfile__banner').addClass('smi-profile-banner-1');

@@ -243,6 +243,10 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
                 $('.favorite-star').remove();
               }
 
+              if($('.error-mentions-label').length > 0){
+                $('.error-mentions-label').remove();
+              }
+
               url=window.location.href;
             }
             if(oneup&&utopian)

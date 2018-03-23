@@ -236,7 +236,7 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
               if(vote_weight_slider&&steemit&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
               if(favorite_section)
-                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{}});
+                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
         
               url=window.location.href;
             }

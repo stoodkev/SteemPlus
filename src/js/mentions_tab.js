@@ -197,15 +197,18 @@
             success: function(msg) {
               console.log(msg);
               successCb(what, msg);
+              
+              
             },
             error: function(msg) {
-              console.log(msg);
-              var errorLabel = document.createElement('h2');
-              $(errorLabel).addClass('articles__h1');
-              $(errorLabel).addClass('error-mentions-label');
-              $(errorLabel).append('Looks like we are having trouble retrieving information from steemData. Please try again later.');
-              $('.MentionsTabLoading').hide();
-              $('.articles').prepend(errorLabel);
+              if($('.error-mentions-label').length===0){
+                var errorLabel = document.createElement('h2');
+                $(errorLabel).addClass('articles__h1');
+                $(errorLabel).addClass('error-mentions-label');
+                $(errorLabel).append('Looks like we are having trouble retrieving information from steemData. Please try again later.');
+                $('.MentionsTabLoading').hide();
+                $('.articles').prepend(errorLabel);
+              }
             }
           });
         }

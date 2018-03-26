@@ -188,7 +188,7 @@
         loadMore.show();
       }
       _.each(uniqueCommentTargets, function(target){
-        window.SteemPlus.Utils.getContent(target.author, target.permlink, function(err, result){
+        window.SteemPlus.Utils.getContent(target.author, target.permlink, rewardBalance, recentClaims, steemPrice, function(err, result){
           if(!result){
             return;
           }

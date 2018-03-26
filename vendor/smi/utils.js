@@ -195,7 +195,7 @@
     steem.api.getActiveVotes(author, permlink, cb);
   };
 
-  var getContent = function(author, permlink, cb){
+  var getContent = function(author, permlink, rewardBalance, recentClaims, steemPrice, cb){
     steem.api.getContent(author, permlink, function(err, result){
       if(result){
         if(result.last_payout === '1970-01-01T00:00:00'){
@@ -203,7 +203,7 @@
           _.each(result.active_votes, function(vote) {
             var voter = vote.voter;
             var rshares = vote.rshares;
-            var voteValue = window.SteemPlus.Utils.getVotingDollarsPerShares(rshares);
+            var voteValue = window.SteemPlus.Utils.getVotingDollarsPerShares(rshares, rewardBalance, recentClaims, steemPrice);
             if(typeof voteValue !== 'undefined') {
               vote.voteDollar = voteValue;
             }

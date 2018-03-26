@@ -1,0 +1,40 @@
+.theme-light .add-as-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+}
+
+.theme-dark .add-as-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
+}
+
+.is-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
+}
+
+.favorite-item:hover .span-delete-favorite {
+  display:block;
+  cursor:pointer;
+}
+
+.span-delete-favorite {
+  font-weight: bold;
+  float: right;
+  display:none;
+}
+
+.new-indicator {
+    display: inline-block;
+    background: #46A0F5;
+    color: honeydew;
+    padding: 4px;
+    font-size: 9px;
+    vertical-align: middle;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-left: 5px;
+}

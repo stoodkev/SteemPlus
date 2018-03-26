@@ -198,7 +198,7 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
           if(post_floating_bottom_bar)
             chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
           if(favorite_section)
-            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{}});
+            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
         }
 
 
@@ -236,8 +236,17 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
               if(vote_weight_slider&&steemit&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
               if(favorite_section)
-                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{}});
+                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
         
+              
+              if($('.favorite-star').length > 0){
+                $('.favorite-star').remove();
+              }
+
+              if($('.error-mentions-label').length > 0){
+                $('.error-mentions-label').remove();
+              }
+
               url=window.location.href;
             }
             if(oneup&&utopian)

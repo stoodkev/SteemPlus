@@ -6,17 +6,18 @@ var isFavorite=false;
 var favorite_list=null;
 var indexFav=null;
 var nameFav=null;
+var myUsername=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='favorite_section'&&request.order==='start'&&token_favorite_section==null)
   {
     token_favorite_section=request.token;
+    myUsername=request.data.user;
     startFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
   {
-    if($('.favorite-section').length > 0)
-      $('.favorite-section').remove();
+    myUsername=request.data.user;
     startFavoriteSection();
   }
 });
@@ -30,7 +31,6 @@ function startFavoriteSection()
     {
       steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
       {
-
         if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
         {
           fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
@@ -46,28 +46,27 @@ function startFavoriteSection()
         });
       });
     });
-
     if($('.c-sidebar--right').length > 0){
       if(favorite_list.length>0)
         displayFavoriteSection();
     }
-
-    console.log(favorite_list);
-
+    
     // Display add to / remove from favorites
     if(window.location.href.match(userPageRegex)!==null){
       var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
-      favorite_list.forEach(function(favorite, indexFavList)
+      if(userNameCurrentPage!==myUsername)
       {
-        if(favorite.username===userNameCurrentPage)
-        {
-          isFavorite=true;
-          return;
+        isFavorite=favoriteListContains(userNameCurrentPage);
+        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      }
+      else
+      {
+        console.log('Same name');
+        if($('.favorite-star').length > 0){
+          $('.favorite-star').remove();
         }
-      });
-      displayButtonAddRemoveFavorites(userNameCurrentPage);
+      }
     }
-
   });
 }
 
@@ -93,7 +92,6 @@ function displayFavoriteSection()
 
   favorite_list.forEach(function(favorite, indexFavList, fav_list)
   {
-    console.log(favorite);
     var liSideBarListItem = document.createElement('li');
     $(liSideBarListItem).addClass('c-sidebar__list-item');
     $(liSideBarListItem).addClass('favorite-item');
@@ -149,33 +147,47 @@ function displayFavoriteSection()
 
 function displayButtonAddRemoveFavorites(userNameCurrentPage)
 {
-  var star = document.createElement('div');
-  $(star).addClass('favorite-star');
-  $(star).attr('title', 'Add ' + userNameCurrentPage + ' to your favorites');
-  (isFavorite ? $(star).addClass('is-favorite') : $(star).addClass('add-as-favorite'));
-  $('.articles__header-col')[0].after(star);
+  if($('.articles__header-col').length===0)
+  {
+    setTimeout(function(){
+      console.log('wait page ready');
+      displayButtonAddRemoveFavorites(userNameCurrentPage);
+    },500);
+  }
+  else
+  {
+    if($('.favorite-star').length > 0){
+      $('.favorite-star').remove();
+    }
+    var star = document.createElement('div');
+    $(star).addClass('favorite-star');
+    $(star).attr('title', 'Add ' + userNameCurrentPage + ' to your favorites');
+    (isFavorite ? $(star).addClass('is-favorite') : $(star).addClass('add-as-favorite'));
+    $('.articles__header-col')[0].after(star);
 
-  $('.favorite-star').click(function(){
-    $('.favorite-star').prop('disabled', true);
+    $('.favorite-star').click(function(){
+      $('.favorite-star').prop('disabled', true);
 
-    if(!isFavorite)
-    {
-      if(addToFavorites(userNameCurrentPage)){
-        $('.favorite-star').addClass('is-favorite');
-        $('.favorite-star').removeClass('add-as-favorite');
-        isFavorite=true;
+      if(!isFavorite)
+      {
+        if(addToFavorites(userNameCurrentPage)){
+          $('.favorite-star').addClass('is-favorite');
+          $('.favorite-star').removeClass('add-as-favorite');
+          isFavorite=true;
+        }
       }
-    }
-    else
-    {
-      isFavorite=false;
-      $('.favorite-star').removeClass('is-favorite');
-      $('.favorite-star').addClass('add-as-favorite');
-      deleteFromFavorites(userNameCurrentPage);
-    }
-    $('.favorite-star').prop('disabled', false);
-
+      else
+      {
+        isFavorite=false;
+        $('.favorite-star').removeClass('is-favorite');
+        $('.favorite-star').addClass('add-as-favorite');
+        deleteFromFavorites(userNameCurrentPage);
+      }
+      $('.favorite-star').prop('disabled', false);
   });
+
+  }
+  
 }
 
 function addToFavorites(userNameCurrentPage)
@@ -184,10 +196,8 @@ function addToFavorites(userNameCurrentPage)
   if(favorite_list.length<10)
   {
     var alreadyAdded = favoriteListContains(userNameCurrentPage, favorite_list);
-    console.log(alreadyAdded);
     if(alreadyAdded)
     {
-      console.log('test');
       return true;
     }
     else{

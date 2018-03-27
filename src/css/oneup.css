@@ -29,6 +29,18 @@
   font-style: normal;
 }
 
+@-moz-document url-prefix() {
+  @font-face {
+    font-family: 'icon-font';
+    src:
+      url('moz-extension://__MSG_@@extension_id__/src/fonts/icon-font.ttf?11r5en') format('truetype'),
+      url('moz-extension://__MSG_@@extension_id__/src/fonts/icon-font.woff?11r5en') format('woff'),
+      url('moz-extension://__MSG_@@extension_id__/src/fonts/icon-font.svg?11r5en#icon-font') format('svg');
+    font-weight: normal;
+    font-style: normal;
+  }
+}
+
 .icon-1up {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icon-font' !important;

@@ -3,7 +3,6 @@
   height: 50px;
   background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
 }
-
 .theme-dark .add-as-favorite {
   width: 70px;
   height: 50px;
@@ -15,6 +14,27 @@
   height: 50px;
   background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
 }
+@-moz-document url-prefix() {
+  .theme-light .add-as-favorite {
+    width: 70px;
+    height: 50px;
+    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+  }
+
+  .theme-dark .add-as-favorite {
+    width: 70px;
+    height: 50px;
+    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
+  }
+
+  .is-favorite {
+    width: 70px;
+    height: 50px;
+    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
+  }
+}
+
+
 
 .favorite-item:hover .span-delete-favorite {
   display:block;

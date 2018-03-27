@@ -192,7 +192,7 @@ chrome.storage.local.get(['favorite_section','votePowerReserveRateLS','totalStee
           if(user_info_popover)
             chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
           if(blog_histogram)
-            chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{}});
+            chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{rewardBalance: rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
           if(md_editor_beautifier)
             chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
           if(post_floating_bottom_bar)

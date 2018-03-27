@@ -8,6 +8,10 @@ var selectedBarBackgroundColor = 'red';
 var selectedBarBorderColor = 'red';
 var blogPageRegexp = /\/@([a-z0-9\-\.]*)$/;
 
+var rewardBalance=null;
+var recentClaims=null;
+var steemPrice=null;
+
 
 var token_blog_histogram=null;
 
@@ -15,11 +19,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='blog_histogram'&&request.order==='start'&&token_blog_histogram==null)
     {
       token_blog_histogram=request.token;
+      rewardBalance=request.data.rewardBalance;
+      recentClaims=request.data.recentClaims;
+      steemPrice=request.data.steemPrice;
       checkForBlogPage();
     }
 
     if(request.to==='blog_histogram'&&request.order==='click'&&token_del===request.token)
+    {
+      rewardBalance=request.data.rewardBalance;
+      recentClaims=request.data.recentClaims;
+      steemPrice=request.data.steemPrice;
       checkForBlogPage();
+    }
 });
 
 
@@ -269,9 +281,9 @@ function openPostsListPerDate(name, date, posts, container) {
 
   postsList = postsContainer.find('.smi-posts-histogram-posts-list');
   posts.forEach(function(post){
-    postsList.append(window.SteemPlus.Utils.createPostSummary(post, {
+    postsList.append(window.SteemPlus.Utils.createPostSummary(post,  {
       accountName: name
-    }));
+    },rewardBalance, recentClaims, steemPrice));
   });
 
   // prevent page scroll if mouse is no top of the list

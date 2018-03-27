@@ -195,6 +195,11 @@
               <div class="row">' + accountInfoUI + '</div>\
               <br>\
               <br>\
+              <div class="row charttest">\
+                <canvas id="boost-button-chart" class="boost-button-chart"></canvas>\
+              </div>\
+              <br>\
+              <br>\
             </div>\
             <div class="row">\
               <div class="column small-2" style="padding-top: 5px;">To</div>\
@@ -218,7 +223,7 @@
                   </span>\
                 </div>\
                 <div class="amount-error">\
-                  <small>Min: ' + min.toFixed(3) + ' SBD - Max: ' + max.toFixed(3) + ' SBD</small>\
+                  <small>Min: ' + min.toFixed(3) + ' SBD - Max: <span class="maxAvailableAmount"></span> SBD</small>\
                 </div>\
                 <div class="amount-upvote">\
                 </div>\
@@ -245,6 +250,141 @@
 
         transferUI.find('input[name="memo"]').val(link);
         transferUI.find('input[name="amount"]').val(min);
+
+        if(transferUI.find('.boost-button-chart').length > 0)
+        {
+          $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+              xhttp.setRequestHeader("Content-type", "application/json");
+              xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: 'https://www.minnowbooster.net/limit/chart',
+            success: function(json) {
+              var minnowData = [];
+              var endNullValue = true;
+              var maxVote = 0;
+              var maxNbVote = 0;
+              for(var i=json.length-1;i>=0;i--)
+              {
+                if(endNullValue)
+                {
+                  if(json[i][1]===0)
+                    endNullValue=true;
+                  else
+                  {
+                    maxVote = json[i][0];
+                    endNullValue=false;
+                    minnowData.unshift({x:json[i][0], y:json[i][1]});
+
+                    if(json[i][1] > maxNbVote) maxNbVote = json[i][1];
+                  }
+                }
+                else
+                { 
+                  if(json[i][1] > maxNbVote) maxNbVote = json[i][1];
+                  minnowData.unshift({x:json[i][0], y:json[i][1]});
+                }  
+              }
+
+              var maxAvailableAmount = Math.min(
+                parseFloat(globalInfo.daily_limit) - parseFloat(accountInfo.user_daily_usage),
+                parseFloat(maxVote)
+              );
+              $('.maxAvailableAmount').append(maxAvailableAmount);
+
+              var ctx = transferUI.find('.boost-button-chart')[0].getContext('2d');
+              var myChart = new Chart(ctx, {
+                type: 'scatter',
+                display: false,
+                data: {
+                  datasets: [{ 
+                    display: false,
+                    showLine: true,
+                    lineTension: 0,
+                    fill: true,
+                    label: '# of vote available per vote value',
+                    data: minnowData,
+                    backgroundColor: '#4ba2f2'
+                  }]
+                },
+                options: {
+                  tooltips : {
+                      callbacks : { 
+                          
+                          title : function() {
+                              return 'Available';
+                          },
+                          label : function(tooltipItem, data) {
+                              return ' ' + tooltipItem.yLabel + ' votes at ' + tooltipItem.xLabel + ' SBD available';
+                          }
+                      }
+                  },
+                  elements: {
+                    point: {
+                      radius: 3,
+                      pointStyle:'circle',
+                      hoverRadius: 4,
+                      backgroundColor: '#144aff' 
+                    } 
+                  },
+                  display: false,
+                  scales: {
+                    yAxes: [{
+                      gridLines: {
+                        display:true
+                      },
+                      scaleLabel:{
+                        labelString: '# Vote Available',
+                        display:true
+                      },
+                      type: 'logarithmic',
+                      ticks: {
+                        callback: function(tick, index, ticks) {
+                          return tick.toLocaleString()
+                        },
+                        min:0,
+                        max:maxNbVote
+                      },
+                      afterBuildTicks: function(yValues) {    
+                        yValues.ticks = [];
+                        var i = 1;
+                        yValues.ticks.push(i);
+                        while (i < maxNbVote) {
+                          i=i*10;
+                          yValues.ticks.push(i);
+                        }    
+                      }
+                    }],
+                    xAxes: [{
+                      gridLines: {
+                        display:false
+                      },
+                      scaleLabel:{
+                        labelString: 'Vote Value',
+                        display:true
+                      },
+                      type: 'logarithmic',
+                      ticks: {
+                        maxRotation: 75,
+                        callback: function(tick, index, ticks) {
+                          console.log(ticks.length);
+                          if(index%2===1||index===ticks.length-1||index===0)
+                            return tick.toLocaleString()
+                        }
+                      }
+                    }]
+                  }
+                }
+              });
+            },
+            error: function(msg) {
+              alert(msg);
+            }
+          });
+        }
+
+        
 
         var validate = function() {
           var amount = transferUI.find('input[name="amount"]').val();

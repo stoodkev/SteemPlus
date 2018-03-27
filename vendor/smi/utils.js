@@ -195,7 +195,7 @@
     steem.api.getActiveVotes(author, permlink, cb);
   };
 
-  var getContent = function(author, permlink, cb){
+  var getContent = function(author, permlink, rewardBalance, recentClaims, steemPrice, cb){
     steem.api.getContent(author, permlink, function(err, result){
       if(result){
         if(result.last_payout === '1970-01-01T00:00:00'){
@@ -203,7 +203,7 @@
           _.each(result.active_votes, function(vote) {
             var voter = vote.voter;
             var rshares = vote.rshares;
-            var voteValue = window.SteemPlus.Utils.getVotingDollarsPerShares(rshares);
+            var voteValue = window.SteemPlus.Utils.getVotingDollarsPerShares(rshares, rewardBalance, recentClaims, steemPrice);
             if(typeof voteValue !== 'undefined') {
               vote.voteDollar = voteValue;
             }
@@ -374,8 +374,8 @@
     }else{
       var total_payout_value = typeof post.total_payout_value === 'object' ? post.total_payout_value.amount : parseFloat(post.total_payout_value.replace(' SBD', ''));
       var curator_payout_value = typeof post.curator_payout_value === 'object' ? post.curator_payout_value.amount : parseFloat(post.curator_payout_value.replace(' SBD', ''));
-      dollarsAuthor = total_payout_value;
-      dollarsCurators = curator_payout_value;
+      dollarsAuthor = (total_payout_value==undefined ? parseInt(post.total_payout_value[0])/1000 : total_payout_value);
+      dollarsCurators = (total_payout_value==undefined ? parseInt(post.curator_payout_value[0])/1000 : curator_payout_value);
       dollars = dollarsAuthor + dollarsCurators;
       dollars = '' + dollars.toFixed(2);
       dollarsCurators = '' + dollarsCurators.toFixed(2);

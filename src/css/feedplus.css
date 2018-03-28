@@ -33,6 +33,7 @@ cursor:pointer; display:inline-block;
     background: url("moz-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat  ;
     background-size: contain;
     animation: spin 2s  linear infinite;
+  }
 }
 
 #loading_status{width:100%; margin-top: 2em; text-align: center; font-weight: bold; font-size: 1.2em;}

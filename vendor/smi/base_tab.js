@@ -65,7 +65,7 @@
         if(!tab.enabled){
           return;
         }
-
+        
         var menuLi = menu.find(tab._menuSelector);
         if(!menuLi.length){
           menuLi = $('<li class="smi-menu-li ' + tab._menuClass + '"><a href="#">' + tab.title + '</a></li>');

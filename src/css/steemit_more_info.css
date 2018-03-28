@@ -13,7 +13,7 @@
 }
 
 .Voting__voters_list ul{
-  overflow: scroll;
+  overflow: auto;
   max-height: 400px;
 }
 
@@ -633,11 +633,11 @@ table tbody tr.Trans.smi-transaction-filtered-in:nth-of-type(2n) {
   width: 30px;
 }
 
-div.wrapper div.popover{
+h1 div.popover{
   width:10em;
 }
 
-div.wrapper .popover h5,div.wrapper .popover-title h5
+h1 .popover h5,h1 .popover-title h5
 {
   font-size: 15px;
   color:black;
@@ -645,14 +645,14 @@ div.wrapper .popover h5,div.wrapper .popover-title h5
   width:100%;
 }
 
-div.wrapper .popover-title h5{
+h1 .popover-title h5{
   font-size: 20px;
   color:black;
   font-weight:bold;
   width:100%;
 }
 
-div.wrapper .value_of
+h1 .value_of
 {
   text-align: right;
   position: absolute;

@@ -72,6 +72,8 @@ function startFavoriteSection()
 
 function displayFavoriteSection()
 {
+  $('.favorite-section').remove();
+
   var div = document.createElement('div');
   $(div).addClass('favorite-section');
   var divSideBarModule = document.createElement('div');

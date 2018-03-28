@@ -25,6 +25,17 @@ cursor:pointer; display:inline-block;
     animation: spin 2s  linear infinite;
 }
 
+@-moz-document url-prefix() {
+  .loader {
+    margin:auto;
+    width: 300px;
+    height: 300px;
+    background: url("moz-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat  ;
+    background-size: contain;
+    animation: spin 2s  linear infinite;
+  }
+}
+
 #loading_status{width:100%; margin-top: 2em; text-align: center; font-weight: bold; font-size: 1.2em;}
 
 @keyframes spin {

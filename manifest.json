@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.6",
+  "version": "2.7",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -88,9 +88,10 @@
         "src/js/blog_histogram.js",
         "src/js/md_editor_beautifier.js",
         "src/js/post_floating_bottom_bar.js",
-        "src/js/favorite_section.js"],
+        "src/js/favorite_section.js",
+        "src/js/board_reward.js"],
 
-      "css":["vendor/bootstrap.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
+      "css":["vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
         "src/css/account_val.css",
         "src/css/beneficiaries.css",
@@ -101,7 +102,8 @@
         "src/css/transferTo.css",
         "src/css/oneup.css",
         "src/css/favorite_section.css",
-        "src/css/steemit_more_info.css"],
+        "src/css/steemit_more_info.css",
+        "src/css/board_reward.css"],
       "run_at": "document_idle"
     }
   ]

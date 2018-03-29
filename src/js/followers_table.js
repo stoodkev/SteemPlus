@@ -114,7 +114,7 @@
   {
     return new Promise (function(resolve,reject){
       steem.api.getFollowing(username, lastFollowing, 'blog', 100, function(err, response){
-        console.log(err);
+        //if(err!==null&&err!==undefined) console.log(err);
         resolve(response);
       });
     });
@@ -296,7 +296,6 @@
 
     if(myaccount.name!==username)
     {
-      console.log('ici');
       dataTable.column(4).visible(false);
     }
     dataTable.rows().invalidate().draw();
@@ -400,7 +399,6 @@
         }, 1000);
       }
       
-      console.log(userList);
       if(isFollowers)
       {
         getFollowersList(name, 0, [], userList);

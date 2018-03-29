@@ -5,9 +5,9 @@
  var created_post_vote_list=false;
  var token_post_vote_list=null;
  var aut=null;
- var rewardBalance=null;
- var recentClaims=null;
- var steemPrice=null;
+ var rewardBalancePostVoteList=null;
+ var recentClaimsPostVoteList=null;
+ var steemPricePostVoteList=null;
  var postVoteListStarted=false;
  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='post_votes_list'){
@@ -17,19 +17,29 @@
       console.log("Start notified");
       postVoteListStarted=true;
       token_post_vote_list=request.token;
-      rewardBalance=request.data.rewardBalance;
- 	    recentClaims=request.data.recentClaims;
- 	    steemPrice=request.data.steemPrice;
+      rewardBalancePostVoteList=request.data.rewardBalance;
+ 	    recentClaimsPostVoteList=request.data.recentClaims;
+ 	    steemPricePostVoteList=request.data.steemPrice;
       startPostVoteList();
       postVoteListStarted=true;
+    }
+    else if(request.order==='click'&&token_post_vote_list==request.token)
+    {
+      console.log("Update notified");
+
+      rewardBalancePostVoteList=request.data.rewardBalance;
+      recentClaimsPostVoteList=request.data.recentClaims;
+      steemPricePostVoteList=request.data.steemPrice;
+      
+      startPostVoteList();
     }
     else if(request.order==='notif'&&token_post_vote_list==request.token)
     {
       console.log("Update notified");
 
-      rewardBalance=request.data.rewardBalance;
-      recentClaims=request.data.recentClaims;
-      steemPrice=request.data.steemPrice;
+      rewardBalancePostVoteList=request.data.rewardBalance;
+      recentClaimsPostVoteList=request.data.recentClaims;
+      steemPricePostVoteList=request.data.steemPrice;
       
       if(postVoteListStarted)
         startPostVoteList();
@@ -38,8 +48,6 @@
 });
 
 function startPostVoteList(){
-	// ajouter regex url post
-  //if(window.location.href.match(/submit/))
 	$('body').on('click', 'div.Voting__voters_list > a', function(){
 		var votersButton = $(this);
 		setTimeout(function() {
@@ -167,7 +175,7 @@ function getSteemContent(Author, permlink, cb)
           _.each(result.active_votes, function(vote) {
             var voter = vote.voter;
             var rshares = vote.rshares;
-            var voteValue = rshares * rewardBalance / recentClaims * steemPrice;
+            var voteValue = rshares * rewardBalancePostVoteList / recentClaimsPostVoteList * steemPricePostVoteList;
             if(typeof voteValue !== 'undefined') {
               vote.voteDollar = voteValue;
             }

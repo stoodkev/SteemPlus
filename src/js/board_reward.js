@@ -61,7 +61,7 @@ function createBoardRewardTab()
 		console.log('else');
 		window.SteemPlus.Tabs.createTab({
 	      id: 'board-reward',
-	      title: 'Board Reward',
+	      title: 'Trophies',
 	      enabled: true,
 	      createTab: createBoardRewardPage
 	    });
@@ -77,7 +77,7 @@ function createBoardRewardPage(boardRewardTab)
             <h1 class="articles__h1" style="margin-bottom:20px">\
               Board Reward\
           		<div class="thanks-board-rewards">\
-       	  			Thanks Project Designer: <a href="/@arcange" class="smi-navigate">@arcange</a> - Web Designer: <a href="/@techybear" class="smi-navigate">@techybear</a> - Graphic Designer:<a href="/@captaink" class="smi-navigate">@captaink</a>\
+       	  			Thanks Project Designer: <a href="/@arcange" class="smi-navigate">@arcange</a> - Web Designer: <a href="/@techybear" class="smi-navigate">@techybear</a> - Graphic Designer: <a href="/@captaink" class="smi-navigate">@captaink</a>\
         		</div>\
             </h1>\
             <hr class="articles__hr"/>\

@@ -560,3 +560,7 @@ overflow: hidden;}
     height: 25px;
     width: 25px;
 }
+
+a:hover {
+  color:#376fa7;
+}

@@ -84,7 +84,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   
 });
 
-chrome.storage.local.get(['board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+chrome.storage.local.get(['classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
 
@@ -133,6 +133,7 @@ chrome.storage.local.get(['board_reward','favorite_section','votePowerReserveRat
           const post_floating_bottom_bar_size=items.post_floating_bottom_bar_size==undefined?'small':items.post_floating_bottom_bar_size;
         const favorite_section=(items.favorite_section == undefined || items.favorite_section=='show');
         const board_reward=(items.board_reward == undefined || items.board_reward=='show');
+        const classification_user=(items.classification_user == undefined || items.classification_user=='show');
 
         const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
         const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
@@ -172,6 +173,10 @@ chrome.storage.local.get(['board_reward','favorite_section','votePowerReserveRat
           chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
         if(board_reward&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
+        if(favorite_section&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
+        if(classification_user&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{}});
 
         if (steemit&&steemit_more_info) {
           if(post_votes_list)
@@ -200,8 +205,6 @@ chrome.storage.local.get(['board_reward','favorite_section','votePowerReserveRat
             chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
           if(post_floating_bottom_bar)
             chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
-          if(favorite_section)
-            chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
         }
 
 
@@ -242,7 +245,8 @@ chrome.storage.local.get(['board_reward','favorite_section','votePowerReserveRat
                 chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
               if(post_votes_list&&steemit&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-          
+              if(classification_user&&steemit)
+                chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{}});
               
               if($('.favorite-star').length > 0){
                 $('.favorite-star').remove();

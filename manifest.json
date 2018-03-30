@@ -89,7 +89,8 @@
         "src/js/md_editor_beautifier.js",
         "src/js/post_floating_bottom_bar.js",
         "src/js/favorite_section.js",
-        "src/js/board_reward.js"],
+        "src/js/board_reward.js",
+        "src/js/classification_user.js"],
 
       "css":["vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
@@ -103,7 +104,8 @@
         "src/css/oneup.css",
         "src/css/favorite_section.css",
         "src/css/steemit_more_info.css",
-        "src/css/board_reward.css"],
+        "src/css/board_reward.css",
+        "src/css/classification_user.css"],
       "run_at": "document_idle"
     }
   ]

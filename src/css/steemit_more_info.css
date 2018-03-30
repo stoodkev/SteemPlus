@@ -1200,3 +1200,39 @@ form.vframe2{
     transform: scale(1.0);
   }
 }
+
+
+/* Nav bar menu */
+
+.menuSP>li>a {
+  transition: none;
+  -webkit-transform: none;
+  transform: none;
+  padding: .7rem 1rem;
+  color: #333;
+  background-color: transparent;
+}
+
+.menuSP > li {
+  list-style-type: none;
+  color: black;
+}
+.dropdown-pane-SP > span {
+  font-weight: 600;
+  display: block;
+  padding-top: 3px;
+  font-size: 0.8em;
+}
+
+.theme-dark .dropdown-pane-SP > span {
+  color: black;
+}
+
+.menuSP>li>a:hover {
+  background-color: #f0f0f0 !important;
+  color:black !important;
+}
+
+.menuSP {
+  margin-left: 0;
+}

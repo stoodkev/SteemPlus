@@ -176,7 +176,7 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
         if(favorite_section&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
         if(classification_user&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{}});
+          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
 
         if (steemit&&steemit_more_info) {
           if(post_votes_list)
@@ -246,7 +246,7 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
               if(post_votes_list&&steemit&&steemit_more_info)
                 chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
               if(classification_user&&steemit)
-                chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{}});
+                chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
               
               if($('.favorite-star').length > 0){
                 $('.favorite-star').remove();

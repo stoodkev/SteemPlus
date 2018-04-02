@@ -47,8 +47,6 @@ function startBoardReward()
 
 function createBoardRewardTab()
 {
-	console.log('createBoardRewardTab');
-
 	if($('.menu').length===0)
 	{
 		setTimeout(function(){
@@ -58,7 +56,6 @@ function createBoardRewardTab()
 	}
 	else
 	{
-		console.log('else');
 		window.SteemPlus.Tabs.createTab({
 	      id: 'board-reward',
 	      title: 'Awards',

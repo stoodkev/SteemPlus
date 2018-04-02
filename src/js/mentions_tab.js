@@ -1,9 +1,10 @@
 
   var token_mention_tab=null;
   var aut=null;
-  var rewardBalance=null;
-  var recentClaims=null;
-  var steemPrice=null;
+  var rewardBalanceMentionsTab=null;
+  var recentClaimsMentionsTab=null;
+  var steemPriceMentionsTab=null;
+  var mentionTabStarted=false;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='mentions_tab'){
@@ -11,15 +12,29 @@
       if(request.order==='start'&&token_mention_tab==null)
       {
         token_mention_tab=request.token;
-        rewardBalance=request.data.rewardBalance;
-        recentClaims=request.data.recentClaims;
-        steemPrice=request.data.steemPrice;
+        rewardBalanceMentionsTab=request.data.rewardBalance;
+        recentClaimsMentionsTab=request.data.recentClaims;
+        steemPriceMentionsTab=request.data.steemPrice;
 
         createTab();
+
+        mentionTabStarted=true;
       }
-      if(request.order==='click'&&token_mention_tab==request.token)
+      else if(request.order==='click'&&token_mention_tab==request.token)
       {
+        rewardBalanceMentionsTab=request.data.rewardBalance;
+        recentClaimsMentionsTab=request.data.recentClaims;
+        steemPriceMentionsTab=request.data.steemPrice;
         createTab();
+      }
+      else if(request.order==='notif'&&token_mention_tab==request.token)
+      {
+        rewardBalanceMentionsTab=request.data.rewardBalance;
+        recentClaimsMentionsTab=request.data.recentClaims;
+        steemPriceMentionsTab=request.data.steemPrice;
+
+        if(mentionTabStarted)
+          createTab();
       }
     }
   });
@@ -35,6 +50,7 @@
   }
 
   function createMentionsTab(mentionsTab) {
+
     mentionsTab.html('<div class="row">\
        <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
           <article class="articles">\
@@ -187,12 +203,14 @@
               successCb(what, msg);
             },
             error: function(msg) {
-              console.log(msg);
-              var errorLabel = document.createElement('h2');
-              errorLabel.class = 'articles__h1';
-              errorLabel.innerHTML = 'Looks like we are having trouble retrieving information from steemData. Please try again later.'
-              $('.MentionsTabLoading').hide();
-              $('.articles').prepend(errorLabel);
+              if($('.error-mentions-label').length===0){
+                var errorLabel = document.createElement('h2');
+                $(errorLabel).addClass('articles__h1');
+                $(errorLabel).addClass('error-mentions-label');
+                $(errorLabel).append('Looks like we are having trouble retrieving information from steemData. Please try again later.');
+                $('.MentionsTabLoading').hide();
+                $('.articles').prepend(errorLabel);
+              }
             }
           });
         }
@@ -242,7 +260,7 @@
           var post = posts[i]
           var el = window.SteemPlus.Utils.createPostSummary(post, {
             openPost: openPost
-          }, rewardBalance, recentClaims, steemPrice);
+          }, rewardBalanceMentionsTab, recentClaimsMentionsTab, steemPriceMentionsTab);
           postsList.append(el);
         }
 

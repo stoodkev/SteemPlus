@@ -8,16 +8,22 @@ var wallet_elt_d;
 var classButton;
 var timeoutD=2000;
 var token_del=null;
+var delegationStarted=false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='delegation'&&request.order==='start'&&token_del==null)
     {
       token_del=request.token;
       startDelegation(request.data.steemit,request.data.busy,request.data.global,request.data.user);
+      delegationStarted=true;
     }
-
-    if(request.to==='delegation'&&request.order==='click'&&token_del===request.token)
+    else if(request.to==='delegation'&&request.order==='click'&&token_del===request.token)
       onClickD(request.data.steemit,request.data.busy,request.data.global,request.data.user);
+    else if(request.to==='delegation'&&request.order==='notif'&&token_del==request.token)
+    {
+      if(delegationStarted)
+        onClickD(request.data.steemit,request.data.busy,request.data.global,request.data.user);
+    }
 });
 
 

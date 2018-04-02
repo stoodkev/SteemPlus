@@ -57,10 +57,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           });
         }
       if(request.data.steemit)
-        $('.Header__userpic').before(loginIcon);
+        showButtonOnSteemit(loginIcon);
       else if(request.data.busy)
         $('.Topnav__version').after(loginIcon);
       else if(request.data.utopian)
         $('.Topnav__version').eq(0).after(loginIcon);
     }
   });
+
+  function showButtonOnSteemit(loginIcon)
+  {
+    console.log('try to show',$('.Header__userpic').length!==0);
+    if($('.Header__userpic').length!==0)
+      $('.Header__userpic').before(loginIcon);
+    else
+      setTimeout(function(){showButtonOnSteemit(loginIcon);},500);
+  }

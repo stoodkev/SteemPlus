@@ -19,13 +19,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startMDEditorPreview()
 {
 
+  $('textarea').addClass('smi-gif-picker-textarea2');
+
   if($('textarea').length > 0 && $('textarea')[0].textLength === 0)
   {
     waitingForPreview = true;
   }
   else
     waitingForPreview = false;
-  console.log($('textarea').textLength == 0);
 
   setupPreview();
   $('.float-right.secondary').click(function(){
@@ -33,6 +34,39 @@ function startMDEditorPreview()
   });
   bindTextArea();
   
+}
+
+function waitInsertedDropImage()
+{
+  if($('textarea')[0].textLength === 0)
+  {
+    console.log('textarea vide');
+    setTimeout(function () {
+      console.log('waiting for preview');
+      waitInsertedDropImage();
+    }, 200);
+  }
+  else
+  {
+    if($('.MarkdownViewer2').length === 0)
+    {
+      console.log('preview pas cree');
+      waitingForPreview = false;
+      setTimeout(function () {
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+        return;
+      }, 1000);
+
+    }
+    
+    $('.MarkdownViewer').bind("DOMNodeInserted",function(event){
+      setTimeout(function () {
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+        $('.MarkdownViewer').unbind("DOMNodeInserted");
+        return;
+      }, 1000);
+    });
+  }
 }
 
 function bindTextArea()
@@ -43,37 +77,46 @@ function bindTextArea()
       bindTextArea();
     }, 1000);
   }
-  
+
+  $("html").on("drop", function(event) {
+    event.preventDefault();  
+    waitInsertedDropImage();
+  });
+
+  $('textarea').on('paste', function () {
+    setTimeout(function () {
+      waitingForPreview = false;
+      $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+    }, 200);
+  });
+
+
   $('textarea').bind('input propertychange', function(event){
     if(event.currentTarget.value.length === 0){
       preview.remove();
       waitingForPreview = true;
-      console.log('change property 0');
       setupPreview();
     }
     else
     {
-      console.log('added letter');
+      setTimeout(function(){
+        $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
+      }, 200);
       waitingForPreview = false;
     }
   });
+  
 } 
 
 function setupPreview(){
-  $('.MarkdownViewer').bind('DOMSubtreeModified', function(event) {
-    $('.MarkdownViewer > div')[1].innerHTML = $('.MarkdownViewer > div')[0].outerHTML;
-  });
 
   if(waitingForPreview || $('.Preview').length === 0)
   {
-      console.log('No preview (waiting==' + waitingForPreview + ' &&length==' + $('.Preview').length);
       setTimeout(function(){
         setupPreview();
       }, 200);
       return;
   }
-
-  console.log($('.Preview'));
 
   // Put editor next to preview
   markdownSource=$('.Preview');
@@ -81,15 +124,15 @@ function setupPreview(){
   preview.id = 'mypreview';
   preview.addClass('Preview2');
   markdownSource.hide();
+  preview.find('div.MarkdownViewer').addClass('MarkdownViewer2');
+
 
   if($('.myrow').length > 0)
   {
-    console.log('ici');
     preview.appendTo($('.myrow'));
   }
   else
   {
-    console.log('la');
     preview.appendTo($('.column'));
     $('.column').removeClass('small-12');
     $('.column').addClass('row');

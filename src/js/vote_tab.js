@@ -1,10 +1,10 @@
 
   var token_vote_tab=null;
   var aut=null;
-  var rewardBalance=null;
-  var recentClaims=null;
-  var steemPrice=null;
-
+  var rewardBalanceVoteTab=null;
+  var recentClaimsVoteTab=null;
+  var steemPriceVoteTab=null;
+  var voteTabStarted=false;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_tab'){
@@ -12,26 +12,42 @@
       if(request.order==='start'&&token_vote_tab==null)
       {
         token_vote_tab=request.token;
-        rewardBalance=request.data.rewardBalance;
-        recentClaims=request.data.recentClaims;
-        steemPrice=request.data.steemPrice;
+        rewardBalanceVoteTab=request.data.rewardBalance;
+        recentClaimsVoteTab=request.data.recentClaims;
+        steemPriceVoteTab=request.data.steemPrice;
         startVotesTab();
+        voteTabStarted=true;
       }
       else if(request.order==='click'&&token_vote_tab==request.token)
       {
+        rewardBalanceVoteTab=request.data.rewardBalance;
+        recentClaimsVoteTab=request.data.recentClaims;
+        steemPriceVoteTab=request.data.steemPrice;
         startVotesTab();
+      }
+      else if(request.order==='notif'&&token_vote_tab==request.token)
+      {
+        rewardBalanceVoteTab=request.data.rewardBalance;
+        recentClaimsVoteTab=request.data.recentClaims;
+        steemPriceVoteTab=request.data.steemPrice;
+        
+        if(voteTabStarted)
+        {
+          console.log("start again");
+          startVotesTab();
+        }
       }
     }
   });
 
   function startVotesTab(){
 
-            window.SteemPlus.Tabs.createTab({
-              id: 'votes',
-              title: 'Votes',
-              enabled: true,
-              createTab: createVotesTab
-            });
+    window.SteemPlus.Tabs.createTab({
+      id: 'votes',
+      title: 'Votes',
+      enabled: true,
+      createTab: createVotesTab
+    });
   }
 
 
@@ -129,7 +145,7 @@
         <span class="action">\
           <a class="account" class="smi-navigate" href="/@' + voter + '">' + voter + '</a>\
           ' + verb + ' \
-          <a class="smi-navigate smi-vote-permlink" href="/@' + author + '/' + permlink + '" title="@' + author + '/' + permlink + '">@' + author + '/' + permlink + '</a>\
+          <a class="smi-vote-permlink" target="_blank" href="/@' + author + '/' + permlink + '" title="@' + author + '/' + permlink + '">@' + author + '/' + permlink + '</a>\
         </span>\
         <span class="timeago" title="' + timeagoTitle + '">' + timeago + '</span>\
         <span class="vote-weight" data-weight="' + tx.op[1].weight + '">\
@@ -175,7 +191,7 @@
         loadMore.show();
       }
       _.each(uniqueCommentTargets, function(target){
-        window.SteemPlus.Utils.getContent(target.author, target.permlink, function(err, result){
+        window.SteemPlus.Utils.getContent(target.author, target.permlink, rewardBalanceVoteTab, recentClaimsVoteTab, steemPriceVoteTab, function(err, result){
           if(!result){
             return;
           }

@@ -53,7 +53,8 @@ function addBeneficiariesButton(){
 
         $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
         if($('.close').length===1) {
-            $('.vframe__section--shrink button').hide();
+            var buttonPost = $('.vframe__section--shrink button')[2];
+            $(buttonPost).hide();
             if($('.post').length===0) {
                 $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
                 $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});

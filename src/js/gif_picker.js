@@ -246,8 +246,6 @@
       return;
     }
 
-    console.log(textarea["0"].parentElement);
-    console.log(textarea["0"].parentElement.childNodes);
     //if(textarea.parents.find('.smi-gif-picker-button-container'))
 
 

@@ -41,14 +41,17 @@
 
   function setupIframe(iframeWindow, doc){
     var html = doc.find('html');
-    // if(html.hasClass('smi-search-iframe-style')){
-    //   return;
-    // }
+    if(html.hasClass('smi-search-iframe-style')){
+      return;
+    }
     html.addClass('smi-search-iframe-style');
 
     html.append('<style>' + iframeStyle + '</style>');
 
+
+
     html.on('click', 'a', function(e) {
+      
       var a = $(e.currentTarget);
       if(a.parent().is('.gs-spelling')){
         return;
@@ -57,7 +60,15 @@
       var ctorig = a.data('ctorig');
       var url = a.attr('href');
       if(ctorig && ctorig.startsWith('https://steemit.com/')) {
-        window.SteemPlus.Utils.navigate(ctorig);
+
+        var win = window.open(ctorig, '_blank');
+        if (win) {
+            win.focus();
+        } else {
+            alert('Please allow popups for this website');
+        }
+
+
       }else{
         var openWindow = window.open();
         openWindow.opener = null;
@@ -74,20 +85,21 @@
     var iframeDoc = iframeWindow && iframeWindow.document;
     if(iframeDoc){
       if(iframeDoc.readyState == 'complete') {
-
         var doc = $(iframeDoc);
         setupIframe(iframeWindow, doc);
 
         if(search){
           var input = doc.find('input.gsc-input');
-          var submit = doc.find('.gsc-search-button input'); 
+          var submit = doc.find('button.gsc-search-button'); 
           if(input.length && submit.length){
             input.val(search);
+            console.log('test');
             submit.click();
           }
         }
 
       }else{
+
         $( iframeDoc ).ready(function() {
 
           var doc = $(iframeDoc);
@@ -105,7 +117,7 @@
       <div class="smi-input-container">\
         <input type="text" class="smi-input" placeholder="Search...">\
         <div class="smi-search-result-container">\
-          <iframe src="/static/search.html"></iframe>\
+          <iframe id="iframeSB" src="/static/search.html"></iframe>\
         </div>\
       </div>\
       <a href="" class="search-input_sp">\
@@ -167,10 +179,8 @@
     }
 
     var ui = createSearchUI();
-
     $('html').addClass('smi-header-search')
     searchEl.append(ui);
 
     openSearch(ui); //initialize
-
   };

@@ -11,6 +11,9 @@ Here's a quick list of feature by platform that is detailed below
 * Login via Steem Connect
 * Account's value
 
+### Utopian
+* 1UP integration
+
 ### Steemit
 * Feed+ : Filter your feed by tags, resteems, reputation and sorting options
 * Votes information (% and SBD values)
@@ -75,6 +78,10 @@ Allow you to filter and sort your feed.
 Display of percentage and SBD value of the votes received. Works on posts and comments.
 ![Votes information](https://steemitimages.com/0x0/https://steemitimages.com/DQmd2PcmAbpHs1WShJANemTtELkhP1BvtixRiLGtvnzGJvy/image.png)
 [More details](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
+
+## [1UP integration](https://steemit.com/utopian-io/@steem-plus/steemplus-2-4-utopian-1up-is-here)
+Quick link to 1UP votes on Utopian
+[More Details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-4-utopian-1up-is-here)
 
 ## [User Information](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 Decimals added to user reputation. On mouse over, displays a steemian current Voting Power, 100% vote value and time until full.

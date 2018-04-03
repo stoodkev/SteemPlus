@@ -3,6 +3,8 @@ var token_classification_user=null;
 var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 
 var myUsernameCU=null;
+var scrollBottomReachedCU = false;
+var nbElementPage=0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
@@ -15,9 +17,26 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   else if(request.to==='classification_user'&&request.order==='click'&&token_classification_user==request.token)
   {
     myUsernameCU = request.data.user;
-    startClassificationUser();
+    nbElementPage=0;
+    onClickClassificationUser();
+    
   }
 });
+
+function onClickClassificationUser()
+{
+  if(nbElementPage===$('.author').length)
+  {
+    setTimeout(function(){
+      onClickClassificationUser();
+    }, 500);
+  }
+  else
+  {
+    startClassificationUser();
+  }
+  
+}
 
 function startClassificationUser(){
   var elementUserListCU = $('.ptc');
@@ -43,6 +62,9 @@ function startClassificationUser(){
       userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
     }
   });
+
+  
+  $('.classification_section').hide(); 
 
   if(userListCU.length>0)
   {
@@ -80,7 +102,9 @@ function startClassificationUser(){
                 });
               }
               else
-                markAsUnknownStatus(elementListItem)
+              {
+                console.log('Erreur value undefined');
+              }
             });
           },
           error: function(XMLHttpRequest, textStatus, errorThrown) { 
@@ -89,9 +113,38 @@ function startClassificationUser(){
         });
       },2000);
     }
-
-    
+    $('.classification-section').show();
+    nbElementPage = $('.author').length;
+    console.log(nbElementPage);   
   }
+
+  $(window).scroll(function() {
+    if($(window).scrollTop() + $(window).height() >= $('.articles').height()) {
+      if(!scrollBottomReachedCU){
+        scrollBottomReachedCU=true;
+        onScrollUpdateCU();
+      }
+    }
+  });
+
+  
+}
+
+function onScrollUpdateCU()
+{
+  if($('.author').length===nbElementPage)
+  {
+    setTimeout(function() {
+      onScrollUpdateCU();
+    }, 1000);
+  }
+  else
+  {
+    $('.classification-section').remove();
+    startClassificationUser();
+    scrollBottomReachedCU=false;
+  }
+  
 }
 
 function createClassificationLabel(element, userScoreList, usernameCU)
@@ -215,8 +268,7 @@ function initClassificationLabel(element, usernameCU)
     }
   });
 
-  $(element).parent().parent().parent().after(classificationSection); 
-  
+  $(element).parent().parent().parent().after(classificationSection);
 }
 
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)

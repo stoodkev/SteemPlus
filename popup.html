@@ -21,26 +21,35 @@
                 <div class="onboarding-indicator>"><span id="dot-1" class="progress-dot progress-dot-active"></span><span id="dot-2" class="progress-dot"></span><span id="dot-3" class="progress-dot"></span><span id="dot-4" class="progress-dot"></span><span id="dot-5" class="progress-dot"></span><span id="dot-6" class="progress-dot"></span></div> <span id="onboard-forward" class="onboard-directon">Next</span>
             </div>
         </div>
-        <div id='disconnected'>
+        <!-- <div id='disconnected'>
             <img src="src/img/steemplus.png">
             <h3>Login</h3>
             <p>In order to enable the features within Steem+ we need you to login to your Steem account, don't worry we'll never see your password.</p>
             <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options,custom_json&state=https://steemit.com/@steem-plus"><input type="button" class="blue-button" value="Sign in via SteemConnect"></a>
+        </div> -->
 
-        </div>
         <div id='connected'>
             <img id="logo" src="src/img/steemplus.png" width="200px">
+            <div id="loginButton" >
+                <h3>Login</h3>
+                <p>You are in offline mode. To enjoy more features (Feed+, beneficiaries, Follower table), please login using SteemConnect.</p>
+                <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options,custom_json&state=https://steemit.com/@steem-plus"><input type="button" class="blue-button" value="Sign in via SteemConnect"></a>  
+            </div>
+
             <div class="info_user">
                 <a class="id_user"></a>
-                <div class="rep-container"><span class="rep_user"></span></div>
-                <span class="voting-label">Your Voting Power</span>
-                <div>
-                    <div class="w3-light-grey w3-round">
-                        <div id="bar" class="w3-container w3-round w3-blue" style="width:0%"></div>
-                    </div><span id="vote-power-stat">0%</span></div>
-                <p id="main-description">You can use our upvote option to quickly vote for a post, or click on Features to find out more about what SteemPlus has to offer.</p>
+                <div class="info_user_connected">
+                    <div class="rep-container"><span class="rep_user"></span></div>
+                    <span class="voting-label">Your Voting Power</span>
+                    <div>
+                        <div class="w3-light-grey w3-round">
+                            <div id="bar" class="w3-container w3-round w3-blue" style="width:0%"></div>
+                        </div><span id="vote-power-stat">0%</span></div>
+                    <p id="main-description">You can use our upvote option to quickly vote for a post, or click on Features to find out more about what SteemPlus has to offer.</p>
+                </div>
             </div>
-            <div class="menu" style="border-bottom: 1px solid whitesmoke"><img class="menu-icon" src="src/img/up.png">Upvote
+
+            <div id="vote-menu" class="menu" style="border-bottom: 1px solid whitesmoke"><img class="menu-icon" src="src/img/up.png">Upvote
                 <div class="more"></div>
             </div>
             <div class="content">
@@ -63,7 +72,7 @@
 
                 <hr/>
                 <div class="options-content">
-                    <div class="sp_option">
+                    <div class="sp_option  need-online">
                         <label class="switch">
                             <input type="checkbox" name="oneup"  id="oneup">
                             <span class="slider2 round"></span>
@@ -73,7 +82,7 @@
                         <p class="option-description">Vote for the best Utopian contributions and give them a chance to be upvoted by the trail.</p>
                     </div>
 
-                    <div class="sp_option">
+                    <div class="sp_option need-online">
                         <label class="switch">
                             <input type="checkbox" name="feedp"  id="feedp">
                             <span class="slider2 round"></span>
@@ -83,7 +92,7 @@
                         <p class="option-description">Enhance your feed on Steemit with filtering and sorting functions.</p>
                     </div>
 
-                    <div class="sp_option">
+                    <div class="sp_option need-online">
                         <label class="switch">
                             <input type="checkbox" name="ben"  id="ben">
                             <span class="slider2 round"></span>
@@ -242,7 +251,7 @@
                             <p class="option-description">Adds the amount in dollars your vote is worth to the voting/downvoting slider (Only for account with enough SP)</p>
                         </div>
 
-                        <div class="sp_option_list">
+                        <div class="sp_option_list  need-online">
                             <label class="switch">
                                 <input type="checkbox" name="followers_table"  id="followers_table">
                                 <span class="slider2 round"></span>

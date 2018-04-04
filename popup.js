@@ -34,13 +34,17 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
         $('#loginButton').css('display','none');
         $('#before_connect').css('display','none');
         $('#shortcuts, .switch-text').show();
+        $('.need-online > label > input').prop('disabled', false);
+        $('.need-online').removeAttr('title');
+        $('.need-online').removeClass('not-allowed');
+        $('.info_user_connected').css('display', 'block');
       }
       else {
         $('#onboarding').css('display', 'block');
         $('#before_connect').css('display', 'none');
         $('#connected').css('display', 'none');
         $('#loginButton').css('display', 'none');
-        $('.info_user_connected').css('display', 'block');
+        
       }
       $('.id_user').html('@'+me);
       $('.id_user').attr('href','https://steemit.com/@'+me);
@@ -61,9 +65,9 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
             $('#shortcuts, .switch-text').show();
-            $('.need-online').attr('disabled', false);
-            $('.need-online').removeAttr('title');
-
+            $('.need-online > label > input').prop('disabled', true);
+            $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
+            $('.need-online').prop('checked', false);
         } else {
             $('#onboarding').css('display', 'block');
             $('#before_connect').css('display', 'none');
@@ -71,10 +75,6 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
             $('#loginButton').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
-
-            $('.need-online').css('background-color', 'red');
-            $('.need-online').prop('disabled', true);
-            $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
         }
     }
 
@@ -114,13 +114,19 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
         document.getElementById("myRange").value=weight;
     }
 
+    if(steemConnect.connected)
+    {
+        $('input[name=ben]').prop('checked',ben=='show');
+        $('input[name=oneup]').prop('checked',oneup=='show');
+        $('input[name=feedp]').prop('checked',feedp=='show');
+    }
+    
+    
+
     $('option[name=badges][value='+badge+']').prop('selected',true);
-    $('input[name=feedp]').prop('checked',feedp=='show');
     $('input[name=del]').prop('checked',del=='show');
-    $('input[name=ben]').prop('checked',ben=='show');
     $('input[name=drop]').prop('checked',drop=='show');
     $('input[name=acc_v]').prop('checked',acc_v=='show');
-    $('input[name=oneup]').prop('checked',oneup=='show');
     $('input[name=transfers]').prop('checked',transfers=='show');
     $('input[name=board_reward]').prop('checked',board_reward=='show');
     $('input[name=favorite_section]').prop('checked',favorite_section=='show');
@@ -134,7 +140,7 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
     $('input[name=search_bar]').prop('checked',search_bar=='show');
     $('input[name=mentions_tab]').prop('checked',mentions_tab=='show');
     $('input[name=vote_weight_slider]').prop('checked',vote_weight_slider=='show');
-    $('input[name=followers_table]').prop('checked',followers_table=='show');
+    if(steemConnect.connected) $('input[name=followers_table]').prop('checked',followers_table=='show');
     $('input[name=boost_button]').prop('checked',boost_button=='show');
     $('input[name=gif_picker]').prop('checked',gif_picker=='show');
     $('input[name=user_info_popover]').prop('checked',user_info_popover=='show');

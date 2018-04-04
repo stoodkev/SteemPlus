@@ -10,7 +10,7 @@ var back=document.getElementsByClassName("back_menu");
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
     if(steemConnect.connect===true)
@@ -72,6 +72,8 @@ chrome.storage.local.get(['board_reward','favorite_section','post_floating_botto
     acc_v=items.acc_v==undefined?'show':items.acc_v;
     drop=items.drop==undefined?'show':items.drop;
     board_reward=items.board_reward==undefined?'show':items.board_reward;
+    favorite_section=items.favorite_section==undefined?'show':items.favorite_section;
+    classification_user=items.classification_user==undefined?'show':items.classification_user;
 
     // Steemit more info
     steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
@@ -88,7 +90,6 @@ chrome.storage.local.get(['board_reward','favorite_section','post_floating_botto
     blog_histogram=items.blog_histogram==undefined?'hide':items.blog_histogram; //default hidden
     md_editor_beautifier=items.md_editor_beautifier==undefined?'show':items.md_editor_beautifier;
     post_floating_bottom_bar=items.post_floating_bottom_bar==undefined?'show':items.post_floating_bottom_bar;
-    favorite_section=items.favorite_section==undefined?'show':items.favorite_section;
 
     //console.log(items.resteem);
     if(weight!==undefined)
@@ -106,6 +107,8 @@ chrome.storage.local.get(['board_reward','favorite_section','post_floating_botto
     $('input[name=oneup]').prop('checked',oneup=='show');
     $('input[name=transfers]').prop('checked',transfers=='show');
     $('input[name=board_reward]').prop('checked',board_reward=='show');
+    $('input[name=favorite_section]').prop('checked',favorite_section=='show');
+    $('input[name=classification_user]').prop('checked',classification_user=='show');
 
     // Steemit more info
     $('input[name=steemit_more_info]').prop('checked',steemit_more_info=='show');
@@ -122,7 +125,6 @@ chrome.storage.local.get(['board_reward','favorite_section','post_floating_botto
     $('input[name=blog_histogram]').prop('checked',blog_histogram=='show');
     $('input[name=md_editor_beautifier]').prop('checked',md_editor_beautifier=='show');
     $('input[name=post_floating_bottom_bar]').prop('checked',post_floating_bottom_bar=='show');
-    $('input[name=favorite_section]').prop('checked',favorite_section=='show');
 
     // if steemit more info is not checked, hide all SMI options
     if(steemit_more_info=='hide')
@@ -381,6 +383,12 @@ $(document).on("change","input[name=favorite_section]",function(){
 $(document).on("change","input[name=board_reward]",function(){
     chrome.storage.local.set({
         board_reward:$("input[name=board_reward]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=classification_user]",function(){
+    chrome.storage.local.set({
+        classification_user:$("input[name=classification_user]").prop('checked')?'show':'hide'
     });
 });
 

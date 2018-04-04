@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                i++;
               DisplayPriceFeed(intr,i,market_d);
 
-            },5000,0);
+            },2000,0);
           }
       },200);
     }

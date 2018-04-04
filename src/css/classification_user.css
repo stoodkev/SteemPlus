@@ -1,0 +1,103 @@
+.classification-section{
+	cursor:pointer;
+	display: inline-block;
+	font-size: 12px;
+	border-radius: 25px;
+	padding-left: 5px;
+	padding-right: 5px;
+	min-width: 70px !important;
+	text-align: center;
+	height: 20px;
+}
+
+.feedback-button {
+	padding-top:2px;
+	padding-bottom:2px;
+	font-size: 12px;
+	min-width: 70px !important;
+	cursor:pointer;
+	display: inline-block;
+	border-radius: 25px;
+	text-align: center;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.human-item{
+	color: #42bb8b;
+	background-color: white;
+	border: 1px solid #42bb8b;
+}
+.human-item:hover{
+	color: white;
+	background-color: #42bb8b;
+}
+
+.bot-item{
+	color: #ea9041;
+	background-color: white;
+	border: 1px solid #ea9041;
+}
+.bot-item:hover{
+	color: white;
+	background-color: #ea9041;
+	border: 1px solid #ea9041;
+}
+
+.spammer-item{
+	color: #d82727;
+	background-color: white;
+	border: 1px solid #d82727;
+}
+.spammer-item:hover{
+	color: white;
+	background-color: #d82727;
+	border: 1px solid #d82727;
+}
+
+.unknown-item{
+	color: #a8b2c1;
+	background-color: white;
+	border: 1px solid #a8b2c1;
+}
+.unknown-item:hover{
+	color: white;
+	background-color: #a8b2c1;
+	border: 1px solid #a8b2c1;
+}
+
+.Comment__header-user .classification-section
+{
+}
+
+.PostFull__time_author_category .classification-section
+{
+	line-height: 1.6;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+.right-side .classification-section
+{
+	display: inline-block;
+    vertical-align: middle;
+    padding-top: 2px;
+    margin-top: 0px;
+}
+
+.user__col .classification-section
+{
+	display: inline-block;
+    vertical-align: middle;
+    line-height: 1.6;
+    margin-right: 5px;
+}
+
+.Comment__header-user .popover, .right-side .popover, .PostFull__time_author_category .popover {
+	width: 206px;
+}
+
+.popover_classification_value
+{
+	font-size: 14px;
+}

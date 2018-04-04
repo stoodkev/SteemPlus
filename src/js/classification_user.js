@@ -114,7 +114,7 @@ function startClassificationUser(){
 
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
-  console.log(i + '////////' + max)
+  // console.log(i + '////////' + max)
   var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
   setTimeout(function(){
     $.ajax({
@@ -151,12 +151,14 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 
 function addButtonsCU(userListCU)
 {
-  console.log(userListCU);
+  //console.log(userListCU);
   userListCU.forEach(function(userListItem){
     userListItem.arrayElement.forEach(function(elementListItem){
       $(elementListItem).addClass('has-classification');
       if(userListItem.userScoreList.length===0)
-        initClassificationLabel(elementListItem, userListItem.username);
+      {
+        // initClassificationLabel(elementListItem, userListItem.username);
+      }
       else
         createClassificationLabel(elementListItem, userListItem.userScoreList, userListItem.username);
     });
@@ -286,7 +288,7 @@ function initClassificationLabel(element, usernameCU)
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
 {
 
-  console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
+  //console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
 
   $.ajax({
     type: "POST",

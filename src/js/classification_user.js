@@ -4,118 +4,102 @@ var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 
 var myUsernameCU=null;
 var scrollBottomReachedCU = false;
-var nbElementPage=0;
+var nbElementPageAuthor=0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
   {
     token_classification_user=request.token;
     myUsernameCU = request.data.user;
-    startClassificationUser();
+    nbElementPageAuthor=0;
+    $('.has-classification').removeClass('has-classification');
+    canStartClassificationUser();
 
   }
   else if(request.to==='classification_user'&&request.order==='click'&&token_classification_user==request.token)
   {
     myUsernameCU = request.data.user;
-    nbElementPage=0;
-    onClickClassificationUser();
-    
+    nbElementPageAuthor=0;
+    $('.has-classification').removeClass('has-classification');
+    canStartClassificationUser();
   }
 });
 
-function onClickClassificationUser()
+function canStartClassificationUser()
 {
-  if(nbElementPage===$('.author').length)
+
+  if($('.Post').length > 0)
   {
-    setTimeout(function(){
-      onClickClassificationUser();
-    }, 500);
+    console.log(parseFloat($('.PostFull__responses > a')[0].innerText) / 2);
+    console.log($('.Comment__body').length);
+    // Case article
+    if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
+    {
+      startClassificationUser();
+    }
+    else
+    {
+      setTimeout(function(){
+        canStartClassificationUser();
+      }, 500);
+    }
   }
   else
   {
-    startClassificationUser();
+    // Case feed, blog
+    if(nbElementPageAuthor===$('.author').length)
+    {
+      setTimeout(function(){
+        canStartClassificationUser();
+      }, 500);
+    }
+    else
+    {
+      startClassificationUser();
+    }
   }
-  
 }
 
 function startClassificationUser(){
+  //$('.classification-section').remove();
   var elementUserListCU = $('.ptc');
   var elementUserListCU2 = $('.author > strong > a');
   var userListCU = [];
 
   elementUserListCU.each(function(indexItem, item){
-    var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
-    initClassificationLabel(item, usernameCurrentItem);
-    if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
-      userListCU.push({username:usernameCurrentItem, arrayElement:[item]});
-    else{
-      userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+    if(!$(item).hasClass('has-classification'))
+    {
+      var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
+        userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
+      else{
+        userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+      }
     }
   });
 
   elementUserListCU2.each(function(indexItem, item){
-    var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
-    initClassificationLabel(item, usernameCurrentItem);
-    if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
-      userListCU.push({username:usernameCurrentItem, arrayElement:[item]});
-    else{
-      userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+    if(!$(item).hasClass('has-classification'))
+    {
+      var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
+        userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
+      else{
+        userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+      }
     }
   });
 
-  
-  $('.classification_section').hide(); 
 
   if(userListCU.length>0)
   {
     var arrayUsernames = userListCU.map(function(e){return e.username;});
 
-    for(var i = 0; i <= userListCU.length / 100; i++)
-    {
-      var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
-      setTimeout(function(){
-        $.ajax({
-          type: "GET",
-          beforeSend: function(xhttp) {
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-          },
-          url: url,
-          success: function(result) {
-            Object.keys(result.data).map(function(objectKey, index) {
-              var value = result.data[objectKey];
-              
-              if(value!==undefined)
-              {
-                var userScoreList = [];
-                userScoreList.push({name:'Human', cssClass:'human-item', value:(parseFloat(result.data[objectKey].classification_human_score)*100).toFixed(2)});
-                userScoreList.push({name:'Bot',cssClass:'bot-item', value:(parseFloat(result.data[objectKey].classification_bot_score)*100).toFixed(2)});
-                userScoreList.push({name:'Spammer',cssClass:'spammer-item', value:(parseFloat(result.data[objectKey].classification_spammer_score)*100).toFixed(2)});
-                
-                userScoreList.sort(function (a, b) {
-                  return b.value - a.value;
-                });          
-      
-                userListCU.find(function(e){return e.username===objectKey}).arrayElement.forEach(function(elementListItem){
-                  
-                  createClassificationLabel(elementListItem, userScoreList, objectKey);
-                });
-              }
-              else
-              {
-                console.log('Erreur value undefined');
-              }
-            });
-          },
-          error: function(XMLHttpRequest, textStatus, errorThrown) { 
-            console.log("Status: " + textStatus + "      Error: " + errorThrown); 
-          }
-        });
-      },2000);
-    }
+    getDataFromAPICU(userListCU, arrayUsernames, 0, arrayUsernames.length/100)
+
     $('.classification-section').show();
-    nbElementPage = $('.author').length;
-    console.log(nbElementPage);   
+    nbElementPageAuthor = $('.author').length;
+    nbElementComment = $('.Comment__body').length;
   }
 
   $(window).scroll(function() {
@@ -126,25 +110,57 @@ function startClassificationUser(){
       }
     }
   });
-
-  
 }
 
-function onScrollUpdateCU()
+function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
-  if($('.author').length===nbElementPage)
-  {
-    setTimeout(function() {
-      onScrollUpdateCU();
-    }, 1000);
-  }
-  else
-  {
-    $('.classification-section').remove();
-    startClassificationUser();
-    scrollBottomReachedCU=false;
-  }
-  
+  console.log(i + '////////' + max)
+  var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
+  setTimeout(function(){
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+      },
+      url: url,
+      success: function(result) {
+        Object.keys(result.data).map(function(objectKey, index) {
+          var userScoreList = [];
+          userScoreList.push({name:'Human', cssClass:'human-item', value:(parseFloat(result.data[objectKey].classification_human_score)*100).toFixed(2)});
+          userScoreList.push({name:'Bot',cssClass:'bot-item', value:(parseFloat(result.data[objectKey].classification_bot_score)*100).toFixed(2)});
+          userScoreList.push({name:'Spammer',cssClass:'spammer-item', value:(parseFloat(result.data[objectKey].classification_spammer_score)*100).toFixed(2)});
+          
+          userScoreList.sort(function (a, b) {
+            return b.value - a.value;
+          }); 
+          userListCU.find(function(e){return e.username===objectKey}).userScoreList = userScoreList.slice();
+
+        });
+        if(i+1 < max)
+          getDataFromAPICU(userListCU, arrayUsernames, i+1, max);
+        else
+          addButtonsCU(userListCU);
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        console.log("Status: " + textStatus + "      Error: " + errorThrown); 
+      }
+    });
+  },2000)
+}
+
+function addButtonsCU(userListCU)
+{
+  console.log(userListCU);
+  userListCU.forEach(function(userListItem){
+    userListItem.arrayElement.forEach(function(elementListItem){
+      $(elementListItem).addClass('has-classification');
+      if(userListItem.userScoreList.length===0)
+        initClassificationLabel(elementListItem, userListItem.username);
+      else
+        createClassificationLabel(elementListItem, userListItem.userScoreList, userListItem.username);
+    });
+  });
 }
 
 function createClassificationLabel(element, userScoreList, usernameCU)
@@ -158,11 +174,8 @@ function createClassificationLabel(element, userScoreList, usernameCU)
   {
     permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
   }
-
   $(element).parent().parent().parent().parent().find('.unknown-item').remove();
-
   var classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
-
   $(classificationSection).attr('data-toggle','popover');
   $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
       <span name="' + usernameCU + '" class="' + userScoreList[1].cssClass + ' feedback-button">' + userScoreList[1].name + '</span><span class="value_of popover_classification_value">' + userScoreList[1].value + '%</span><hr/>\
@@ -267,7 +280,6 @@ function initClassificationLabel(element, usernameCU)
       });
     }
   });
-
   $(element).parent().parent().parent().after(classificationSection);
 }
 
@@ -320,4 +332,21 @@ function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
       console.log("Status: " + textStatus + "      Error: " + errorThrown); 
     }
   });
+}
+
+function onScrollUpdateCU()
+{
+  if($('.author').length===nbElementPageAuthor)
+  {
+    setTimeout(function() {
+      onScrollUpdateCU();
+    }, 1000);
+  }
+  else
+  {
+    // $('.classification-section').remove();
+    startClassificationUser();
+    scrollBottomReachedCU=false;
+  }
+  
 }

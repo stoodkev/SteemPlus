@@ -538,7 +538,6 @@ $('#user-options').click(function () {
             }
 
             function onboard(onBoardingID) {
-                console.log(onBoardingID);
                 if (onBoardingID == 0) {
                     setOnboardingScreen('Feed+', 'Search for the content that fits you, using advanced filters and sorting options.', 'src/img/onboarding/plus.png', '#dot-2')
                 } else if (onBoardingID == 1) {

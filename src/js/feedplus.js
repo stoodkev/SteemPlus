@@ -383,12 +383,11 @@ function FeedPlus(isSteemit,isBusy,feedp) {
               {
                 var elt=filtered_list[this.id];
                 var that=this;
-                console.log(elt);
-                console.log(elt.voted);
                 if(elt.voted)
                 {
                   sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function (err, res) {
-                    console.log(err, res);
+                    if(err) console.log(err);
+                    if(res) console.log(res);
 
                     if(res!==null){
                       $(that).removeClass('Voting__button--upvoted');
@@ -398,7 +397,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                 }
                 else {
                   {
-                    console.log('sc2.vote('+ feedp.user+', '+elt.username+', '+elt.url.split('/').slice(-1)[0]+', '+feedp.weight+')');
                     sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function (err, res) {
                       if(err) console.log(err);
                       if(res) console.log(res);
@@ -617,7 +615,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
          }
 
         function HandleTagListsVisibility(){
-            console.log($("input[name=tag]:checked").val());
             if($("input[name=tag]:checked").val()=="list")
                 $("#list_tags").show();
             else $("#list_tags").hide();
@@ -679,7 +676,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             $('#listfeed').addClass('active');
           }
           else if(style=='grid'){
-            console.log('change to grid');
             $('.PostsIndex__left li').addClass('grid-view');
             $('.PostsIndex__left li').removeClass('big-view');
             $('#gridfeed').addClass('active');

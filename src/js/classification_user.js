@@ -30,8 +30,6 @@ function canStartClassificationUser()
 
   if($('.Post').length > 0)
   {
-    console.log(parseFloat($('.PostFull__responses > a')[0].innerText) / 2);
-    console.log($('.Comment__body').length);
     // Case article
     if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
     {
@@ -177,7 +175,6 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
   }
   $(element).parent().parent().parent().parent().find('.unknown-item').remove();
-  console.log(userScoreList[0].name,userScoreList[0].value);
   var classificationSection;
   if((userScoreList[0].name==="Bot"||userScoreList[0].name==="Spammer")&&userScoreList[0].value<80)
     classificationSection = $('<span class="unknown-item classification-section">Pending</span>');

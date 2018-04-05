@@ -16,6 +16,7 @@ const token=makeToken();
 
 Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMedianHistoryPriceAsync(), steem.api.getRewardFundAsync("post")])
 .then(function(values) {
+
   const votePowerReserveRate = values["0"].vote_power_reserve_rate;
   const totalSteem = Number(values["0"].total_vesting_fund_steem.split(' ')[0]);
   const totalVests = Number(values["0"].total_vesting_shares.split(' ')[0]);
@@ -48,7 +49,10 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   chrome.storage.local.set({
     steemPriceLS:steemPrice
   });
-  chrome.storage.local.get(['user_info_popover','followers_table','vote_weight_slider','mentions_tab','vote_tab','steemit_more_info','post_votes_list','acc_v','del'], function (items) {
+  chrome.storage.local.get(['user_info_popover','followers_table','vote_weight_slider','mentions_tab','vote_tab','steemit_more_info','post_votes_list','acc_v','del', 'tokenExpire', 'sessionToken'], function (items) {
+
+    var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
+
 
     const delegation=(items.del==undefined||items.del=="show");
     const account_value=(items.acc_v==undefined||items.acc_v=="show");
@@ -74,199 +78,268 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
       if(vote_weight_slider)
         chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
-      if(followers_table)
+      if(followers_table&&steemConnect.connect)
         chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate, totalVestingFund:totalSteem, totalVestingShares:totalVests}});
       if(user_info_popover)
         chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
     }
   });
-
-  
 });
 
 chrome.storage.local.get(['classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
-    var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
-    chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
+  var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
+  chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
 
-    console.log('Connecting...');
-    if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
-      initializeSteemConnect(steemConnect.sessionToken);
-      sc2.me().then((me)=> {
-        console.log(me);
-
-
-        const votePowerReserveRateLS = (items.votePowerReserveRateLS==undefined ? 1 : items.votePowerReserveRateLS);
-        const totalSteemLS = (items.totalSteemLS==undefined ? 1 : items.totalSteemLS);
-        const totalVestsLS = (items.totalVestsLS==undefined ? 1 : items.totalVestsLS);
-        const rewardBalanceLS = (items.rewardBalanceLS==undefined ? 1 : items.rewardBalanceLS);
-        const recentClaimsLS = (items.recentClaimsLS==undefined ? 1 : items.recentClaimsLS);
-        const steemPriceLS = (items.steemPriceLS==undefined ? 1 : items.steemPriceLS);
-
-        console.log('Getting settings...');
-        const account=me.account;
-        user=me.name;
-        const delegation=(items.del==undefined||items.del=="show");
-        const transfers=(items.transfers==undefined||items.transfers=="show");
-        const account_value=(items.acc_v==undefined||items.acc_v=="show");
-        const beneficiaries=(items.ben==undefined||items.ben=="show");
-        const dropdown=(items.drop==undefined||items.drop=="show");
-        const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="show");
-        const feedp=(items.feedp==undefined||items.feedp=="show");
-        const resteem= (items.resteem !== undefined)?items.resteem:'show';
-        const oneup= (items.oneup !== undefined)?items.oneup:'show';
-        const weight=(items.weight !== undefined)?items.weight*100:10000;
-
-        const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
-        const post_votes_list=(items.post_votes_list == undefined || items.post_votes_list=='show');
-        const vote_tab=(items.vote_tab == undefined || items.vote_tab=='show');
-        const external_link_tab=(items.external_link_tab == undefined || items.external_link_tab=='show');
-        const search_bar=(items.search_bar == undefined || items.search_bar=='show');
-        const mentions_tab=(items.mentions_tab == undefined || items.mentions_tab=='show');
-        const vote_weight_slider=(items.vote_weight_slider == undefined || items.vote_weight_slider=='show');
-        const followers_table=(items.followers_table == undefined || items.followers_table=='show');
-        const boost_button=(items.boost_button == undefined || items.boost_button=='show');
-        const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
-        const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
-        const blog_histogram=(items.blog_histogram !== undefined && items.blog_histogram=='show'); //default hidden
-        const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
-        const post_floating_bottom_bar=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
-          const post_floating_bottom_bar_size=items.post_floating_bottom_bar_size==undefined?'small':items.post_floating_bottom_bar_size;
-        const favorite_section=(items.favorite_section == undefined || items.favorite_section=='show');
-        const board_reward=(items.board_reward == undefined || items.board_reward=='show');
-        const classification_user=(items.classification_user == undefined || items.classification_user=='show');
-
-        const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
-        const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
-        const last_post_url=items.last_post_url;
+  console.log('Connecting...');
+  if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
+    initializeSteemConnect(steemConnect.sessionToken);
+    sc2.me().then((me)=> 
+    {
+      console.log(me);
 
 
-        var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
-        var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
-        var rep_feed_check=(items.rep_feed_check!==undefined)?items.rep_feed_check:null;
-        var rep_feed=(items.rep_feed!==undefined)?items.rep_feed:null;
-        var sort=(items.sort!==undefined)?items.sort:null;
-        var tag=(items.tag!==undefined)?items.tag:'show';
-        var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
-        var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
-        var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
+      const votePowerReserveRateLS = (items.votePowerReserveRateLS==undefined ? 1 : items.votePowerReserveRateLS);
+      const totalSteemLS = (items.totalSteemLS==undefined ? 1 : items.totalSteemLS);
+      const totalVestsLS = (items.totalVestsLS==undefined ? 1 : items.totalVestsLS);
+      const rewardBalanceLS = (items.rewardBalanceLS==undefined ? 1 : items.rewardBalanceLS);
+      const recentClaimsLS = (items.recentClaimsLS==undefined ? 1 : items.recentClaimsLS);
+      const steemPriceLS = (items.steemPriceLS==undefined ? 1 : items.steemPriceLS);
+
+      console.log('Getting settings...');
+      const account=me.account;
+      user=me.name;
+      const beneficiaries=(items.ben==undefined||items.ben=="show");
+      const feedp=(items.feedp==undefined||items.feedp=="show");
+      const resteem= (items.resteem !== undefined)?items.resteem:'show';
+      const weight=(items.weight !== undefined)?items.weight*100:10000;
+
+      const oneup= (items.oneup !== undefined)?items.oneup:'show';
+
+      const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
+      const followers_table=(items.followers_table == undefined || items.followers_table=='show');
+
+      // Feed+ const
+      var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
+      var blacklist=(items.blacklist !== undefined)?items.blacklist:"";
+      var rep_feed_check=(items.rep_feed_check!==undefined)?items.rep_feed_check:null;
+      var rep_feed=(items.rep_feed!==undefined)?items.rep_feed:null;
+      var sort=(items.sort!==undefined)?items.sort:null;
+      var tag=(items.tag!==undefined)?items.tag:'show';
+      var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
+      var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
+      var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
 
 
-        checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);
-        checkLastPost(last_post_url, me);
+      console.log('Starting features online...',user);
+      if(beneficiaries&&steemit)
+        chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user}});
+      if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
+        chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
+      if(steemit&&feedp)
+        chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
+      if(oneup&&utopian)
+        chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
 
-        console.log('Starting features...',user);
-        if(delegation&&(steemit||busy))
-          chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
-        if(transfers&&(steemit||busy))
-          chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
-        if(account_value&&(steemit||busy))
-          chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
-        if(beneficiaries&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user}});
-        if(rank&&steemit)
-          chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start'});
-        if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
-          chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
-        if(steemit&&feedp)
-          chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
-        if(oneup&&utopian)
-          chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
-        if(board_reward&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
-        if(favorite_section&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
-        if(classification_user&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
+      if (steemit&&steemit_more_info) {
+        if(followers_table)
+          chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account, totalVestingFund:totalSteemLS, totalVestingShares:totalVestsLS}});
+      }
+      console.log('Online Features started...');
+      $(document).click(function(){
+        setTimeout(function(){
+          if(url!==window.location.href)
+          {
+            if(beneficiaries&&steemit)
+              chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
+            if(steemit&&followers_table&&steemit_more_info)
+              chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
+            
+            url=window.location.href;
+          }
+          if(oneup&&utopian)
+            chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'click',data:{account:account}});
+        },200);
+      });
+      console.log('Offline Features');
+      initOfflineFeatures(true, items, user, account);
+    });
+  }
+  else
+  {
+    // No need to be connected to SteemConnect
+    console.log('Offline Features');
+    initOfflineFeatures(false, items, null, null);
+  } 
+});
 
-        if (steemit&&steemit_more_info) {
-          if(post_votes_list)
-            chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-          if(vote_tab)
-            chrome.runtime.sendMessage({ token:token, to: 'vote_tab', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-          if(external_link_tab)
-            chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'start',data:{}});
-          if(search_bar)
-            chrome.runtime.sendMessage({ token:token, to: 'search_bar', order: 'start',data:{}});
-          if(mentions_tab)
-            chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-          if(vote_weight_slider)
-            chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
-          if(followers_table)
-            chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account, totalVestingFund:totalSteemLS, totalVestingShares:totalVestsLS}});
-          if(boost_button)
-            chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'start',data:{}});
-          if(gif_picker)
-            chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'start',data:{}});
-          if(user_info_popover)
-            chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
-          if(blog_histogram)
-            chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{rewardBalance: rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-          if(md_editor_beautifier)
-            chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
-          if(post_floating_bottom_bar)
-            chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
+function initOfflineFeatures(isConnected, items, user, account)
+{
+  console.log("isConnected => " + isConnected); 
+  if(!isConnected)
+  {
+    if($('.Header__userpic > a').length > 0)
+    {
+      console.log('end waiting for header');
+      user = $('.Header__userpic > a')[0].title; //Get username in offline mode
+      steem.api.getAccounts([user], function(err, result) {
+        if(err) console.log(err);
+        else
+        {
+          console.log('getting account');
+          startOfflineFeatures(items, user, result[0]);
         }
-
-
-        console.log('Features started...');
-        $(document).click(function(){
-          setTimeout(function(){
-            if(url!==window.location.href)
-            {
-              if(delegation&&(steemit||busy))
-                chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
-              if(transfers&&(steemit||busy))
-                chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
-              if(account_value&&(steemit||busy))
-                chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });
-              if(beneficiaries&&steemit)
-                chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
-              if(rank&&steemit)
-                chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
-              if(steemit&&followers_table&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
-              if(steemit&&boost_button&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'click', data:{user:user}});
-              if(steemit&&md_editor_beautifier&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'click', data:{}});
-              if(steemit&&user_info_popover&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
-              if(steemit&&blog_histogram&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'click',data:{}});
-              if(post_floating_bottom_bar&&steemit&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{}});
-              if(external_link_tab&&steemit&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'click',data:{}});
-              if(mentions_tab&&steemit&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-              if(vote_weight_slider&&steemit&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
-              if(favorite_section&&steemit)
-                chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
-              if(post_votes_list&&steemit&&steemit_more_info)
-                chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-              if(classification_user&&steemit)
-                chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
-              
-              if($('.favorite-star').length > 0){
-                $('.favorite-star').remove();
-              }
-
-              if($('.error-mentions-label').length > 0){
-                $('.error-mentions-label').remove();
-              }
-
-              url=window.location.href;
-            }
-            if(oneup&&utopian)
-              chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'click',data:{account:account}});
-            if(dropdown&&steemit)
-              chrome.runtime.sendMessage({ token:token,to: 'drop', order: 'click',data:{market:market} });
-          },200);
-        });
       });
     }
+    else
+      setTimeout(function(){
+        console.log('waiting for header'); 
+        initOfflineFeatures(isConnected, items, null, null);
+      },250);
+  }
+  else
+  {
+    startOfflineFeatures(items, user, account);
+  }
+  
+}
+
+function startOfflineFeatures(items, user, account)
+{
+  const votePowerReserveRateLS = (items.votePowerReserveRateLS==undefined ? 1 : items.votePowerReserveRateLS);
+  const totalSteemLS = (items.totalSteemLS==undefined ? 1 : items.totalSteemLS);
+  const totalVestsLS = (items.totalVestsLS==undefined ? 1 : items.totalVestsLS);
+  const rewardBalanceLS = (items.rewardBalanceLS==undefined ? 1 : items.rewardBalanceLS);
+  const recentClaimsLS = (items.recentClaimsLS==undefined ? 1 : items.recentClaimsLS);
+  const steemPriceLS = (items.steemPriceLS==undefined ? 1 : items.steemPriceLS);
+
+  console.log('Getting settings...');
+  const delegation=(items.del==undefined||items.del=="show");
+  const transfers=(items.transfers==undefined||items.transfers=="show");
+  const account_value=(items.acc_v==undefined||items.acc_v=="show");
+  const dropdown=(items.drop==undefined||items.drop=="show");
+  const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="show");
+
+  const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
+  const post_votes_list=(items.post_votes_list == undefined || items.post_votes_list=='show');
+  const vote_tab=(items.vote_tab == undefined || items.vote_tab=='show');
+  const external_link_tab=(items.external_link_tab == undefined || items.external_link_tab=='show');
+  const search_bar=(items.search_bar == undefined || items.search_bar=='show');
+  const mentions_tab=(items.mentions_tab == undefined || items.mentions_tab=='show');
+  const vote_weight_slider=(items.vote_weight_slider == undefined || items.vote_weight_slider=='show');
+  const boost_button=(items.boost_button == undefined || items.boost_button=='show');
+  const gif_picker=(items.gif_picker == undefined || items.gif_picker=='show');
+  const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
+  const blog_histogram=(items.blog_histogram !== undefined && items.blog_histogram=='show'); //default hidden
+  const md_editor_beautifier=(items.md_editor_beautifier == undefined || items.md_editor_beautifier=='show');
+  const post_floating_bottom_bar=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
+  const favorite_section=(items.favorite_section == undefined || items.favorite_section=='show');
+  const board_reward=(items.board_reward == undefined || items.board_reward=='show');
+  const classification_user=(items.classification_user == undefined || items.classification_user=='show');
+
+  const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
+  const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
+  const last_post_url=items.last_post_url;
+
+
+
+  checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);
+  checkLastPost(last_post_url, account);
+
+  console.log('Starting features...',user);
+  if(delegation&&(steemit||busy))
+    chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
+  if(transfers&&(steemit||busy))
+    chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
+  if(account_value&&(steemit||busy))
+    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
+  if(rank&&steemit)
+    chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start'});
+  if(board_reward&&steemit)
+    chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
+  if(favorite_section&&steemit)
+    chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
+  if(classification_user&&steemit)
+    chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
+
+  if (steemit&&steemit_more_info) {
+    if(post_votes_list)
+      chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+    if(vote_tab)
+      chrome.runtime.sendMessage({ token:token, to: 'vote_tab', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+    if(external_link_tab)
+      chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'start',data:{}});
+    if(search_bar)
+      chrome.runtime.sendMessage({ token:token, to: 'search_bar', order: 'start',data:{}});
+    if(mentions_tab)
+      chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+    if(vote_weight_slider)
+      chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
+    if(boost_button)
+      chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'start',data:{}});
+    if(gif_picker)
+      chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'start',data:{}});
+    if(user_info_popover)
+      chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
+    if(blog_histogram)
+      chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{rewardBalance: rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+    if(md_editor_beautifier)
+      chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
+    if(post_floating_bottom_bar)
+      chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
+  }
+
+
+  console.log('Offline Features started...');
+  $(document).click(function(){
+    setTimeout(function(){
+      if(url!==window.location.href)
+      {
+        if(delegation&&(steemit||busy))
+          chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
+        if(transfers&&(steemit||busy))
+          chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
+        if(account_value&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });
+        if(rank&&steemit)
+          chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
+        if(steemit&&boost_button&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'click', data:{user:user}});
+        if(steemit&&md_editor_beautifier&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'click', data:{}});
+        if(steemit&&user_info_popover&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
+        if(steemit&&blog_histogram&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'click',data:{}});
+        if(post_floating_bottom_bar&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{}});
+        if(external_link_tab&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'click',data:{}});
+        if(mentions_tab&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+        if(vote_weight_slider&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
+        if(favorite_section&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
+        if(post_votes_list&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+        if(classification_user&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
+        
+        if($('.favorite-star').length > 0){
+          $('.favorite-star').remove();
+        }
+
+        if($('.error-mentions-label').length > 0){
+          $('.error-mentions-label').remove();
+        }
+
+        url=window.location.href;
+      }
+      if(dropdown&&steemit)
+        chrome.runtime.sendMessage({ token:token,to: 'drop', order: 'click',data:{market:market} });
+    },200);
   });
+}
 
 function initializeSteemConnect(sessionToken){
   sc2.init({
@@ -363,7 +436,7 @@ function date_diff_indays(date1, date2) {
   return Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate()) ) /(1000 * 60 * 60 * 24));
 }
 
-function checkLastPost(last_post_url, me)
+function checkLastPost(last_post_url, account)
 {
   steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
     if(last_post_url == undefined || last_post_url !== result[0].url)
@@ -389,7 +462,7 @@ function checkLastPost(last_post_url, me)
       toastr.info('Thanks for using SteemPlus!<br />'+
                   'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
                   '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
-                  (me.account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
+                  (account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
 
       $('#new_post_yes').click(function(){
         chrome.storage.local.set({

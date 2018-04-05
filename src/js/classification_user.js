@@ -114,7 +114,7 @@ function startClassificationUser(){
 
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
-  console.log(i + '////////' + max)
+  // console.log(i + '////////' + max)
   var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
   setTimeout(function(){
     $.ajax({
@@ -130,10 +130,10 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
           userScoreList.push({name:'Human', cssClass:'human-item', value:(parseFloat(result.data[objectKey].classification_human_score)*100).toFixed(2)});
           userScoreList.push({name:'Bot',cssClass:'bot-item', value:(parseFloat(result.data[objectKey].classification_bot_score)*100).toFixed(2)});
           userScoreList.push({name:'Spammer',cssClass:'spammer-item', value:(parseFloat(result.data[objectKey].classification_spammer_score)*100).toFixed(2)});
-          
+
           userScoreList.sort(function (a, b) {
             return b.value - a.value;
-          }); 
+          });
           userListCU.find(function(e){return e.username===objectKey}).userScoreList = userScoreList.slice();
 
         });
@@ -142,8 +142,8 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
         else
           addButtonsCU(userListCU);
       },
-      error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        console.log("Status: " + textStatus + "      Error: " + errorThrown); 
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        console.log("Status: " + textStatus + "      Error: " + errorThrown);
       }
     });
   },2000)
@@ -151,12 +151,14 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 
 function addButtonsCU(userListCU)
 {
-  console.log(userListCU);
+  //console.log(userListCU);
   userListCU.forEach(function(userListItem){
     userListItem.arrayElement.forEach(function(elementListItem){
       $(elementListItem).addClass('has-classification');
       if(userListItem.userScoreList.length===0)
-        initClassificationLabel(elementListItem, userListItem.username);
+      {
+        // initClassificationLabel(elementListItem, userListItem.username);
+      }
       else
         createClassificationLabel(elementListItem, userListItem.userScoreList, userListItem.username);
     });
@@ -175,7 +177,12 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
   }
   $(element).parent().parent().parent().parent().find('.unknown-item').remove();
-  var classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
+  console.log(userScoreList[0].name,userScoreList[0].value);
+  var classificationSection;
+  if((userScoreList[0].name==="Bot"||userScoreList[0].name==="Spammer")&&userScoreList[0].value<80)
+    classificationSection = $('<span class="unknown-item classification-section">Pending</span>');
+  else
+    classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
   $(classificationSection).attr('data-toggle','popover');
   $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
       <span name="' + usernameCU + '" class="' + userScoreList[1].cssClass + ' feedback-button">' + userScoreList[1].name + '</span><span class="value_of popover_classification_value">' + userScoreList[1].value + '%</span><hr/>\
@@ -217,8 +224,9 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     }
   });
 
-  $(element).parent().parent().parent().after(classificationSection); 
-  
+  if($(element).parent().parent().parent().parent().find('.classification-section').length==0)
+    $(element).parent().parent().parent().after(classificationSection);
+
 }
 
 function initClassificationLabel(element, usernameCU)
@@ -286,7 +294,7 @@ function initClassificationLabel(element, usernameCU)
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
 {
 
-  console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
+  //console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
 
   $.ajax({
     type: "POST",
@@ -328,8 +336,8 @@ function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
         toastr.error(result.messages.join(' ') + '<br>' + result.error, titleToastr);
       }
     },
-    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-      console.log("Status: " + textStatus + "      Error: " + errorThrown); 
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+      console.log("Status: " + textStatus + "      Error: " + errorThrown);
     }
   });
 }
@@ -348,5 +356,5 @@ function onScrollUpdateCU()
     startClassificationUser();
     scrollBottomReachedCU=false;
   }
-  
+
 }

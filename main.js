@@ -111,7 +111,9 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
       const beneficiaries=(items.ben==undefined||items.ben=="show");
       const feedp=(items.feedp==undefined||items.feedp=="show");
       const resteem= (items.resteem !== undefined)?items.resteem:'show';
-      const weight=(items.weight !== undefined)?items.weight*100:10000;
+      const weight=(items.weight !== undefined && items.weight !== 0)?items.weight*100:10000;
+      console.log(weight);
+
 
       const oneup= (items.oneup !== undefined)?items.oneup:'show';
 

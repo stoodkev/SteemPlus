@@ -7,12 +7,13 @@ var me,acc;
 var menus=document.getElementsByClassName("menu");
 var content=document.getElementsByClassName("content");
 var back=document.getElementsByClassName("back_menu");
+var isConnectedToSteemConnect=null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
 chrome.storage.local.get(['classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
-
+    isConnectedToSteemConnect = steemConnect.connect;
     // Connected
     if(steemConnect.connect===true)
     {
@@ -78,7 +79,7 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
         }
     }
 
-    weight=items.weight;
+    weight=items.weight==undefined?100:items.weight;
     badge=items.badge==undefined?'2':items.badge;
     feedp=items.feedp==undefined?'show':items.feedp;
     ben=items.ben==undefined?'show':items.ben;
@@ -491,8 +492,19 @@ $('.menu').click(function () {
 
 $('.back_menu').click(function () {
   $('#main-description, .info_user').show();
-  $('#loginButton').show();
-  if(!steemConnect.connected)$('#more_menu').hide();
+  
+  if(!isConnectedToSteemConnect){
+    $('#loginButton').show();
+    $('#more_menu').hide();
+    $('#vote-menu').css('display', 'none');
+  }
+  else
+  {
+    $('#loginButton').hide();
+    $('#more_menu').show();
+    $('#vote-menu').css('display', 'block');
+  }
+
  });
 
 $('#user-options').click(function () {
@@ -540,8 +552,31 @@ $('#user-options').click(function () {
                 else if (onBoardingID == 4) {
                   setOnboardingScreen('Witness', 'You like this extension and want to support its development?<br/> Vote for his creator @stoodkev as a <a target="_blank" href="https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&amp;approve=1"> witness</a>!', 'src/img/onboarding/welcome.png', '#dot-6')
               } else {
-                    $('#onboarding').hide();
-                    $('#disconnected').show();
+                    if(isConnectedToSteemConnect)
+                    {
+                        $('#connected').css('display','block');
+                        $('#onboarding').css('display', 'none');
+                        $('#loginButton').css('display','none');
+                        $('#before_connect').css('display','none');
+                        $('#shortcuts, .switch-text').show();
+                        $('.need-online > label > input').prop('disabled', false);
+                        $('.need-online').removeAttr('title');
+                        $('.need-online').removeClass('not-allowed');
+                        $('.info_user_connected').css('display', 'block');
+                    }
+                    else
+                    {
+                        $('#onboarding').css('display', 'none');
+                        $('#loginButton').css('display', 'block');
+                        $('#connected').css('display', 'block');
+                        $('#before_connect').css('display', 'none');
+                        $('.info_user_connected').css('display', 'none');
+                        $('#vote-menu').css('display', 'none');
+                        $('#shortcuts, .switch-text').show();
+                        $('.need-online > label > input').prop('disabled', true);
+                        $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
+                        $('.need-online').prop('checked', false);
+                    }
                     chrome.storage.local.set({
                         onboarding: 'complete'
                     });

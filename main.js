@@ -8,7 +8,8 @@ const utopian =window.location.href.includes('utopian.io');
 console.log('Starting SteemPlus',steemit,busy,utopian);
 var market =null,SBDperSteem=0;
 const DEFAULT_FEED_SIZE=3;
-var url=window.location.href;
+var urlOffline=window.location.href;
+var urlOnline=window.location.href;
 var user=null;
 
 steem.api.setOptions({ url: 'https://api.steemit.com' });
@@ -112,7 +113,6 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
       const feedp=(items.feedp==undefined||items.feedp=="show");
       const resteem= (items.resteem !== undefined)?items.resteem:'show';
       const weight=(items.weight !== undefined && items.weight !== 0)?items.weight*100:10000;
-      console.log(weight);
 
 
       const oneup= (items.oneup !== undefined)?items.oneup:'show';
@@ -149,14 +149,14 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
       console.log('Online Features started...');
       $(document).click(function(){
         setTimeout(function(){
-          if(url!==window.location.href)
+          if(urlOnline!==window.location.href)
           {
             if(beneficiaries&&steemit)
               chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
             if(steemit&&followers_table&&steemit_more_info)
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
             
-            url=window.location.href;
+            urlOnline=window.location.href;
           }
           if(oneup&&utopian)
             chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'click',data:{account:account}});
@@ -164,6 +164,10 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
       });
       console.log('Offline Features');
       initOfflineFeatures(true, items, user, account);
+    }, function(err)
+    {
+      console.log('Cannot connect to steemConnect. Launching offline Features...');
+      initOfflineFeatures(false, items, null, null);
     });
   }
   else
@@ -176,7 +180,6 @@ chrome.storage.local.get(['classification_user','board_reward','favorite_section
 
 function initOfflineFeatures(isConnected, items, user, account)
 {
-  console.log("isConnected => " + isConnected); 
   if(!isConnected)
   {
     if($('.Header__userpic > a').length > 0)
@@ -293,8 +296,9 @@ function startOfflineFeatures(items, user, account)
 
   console.log('Offline Features started...');
   $(document).click(function(){
+
     setTimeout(function(){
-      if(url!==window.location.href)
+      if(urlOffline!==window.location.href)
       {
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
@@ -335,7 +339,7 @@ function startOfflineFeatures(items, user, account)
           $('.error-mentions-label').remove();
         }
 
-        url=window.location.href;
+        urlOffline=window.location.href;
       }
       if(dropdown&&steemit)
         chrome.runtime.sendMessage({ token:token,to: 'drop', order: 'click',data:{market:market} });

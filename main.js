@@ -445,56 +445,59 @@ function date_diff_indays(date1, date2) {
 function checkLastPost(last_post_url, account)
 {
   steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
-    if(last_post_url == undefined || last_post_url !== result[0].url)
+    if(!result[0].url.includes('budget')&&!result[0].url.includes('Budget'))
     {
-      toastr.options = {
-        "closeButton": false,
-        "debug": false,
-        "newestOnTop": false,
-        "progressBar": false,
-        "positionClass": "toast-top-full-width",
-        "preventDuplicates": false,
-        "onclick": null,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": 0,
-        "extendedTimeOut": 0,
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut",
-        "tapToDismiss": false
-      };
-      toastr.info('Thanks for using SteemPlus!<br />'+
-                  'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
-                  '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
-                  (account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
+      if(last_post_url == undefined || last_post_url !== result[0].url)
+      {
+        toastr.options = {
+          "closeButton": false,
+          "debug": false,
+          "newestOnTop": false,
+          "progressBar": false,
+          "positionClass": "toast-top-full-width",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": 0,
+          "extendedTimeOut": 0,
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut",
+          "tapToDismiss": false
+        };
+        toastr.info('Thanks for using SteemPlus!<br />'+
+                    'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
+                    '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
+                    (account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
 
-      $('#new_post_yes').click(function(){
-        chrome.storage.local.set({
-          last_post_url:result[0].url
+        $('#new_post_yes').click(function(){
+          chrome.storage.local.set({
+            last_post_url:result[0].url
+          });
+          $(this).parent().parent().remove();
+          window.location.replace("https://steemit.com"+result[0].url);
         });
-        $(this).parent().parent().remove();
-        window.location.replace("https://steemit.com"+result[0].url);
-      });
 
-      $('#new_post_no').click(function(){
-        chrome.storage.local.set({
-          last_post_url:result[0].url
+        $('#new_post_no').click(function(){
+          chrome.storage.local.set({
+            last_post_url:result[0].url
+          });
+          $(this).parent().parent().remove();
         });
-        $(this).parent().parent().remove();
-      });
 
-      $('#vote_as_witness').click(function(){
-        var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
-        if (win) {
-            //Browser has allowed it to be opened
-            win.focus();
-        } else {
-            //Browser has blocked it
-            alert('Please allow popups for this website');
-        }
-      });
+        $('#vote_as_witness').click(function(){
+          var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
+        });
+      }
     }
   });
 

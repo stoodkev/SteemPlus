@@ -30,8 +30,6 @@ function canStartClassificationUser()
 
   if($('.Post').length > 0)
   {
-    console.log(parseFloat($('.PostFull__responses > a')[0].innerText) / 2);
-    console.log($('.Comment__body').length);
     // Case article
     if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
     {
@@ -165,24 +163,54 @@ function addButtonsCU(userListCU)
   });
 }
 
-function createClassificationLabel(element, userScoreList, usernameCU)
+function getPermlink(element)
 {
+  console.log('get permlink');
   var permlinkParam = null;
   if($(element).hasClass('ptc'))
   {
+    // Post
+    console.log('post');
     permlinkParam = $(element).parent().parent().parent().parent().parent().find('.PlainLink').attr('href');
+  }
+  else if(window.location.href.includes('#plus'))
+  {
+    // Feed +
+    console.log('feed +');
+    console.log($(element).parent().parent().parent().find('a'));
+    permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
+  }
+  else if(window.location.href.includes('#mentions'))
+  {
+    console.log($(element));
+    console.log('mentions');
+    permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
   }
   else
   {
+    // Blog
+    console.log('blog');
     permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
   }
+  console.log(permlinkParam);
+
+  if(permlinkParam===undefined||permlinkParam===null||permlinkParam==='')
+    permlinkParam = window.location.href.replace('https://steemit.com', '');
+
+  return permlinkParam;
+}
+
+function createClassificationLabel(element, userScoreList, usernameCU)
+{
+  var permlinkParam = getPermlink(element);
+
   $(element).parent().parent().parent().parent().find('.unknown-item').remove();
-  console.log(userScoreList[0].name,userScoreList[0].value);
   var classificationSection;
   if((userScoreList[0].name==="Bot"||userScoreList[0].name==="Spammer")&&userScoreList[0].value<80)
     classificationSection = $('<span class="unknown-item classification-section">Pending</span>');
   else
     classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
+  
   $(classificationSection).attr('data-toggle','popover');
   $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
       <span name="' + usernameCU + '" class="' + userScoreList[1].cssClass + ' feedback-button">' + userScoreList[1].name + '</span><span class="value_of popover_classification_value">' + userScoreList[1].value + '%</span><hr/>\
@@ -224,28 +252,16 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     }
   });
 
-  if($(element).parent().parent().parent().parent().find('.classification-section').length==0)
-    $(element).parent().parent().parent().after(classificationSection);
+  $(element).parent().parent().parent().parent().find('.classification-section').remove();
+  $(element).parent().parent().parent().after(classificationSection);
 
 }
 
 function initClassificationLabel(element, usernameCU)
 {
 
-  var permlinkParam = null;
-  if($(element).hasClass('ptc'))
-  {
-    permlinkParam = $(element).parent().parent().parent().parent().parent().find('.PlainLink').attr('href');
-  }
-  else
-  {
-    permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
-  }
-
-  if(permlinkParam===undefined||permlinkParam===null)
-    permlinkParam = window.location.href.replace('https://steemit.com', '');
-
-
+  var permlinkParam = getPermlink(element);
+  
   var classificationSection = $('<span class="unknown-item classification-section">Unknown</span>');
 
   $(classificationSection).attr('data-toggle','popover');
@@ -294,7 +310,7 @@ function initClassificationLabel(element, usernameCU)
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
 {
 
-  //console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
+  console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
 
   $.ajax({
     type: "POST",

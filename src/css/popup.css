@@ -564,3 +564,10 @@ overflow: hidden;}
 a:hover {
   color:#376fa7;
 }
+
+
+#loginButton {
+  display: block;
+  text-align: center;
+  margin-bottom: 40px;
+}

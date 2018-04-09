@@ -129,10 +129,10 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                     if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                         var voted=false,checked=false;
-                        if(elt.author=='utopian-io')
-                        elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
-
-
+                        //if(elt.author=='utopian-io')
+                        //elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
+                        elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
+                        
                         var urlImage=null;
                         urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
                         if(urlImage==='') urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("thumbnail") ? JSON.parse(elt.json_metadata).thumbnail : '';
@@ -248,11 +248,16 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                      var elt=result[0];
                      list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                      var voted=false;
+                     //HERE
+                     console.log(elt);
+                     //elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
                      elt.active_votes.forEach(function(e){if(e.voter===user_fp)voted=true;});
                      tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '',elt.url,voted));
                      if(elt.pending_payout_value!=='0.000 SBD'&&voted===false)
-                     {filtered_list=tmp.concat(filtered_list);
-                     ad=true;}
+                     {
+                        filtered_list=tmp.concat(filtered_list);
+                        ad=true;
+                    }
                  }
 
                  Display(isSteemit,isBusy,feedp);
@@ -381,18 +386,20 @@ function FeedPlus(isSteemit,isBusy,feedp) {
                 if(elt.voted)
                 {
                   sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function (err, res) {
-                    console.log(err, res);
+                    if(err) console.log(err);
+                    if(res) console.log(res);
 
                     if(res!==null){
                       $(that).removeClass('Voting__button--upvoted');
 
-                      filtered_list[that.id].voted=true;}
+                      filtered_list[that.id].voted=false;}
                   });
                 }
                 else {
                   {
                     sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function (err, res) {
-                      console.log(err, res);
+                      if(err) console.log(err);
+                      if(res) console.log(res);
                       if(res!==null){
                         $(that).addClass('Voting__button--upvoted');
                         console.log('should add class',$(this));
@@ -608,7 +615,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
          }
 
         function HandleTagListsVisibility(){
-            console.log($("input[name=tag]:checked").val());
             if($("input[name=tag]:checked").val()=="list")
                 $("#list_tags").show();
             else $("#list_tags").hide();
@@ -670,7 +676,6 @@ function FeedPlus(isSteemit,isBusy,feedp) {
             $('#listfeed').addClass('active');
           }
           else if(style=='grid'){
-            console.log('change to grid');
             $('.PostsIndex__left li').addClass('grid-view');
             $('.PostsIndex__left li').removeClass('big-view');
             $('#gridfeed').addClass('active');

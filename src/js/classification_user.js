@@ -165,34 +165,27 @@ function addButtonsCU(userListCU)
 
 function getPermlink(element)
 {
-  console.log('get permlink');
   var permlinkParam = null;
   if($(element).hasClass('ptc'))
   {
     // Post
-    console.log('post');
     permlinkParam = $(element).parent().parent().parent().parent().parent().find('.PlainLink').attr('href');
   }
   else if(window.location.href.includes('#plus'))
   {
     // Feed +
-    console.log('feed +');
-    console.log($(element).parent().parent().parent().find('a'));
     permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
   }
   else if(window.location.href.includes('#mentions'))
   {
-    console.log($(element));
-    console.log('mentions');
+    // Mention tab
     permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
   }
   else
   {
     // Blog
-    console.log('blog');
     permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
   }
-  console.log(permlinkParam);
 
   if(permlinkParam===undefined||permlinkParam===null||permlinkParam==='')
     permlinkParam = window.location.href.replace('https://steemit.com', '');

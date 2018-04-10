@@ -1,4 +1,6 @@
 .witness-cells{
+	padding-top: 10px;
+	padding-bottom: 5px;
 	display: table-cell;
 	vertical-align: middle;
 }
@@ -15,3 +17,10 @@
 	text-align: center;
 }
 
+.inputAddNewWitness{
+	width: 50% !important;
+}
+
+.evenLine{
+	background-color: #f6f6f6;
+}

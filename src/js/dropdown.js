@@ -20,7 +20,7 @@ function startDropdown(market_d){
       li.innerHTML='<a class="market-item" href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("src/img/steemblack.svg")+'"/></span>Market</a>';
       if($('.dropdown-pane .VerticalMenu .title').length!==0)
       {
-        var divSlider = $('<div class="my-slider">\
+        var divSlider = $('<div class="my-slider" style="display:none;">\
                             <ul>\
                               <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-steem">1 STEEM = '+Math.round(market_d.SBDperSteem*1000)/1000+' SBD</a></li>\
                               <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-sbd">1 STEEM = '+Math.round(market_d.priceSteem*1000)/1000+'$</a></li>\
@@ -33,6 +33,7 @@ function startDropdown(market_d){
         $('div > .dropdown-pane .VerticalMenu').append(li2);
         $(function(){
           $('.my-slider').unslider({ keys: false, autoplay: true, nav: false, arrows: false});
+          $('.my-slider').show();
         });   
       }
     }

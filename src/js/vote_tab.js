@@ -48,6 +48,8 @@
       enabled: true,
       createTab: createVotesTab
     });
+    if(window.location.href.includes('#votes'))
+    window.SteemPlus.Tabs.showTab('votes');
   }
 
 

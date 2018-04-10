@@ -1,0 +1,17 @@
+.witness-cells{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.witness-items{
+	display: inline-block;
+}
+
+#addWitnessButton{
+	min-width: 100%;
+	height: inherit;
+	background-color: transparent; 
+	border: none; 
+	text-align: center;
+}
+

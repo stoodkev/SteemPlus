@@ -47,6 +47,8 @@
       enabled: true,
       createTab: createMentionsTab
     });
+    if(window.location.href.includes('#mentions'))
+    window.SteemPlus.Tabs.showTab('mentions');
   }
 
   function createMentionsTab(mentionsTab) {

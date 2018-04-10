@@ -62,6 +62,8 @@ function createBoardRewardTab()
 	      enabled: true,
 	      createTab: createBoardRewardPage
 	    });
+	    if(window.location.href.includes('#board-reward'))
+    		window.SteemPlus.Tabs.showTab('board-reward');
 	}
 }
 

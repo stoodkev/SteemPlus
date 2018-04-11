@@ -130,7 +130,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
       else
         $('#addWitnessDiv').hide();
 
-      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' for a maximum of 30.');
+      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' out of 30.');
       
       var witnessSeparator = $('<hr class="articles__hr"/>');
       var rowWitness = $('<div class="row"></div>');
@@ -145,7 +145,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
         if(index%2===0) classOddEven = 'evenLine';
 
         $(rowWitness).append('<div class="col-4 witness-cells ' + classOddEven + '"><a class="witness-items" href="https://steemdb.com/@' + witnessItem + '/witness" target="_blank">@' + witnessItem + '</a></div>');
-        $(rowWitness).append($('<div class="col-4 ' + classOddEven + '"></div>'));
+        $(rowWitness).append($('<div class="col-4 witness-cells ' + classOddEven + '"></div>'));
         if(isMyPageWitnesses)
         {
           var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');

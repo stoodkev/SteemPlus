@@ -1,12 +1,11 @@
 .witness-cells{
-	padding-top: 10px;
-	padding-bottom: 5px;
-	display: table-cell;
-	vertical-align: middle;
+	display: flex !important;
 }
 
 .witness-items{
-	display: inline-block;
+    display: table-cell !important;
+	vertical-align: middle !important;
+    height: 100%;
 }
 
 .evenLine{
@@ -14,7 +13,7 @@
 }
 
 #addWitnessName {
-    width: 50%;
+    width: 30%;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -26,7 +25,7 @@
 
 #addWitnessButton {
 
-    width: 20%;
+    width: 10%;
     background-color: transparent;
     color: #42bb8b;
     border: 1px solid #42bb8b;
@@ -35,6 +34,14 @@
     border-radius: 4px;
     cursor: pointer;
     height: 46px;
+}
+
+.removeWitnessesLink {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    font-size: 12px !important;
 }
 
 #addWitnessButton:hover {

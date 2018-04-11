@@ -144,12 +144,12 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
         var classOddEven = '';
         if(index%2===0) classOddEven = 'evenLine';
 
-        $(rowWitness).append('<div class="col-4 witness-cells ' + classOddEven + '"><h5 class="witness-items"><a href="https://www.steemit.com/@' + witnessItem + '">@' + witnessItem + '</a></h5></div>');
+        $(rowWitness).append('<div class="col-4 witness-cells ' + classOddEven + '"><a class="witness-items" href="https://steemdb.com/@' + witnessItem + '/witness" target="_blank">@' + witnessItem + '</a></div>');
         $(rowWitness).append($('<div class="col-4 ' + classOddEven + '"></div>'));
         if(isMyPageWitnesses)
         {
           var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');
-          var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem + '">Remove from my witnesses</label>');
+          var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem + '">Unvote</label>');
           
           $(buttonRemoveWitness).click(function(){
             var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');

@@ -6,6 +6,7 @@
 
 
   var showTab = function(tabId){
+    console.log('showtab');
     var tab = tabsById[tabId];
     var container = $('.UserProfile');
     var divs = container.children();
@@ -86,7 +87,6 @@
       menuDropDownSP.find('a.smi-open-menu-SP').unbind('click').on('click', function(e) {
         e.preventDefault();
         // if($('.dropdown-pane-SP').hasClass('is-open'))
-        console.log('click');
         hideOrShowDropdownPanel();
       });
 
@@ -107,7 +107,8 @@
         var menuLi = menu.find(tab._menuSelector);
         if(!menuLi.length){
           menuLi = $('<li class="smi-menu-li ' + tab._menuClass + '"><a href="#">' + tab.title + '</a></li>');
-          menuLi.find('a').on('click', function(e) {
+          menuLi.find('a').unbind('click').on('click', function(e) {
+            console.log('onclick menu item');
             e.preventDefault();
             hideOrShowDropdownPanel();
             showTab(tab.id);
@@ -115,9 +116,9 @@
           $(menuDropDownSP).find('.dropdown-pane-SP > ul').append(menuLi);
         }
 
-        if(onCreate && window.location.hash === '#' + tab.id){
-          showTab(tab.id);
-        }
+        // if(onCreate && window.location.hash === '#' + tab.id){
+        //   showTab(tab.id);
+        // }
       });
     });
   };
@@ -208,7 +209,8 @@
   var Tabs = {
     createTab: createTab,
     enableTab: enableTab,
-    disableTab: disableTab
+    disableTab: disableTab,
+    showTab: showTab
   };
 
   window.SteemPlus = window.SteemPlus || {};

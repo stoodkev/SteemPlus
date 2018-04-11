@@ -87,7 +87,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   });
 });
 
-chrome.storage.local.get(['classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
+chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire'], function (items) {
   var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
   chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
 
@@ -240,6 +240,7 @@ function startOfflineFeatures(items, user, account)
   const favorite_section=(items.favorite_section == undefined || items.favorite_section=='show');
   const board_reward=(items.board_reward == undefined || items.board_reward=='show');
   const classification_user=(items.classification_user == undefined || items.classification_user=='show');
+  const witnesses_tab=(items.witnesses_tab == undefined || items.witnesses_tab=='show');
 
   const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
   const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
@@ -265,6 +266,8 @@ function startOfflineFeatures(items, user, account)
     chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
   if(classification_user&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
+  if(witnesses_tab&&steemit)
+      chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -330,6 +333,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
         if(classification_user&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
+        if(witnesses_tab&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user}});
         
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

@@ -1,0 +1,55 @@
+.witness-cells{
+	display: table !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    min-height: 50px !important;
+}
+
+.witness-items{
+    /*display: table-cell !important;*/
+	vertical-align: middle !important;
+
+}
+
+.evenLine{
+	background-color: #f6f6f6;
+}
+
+#addWitnessName {
+    width: 30%;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#addWitnessButton {
+
+    width: 10%;
+    background-color: transparent;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    color: #42bb8b;
+    border: 1px solid #42bb8b;
+    margin: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.removeWitnessesLink {
+    font-size: 12px !important;
+}
+
+.removeWitnessesLink:hover
+{
+    background-color: #1A5099 !important;
+    color: #ffffff !important; 
+}
+
+#addWitnessButton:hover {
+    background-color: #42bb8b;
+    color: #ffffff;
+    border: 1px solid #42bb8b;
+}
+

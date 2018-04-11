@@ -2,6 +2,7 @@ var token_witnesses_tab=null;
 
 var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 var myUsernameTabWitnesses=null;
+var refreshPageWitnessInterval=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='witnesses_tab'&&request.order==='start'&&token_witnesses_tab==null)
@@ -16,6 +17,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     myUsernameTabWitnesses=request.data.user;
     if($('.UserProfile__tab_content_Witnesses').length===0)
       startWitnessesTab();
+
   }
 });
 
@@ -56,13 +58,9 @@ function createTabWitnesses(witnessesTab)
               <h1 class="articles__h1 addWitness" style="margin-bottom:20px; margin-top:20px;">\
                 Add a new witness\
               </h1>\
-              <div class="input-group inputAddNewWitness" style="margin-bottom: 5px;">\
-                <input id="addWitnessName" type="text" placeholder="Witness\' name" name="witnessName" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
-                <span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">\
-                  <button id="addWitnessButton" name="asset" placeholder="Asset">\
-                    Add\
-                  </button>\
-                </span>\
+              <div class="inputAddNewWitness" style="margin-bottom: 5px;">\
+                <input type="text" id="addWitnessName" name="witnessName" placeholder="Witness Name">\
+                <input type="submit" id="addWitnessButton" value="Add">\
               </div>\
             </div>\
           </div>\
@@ -132,7 +130,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
       else
         $('#addWitnessDiv').hide();
 
-      $('.span-nb-witnesses').html('You have currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' for a maximum of 30.');
+      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' for a maximum of 30.');
       
       var witnessSeparator = $('<hr class="articles__hr"/>');
       var rowWitness = $('<div class="row"></div>');

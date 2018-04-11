@@ -9,18 +9,37 @@
 	display: inline-block;
 }
 
-#addWitnessButton{
-	min-width: 100%;
-	height: inherit;
-	background-color: transparent; 
-	border: none; 
-	text-align: center;
-}
-
-.inputAddNewWitness{
-	width: 50% !important;
-}
-
 .evenLine{
 	background-color: #f6f6f6;
 }
+
+#addWitnessName {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 48px;
+}
+
+#addWitnessButton {
+
+    width: 20%;
+    background-color: transparent;
+    color: #42bb8b;
+    border: 1px solid #42bb8b;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 46px;
+}
+
+#addWitnessButton:hover {
+    background-color: #42bb8b;
+    color: #ffffff;
+    border: 1px solid #42bb8b;
+}
+

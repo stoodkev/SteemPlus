@@ -222,7 +222,7 @@ function startOfflineFeatures(items, user, account)
   const transfers=(items.transfers==undefined||items.transfers=="show");
   const account_value=(items.acc_v==undefined||items.acc_v=="show");
   const dropdown=(items.drop==undefined||items.drop=="show");
-  const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="show");
+  const rank=(items.badge==undefined||items.badge=="1"||items.badge=="2"||items.badge=="3"||items.badge=="show");
 
   const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
   const post_votes_list=(items.post_votes_list == undefined || items.post_votes_list=='show');

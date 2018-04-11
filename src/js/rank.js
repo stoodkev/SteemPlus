@@ -116,9 +116,9 @@ function getUserRankLevel(vests)
     rank = 'Orca-2';
   else if(vests < 1000000000)
     rank = 'Orca-1';
-  else if(vests < 400000000)
+  else if(vests < 4000000000)
     rank = 'Whale-3';
-  else if(vests < 800000000)
+  else if(vests < 8000000000)
     rank = 'Whale-2';
   else
     rank = 'Whale-1';

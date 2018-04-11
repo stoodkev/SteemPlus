@@ -112,7 +112,6 @@ function startClassificationUser(){
 
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
-  // console.log(i + '////////' + max)
   var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
   setTimeout(function(){
     $.ajax({
@@ -149,7 +148,6 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 
 function addButtonsCU(userListCU)
 {
-  //console.log(userListCU);
   userListCU.forEach(function(userListItem){
     userListItem.arrayElement.forEach(function(elementListItem){
       $(elementListItem).addClass('has-classification');
@@ -248,57 +246,59 @@ function createClassificationLabel(element, userScoreList, usernameCU)
   $(element).parent().parent().parent().parent().find('.classification-section').remove();
   $(element).parent().parent().parent().after(classificationSection);
 
+  if($('.PostFull__footer .classification-section').length > 0)
+    $('.PostFull__footer .classification-section')[0].innerHTML = $('.PostFull__footer .classification-section')[0].innerHTML.substring(0,1);
 }
 
-function initClassificationLabel(element, usernameCU)
-{
+// function initClassificationLabel(element, usernameCU)
+// {
 
-  var permlinkParam = getPermlink(element);
+//   var permlinkParam = getPermlink(element);
   
-  var classificationSection = $('<span class="unknown-item classification-section">Unknown</span>');
+//   var classificationSection = $('<span class="unknown-item classification-section">Unknown</span>');
 
-  $(classificationSection).attr('data-toggle','popover');
-  $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="human-item feedback-button">Human</span> <span class="value_of popover_classification_value">0%</span><hr/>\
-      <span name="' + usernameCU + '" class="bot-item feedback-button">Bot</span> <span class="value_of popover_classification_value">0%</span><hr/>\
-      <span name="' + usernameCU + '" class="spammer-item feedback-button">Spammer</span> <span class="value_of popover_classification_value">0%</span>');
-  $(classificationSection).attr('data-placement','right');
-  $(classificationSection).attr('title', 'Classification');
-  $(classificationSection).attr('data-html','true');
-  $(classificationSection).attr('animation','false');
+//   $(classificationSection).attr('data-toggle','popover');
+//   $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="human-item feedback-button">Human</span> <span class="value_of popover_classification_value">0%</span><hr/>\
+//       <span name="' + usernameCU + '" class="bot-item feedback-button">Bot</span> <span class="value_of popover_classification_value">0%</span><hr/>\
+//       <span name="' + usernameCU + '" class="spammer-item feedback-button">Spammer</span> <span class="value_of popover_classification_value">0%</span>');
+//   $(classificationSection).attr('data-placement','right');
+//   $(classificationSection).attr('title', 'Classification');
+//   $(classificationSection).attr('data-html','true');
+//   $(classificationSection).attr('animation','false');
 
 
-  $(classificationSection).click(function(){
-    if($(this).hasClass('popover-cu-open'))
-    {
+//   $(classificationSection).click(function(){
+//     if($(this).hasClass('popover-cu-open'))
+//     {
 
-      $('.popover').remove();
-      $('.classification-section').removeClass('popover-cu-open');
-    }
-    else
-    {
-      $('.classification-section').removeClass('popover-cu-open');
-      $('.popover').remove();
-      $(this).popover('show');
-      $(this).addClass('popover-cu-open');
-      $('.feedback-button').unbind('click').click(function()
-      {
-        if($(classificationSection).hasClass('human-item'))
-        {
-          sendRequestAPICU('content_creator', usernameCU, permlinkParam);
-        }
-        else if($(classificationSection).hasClass('bot-item'))
-        {
-          sendRequestAPICU('bot', usernameCU, permlinkParam);
-        }
-        else
-        {
-          sendRequestAPICU('spammer', usernameCU, permlinkParam);
-        }
-      });
-    }
-  });
-  $(element).parent().parent().parent().after(classificationSection);
-}
+//       $('.popover').remove();
+//       $('.classification-section').removeClass('popover-cu-open');
+//     }
+//     else
+//     {
+//       $('.classification-section').removeClass('popover-cu-open');
+//       $('.popover').remove();
+//       $(this).popover('show');
+//       $(this).addClass('popover-cu-open');
+//       $('.feedback-button').unbind('click').click(function()
+//       {
+//         if($(classificationSection).hasClass('human-item'))
+//         {
+//           sendRequestAPICU('content_creator', usernameCU, permlinkParam);
+//         }
+//         else if($(classificationSection).hasClass('bot-item'))
+//         {
+//           sendRequestAPICU('bot', usernameCU, permlinkParam);
+//         }
+//         else
+//         {
+//           sendRequestAPICU('spammer', usernameCU, permlinkParam);
+//         }
+//       });
+//     }
+//   });
+//   $(element).parent().parent().parent().after(classificationSection);
+// }
 
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
 {

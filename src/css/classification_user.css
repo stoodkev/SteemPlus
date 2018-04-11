@@ -101,3 +101,8 @@
 {
 	font-size: 14px;
 }
+
+.PostFull__footer .classification-section {
+	width: 1.5rem !important;
+    min-width: 1px !important;
+}

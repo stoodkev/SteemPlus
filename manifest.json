@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.8.1.1",
+  "version": "2.10",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -90,7 +90,8 @@
         "src/js/post_floating_bottom_bar.js",
         "src/js/favorite_section.js",
         "src/js/board_reward.js",
-        "src/js/classification_user.js"],
+        "src/js/classification_user.js",
+        "src/js/witnesses_tab.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
@@ -106,7 +107,8 @@
         "src/css/steemit_more_info.css",
         "src/css/board_reward.css",
         "src/css/classification_user.css",
-        "src/css/dropdown.css"],
+        "src/css/dropdown.css",
+        "src/css/witnesses_tab.css"],
       "run_at": "document_idle"
     }
   ]

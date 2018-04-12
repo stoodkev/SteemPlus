@@ -259,7 +259,7 @@ function startOfflineFeatures(items, user, account)
   if(account_value&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
   if(rank&&steemit)
-    chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start'});
+    chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS}});
   if(board_reward&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
   if(favorite_section&&steemit)

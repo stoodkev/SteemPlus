@@ -1,16 +1,23 @@
 var username=null;
 var token_rank=null;
 
+var totalVestsRank = null;
+var totalSteemRank = null;
+
 var medal_level_folders = ['3'];
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
       console.log('start rank');
       token_rank=request.token;
+      totalVestsRank = request.data.totalVests;
+      totalSteemRank = request.data.totalSteem;
       displayBadges(request.badge);
     }
     else if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       console.log('click rank');
+      totalVestsRank = request.data.totalVests;
+      totalSteemRank = request.data.totalSteem;
       displayBadges(request.badge);
     }
 });
@@ -43,7 +50,7 @@ function displayBadges(badge)
         div.className="ranker";
         var img=document.createElement('img');
         img.src=chrome.extension.getURL(medal_url);
-        img.title=getTitleString(titleBadge);
+        img.title=getTitleString(titleBadge, vesting_shares);
         div.appendChild(img);
         if($('.ranker').length!==0)
           $('.ranker').remove();
@@ -60,19 +67,49 @@ function displayBadges(badge)
   else
   {
     setTimeout(function(){
-      console.log('waiting for banner');
       displayBadges(badge);
     }, 500);
   }
 }
 
-function getTitleString(titleBadge)
+function getTitleString(titleBadge, vests)
 {
+  var title = '';
   var tmp = titleBadge.split('-');
-  if(tmp[1]==='3') return tmp[0] + ' III';
-  else if(tmp[1]==='2') return tmp[0] + ' II';
-  else return tmp[0] + ' I';
-   
+  if(tmp[1]==='3') title = tmp[0] + ' III';
+  else if(tmp[1]==='2') title =  tmp[0] + ' II';
+  else title = tmp[0] + ' I';
+
+  if( vests < 333333)
+    title = title.concat(" - Next step 'Plankton II' in " + numberWithCommas(steem.formatter.vestToSteem(333333 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if( vests < 666666)
+    title = title.concat(" - Next step 'Plankton I' in " + numberWithCommas(steem.formatter.vestToSteem(666666 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 1000000)
+    title = title.concat(" - Next step 'Minnow III' in " + numberWithCommas(steem.formatter.vestToSteem(1000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 4000000)
+    title = title.concat(" - Next step 'Minnow II' in " + numberWithCommas(steem.formatter.vestToSteem(4000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 7000000)
+    title = title.concat(" - Next step 'Minnow I' in " + numberWithCommas(steem.formatter.vestToSteem(7000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 10000000)
+    title = title.concat(" - Next step 'Doplhin III' in " + numberWithCommas(steem.formatter.vestToSteem(10000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 40000000)
+    title = title.concat(" - Next step 'Doplhin II' in " + numberWithCommas(steem.formatter.vestToSteem(40000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 70000000)
+    title = title.concat(" - Next step 'Doplhin I' in " + numberWithCommas(steem.formatter.vestToSteem(70000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 100000000)
+    title = title.concat(" - Next step 'Orca III' in " + numberWithCommas(steem.formatter.vestToSteem(100000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 400000000)
+    title = title.concat(" - Next step 'Orca II' in " + numberWithCommas(steem.formatter.vestToSteem(400000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 700000000)
+    title = title.concat(" - Next step 'Orca I' in " + numberWithCommas(steem.formatter.vestToSteem(700000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 1000000000)
+    title = title.concat(" - Next step 'Whale III' in " + numberWithCommas(steem.formatter.vestToSteem(1000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 4000000000)
+    title = title.concat(" - Next step 'Whale II' in " + numberWithCommas(steem.formatter.vestToSteem(4000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+  else if(vests < 8000000000)
+    title = title.concat(" - Next step 'Whale I' in " + numberWithCommas(steem.formatter.vestToSteem(8000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+
+  return title;
 }
 
 function getUserRank(vests) {
@@ -138,4 +175,8 @@ function getAccountData(username)
     resolve(response);
    });
   });
+}
+
+const numberWithCommas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

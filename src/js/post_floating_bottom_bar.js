@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var promoteButton = $('.Promote__button');
     var boostButton = $('.smi-boost-button');
 
-    if(tags.length && postFooter.length) {
+    if(tags.length && postFooter.length && promoteButton.length && boostButton.length) {
 
       if(tags.closest('.smi-post-footer-wrapper-2').length){
         return;
@@ -65,6 +65,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
       update();
 
+    }
+    else
+    {
+      setTimeout(function(){
+        makePostBottomBarFloating();
+      },200);
     }
 
   };

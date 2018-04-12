@@ -22,9 +22,9 @@ function startDropdown(market_d){
       {
         var divSlider = $('<div class="my-slider" style="display:none;">\
                             <ul>\
-                              <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-steem">1 STEEM = '+Math.round(market_d.SBDperSteem*1000)/1000+' SBD</a></li>\
-                              <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-sbd">1 STEEM = '+Math.round(market_d.priceSteem*1000)/1000+'$</a></li>\
-                              <li class="price-item"><a href="/market">1 SBD = '+Math.round(market_d.priceSBD*1000)/1000+'$</a></li>\
+                              <li class="price-item"><a href="/market">1 STEEM = '+Math.round(market_d.SBDperSteem*1000)/1000+' SBD</a></li>\
+                              <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-steem">1 STEEM = '+Math.round(market_d.priceSteem*1000)/1000+'$</a></li>\
+                              <li class="price-item"><a href="https://bittrex.com/Market/Index?MarketName=BTC-sbd">1 SBD = '+Math.round(market_d.priceSBD*1000)/1000+'$</a></li>\
                             </ul>\
                           </div>');
 

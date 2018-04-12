@@ -26,7 +26,7 @@ function startWitnessesTab()
   console.log('startWitnessesTab');
   window.SteemPlus.Tabs.createTab({
     id: 'witnesses',
-    title: 'Witnesses',
+    title: 'Witness',
     enabled: true,
     createTab: createTabWitnesses
   });
@@ -44,7 +44,7 @@ function createTabWitnesses(witnessesTab)
         <article class="articles">\
           <div class="WitnessesTab">\
             <h1 class="articles__h1" style="margin-bottom:20px">\
-              ' + (isMyPageWitnesses ? 'My Witnesses' : usernameTabWitnesses + '\'s Witnesses') + '\
+              ' + (isMyPageWitnesses ? 'My itnesses' : '@'+usernameTabWitnesses + '\'s witnesses') + '\
             </h1>\
             <hr class="articles__hr"/>\
             <h5 style="margin-bottom:20px">\
@@ -72,7 +72,7 @@ function createTabWitnesses(witnessesTab)
   {
     var newWitnessName = $('#addWitnessName')[0].value;
     steem.api.getAccounts([newWitnessName], function(err, result) {
-      
+
       toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -92,7 +92,7 @@ function createTabWitnesses(witnessesTab)
       };
       var titleToastr = "SteemPlus - Vote for witness";
 
-      if(err) 
+      if(err)
       {
         console.log(err);
         toastr.error('Unknown error, Please try again later', titleToastr);
@@ -130,8 +130,8 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
       else
         $('#addWitnessDiv').hide();
 
-      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' out of 30.');
-      
+      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : '@'+usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' out of 30.');
+
       var witnessSeparator = $('<hr class="articles__hr"/>');
       var rowWitness = $('<div class="row"></div>');
       var listWitnesses = result[0].witness_votes;
@@ -150,7 +150,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
         {
           var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');
           var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem + '">Unvote</label>');
-          
+
           $(buttonRemoveWitness).click(function(){
             var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
             if (win) {
@@ -162,14 +162,14 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses)
 
           $(divButtonRemoveWitness).append(buttonRemoveWitness);
           $(rowWitness).append(divButtonRemoveWitness);
-          $(rowWitness).append(witnessSeparator); 
+          $(rowWitness).append(witnessSeparator);
         }
         else
         {
           $(rowWitness).append($('<div class="col-4 witness-cells ' + classOddEven + '"></div>'));
           $(rowWitness).append(witnessSeparator);
         }
-        
+
       });
       $('.witnesses-names-list').append(rowWitness);
     }

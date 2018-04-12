@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.10.1",
+  "version": "2.10.2",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -82,7 +82,8 @@
         "src/js/mentions_tab.js",
         "src/js/vote_weight_slider.js",
         "src/js/followers_table.js",
-        "src/js/boost_button.js",
+        // "src/js/boost_button.js",
+        "src/js/boost_button2.js",
         "src/js/gif_picker.js",
         "src/js/user_info_popover.js",
         "src/js/blog_histogram.js",

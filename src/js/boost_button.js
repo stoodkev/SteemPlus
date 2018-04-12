@@ -9,30 +9,12 @@
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
-
-        // $('body').attrchange(function(attrName) {
-        //   if(attrName === 'class'){
-        //     if($('body').hasClass('with-post-overlay')) {
-        //       addPostBoostButton();
-        //     }
-        //   }
-        // });
-
         addPostBoostButton();
       }
 
       if(request.order==='click')
       {
         token_boost_button=request.token;
-
-        // $('body').attrchange(function(attrName) {
-        //   if(attrName === 'class'){
-        //     if($('body').hasClass('with-post-overlay')) {
-        //       addPostBoostButton();
-        //     }
-        //   }
-        // });
-
         addPostBoostButton();
       }
     }
@@ -48,6 +30,19 @@
         <button class="close-button" type="button">\
           <span aria-hidden="true" class="">×</span>\
         </button>\
+      </div>\
+      <div class="row">\
+        <div class="column small-2" style="padding-top: 5px;">To</div>\
+        <div class="column small-10">\
+          <div class="input-group" style="margin-bottom: 1.25rem;">\
+            <span class="input-group-label">@</span>\
+            <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+              <option value="MinnowBooster" selected>MinnowBooster</option>\
+              <option value="SmartSteem">SmartSteem</option>\
+            </select>\
+          </div>\
+          <p></p>\
+        </div>\
       </div>\
     </div>');
 
@@ -93,7 +88,7 @@
       if(alreadyBoosted) {
 
         var amount = parseFloat(alreadyBoosted.upvote);
-
+// <input type="text" class="input-group-field" disabled="" value="minnowbooster" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value="">
         transferUI = $('<div>\
           <div class="row">\
             <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
@@ -200,16 +195,6 @@
               </div>\
               <br>\
               <br>\
-            </div>\
-            <div class="row">\
-              <div class="column small-2" style="padding-top: 5px;">To</div>\
-              <div class="column small-10">\
-                <div class="input-group" style="margin-bottom: 1.25rem;">\
-                  <span class="input-group-label">@</span>\
-                  <input type="text" class="input-group-field" disabled="" value="minnowbooster" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value="">\
-                </div>\
-                <p></p>\
-              </div>\
             </div>\
             <div class="row">\
               <div class="column small-2" style="padding-top: 5px;">Amount</div>\

@@ -116,7 +116,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
         document.getElementById("myRange").value=weight;
     }
 
-    if(steemConnect.connected)
+    if(steemConnect.connect)
     {
         $('input[name=ben]').prop('checked',ben=='show');
         $('input[name=oneup]').prop('checked',oneup=='show');
@@ -143,7 +143,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
     $('input[name=search_bar]').prop('checked',search_bar=='show');
     $('input[name=mentions_tab]').prop('checked',mentions_tab=='show');
     $('input[name=vote_weight_slider]').prop('checked',vote_weight_slider=='show');
-    if(steemConnect.connected) $('input[name=followers_table]').prop('checked',followers_table=='show');
+    if(steemConnect.connect) $('input[name=followers_table]').prop('checked',followers_table=='show');
     $('input[name=boost_button]').prop('checked',boost_button=='show');
     $('input[name=gif_picker]').prop('checked',gif_picker=='show');
     $('input[name=user_info_popover]').prop('checked',user_info_popover=='show');

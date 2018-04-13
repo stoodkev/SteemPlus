@@ -32,7 +32,7 @@ function displayBadges(badge)
       {
         const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
         console.log(vesting_shares);
-        const badge_serie=badge==undefined?2:(badge=='show'?2:badge);
+        const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
 
         var rank = null;
         if(medal_level_folders.includes(badge_serie))

@@ -4,7 +4,7 @@ var token_rank=null;
 var totalVestsRank = null;
 var totalSteemRank = null;
 
-var medal_level_folders = ['3'];
+var medal_level_folders = ['3','2'];
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
@@ -43,9 +43,9 @@ function displayBadges(badge)
         {
           rank = getUserRank(vesting_shares);
         }
-    
+
         const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
-        var titleBadge = getUserRankLevel(vesting_shares); 
+        var titleBadge = getUserRankLevel(vesting_shares);
         var div= document.createElement('div');
         div.className="ranker";
         var img=document.createElement('img');

@@ -53,3 +53,16 @@
     border: 1px solid #42bb8b;
 }
 
+.witness-type {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+.witness-not-active{
+    color:red !important;
+    text-decoration: line-through;  
+}   
+
+.capitalize-label > label{
+    text-transform: capitalize;
+}

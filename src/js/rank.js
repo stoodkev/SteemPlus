@@ -175,6 +175,6 @@ function getAccountData(username)
   });
 }
 
-const numberWithCommas = (x) => {
+var numberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

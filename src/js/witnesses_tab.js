@@ -44,7 +44,7 @@ function createTabWitnesses(witnessesTab)
         <article class="articles">\
           <div class="WitnessesTab">\
             <h1 class="articles__h1" style="margin-bottom:20px">\
-              ' + (isMyPageWitnesses ? 'My itnesses' : '@'+usernameTabWitnesses + '\'s witnesses') + '\
+              ' + (isMyPageWitnesses ? 'My witnesses' : '@'+usernameTabWitnesses + '\'s witnesses') + '\
             </h1>\
             <hr class="articles__hr"/>\
             <h5 style="margin-bottom:20px">\

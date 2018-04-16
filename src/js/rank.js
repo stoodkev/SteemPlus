@@ -8,14 +8,12 @@ var medal_level_folders = ['3'];
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
-      console.log('start rank');
       token_rank=request.token;
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
       displayBadges(request.badge);
     }
     else if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
-      console.log('click rank');
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
       displayBadges(request.badge);

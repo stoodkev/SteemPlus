@@ -47,6 +47,16 @@ function createTabWitnesses(witnessesTab)
               ' + (isMyPageWitnesses ? 'My itnesses' : '@'+usernameTabWitnesses + '\'s witnesses') + '\
             </h1>\
             <hr class="articles__hr"/>\
+            <div class="switch-field" style="margin-bottom: -4px;">\
+              <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="0" checked/>\
+              <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
+              <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="1" />\
+              <label for="mentions-type-comments" class="mentions-type">Comments</label>\
+              <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="2" />\
+              <label for="mentions-type-both" class="mentions-type">Both</label>\
+            </div>\
+            <br>\
+            <br>\
             <h5 style="margin-bottom:20px">\
               <span class="span-nb-witnesses"></span>\
             </h5>\

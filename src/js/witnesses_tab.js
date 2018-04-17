@@ -6,6 +6,7 @@ var refreshPageWitnessInterval=null;
 
 var witnessInfoLocal = null;
 var witnessRankLocal = null;
+var witnessVoteReceivedLocal=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='witnesses_tab'&&request.order==='start'&&token_witnesses_tab==null)
@@ -55,6 +56,8 @@ function createTabWitnesses(witnessesTab)
               <label for="witness-type-my" class="witness-type my-witness">Witness Information</label>\
               <input type="radio" id="witness-out" name="witness-type" class="witness-type" value="1"/>\
               <label for="witness-type-out" class="witness-type witness-out" >Votes casted</label>\
+              <input type="radio" id="witness-in" name="witness-type" class="witness-type" value="2"/>\
+              <label for="witness-type-in" class="witness-type witness-in" >Votes Received</label>\
               <br>\
               <br>\
             </div>\
@@ -122,7 +125,6 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
 
       if(!$('#witness-out').prop('checked'))
       {
-
         $('.witness-type').prop('checked', false);
         $('#witness-out').prop('checked', true);
         $('.WitnessTabLoading').show();
@@ -131,6 +133,18 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
       }
       
     });
+
+     $('.witness-in').unbind('click').click(function(){
+      if(!$('#witness-in').prop('checked'))
+      {
+        $('.witness-type').prop('checked', false);
+        $('#witness-in').prop('checked', true);
+        $('.WitnessTabLoading').show();
+        $('.witness-content').empty();
+
+        startTabIn(usernameTabWitnesses, isMyPageWitnesses);
+      }
+     });
 
     startMyWitnessTab(usernameTabWitnesses, witnessRankLocal);
   }
@@ -354,7 +368,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Votes Received</div>');
-  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + getVestString(witnessInfoLocal.votes) + ' </div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + getVestString(witnessInfoLocal.votes/1000) + ' </div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   if(witnessInfoLocal.url!==null&&witnessInfoLocal.url!==undefined)
@@ -407,16 +421,190 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 
 function getVestString(vests)
 {
-  if(parseInt(vests)/1000000000000000 > 1)
-    return numberWithCommas((parseInt(vests)/1000000000000000).toFixed(3)) + ' GVests';
-  else if(parseInt(vests)/1000000000000 > 1)
-    return numberWithCommas((parseInt(vests)/1000000000000).toFixed(3)) + ' MVests';
-  else if(parseInt(vests)/1000000000)
-    return numberWithCommas((parseInt(vests)/1000000000).toFixed(3)) + ' kVests';
+  if(parseInt(vests)/1000000000 > 1)
+    return numberWithCommas((parseInt(vests)/1000000000).toFixed(3)) + ' GVests';
+  else if(parseInt(vests)/1000000 > 1)
+    return numberWithCommas((parseInt(vests)/1000000).toFixed(3)) + ' MVests';
+  else if(parseInt(vests)/1000)
+    return numberWithCommas((parseInt(vests)/1000).toFixed(3)) + ' kVests';
   else
     return numberWithCommas(vests) + ' Vests';
 }
 
 var numberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
+{
+
+  if(witnessVoteReceivedLocal===null)
+  {
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+      },
+      url: 'http://steemplus-api.herokuapp.com/api/get-received-witness-votes/'+usernameTabWitnesses,
+      success: function(result) {
+        witnessVoteReceivedLocal = result;
+        displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
+
+      },
+      error: function(msg) {
+        alert(msg.responseJSON.error);
+      }
+    });
+  }
+  else
+  {
+    displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
+  }
+}
+
+function displayWitnessIn2(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
+{
+  var witnessesInTab = $('\
+    <h5 style="margin-bottom:20px">\
+      <span class="span-nb-witnesses-in"></span>\
+    </h5>\
+    <div class="bootstrap-wrapper">\
+      <div class="witnesses-names-list container"></div>\
+    </div>');
+
+  $('.witness-content').append(witnessesInTab);
+
+  var nbWitnessesVoteReceived = witnessVoteReceivedLocal.length;
+  $('.span-nb-witnesses-in').append('@' + usernameTabWitnesses + ' has currently received ' + nbWitnessesVoteReceived + ' votes');
+  
+  witnessVoteReceivedLocal.sort(function(a, b) {
+    return b.totalVests - a.totalVests;
+  });
+
+  var rowWitness = $('<div class="row"></div>');
+  var witnessSeparator = $('<hr class="articles__hr"/>');
+
+  $(rowWitness).append('<div class="col-3 witness-cells witness-title">Voter</div>');
+  $(rowWitness).append($('<div class="col-3 witness-cells">Total Vests</div>'));
+  $(rowWitness).append($('<div class="col-3 witness-cells">Account Vests</div>'));
+  $(rowWitness).append($('<div class="col-3 witness-cells">Proxied Vests</div>'));
+
+  witnessVoteReceivedLocal.forEach(function(witnessItem, index){
+    var classOddEven = '';
+    if(index%2===0) classOddEven = 'evenLine';
+  
+    $(rowWitness).append('<div class="col-3 witness-cells ' + classOddEven + '"><a class="witness-items" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></div>');
+    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.totalVests) + '</div>'));
+    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.accountVests) + '</div>'));
+    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.proxiedVests) + '</div>'));
+    
+    $(rowWitness).append(witnessSeparator);
+
+  });
+  $('.witnesses-names-list').append(rowWitness);
+
+  
+}
+
+function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
+{
+  var witnessesInTab = $('\
+    <table id="witness-received-votes-table" class="display" style="width:100%">\
+    <table');
+
+  $('.witness-content').append(witnessesInTab);
+
+ 
+  $('.LoadingIndicator').hide();
+
+  // witnessVoteReceivedLocal.forEach(function(witnessItem, index){
+  //   var witness_tr = $('<tr></tr>');
+  //   $(witness_tr).append('<td><a class="witness-items" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></td>');
+  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.totalVests) + '</td>'));
+  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.accountVests) + '</td>'));
+  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.proxiedVests) + '</td>'));
+    
+  //   $('.witness-info-body').append(witness_tr);
+
+  // });
+
+  function getValueFromTable(str){
+    if(str.includes('kVests')) return parseInt(str.replace('kVests',''))*1000;
+    else if(str.includes('GVests')) return parseInt(str.replace('GVests',''))*1000000000;
+    else if(str.includes('MVests')) return parseInt(str.replace('MVests',''))*1000000;
+    else return parseInt(str.replace('Vests',''));
+  };
+
+  jQuery.fn.dataTableExt.oSort["number-desc"] = function (x, y) {
+    
+    return getValueFromTable(x) - getValueFromTable(y);
+  };
+    
+  jQuery.fn.dataTableExt.oSort["number-asc"] = function (x, y) {
+      return jQuery.fn.dataTableExt.oSort["number-desc"](y, x);
+  };
+
+  jQuery.fn.dataTableExt.oSort["datetime-desc"] = function (x, y) {
+    return new Date($(x).attr('name')) - new Date($(y).attr('name'));
+  };
+    
+  jQuery.fn.dataTableExt.oSort["datetime-asc"] = function (x, y) {
+      return jQuery.fn.dataTableExt.oSort["datetime-desc"](y, x);
+  };
+
+  console.log(witnessVoteReceivedLocal);
+  $('#witness-received-votes-table').dataTable( {
+    data: witnessVoteReceivedLocal,
+    "order": [[ 0, "asc" ]],
+    "bInfo": false,
+    columns: [
+      { title: "Voting time" },
+      { title: "Name" },
+      { title: "Total Vests" },
+      { title: "Account Vests" },
+      { title: "Proxied Vests" }
+      
+    ] ,
+    columnDefs: [
+    {
+      "targets": 0,//index of column starting from 0
+      "data": "timestamp", //this name should exist in your JSON response
+      "render": function ( data, type, full, meta ) {
+        return '<span title="' + new Date(data) + '" name="'+ data + '">' + moment(new Date(data)).fromNow() + '</span>';
+      },
+      "sType": "datetime"
+    },
+    {
+      "targets": 1,//index of column starting from 0
+      "data": "account", //this name should exist in your JSON response
+      "render": function ( data, type, full, meta ) {
+        return '<a class="witness-items" href="https://steemit.com/@' + data + '#witnesses" target="_blank">@' + data + '</a>';
+      }
+    },
+    {
+      "targets": 2,//index of column starting from 0
+      "data": "totalVests", //this name should exist in your JSON response
+      "render": function ( data, type, full, meta ) {
+        return getVestString(data);
+      },
+      "sType": "number"
+    },
+    {
+      "targets": 3,//index of column starting from 0
+      "data": "accountVests", //this name should exist in your JSON response
+      "render": function ( data, type, full, meta ) {
+        return getVestString(data);
+      },
+      "sType": "number"
+    },
+    {
+      "targets": 4,//index of column starting from 0
+      "data": "proxiedVests", //this name should exist in your JSON response
+      "render": function ( data, type, full, meta ) {
+        return getVestString(data);
+      },
+      "sType": "number"
+    }]
+  });
 }

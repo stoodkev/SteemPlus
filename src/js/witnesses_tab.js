@@ -97,7 +97,7 @@ function createTabWitnesses(witnessesTab)
     console.log("Local get-witness-rank");
     managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
   }
-  
+
 }
 
 function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
@@ -105,7 +105,7 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
   if(isWitness(usernameTabWitnesses, witnessRankLocal))
   {
     $('#my-witness').prop('checked', true);
-    
+
     $('.my-witness').unbind('click').click(function(){
       if(!$('#my-witness').prop('checked'))
       {
@@ -129,7 +129,7 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
         $('.witness-content').empty();
         startTabOut(usernameTabWitnesses, isMyPageWitnesses, witnessRankLocal);
       }
-      
+
     });
 
     startMyWitnessTab(usernameTabWitnesses, witnessRankLocal);
@@ -166,10 +166,10 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
         witnessRank = (witnessRank===null ? Number.MAX_SAFE_INTEGER : witnessRank)
         listWitnesses.push({name:witnessItem, rank:parseInt(witnessRank)});
       });
-      
+
       listWitnesses.sort(function(a, b) {
         return a.rank - b.rank;
-      }); 
+      });
 
       listWitnesses.forEach(function(witnessItem, index){
         var classOddEven = '';
@@ -346,10 +346,10 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   var myWitnessRank = getWitnessRank(usernameTabWitnesses, witnessesRankingList);
   $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
   if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
-  
+
   var rowMyWitness = $('<div class="row"></div>');
 
-  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Number of votes</div>');
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Voters</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + witnessInfoLocal.votes_count + ' </div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
@@ -363,7 +363,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
     $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"><a href="' + witnessInfoLocal.url + '">' + witnessInfoLocal.url + '</a></div>');
     classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
   }
-  
+
   if(witnessInfoLocal.timestamp!==null&&witnessInfoLocal.timestamp!==undefined)
   {
     var dateLastBlock = new Date(witnessInfoLocal.timestamp);
@@ -388,7 +388,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 
   var priceFeedPublishedDate = new Date(witnessInfoLocal.last_sbd_exchange_update);
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Price Feed</div>');
-  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfoLocal.sbd_exchange_rate_base + '$ published ' + moment(priceFeedPublishedDate).fromNow() + '</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfoLocal.sbd_exchange_rate_base + ' $ (' + moment(priceFeedPublishedDate).fromNow() + ')</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">APR</div>');
@@ -398,7 +398,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Account Creation Fee</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.account_creation_fee + ' ' + witnessInfoLocal.account_creation_fee_symbol + '</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-  
+
 
   $('.witness-information').append(rowMyWitness);
 

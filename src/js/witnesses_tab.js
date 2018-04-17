@@ -4,6 +4,9 @@ var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 var myUsernameTabWitnesses=null;
 var refreshPageWitnessInterval=null;
 
+var witnessInfoLocal = null;
+var witnessRankLocal = null;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='witnesses_tab'&&request.order==='start'&&token_witnesses_tab==null)
   {
@@ -48,7 +51,7 @@ function createTabWitnesses(witnessesTab)
             </h1>\
             <hr class="articles__hr"/>\
             <div class="switch-field capitalize-label" style="margin-bottom: -4px;">\
-              <input type="radio" id="my-witness" name="witness-type" class="witness-type" value="0"/>\
+              <input type="radio" id="my-witness" name="witness-type" class="witness-type" value="0" disabled/>\
               <label for="witness-type-my" class="witness-type my-witness">Witness Information</label>\
               <input type="radio" id="witness-out" name="witness-type" class="witness-type" value="1"/>\
               <label for="witness-type-out" class="witness-type witness-out" >Votes casted</label>\
@@ -69,55 +72,75 @@ function createTabWitnesses(witnessesTab)
 
   $('.switch-field').hide();
 
-  $.ajax({
-    type: "GET",
-    beforeSend: function(xhttp) {
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-    },
-    url: 'http://steemplus-api.herokuapp.com/api/get-witnesses-rank',
-    success: function(result) {
-      
-      
-      if(isWitness(usernameTabWitnesses, result))
+  if(witnessRankLocal===null)
+  {
+    console.log("Launch request get-witness-rank");
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+      },
+      url: 'http://steemplus-api.herokuapp.com/api/get-witnesses-rank',
+      success: function(result) {
+        witnessRankLocal = result;
+        managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
+
+      },
+      error: function(msg) {
+        alert(msg.responseJSON.error);
+      }
+    });
+  }
+  else
+  {
+    console.log("Local get-witness-rank");
+    managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
+  }
+  
+}
+
+function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
+{
+  if(isWitness(usernameTabWitnesses, witnessRankLocal))
+  {
+    $('#my-witness').prop('checked', true);
+    
+    $('.my-witness').unbind('click').click(function(){
+      if(!$('#my-witness').prop('checked'))
       {
+        $('.witness-type').prop('checked', false);
         $('#my-witness').prop('checked', true);
-        
-        $('.my-witness').unbind('click').click(function(){
-          $('.witness-type').prop('checked', false);
-          $('#my-witness').prop('checked', true);
-          $('.WitnessTabLoading').show();
-          $('.witness-content').empty();
-          startMyWitnessTab(usernameTabWitnesses, result);
-        });
 
-        $('.witness-out').unbind('click').click(function(){
-          if(!$('#witness-out').prop('checked'))
-          {
-            $('.witness-type').prop('checked', false);
-            $('#witness-out').prop('checked', true);
-            $('.WitnessTabLoading').show();
-            $('.witness-content').empty();
-            startTabOut(usernameTabWitnesses, isMyPageWitnesses, result);
-          }
-          
-        });
-
-        startMyWitnessTab(usernameTabWitnesses, result);
+        $('.WitnessTabLoading').show();
+        $('.witness-content').empty();
+        startMyWitnessTab(usernameTabWitnesses, witnessRankLocal);
       }
-      else
+    });
+
+    $('.witness-out').unbind('click').click(function(){
+
+      if(!$('#witness-out').prop('checked'))
       {
-        $('.switch-field').remove();
-        startTabOut(usernameTabWitnesses, isMyPageWitnesses, result);
-      }
-      $('.WitnessTabLoading').hide();
-      $('.switch-field').show();
 
-    },
-    error: function(msg) {
-      alert(msg.responseJSON.error);
-    }
-  });
+        $('.witness-type').prop('checked', false);
+        $('#witness-out').prop('checked', true);
+        $('.WitnessTabLoading').show();
+        $('.witness-content').empty();
+        startTabOut(usernameTabWitnesses, isMyPageWitnesses, witnessRankLocal);
+      }
+      
+    });
+
+    startMyWitnessTab(usernameTabWitnesses, witnessRankLocal);
+  }
+  else
+  {
+    $('.switch-field').remove();
+    startTabOut(usernameTabWitnesses, isMyPageWitnesses, witnessRankLocal);
+  }
+  $('.WitnessTabLoading').hide();
+  $('.switch-field').show();
 }
 
 function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
@@ -275,6 +298,7 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
 
   addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses);
 }
+
 function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 {
   var witnessesMyTab = $('\
@@ -286,95 +310,99 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
     </div>');
   $('.witness-content').append(witnessesMyTab);
 
-  $.ajax({
-    type: "GET",
-    beforeSend: function(xhttp) {
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-    },
-    url: 'http://steemplus-api.herokuapp.com/api/get-witness/' + usernameTabWitnesses,
-    success: function(witnessInfo) {
-      console.log(witnessInfo);
-
-      var lineNumberWitness = 0;
-      var classOddEven = '';
-      if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-      var myWitnessRank = getWitnessRank(usernameTabWitnesses, witnessesRankingList);
-      $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
-      if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
-      
-      var rowMyWitness = $('<div class="row"></div>');
-
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Number of votes</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + witnessInfo.votes_count + ' </div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Votes Received</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + getVestString(witnessInfo.votes) + ' </div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-      if(witnessInfo.url!==null&&witnessInfo.url!==undefined)
-      {
-        $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Witness Annoucement</div>');
-        $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"><a href="' + witnessInfo.url + '">' + witnessInfo.url + '</a></div>');
-        classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+  if(witnessInfoLocal===null)
+  {
+    console.log('Launch request get-witness');
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+      },
+      url: 'http://steemplus-api.herokuapp.com/api/get-witness/' + usernameTabWitnesses,
+      success: function(result) {
+        witnessInfoLocal = result;
+        displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
+      },
+      error: function(msg) {
+        alert(msg.responseJSON.error);
       }
-      
-      if(witnessInfo.timestamp!==null&&witnessInfo.timestamp!==undefined)
-      {
-        var dateLastBlock = new Date(witnessInfo.timestamp);
-        $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last block</div>');
-        $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + dateLastBlock + '"><a href="https://steemd.com/b/' + witnessInfo.last_confirmed_block_num + '">#' + witnessInfo.last_confirmed_block_num  + '</a> (' + moment(dateLastBlock).fromNow() + ') </div>');
-      }
-      else
-      {
-        $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last block</div>');
-        $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">This user hasn\'t mine any block yet</div>');
-      }
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+    });
+  }
+  else
+  {
+    console.log('Using local data get-witness');
+    displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
+  }
+}
 
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Blocks missed</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfo.total_missed + '</div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
+{
 
-      var accountCreationDate = new Date(witnessInfo.created);
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Witness Creation Date</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + accountCreationDate + '">' + moment(accountCreationDate).fromNow() + '</div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+  var lineNumberWitness = 0;
+  var classOddEven = '';
+  if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
-      var priceFeedPublishedDate = new Date(witnessInfo.last_sbd_exchange_update);
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Price Feed</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfo.sbd_exchange_rate_base + '$ published ' + moment(priceFeedPublishedDate).fromNow() + '</div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">APR</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + (parseInt(witnessInfo.sbd_interest_rate)/100).toFixed(2) + '%</div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-      $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Account Creation Fee</div>');
-      $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfo.account_creation_fee + ' ' + witnessInfo.account_creation_fee_symbol + '</div>');
-      classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-      
-
-      
-      
-
-
-
-
-      $('.witness-information').append(rowMyWitness);
-
-      
-
-      $('.WitnessTabLoading').hide();
-        },
-        error: function(msg) {
-          alert(msg.responseJSON.error);
-        }
-      });
-
+  var myWitnessRank = getWitnessRank(usernameTabWitnesses, witnessesRankingList);
+  $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
+  if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
   
+  var rowMyWitness = $('<div class="row"></div>');
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Number of votes</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + witnessInfoLocal.votes_count + ' </div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Votes Received</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + getVestString(witnessInfoLocal.votes) + ' </div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  if(witnessInfoLocal.url!==null&&witnessInfoLocal.url!==undefined)
+  {
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Witness Annoucement</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"><a href="' + witnessInfoLocal.url + '">' + witnessInfoLocal.url + '</a></div>');
+    classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+  }
+  
+  if(witnessInfoLocal.timestamp!==null&&witnessInfoLocal.timestamp!==undefined)
+  {
+    var dateLastBlock = new Date(witnessInfoLocal.timestamp);
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last block</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + dateLastBlock + '"><a href="https://steemd.com/b/' + witnessInfoLocal.last_confirmed_block_num + '">#' + witnessInfoLocal.last_confirmed_block_num  + '</a> (' + moment(dateLastBlock).fromNow() + ') </div>');
+  }
+  else
+  {
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last block</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">This user hasn\'t mine any block yet</div>');
+  }
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Blocks missed</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.total_missed + '</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  var accountCreationDate = new Date(witnessInfoLocal.created);
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Witness Creation Date</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + accountCreationDate + '">' + moment(accountCreationDate).fromNow() + '</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  var priceFeedPublishedDate = new Date(witnessInfoLocal.last_sbd_exchange_update);
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Price Feed</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfoLocal.sbd_exchange_rate_base + '$ published ' + moment(priceFeedPublishedDate).fromNow() + '</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">APR</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + (parseInt(witnessInfoLocal.sbd_interest_rate)/100).toFixed(2) + '%</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Account Creation Fee</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.account_creation_fee + ' ' + witnessInfoLocal.account_creation_fee_symbol + '</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+  
+
+  $('.witness-information').append(rowMyWitness);
+
+  $('.WitnessTabLoading').hide();
 }
 
 function getVestString(vests)

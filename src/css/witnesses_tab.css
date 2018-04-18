@@ -3,6 +3,7 @@
     padding-top: 8px !important;
     padding-bottom: 8px !important;
     min-height: 50px !important;
+    line-height: 2.0 !important;
 }
 
 .witness-items{
@@ -47,6 +48,10 @@
     color: #ffffff !important; 
 }
 
+.removeAsWitnessLink, .addAsWitnessLink{
+    margin-left: 0px;
+}
+
 #addWitnessButton:hover {
     background-color: #42bb8b;
     color: #ffffff;
@@ -68,9 +73,31 @@
 }
 
 .rank-witness{
-    margin-left: 1rem;
+    height: 100%;
+}
+.rank-witness-h5{
+    height: 100%;
 }
 
 .witness-title{
     font-weight: bold;
+}
+
+.theme-dark .removeAsWitnessLink, .theme-dark .addAsWitnessLink{
+    margin-left: 0px;
+}
+
+.theme-dark .evenLine, .theme-dark .odd {
+    color: black;
+}
+
+.theme-dark .removeWitnessesLink:hover, .theme-dark .removeAsWitnessLink:hover, .theme-dark .addAsWitnessLink:hover
+{
+    background-color: #ffffff !important;
+    color: #1A5099 !important; 
+}
+
+.theme-dark .removeAsWitnessLink, .theme-dark .addAsWitnessLink, .theme-dark .removeWitnessesLink{
+    color: #ffffff !important;
+    border-color: #ffffff !important;
 }

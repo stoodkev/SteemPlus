@@ -180,7 +180,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
 
       if(result[0].proxy.length > 0) // Using Proxy
       {
-        $('.span-nb-witnesses').html('<a href="/@'+ result[0].proxy + '#witnesses">' + (isMyPageWitnesses ? 'You are' : '@'+usernameTabWitnesses + ' is' ) + ' currently using @' + result[0].proxy + ' as a proxy</a>');
+        $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You are' : '@'+usernameTabWitnesses + ' is' ) + ' currently using <a href="/@'+ result[0].proxy + '#witnesses">@' + result[0].proxy + '</a> as a proxy');
       }
       else // No Proxy
       {
@@ -333,10 +333,16 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
 function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 {
   var witnessesMyTab = $('\
-    <h5 style="margin-bottom:20px">\
-      <span class="rank-witness"></span>\
-    </h5>\
     <div class="bootstrap-wrapper">\
+      <div class="container">\
+        <div class="row">\
+          <div class="col-3">\
+            <h5 class="rank-witness-h5">\
+              <span class="rank-witness"></span>\
+            </h5>\
+          </div>\
+        </div>\
+      </div>\
       <div class="witness-information container"></div>\
     </div>');
   $('.witness-content').append(witnessesMyTab);
@@ -376,7 +382,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
   if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
   
-  $('.rank-witness').after('<label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label>');
+  $('.rank-witness').parent().parent().after('<div class="col-9"><label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label></div>');
 
   if(userAccountWitnessTab.witness_votes.includes(usernameTabWitnesses))
   {
@@ -441,6 +447,10 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   }
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Blocks missed</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.total_missed + '</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last week Reward</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastWeekValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
@@ -449,16 +459,8 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastMonthValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
-  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last year Reward</div>');
-  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastYearValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
-  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Forever Reward</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.foreverValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
-  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
-
-  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Blocks missed</div>');
-  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.total_missed + '</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   var accountCreationDate = new Date(witnessInfoLocal.created);
@@ -468,7 +470,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 
   var priceFeedPublishedDate = new Date(witnessInfoLocal.last_sbd_exchange_update);
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Price Feed</div>');
-  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfoLocal.sbd_exchange_rate_base + '$ published ' + moment(priceFeedPublishedDate).fromNow() + '</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '" title="' + priceFeedPublishedDate + '">' + witnessInfoLocal.sbd_exchange_rate_base + ' $ published ' + moment(priceFeedPublishedDate).fromNow() + '</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">APR</div>');
@@ -532,7 +534,7 @@ function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
 function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
 {
   var witnessesInTab = $('\
-    <table id="witness-received-votes-table" class="display" style="width:100%">\
+    <table id="witness-received-votes-table" class="table table-striped table-bordered dataTable" style="width:100%">\
     <table');
 
   $('.witness-content').append(witnessesInTab);

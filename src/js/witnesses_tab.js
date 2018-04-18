@@ -7,18 +7,28 @@ var refreshPageWitnessInterval=null;
 var witnessInfoLocal = null;
 var witnessRankLocal = null;
 var witnessVoteReceivedLocal=null;
+var userAccountWitnessTab=null;
+
+var totalVestsWitnessTab = null;
+var totalSteemWitnessTab = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='witnesses_tab'&&request.order==='start'&&token_witnesses_tab==null)
   {
     token_witnesses_tab=request.token;
     myUsernameTabWitnesses=request.data.user;
+    userAccountWitnessTab=request.data.account;
+    totalVestsWitnessTab = request.data.totalVests;
+    totalSteemWitnessTab = request.data.totalSteem;
     if($('.UserProfile__tab_content_Witnesses').length===0)
       startWitnessesTab();
   }
   else if(request.to==='witnesses_tab'&&request.order==='click'&&token_witnesses_tab==request.token)
   {
     myUsernameTabWitnesses=request.data.user;
+    userAccountWitnessTab=request.data.account;
+    totalVestsWitnessTab = request.data.totalVests;
+    totalSteemWitnessTab = request.data.totalSteem;
     if($('.UserProfile__tab_content_Witnesses').length===0)
       startWitnessesTab();
 
@@ -55,7 +65,7 @@ function createTabWitnesses(witnessesTab)
               <input type="radio" id="my-witness" name="witness-type" class="witness-type" value="0" disabled/>\
               <label for="witness-type-my" class="witness-type my-witness">Witness Information</label>\
               <input type="radio" id="witness-out" name="witness-type" class="witness-type" value="1"/>\
-              <label for="witness-type-out" class="witness-type witness-out" >Votes casted</label>\
+              <label for="witness-type-out" class="witness-type witness-out" >Votes cast</label>\
               <input type="radio" id="witness-in" name="witness-type" class="witness-type" value="2"/>\
               <label for="witness-type-in" class="witness-type witness-in" >Votes Received</label>\
               <br>\
@@ -147,14 +157,14 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
      });
 
     startMyWitnessTab(usernameTabWitnesses, witnessRankLocal);
+    $('.switch-field').show();
   }
   else
   {
     $('.switch-field').remove();
     startTabOut(usernameTabWitnesses, isMyPageWitnesses, witnessRankLocal);
   }
-  $('.WitnessTabLoading').hide();
-  $('.switch-field').show();
+  
 }
 
 function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
@@ -168,57 +178,64 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
       else
         $('#addWitnessDiv').hide();
 
-      $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : '@'+usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' out of 30.');
+      if(result[0].proxy.length > 0) // Using Proxy
+      {
+        $('.span-nb-witnesses').html('<a href="/@'+ result[0].proxy + '#witnesses">' + (isMyPageWitnesses ? 'You are' : '@'+usernameTabWitnesses + ' is' ) + ' currently using @' + result[0].proxy + ' as a proxy</a>');
+      }
+      else // No Proxy
+      {
+        $('.span-nb-witnesses').html((isMyPageWitnesses ? 'You have' : '@'+usernameTabWitnesses + ' has' ) + ' currently voted for ' + result[0].witness_votes.length + (result[0].witness_votes.length > 1 ? ' witnesses':' witness') + ' out of 30.');
 
-      var witnessSeparator = $('<hr class="articles__hr"/>');
-      var rowWitness = $('<div class="row"></div>');
-
-
-      var listWitnesses = [];
-      result[0].witness_votes.forEach(function(witnessItem) {
-        var witnessRank = getWitnessRank(witnessItem, rankingWitnesses);
-        witnessRank = (witnessRank===null ? Number.MAX_SAFE_INTEGER : witnessRank)
-        listWitnesses.push({name:witnessItem, rank:parseInt(witnessRank)});
-      });
-      
-      listWitnesses.sort(function(a, b) {
-        return a.rank - b.rank;
-      }); 
-
-      listWitnesses.forEach(function(witnessItem, index){
-        var classOddEven = '';
-        if(index%2===0) classOddEven = 'evenLine';
+        var witnessSeparator = $('<hr class="articles__hr"/>');
+        var rowWitness = $('<div class="row"></div>');
 
 
-        $(rowWitness).append($('<div ' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? 'title="This witness is inactive"' : '') + ' class="col-1 witness-cells ' + classOddEven + '">' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? '-' : "#" + witnessItem.rank ) + '</div>'));
-        $(rowWitness).append('<div class="col-4 witness-cells ' + classOddEven + '"><a class="witness-items ' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? "witness-not-active" : '' ) + '" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></div>');
-        $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '"></div>'));
-        if(isMyPageWitnesses)
-        {
-          var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');
-          var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</label>');
+        var listWitnesses = [];
+        result[0].witness_votes.forEach(function(witnessItem) {
+          var witnessRank = getWitnessRank(witnessItem, rankingWitnesses);
+          witnessRank = (witnessRank===null ? Number.MAX_SAFE_INTEGER : witnessRank)
+          listWitnesses.push({name:witnessItem, rank:parseInt(witnessRank)});
+        });
+        
+        listWitnesses.sort(function(a, b) {
+          return a.rank - b.rank;
+        }); 
 
-          $(buttonRemoveWitness).click(function(){
-            var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
-            if (win) {
-                win.focus();
-            } else {
-                alert('Please allow popups for this website');
-            }
-          });
+        listWitnesses.forEach(function(witnessItem, index){
+          var classOddEven = '';
+          if(index%2===0) classOddEven = 'evenLine';
 
-          $(divButtonRemoveWitness).append(buttonRemoveWitness);
-          $(rowWitness).append(divButtonRemoveWitness);
-          $(rowWitness).append(witnessSeparator);
-        }
-        else
-        {
-          $(rowWitness).append($('<div class="col-4 witness-cells ' + classOddEven + '"></div>'));
-          $(rowWitness).append(witnessSeparator);
-        }
 
-      });
-      $('.witnesses-names-list').append(rowWitness);
+          $(rowWitness).append($('<div ' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? 'title="This witness is inactive"' : '') + ' class="col-1 witness-cells ' + classOddEven + '">' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? '-' : "#" + witnessItem.rank ) + '</div>'));
+          $(rowWitness).append('<div class="col-4 witness-cells ' + classOddEven + '"><a class="witness-items ' + (witnessItem.rank===Number.MAX_SAFE_INTEGER ? "witness-not-active" : '' ) + '" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></div>');
+          $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '"></div>'));
+          if(isMyPageWitnesses)
+          {
+            var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');
+            var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</label>');
+
+            $(buttonRemoveWitness).click(function(){
+              var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
+              if (win) {
+                  win.focus();
+              } else {
+                  alert('Please allow popups for this website');
+              }
+            });
+
+            $(divButtonRemoveWitness).append(buttonRemoveWitness);
+            $(rowWitness).append(divButtonRemoveWitness);
+            $(rowWitness).append(witnessSeparator);
+          }
+          else
+          {
+            $(rowWitness).append($('<div class="col-4 witness-cells ' + classOddEven + '"></div>'));
+            $(rowWitness).append(witnessSeparator);
+          }
+
+        });
+        $('.witnesses-names-list').append(rowWitness);
+      }
       $('.WitnessTabLoading').hide();
     }
   });
@@ -326,7 +343,6 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 
   if(witnessInfoLocal===null)
   {
-    console.log('Launch request get-witness');
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
@@ -345,7 +361,6 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   }
   else
   {
-    console.log('Using local data get-witness');
     displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
   }
 }
@@ -361,6 +376,41 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
   if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
   
+  $('.rank-witness').after('<label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label>');
+
+  if(userAccountWitnessTab.witness_votes.includes(usernameTabWitnesses))
+  {
+    $('.removeAsWitnessLink').show();
+    $('.addAsWitnessLink').hide();
+  }
+  else
+  {
+    $('.addAsWitnessLink').show();
+    $('.removeAsWitnessLink').hide();
+  }
+
+  $('.removeAsWitnessLink').unbind('click').click(function(){
+    $('.addAsWitnessLink').show();
+    $('.removeAsWitnessLink').hide();
+    var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
+    if (win) {
+        win.focus();
+    } else {
+        alert('Please allow popups for this website');
+    }
+  });
+
+  $('.addAsWitnessLink').unbind('click').click(function(){
+    $('.removeAsWitnessLink').show();
+    $('.addAsWitnessLink').hide();
+    var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
+    if (win) {
+        win.focus();
+    } else {
+        alert('Please allow popups for this website');
+    }
+  });
+
   var rowMyWitness = $('<div class="row"></div>');
 
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Number of votes</div>');
@@ -389,6 +439,22 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
     $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last block</div>');
     $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">This user hasn\'t mine any block yet</div>');
   }
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last week Reward</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastWeekValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last month Reward</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastMonthValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last year Reward</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastYearValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+  classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
+
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Forever Reward</div>');
+  $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.foreverValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
   $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Blocks missed</div>');
@@ -463,50 +529,6 @@ function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
   }
 }
 
-function displayWitnessIn2(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
-{
-  var witnessesInTab = $('\
-    <h5 style="margin-bottom:20px">\
-      <span class="span-nb-witnesses-in"></span>\
-    </h5>\
-    <div class="bootstrap-wrapper">\
-      <div class="witnesses-names-list container"></div>\
-    </div>');
-
-  $('.witness-content').append(witnessesInTab);
-
-  var nbWitnessesVoteReceived = witnessVoteReceivedLocal.length;
-  $('.span-nb-witnesses-in').append('@' + usernameTabWitnesses + ' has currently received ' + nbWitnessesVoteReceived + ' votes');
-  
-  witnessVoteReceivedLocal.sort(function(a, b) {
-    return b.totalVests - a.totalVests;
-  });
-
-  var rowWitness = $('<div class="row"></div>');
-  var witnessSeparator = $('<hr class="articles__hr"/>');
-
-  $(rowWitness).append('<div class="col-3 witness-cells witness-title">Voter</div>');
-  $(rowWitness).append($('<div class="col-3 witness-cells">Total Vests</div>'));
-  $(rowWitness).append($('<div class="col-3 witness-cells">Account Vests</div>'));
-  $(rowWitness).append($('<div class="col-3 witness-cells">Proxied Vests</div>'));
-
-  witnessVoteReceivedLocal.forEach(function(witnessItem, index){
-    var classOddEven = '';
-    if(index%2===0) classOddEven = 'evenLine';
-  
-    $(rowWitness).append('<div class="col-3 witness-cells ' + classOddEven + '"><a class="witness-items" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></div>');
-    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.totalVests) + '</div>'));
-    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.accountVests) + '</div>'));
-    $(rowWitness).append($('<div class="col-3 witness-cells ' + classOddEven + '">' + getVestString(witnessItem.proxiedVests) + '</div>'));
-    
-    $(rowWitness).append(witnessSeparator);
-
-  });
-  $('.witnesses-names-list').append(rowWitness);
-
-  
-}
-
 function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
 {
   var witnessesInTab = $('\
@@ -517,17 +539,6 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
 
  
   $('.LoadingIndicator').hide();
-
-  // witnessVoteReceivedLocal.forEach(function(witnessItem, index){
-  //   var witness_tr = $('<tr></tr>');
-  //   $(witness_tr).append('<td><a class="witness-items" href="https://steemit.com/@' + witnessItem.name + '#witnesses" target="_blank">@' + witnessItem.name + '</a></td>');
-  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.totalVests) + '</td>'));
-  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.accountVests) + '</td>'));
-  //   $(witness_tr).append($('<td>' + getVestString(witnessItem.proxiedVests) + '</td>'));
-    
-  //   $('.witness-info-body').append(witness_tr);
-
-  // });
 
   function getValueFromTable(str){
     if(str.includes('kVests')) return parseInt(str.replace('kVests',''))*1000;

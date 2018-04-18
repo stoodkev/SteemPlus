@@ -41,7 +41,7 @@
     font-size: 12px !important;
 }
 
-.removeWitnessesLink:hover
+.removeWitnessesLink:hover, .removeAsWitnessLink:hover, .addAsWitnessLink:hover
 {
     background-color: #1A5099 !important;
     color: #ffffff !important; 

@@ -49,7 +49,7 @@
 }
 
 .removeAsWitnessLink, .addAsWitnessLink{
-    margin-left: 0px;
+    margin-left: 0px !important;
 }
 
 #addWitnessButton:hover {

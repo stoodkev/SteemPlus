@@ -11,7 +11,7 @@ var isConnectedToSteemConnect=null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['number_article_comment','witnesses_tab','classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     isConnectedToSteemConnect = steemConnect.connect;
     // Connected
@@ -92,6 +92,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
     favorite_section=items.favorite_section==undefined?'show':items.favorite_section;
     classification_user=items.classification_user==undefined?'show':items.classification_user;
     witnesses_tab=items.witnesses_tab==undefined?'show':items.witnesses_tab;
+    number_article_comment=items.number_article_comment==undefined?'show':items.number_article_comment;
 
     // Steemit more info
     steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
@@ -134,6 +135,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
     $('input[name=favorite_section]').prop('checked',favorite_section=='show');
     $('input[name=classification_user]').prop('checked',classification_user=='show');
     $('input[name=witnesses_tab]').prop('checked',witnesses_tab=='show');
+    $('input[name=number_article_comment]').prop('checked',number_article_comment=='show');
 
     // Steemit more info
     $('input[name=steemit_more_info]').prop('checked',steemit_more_info=='show');
@@ -420,6 +422,12 @@ $(document).on("change","input[name=classification_user]",function(){
 $(document).on("change","input[name=witnesses_tab]",function(){
     chrome.storage.local.set({
         witnesses_tab:$("input[name=witnesses_tab]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=number_article_comment]",function(){
+    chrome.storage.local.set({
+        number_article_comment:$("input[name=number_article_comment]").prop('checked')?'show':'hide'
     });
 });
 

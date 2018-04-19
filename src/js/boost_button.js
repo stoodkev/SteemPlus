@@ -429,7 +429,7 @@
         <div class="column small-10">\
           <div class="input-group" style="margin-bottom: 1.25rem;">\
             <span class="input-group-label">@</span>\
-            <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+            <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
               <option value="MinnowBooster" selected>MinnowBooster</option>\
               <option value="SmartSteem">SmartSteem</option>\
             </select>\
@@ -590,17 +590,23 @@ function createSmartSteemTransferUI(){
             </div>\
           </div>\
         </div>\
-        <div id="smartSteemInformation" class="column row">\
-          <strong>Informations SmartSteem</strong><br>\
+        <div class="bootstrap-wrapper">\
+          <div class="container">\
+          <i style="color:red;">Important : @Smartmarket is the vote buying account of @smartsteem</i><br>\
+          <strong>Information SmartSteem</strong><br>\
+            <div id="smartSteemInformation" class="row">\
+            </div>\
+          </div>\
         </div>\
         <br>\
         <br>\
         <div class="row">\
           <div class="input-group" style="margin-bottom: 5px;">\
             <input id="amountSmartSteem" type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
-            <span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">\
-              <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+            <span class="input-group-label" style="padding-left: 0px; padding-right: 0px; min-width: 5rem; height: inherit; border: none; text-align:center;" >\
+              <select id="currency" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
                 <option value="SBD" selected>SBD</option>\
+                <option value="STEEM" selected>STEEM</option>\
               </select>\
             </span>\
           </div>\
@@ -612,22 +618,36 @@ function createSmartSteemTransferUI(){
       });
 
       $('#submitSmartSteem').unbind('click').click(function(){
-        console.log('Click on submit SmartSteem =>' + $('#amountSmartSteem').value);
+        var valueSentSmartSteem = null;
+        if(!$('#amountSmartSteem')[0].value.includes('.'))
+          valueSentSmartSteem = $('#amountSmartSteem')[0].value + '.000';
+        else
+          valueSentSmartSteem = $('#amountSmartSteem')[0].value;
+
+        var requestSmartSteem = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('smartmarket') + '&amount=' + encodeURIComponent(parseFloat(valueSentSmartSteem).toFixed(3) + ' ' + $('#currency')[0].value) + '&memo=' + encodeURIComponent(window.location.href);
+        var win = window.open(requestSmartSteem, '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
       });
 
       $('#amountSmartSteem').on('input',function(e){
-        console.log($('#amountSmartSteem')[0].value);
         if($('#amountSmartSteem')[0].value.length > 0)
           $('#submitSmartSteem').attr('disabled', false);
         else
           $('#submitSmartSteem').attr('disabled', true);
       });
+
       
-      Object.keys(result).map(function(objectKey, index) {
-        console.log(objectKey);
-        var value = result[objectKey];
-        $('#smartSteemInformation').append('<small>' + objectKey + ' : ' + value + '</small><br>');
-      });
+      $('#smartSteemInformation').append('<div class="col-5">Unrestricted value :</div><div class="col-7">' + parseInt(result.total_unrestricted).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">1 star vote value :</div><div class="col-7">' + parseInt(result.total_one).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">2 stars vote value :</div><div class="col-7">' + parseInt(result.total_two).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">3 stars vote value :</div><div class="col-7">' + parseInt(result.total_three).toFixed(2) + ' $</div>');
+
     },
     error: function(msg) {
       $('#smartSteemInformation').append('<small style="color:red;">' + msg.responseJSON.error + '</small>');

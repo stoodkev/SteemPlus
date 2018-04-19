@@ -219,7 +219,7 @@
             return 'Loading...';
           }
           return type === 'display' ?
-            sp.toFixed(2) :
+            numberWithCommas(sp.toFixed(2)) :
             sp;
         }
       },{
@@ -449,4 +449,8 @@ function getFollowingListName(username, lastFollowing, followingList, callback)
     getFollowingListName(username, lastFollowing, followingList, callback);
 
   });
+}
+
+var numberWithCommas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

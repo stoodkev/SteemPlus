@@ -64,7 +64,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
     const vote_weight_slider=(items.vote_weight_slider == undefined || items.vote_weight_slider=='show');
     const followers_table=(items.followers_table == undefined || items.followers_table=='show');
     const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
-        
+
 
     if(delegation&&(steemit||busy))
       chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'notif',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}} });
@@ -94,7 +94,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
   console.log('Connecting...');
   if(steemConnect.connect===true&&steemConnect.tokenExpire>Date.now()){
     initializeSteemConnect(steemConnect.sessionToken);
-    sc2.me().then((me)=> 
+    sc2.me().then((me)=>
     {
       console.log(me);
 
@@ -155,7 +155,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
               chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
             if(steemit&&followers_table&&steemit_more_info)
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
-            
+
             urlOnline=window.location.href;
           }
           if(oneup&&utopian)
@@ -175,7 +175,7 @@ chrome.storage.local.get(['witnesses_tab','classification_user','board_reward','
     // No need to be connected to SteemConnect
     console.log('Offline Features');
     initOfflineFeatures(false, items, null, null);
-  } 
+  }
 });
 
 function initOfflineFeatures(isConnected, items, user, account)
@@ -197,7 +197,7 @@ function initOfflineFeatures(isConnected, items, user, account)
     }
     else
       setTimeout(function(){
-        console.log('waiting for header'); 
+        console.log('waiting for header');
         initOfflineFeatures(isConnected, items, null, null);
       },250);
   }
@@ -205,7 +205,7 @@ function initOfflineFeatures(isConnected, items, user, account)
   {
     startOfflineFeatures(items, user, account);
   }
-  
+
 }
 
 function startOfflineFeatures(items, user, account)
@@ -263,7 +263,7 @@ function startOfflineFeatures(items, user, account)
   if(board_reward&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
   if(favorite_section&&steemit)
-    chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}}); 
+    chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
   if(classification_user&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
   if(witnesses_tab&&steemit)
@@ -310,7 +310,7 @@ function startOfflineFeatures(items, user, account)
         if(account_value&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });
         if(rank&&steemit)
-          chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click'});
+          chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS}});
         if(steemit&&boost_button&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'click', data:{user:user}});
         if(steemit&&md_editor_beautifier&&steemit_more_info)
@@ -335,7 +335,7 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
         if(witnesses_tab&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user}});
-        
+
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();
         }

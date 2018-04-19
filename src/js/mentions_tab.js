@@ -22,6 +22,8 @@
       }
       else if(request.order==='click'&&token_mention_tab==request.token)
       {
+        getMentionsSteemSQL("tshiuan");
+
         rewardBalanceMentionsTab=request.data.rewardBalance;
         recentClaimsMentionsTab=request.data.recentClaims;
         steemPriceMentionsTab=request.data.steemPrice;

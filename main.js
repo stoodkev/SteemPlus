@@ -267,7 +267,7 @@ function startOfflineFeatures(items, user, account)
   if(classification_user&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
   if(witnesses_tab&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user}});
+      chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user, account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -334,7 +334,7 @@ function startOfflineFeatures(items, user, account)
         if(classification_user&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
         if(witnesses_tab&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user}});
+          chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user,account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

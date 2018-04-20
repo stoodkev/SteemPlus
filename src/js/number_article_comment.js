@@ -27,14 +27,34 @@ function startNumberArticleComment()
 function displayNumberArticleComment()
 {
 	var usernameNumberArticleComment = window.SteemPlus.Utils.getPageAccountName();
+	getPosts(0, null, usernameNumberArticleComment);	
+}
 
-	steem.api.getDiscussionsByAuthorBeforeDate(usernameNumberArticleComment,null, new Date().toISOString().split('.')[0],10000 , function(err, result) {
+function getPosts(postCount, entry_id, usernameNumberArticleComment){
+	steem.api.getBlogEntries(usernameNumberArticleComment, entry_id, 100, function(err, result)
+	{
 		if(err) console.log(err)
 		else 
 		{
-			console.log(result);
-		// $('.UserProfile__stats > span > a')[1].innerHTML = result.numberPost + ' Posts';
-  //       $('.UserProfile__stats > span > a')[1].after($('<span>' + result.numberComments + ' Comments</span>'); 
+			console.log(result)
+			result.forEach(function(article){
+				if(article.author === usernameNumberArticleComment)
+				{
+					console.log(article);
+					postCount++;
+				} 
+			});
+			if(result.length === 100)
+			{
+				getPosts(postCount, result[result.length-1].entry_id-1, usernameNumberArticleComment);
+			}
+			else
+			{
+				console.log(postCount);
+				$('.UserProfile__stats > span')[1].remove();
+				var span = $('<span><a href="/@stoodkev">' + postCount + ' articles </a></span>');
+				$('.UserProfile__stats > span')[0].after('<span><a href="/@stoodkev">' + postCount + ' Articles </a></span>');
+			}
 		}
 	});
 }

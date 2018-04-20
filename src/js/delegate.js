@@ -142,13 +142,16 @@ function createButton(isSteemit,busy,globalP,account) {
               },
               url: 'http://steemplus-api.herokuapp.com/api/get-incoming-delegations/'+account,
               success: function(result) {
-                $('.delegations').append('<div class="row column"><h3 class="column incoming-delegation">Incoming delegations - </h3><ul id="list_delegators"></ul></div>');
-                var totalIncomingDelegation = null;
-                result.forEach(function(item){
-                    $('#list_delegators').append('<li title="' + new Date(item.delegation_date) + '">'+Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated by @'+item.delegator+'</li>');
-                    totalIncomingDelegation += Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100;
-                });
-                $('.incoming-delegation').append(totalIncomingDelegation + ' SP');
+                if(result.length > 0)
+                {
+                    $('.delegations').append('<div class="row column"><h3 class="column incoming-delegation">Incoming delegations - </h3><ul id="list_delegators"></ul></div>');
+                    var totalIncomingDelegation = null;
+                    result.forEach(function(item){
+                        $('#list_delegators').append('<li title="' + new Date(item.delegation_date) + '">'+Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated by @'+item.delegator+'</li>');
+                        totalIncomingDelegation += Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100;
+                    });
+                    $('.incoming-delegation').append(totalIncomingDelegation + ' SP');
+                }
               },
               error: function(msg) {
                 console.log(msg);

@@ -164,7 +164,7 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
     $('.switch-field').remove();
     startTabOut(usernameTabWitnesses, isMyPageWitnesses, witnessRankLocal);
   }
-  
+
 }
 
 function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
@@ -196,10 +196,10 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
           witnessRank = (witnessRank===null ? Number.MAX_SAFE_INTEGER : witnessRank)
           listWitnesses.push({name:witnessItem, rank:parseInt(witnessRank)});
         });
-        
+
         listWitnesses.sort(function(a, b) {
           return a.rank - b.rank;
-        }); 
+        });
 
         listWitnesses.forEach(function(witnessItem, index){
           var classOddEven = '';
@@ -380,7 +380,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   var myWitnessRank = getWitnessRank(usernameTabWitnesses, witnessesRankingList);
   $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
   if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
-  
+
   $('.rank-witness').parent().parent().after('<div class="col-9"><label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label></div>');
 
   if(userAccountWitnessTab.witness_votes.includes(usernameTabWitnesses))
@@ -450,11 +450,11 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '">' + witnessInfoLocal.total_missed + '</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
-  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last week Reward</div>');
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Weekly Reward</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastWeekValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
-  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Last month Reward</div>');
+  $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Monthly Reward</div>');
   $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastMonthValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
   classOddEven = ''; lineNumberWitness++; if(lineNumberWitness%2===0) classOddEven = 'evenLine';
 
@@ -538,7 +538,7 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
 
   $('.witness-content').append(witnessesInTab);
 
- 
+
   $('.LoadingIndicator').hide();
 
   function getValueFromTable(str){
@@ -549,10 +549,10 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
   };
 
   jQuery.fn.dataTableExt.oSort["number-desc"] = function (x, y) {
-    
+
     return getValueFromTable(x) - getValueFromTable(y);
   };
-    
+
   jQuery.fn.dataTableExt.oSort["number-asc"] = function (x, y) {
       return jQuery.fn.dataTableExt.oSort["number-desc"](y, x);
   };
@@ -560,7 +560,7 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
   jQuery.fn.dataTableExt.oSort["datetime-desc"] = function (x, y) {
     return new Date($(x).attr('name')) - new Date($(y).attr('name'));
   };
-    
+
   jQuery.fn.dataTableExt.oSort["datetime-asc"] = function (x, y) {
       return jQuery.fn.dataTableExt.oSort["datetime-desc"](y, x);
   };
@@ -576,7 +576,7 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
       { title: "Total Vests" },
       { title: "Account Vests" },
       { title: "Proxied Vests" }
-      
+
     ] ,
     columnDefs: [
     {

@@ -7,7 +7,6 @@ var userNameRegEx = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])\/*/;
 var userInfoPopoverStarted=false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='user_info_popover') console.log(request);
     if(request.to==='user_info_popover'&&request.order==='start'&&token_user_info_popover==null)
     {
       	token_user_info_popover=request.token;

@@ -1,6 +1,14 @@
 
   var token_boost_button=null;
   var aut=null;
+  var modal=null;
+
+  var urlBooster=null;
+  var matchBooster=null;
+  var categoryBooster=null;
+  var authorBooster=null;
+  var permlinkBooster=null;
+  var loading=null;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
@@ -9,49 +17,34 @@
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
-
-        // $('body').attrchange(function(attrName) {
-        //   if(attrName === 'class'){
-        //     if($('body').hasClass('with-post-overlay')) {
-        //       addPostBoostButton();
-        //     }
-        //   }
-        // });
-
         addPostBoostButton();
       }
 
       if(request.order==='click')
       {
         token_boost_button=request.token;
-
-        // $('body').attrchange(function(attrName) {
-        //   if(attrName === 'class'){
-        //     if($('body').hasClass('with-post-overlay')) {
-        //       addPostBoostButton();
-        //     }
-        //   }
-        // });
-
         addPostBoostButton();
       }
     }
   });
 
 
-  function createTransferUI(category, author, permlink) {
-    var link = window.location.origin + '/' + category + '/@' + author + '/' + permlink;
+  function createMinnowBoosterTransferUI() {
+    var link = window.location.origin + '/' + categoryBooster + '/@' + authorBooster + '/' + permlinkBooster;
+    if(modal === null)
+    {
+      modal = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
+        <div class="reveal-overlay fade in" style="display: block;"></div>\
+          <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
+            <button class="close-button" type="button">\
+              <span aria-hidden="true" class="">×</span>\
+            </button>\
+          </div>\
+        </div>');
+    }
+    
 
-    var modal = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
-      <div class="reveal-overlay fade in" style="display: block;"></div>\
-      <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
-        <button class="close-button" type="button">\
-          <span aria-hidden="true" class="">×</span>\
-        </button>\
-      </div>\
-    </div>');
-
-    var loading = $(window.SteemPlus.Utils.getLoadingHtml({
+    loading = $(window.SteemPlus.Utils.getLoadingHtml({
       center: true
     }));
     modal.find('.reveal').append(loading);
@@ -86,7 +79,7 @@
       var transferUI;
 
       var accountInfoUI = '<div class="column small-12">\
-        <strong>About the author: <a href="/@' + author + '" target="_blank" rel="noopener">@' + author + '</a></strong><br>\
+        <strong>About the author: <a href="/@' + authorBooster + '" target="_blank" rel="noopener">@' + authorBooster + '</a></strong><br>\
         <small>Daily Limit: ' + parseFloat(accountInfo.user_daily_usage).toFixed(2) + ' / ' + parseFloat(globalInfo.daily_limit).toFixed(2) + ' SBD</small> <br>\
       </div>';
 
@@ -94,8 +87,8 @@
 
         var amount = parseFloat(alreadyBoosted.upvote);
 
-        transferUI = $('<div>\
-          <div class="row">\
+        transferUI = $('<div id="modalContent">\
+          <div id="modalTitle" class="row">\
             <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
           </div>\
           <div>\
@@ -122,8 +115,8 @@
 
       }else if(!globalInfo.post_voting_enabled) {
 
-        transferUI = $('<div>\
-          <div class="row">\
+        transferUI = $('<div id="modalContent">\
+          <div id="modalTitle" class="row">\
             <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
           </div>\
           <div>\
@@ -148,8 +141,8 @@
 
       }else if(min > max) {
 
-        transferUI = $('<div>\
-          <div class="row">\
+        transferUI = $('<div id="modalContent">\
+          <div id="modalTitle" class="row">\
             <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
           </div>\
           <div>\
@@ -177,8 +170,8 @@
       }else{
         // can boost!
 
-        transferUI = $('<div>\
-          <div class="row">\
+        transferUI = $('<div id="modalContent">\
+          <div id="modalTitle" class="row">\
             <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
           </div>\
           <form lpformnum="4">\
@@ -431,7 +424,23 @@
 
       loading.remove();
       modal.find('.reveal').append(transferUI);
+      $('#modalTitle').after($('<div class="row">\
+        <div class="column small-2" style="padding-top: 5px;">To</div>\
+        <div class="column small-10">\
+          <div class="input-group" style="margin-bottom: 1.25rem;">\
+            <span class="input-group-label">@</span>\
+            <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
+              <option value="MinnowBooster" selected>MinnowBooster</option>\
+              <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
+            </select>\
+          </div>\
+          <p></p>\
+        </div>\
+      </div>'));
 
+      $('#selectBooster').unbind('change').on('change', function(){
+        changeUIBooster(this.value);
+      });
     };
 
     $('body').append(modal);
@@ -461,7 +470,7 @@
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       },
-      url: 'https://www.minnowbooster.net/users/' + author + '/json',
+      url: 'https://www.minnowbooster.net/users/' + authorBooster + '/json',
       success: function(json) {
         accountInfo = json;
         asyncDone();
@@ -477,7 +486,7 @@
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       },
-      url: 'https://www.minnowbooster.net/api/posts/' + author + '/' + permlink + '/' + author,
+      url: 'https://www.minnowbooster.net/api/posts/' + authorBooster + '/' + permlinkBooster + '/' + authorBooster,
       success: function(json) {
         if(json.extract) {
           alreadyBoosted = {
@@ -504,27 +513,146 @@
 
 
 
-  function addPostBoostButton() {
+function addPostBoostButton() {
 
-    var promoteButton = $('.Promote__button');
-    var boostButton = $('.smi-boost-button');
+  var promoteButton = $('.Promote__button');
+  var boostButton = $('.smi-boost-button');
 
-    if(promoteButton.length && !boostButton.length) {
+  if(promoteButton.length && !boostButton.length) {
 
-      boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
+    boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
 
-      promoteButton.before(boostButton);
-      promoteButton.addClass('smi-promote-button');
+    promoteButton.before(boostButton);
+    promoteButton.addClass('smi-promote-button');
 
-      boostButton.on('click', function() {
-        var url = window.location.pathname;
-        var match = url.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
-        var category = match[1];
-        var author = match[2];
-        var permlink = match[3];
-        createTransferUI(category, author, permlink);
+    boostButton.on('click', function() {
+      modal=null;
+      urlBooster = window.location.pathname;
+      matchBooster = urlBooster.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
+      categoryBooster = matchBooster[1];
+      authorBooster = matchBooster[2];
+      permlinkBooster = matchBooster[3];
+      createMinnowBoosterTransferUI();
+    });
+
+  }
+  else
+  {
+    setTimeout(function(){
+      addPostBoostButton();
+    },200);
+  }
+
+};
+
+function changeUIBooster(value){
+  $('#modalContent').remove();
+  if(value==='MinnowBooster') createMinnowBoosterTransferUI();
+  else if(value==='SmartSteem') createSmartSteemTransferUI();
+}
+
+function createSmartSteemTransferUI(){
+  
+  loading = $(window.SteemPlus.Utils.getLoadingHtml({
+    center: true
+  }));
+  modal.find('.reveal').append(loading);
+
+  var transferUI = $('\
+    <div id="modalContent">\
+      <div id="modalTitle" class="row">\
+        <h3 class="column">Boost with <a href="/@smartmarket" target="_blank" rel="noopener">@smartmarket</a></h3>\
+      </div>\
+    </div>');
+
+  $.ajax({
+    type: "GET",
+    beforeSend: function(xhttp) {
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+    },
+    url: 'https://smartsteem.com/api/general',
+    success: function(result) {
+      loading.remove();
+      modal.find('.reveal').append(transferUI);
+      $('#modalTitle').after($('\
+        <div class="row">\
+          <div class="column small-2" style="padding-top: 5px;">To</div>\
+            <div class="column small-10">\
+              <div class="input-group" style="margin-bottom: 1.25rem;">\
+                <span class="input-group-label">@</span>\
+                <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+                  <option value="MinnowBooster">MinnowBooster</option>\
+                  <option value="SmartSteem" selected>SmartMarket (SmartSteem instant vote)</option>\
+                </select>\
+              </div>\
+              <p></p>\
+            </div>\
+          </div>\
+        </div>\
+        <div class="bootstrap-wrapper">\
+          <div class="container">\
+          <i style="color:red;">Important : @Smartmarket is the vote buying account of @smartsteem</i><br>\
+          <strong>Information SmartSteem</strong><br>\
+            <div id="smartSteemInformation" class="row">\
+            </div>\
+          </div>\
+        </div>\
+        <br>\
+        <br>\
+        <div class="row">\
+          <div class="input-group" style="margin-bottom: 5px;">\
+            <input id="amountSmartSteem" type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
+            <span class="input-group-label" style="padding-left: 0px; padding-right: 0px; min-width: 5rem; height: inherit; border: none; text-align:center;" >\
+              <select id="currency" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+                <option value="SBD" selected>SBD</option>\
+                <option value="STEEM" selected>STEEM</option>\
+              </select>\
+            </span>\
+          </div>\
+          <button id="submitSmartSteem" type="submit" disabled="" class="button">Submit</button>\
+        </div>'));
+
+      $('#selectBooster').unbind('change').on('change', function(){
+        changeUIBooster(this.value);
       });
 
-    }
+      $('#submitSmartSteem').unbind('click').click(function(){
+        var valueSentSmartSteem = null;
+        if(!$('#amountSmartSteem')[0].value.includes('.'))
+          valueSentSmartSteem = $('#amountSmartSteem')[0].value + '.000';
+        else
+          valueSentSmartSteem = $('#amountSmartSteem')[0].value;
 
-  };
+        var requestSmartSteem = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('smartmarket') + '&amount=' + encodeURIComponent(parseFloat(valueSentSmartSteem).toFixed(3) + ' ' + $('#currency')[0].value) + '&memo=' + encodeURIComponent(window.location.href);
+        var win = window.open(requestSmartSteem, '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
+      });
+
+      $('#amountSmartSteem').on('input',function(e){
+        if($('#amountSmartSteem')[0].value.length > 0)
+          $('#submitSmartSteem').attr('disabled', false);
+        else
+          $('#submitSmartSteem').attr('disabled', true);
+      });
+
+      
+      $('#smartSteemInformation').append('<div class="col-5">Unrestricted value :</div><div class="col-7">' + parseInt(result.total_unrestricted).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">1 star vote value :</div><div class="col-7">' + parseInt(result.total_one).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">2 stars vote value :</div><div class="col-7">' + parseInt(result.total_two).toFixed(2) + ' $</div>');
+      $('#smartSteemInformation').append('<div class="col-5">3 stars vote value :</div><div class="col-7">' + parseInt(result.total_three).toFixed(2) + ' $</div>');
+
+    },
+    error: function(msg) {
+      $('#smartSteemInformation').append('<small style="color:red;">' + msg.responseJSON.error + '</small>');
+      loading.remove();
+    }
+  });
+
+}

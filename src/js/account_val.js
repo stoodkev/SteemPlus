@@ -92,6 +92,8 @@ function startAccountValue(isSteemit,busy,globalP,market){
     STEEM_A=market.priceSteem;
     SBD_A=market.priceSBD;
     steem.api.getAccounts([account_v], function(err, result) {
+      if(err) console.log(err);
+      console.log(result);
       var value=0;
       const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
       const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
@@ -135,6 +137,19 @@ function startAccountValue(isSteemit,busy,globalP,market){
     $('#popop').attr('data-trigger','hover');
     $('[data-toggle="popover"]').popover();
 
+    if($('.FoundationDropdownMenu__label').length > 0)
+    {
+      $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(result[0].vesting_shares));
+    }
+    else
+    {
+      var spanVestingShares = $('.UserWallet__balance > .column')[3];
+      var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + '</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"');
+      $(spanVestingShares)[0].textContent = '';
+      $(spanVestingShares).append(newDiv);
+    }
+    
+
   });
 }
 
@@ -143,4 +158,20 @@ function postProcess(value)
   value=Math.round(value*100)/100;
   value=value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return '$' +value;
+}
+
+function getVestString(vests)
+{
+  if(parseInt(vests)/1000000000 > 1)
+    return numberWithCommas((parseInt(vests)/1000000000).toFixed(3)) + ' GVests';
+  else if(parseInt(vests)/1000000 > 1)
+    return numberWithCommas((parseInt(vests)/1000000).toFixed(3)) + ' MVests';
+  else if(parseInt(vests)/1000)
+    return numberWithCommas((parseInt(vests)/1000).toFixed(3)) + ' kVests';
+  else
+    return numberWithCommas(vests) + ' Vests';
+}
+
+var numberWithCommas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

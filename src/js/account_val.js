@@ -137,7 +137,6 @@ function startAccountValue(isSteemit,busy,globalP,market){
     $('#popop').attr('data-trigger','hover');
     $('[data-toggle="popover"]').popover();
 
-    console.log($('.FoundationDropdownMenu__label'));
     if($('.FoundationDropdownMenu__label').length > 0)
     {
       $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(result[0].vesting_shares));

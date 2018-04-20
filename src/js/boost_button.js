@@ -431,7 +431,7 @@
             <span class="input-group-label">@</span>\
             <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
               <option value="MinnowBooster" selected>MinnowBooster</option>\
-              <option value="SmartSteem">SmartSteem</option>\
+              <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
             </select>\
           </div>\
           <p></p>\
@@ -561,7 +561,7 @@ function createSmartSteemTransferUI(){
   var transferUI = $('\
     <div id="modalContent">\
       <div id="modalTitle" class="row">\
-        <h3 class="column">Boost with <a href="/@smartsteem" target="_blank" rel="noopener">@smartsteem</a></h3>\
+        <h3 class="column">Boost with <a href="/@smartmarket" target="_blank" rel="noopener">@smartmarket</a></h3>\
       </div>\
     </div>');
 
@@ -583,7 +583,7 @@ function createSmartSteemTransferUI(){
                 <span class="input-group-label">@</span>\
                 <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
                   <option value="MinnowBooster">MinnowBooster</option>\
-                  <option value="SmartSteem" selected>SmartSteem</option>\
+                  <option value="SmartSteem" selected>SmartMarket (SmartSteem instant vote)</option>\
                 </select>\
               </div>\
               <p></p>\

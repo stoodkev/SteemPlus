@@ -487,7 +487,14 @@ function checkLastPost(last_post_url, account)
             last_post_url:result[0].url
           });
           $(this).parent().parent().remove();
-          window.location.replace("https://steemit.com"+result[0].url);
+          var win=window.open("https://steemit.com"+result[0].url, '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
         });
 
         $('#new_post_no').click(function(){

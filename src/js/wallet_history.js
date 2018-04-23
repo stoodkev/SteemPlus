@@ -3,26 +3,66 @@ var token_wallet_history=null;
 var totalVestsWalletHistory = null;
 var totalSteemWalletHistory = null;
 
+var dataWalletHistory = null;
+
+var typeFiltersListWH = [
+	{
+    type: 'transfer_to',
+    text: 'Received'
+	},
+	{
+    type: 'transfer_from',
+    text: 'Sent'
+	},
+	{
+    type: 'claim',
+    text: 'Claim Rewards'
+	}
+];
+
+var filtersStateWH = {
+	types: {},
+	search: '',
+	minAsset: {}
+};
+
+function typeFilterHiddenWH(type) {
+    return filtersStateWH.types[type] || false;
+}
+
+function setTypeFilterHiddenWH(type, value) {
+  filtersStateWH.types[type] = value;
+  console.log(filtersStateWH);
+}
+
+function searchValueWH() {
+  return filtersStateWH.search || '';
+}
+
+function setSearchValueWH(val) {
+  filtersStateWH.search = val || '';
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
-    if(request.to=='wallet_history'){
-      if(request.order==='start'&&token_wallet_history==null)
-      {
-        token_wallet_history=request.token;
-        totalVestsWalletHistory = request.data.totalVests;
-    	totalSteemWalletHistory = request.data.totalSteem;
-        startWalletHistory();
-      }
-
-      if(request.order==='click')
-      {
-        token_wallet_history=request.token;
-        totalVestsWalletHistory = request.data.totalVests;
-    	totalSteemWalletHistory = request.data.totalSteem;
-        startWalletHistory();
-      }
+  if(request.to=='wallet_history'){
+    if(request.order==='start'&&token_wallet_history==null)
+    {
+      token_wallet_history=request.token;
+      totalVestsWalletHistory = request.data.totalVests;
+  		totalSteemWalletHistory = request.data.totalSteem;
+      startWalletHistory();
     }
-  });
+
+    if(request.order==='click')
+    {
+      token_wallet_history=request.token;
+      totalVestsWalletHistory = request.data.totalVests;
+  		totalSteemWalletHistory = request.data.totalSteem;
+      startWalletHistory();
+    }
+  }
+});
 
 
 function startWalletHistory()
@@ -31,21 +71,21 @@ function startWalletHistory()
 	{
 		var usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 		$.ajax({
-	      type: "GET",
-	      beforeSend: function(xhttp) {
-	        xhttp.setRequestHeader("Content-type", "application/json");
-	        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-	      },
-	      url: 'https://api.myjson.com/bins/ymb77',
-	      // url: 'http://steemplus-api.herokuapp.com/api/get-received-witness-votes/'+usernameTabWitnesses,
-	      success: function(result) {
-	      	console.log(result.rows);
-	      	displayWalletHistory(result.rows);
-	      },
-	      error: function(msg) {
-	        console.log(msg.responseJSON.error);
-	      }
-	    });
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+      },
+      //url: 'https://api.myjson.com/bins/ognmb',
+      url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
+      success: function(result) {
+      	dataWalletHistory = result;
+      	displayWalletHistory();
+      },
+      error: function(msg) {
+        console.log(msg.responseJSON.error);
+      }
+    });
 	}
 		
 	else
@@ -54,7 +94,7 @@ function startWalletHistory()
 		}, 250);
 }
 
-function displayWalletHistory(dataWalletHistory)
+function displayWalletHistory()
 {
 	var tbodyWH = $('.Trans').parent();
 	$('.Trans').remove();
@@ -66,7 +106,7 @@ function displayWalletHistory(dataWalletHistory)
 		var textAmoutWH = '';
 		if(itemWalletHistory.type==='claim')
 		{
-			var amountSP = steem.formatter.vestToSteem(parseFloat(itemWalletHistory.reward_vests), totalVestsWalletHistory, totalSteemWalletHistory).toFixed(3);
+			var amountSP = getSPFromVestingSharesWH(itemWalletHistory.reward_vests);
 
 			textAmoutWH = '';
 			if(itemWalletHistory.reward_sbd > 0) textAmoutWH = itemWalletHistory.reward_sbd + ' SBD';
@@ -87,56 +127,80 @@ function displayWalletHistory(dataWalletHistory)
 		tbodyWH.append(trWH);
 		
 	});
+
+	createWalletHistoryFiltersUI();
 }
 
 function createWalletHistoryFiltersUI()
 {
 	var filters = $('<div class="smi-transaction-table-filters">\
       <div class="smi-transaction-table-filters-type">' +
-      createTypeFiltersUI() +
+      createTypeFiltersUIWH() +
       '</div>\
-      <div class="smi-transaction-table-filters-assets">\
-        <div class="">' +
-        createMinAssetUI('SBD') +
-        '</div>\
-        <div class="">' +
-        createMinAssetUI('STEEM') +
-        '</div>\
-      </div>\
       <div class="smi-transaction-table-filters-search">' +
-      createSearchUI() +
+      	createSearchUIWH() +
       '</div>\
     </div>');
+
+	$('table').before(filters);
+	$(filters).find('#inputSearchWalletHistory').unbind('input').on('input',function(){
+		setSearchValueWH($(filters).find('#inputSearchWalletHistory')[0].value);
+		updateTableWH();
+	});
+
+	$(filters).find('.type-filter-button').unbind('click').on('click', function(){
+		setTypeFilterHiddenWH($(this)[0].value, $(this).prop('checked'));
+		updateTableWH();
+	});
 }
 
-
-
-function createTypeFiltersUI() 
+function createTypeFiltersUIWH() 
 {
 	return '<label><span>Filter by type: </span></label>' + 
-	typeFiltersList.map(function(f) {
+	typeFiltersListWH.map(function(f) {
 	  return '<div class="smi-transaction-table-type-filter">\
 	    <label>\
-	      <input type="checkbox" value="' + f.type + '"' + (typeFilterHidden(f.type) ? '' : ' checked') + '><span>' + f.text + '</span>\
+	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked><span>' + f.text + '</span>\
 	    </label>\
 	  </div>';
 	}).join('');
 }
 
-function createMinAssetUI(asset) {
-return '<div class="smi-transaction-table-asset-value-filter">\
-  <label>\
-    <span>Min amount: ' + asset + '</span>\
-    <input type="number" value="' + minAmountForAsset(asset).toFixed(3) + '" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
-  </label>\
-</div>';
+
+function createSearchUIWH() {
+	return '<div class="smi-transaction-table-search-filter">\
+	  <label>\
+	    <span>Search:</span>\
+	    <input id="inputSearchWalletHistory" type="text" value="">\
+	  </label>\
+	</div>';
 }
 
-function createSearchUI(asset) {
-return '<div class="smi-transaction-table-search-filter">\
-  <label>\
-    <span>Search:</span>\
-    <input type="text" value="' + searchValue() + '">\
-  </label>\
-</div>';
+function updateTableWH(){
+
+	dataWalletHistory.forEach(function(row, index){
+		console.log(row);
+		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
+		{
+			$('#item' + index).hide();
+			return;
+		}
+		var filterTypesWH = filtersStateWH.types;
+		for(filterTypeWH in filterTypesWH){
+			if(!filterTypesWH[filterTypeWH])
+			{
+				if(row.type === filterTypeWH){
+					$('#item' + index).hide();
+					return;
+				}
+			}
+		}
+		
+		$('#item' + index).show();
+	});
+}
+
+function getSPFromVestingSharesWH(vests)
+{
+	return steem.formatter.vestToSteem(parseFloat(vests), totalVestsWalletHistory, totalSteemWalletHistory).toFixed(3);
 }

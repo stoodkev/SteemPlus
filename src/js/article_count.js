@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='article_count'){
       if(request.order==='start'&&token_article_count==null)
       {
-        article_count=request.token;
+        token_article_count=request.token;
 		startArticleCount();
       }
       else if(request.order==='click'&&token_article_count==request.token)
@@ -47,7 +47,7 @@ function getPosts(articleCount, entry_id, usernameArticleCount){
 			else
 			{
 				$('.UserProfile__stats > span')[1].remove();
-				var span = $('<span><a href="/@stoodkev">' + articleCount + ' articles </a></span>');
+				var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' article ' + (articleCount > 1 ? 's' : '') + ' </a></span>');
 				$('.UserProfile__stats > span')[0].after(span[0]);
 			}
 		}

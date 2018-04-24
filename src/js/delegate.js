@@ -108,7 +108,7 @@ function createButton(isSteemit,busy,globalP,account) {
                     'To</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span><input type="text" class="input-group-field" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value=""></div><p></p></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
                     'Amount</div><div class="column small-10"><div class="input-group" style="margin-bottom: 5px;"><input type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">' +
                     '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">' +
-                    'Max*: ' + (getMaxSP() > 0 ? getMxSP() : 0) + ' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="delegations"><div class="row"><h3 class="column outgoing-delegation">Outgoing delegations</h3></div><ul>';
+                    'Max*: ' + (getMaxSP() > 0 ? getMaxSP() : 0) + ' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="delegations"><div class="row"><h3 class="column outgoing-delegation">Outgoing delegations</h3></div><ul>';
                     for (resul of result){
                       inner +='<div class="row"><div class="column "><li>'+Math.round(steem.formatter.vestToSteem(resul.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated to @'+resul.delegatee+'<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares='+0+'%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></li></div></div>';
                     }
@@ -142,13 +142,16 @@ function createButton(isSteemit,busy,globalP,account) {
               },
               url: 'http://steemplus-api.herokuapp.com/api/get-incoming-delegations/'+account,
               success: function(result) {
-                $('.delegations').append('<div class="row column"><h3 class="column incoming-delegation">Incoming delegations - </h3><ul id="list_delegators"></ul></div>');
-                var totalIncomingDelegation = null;
-                result.forEach(function(item){
-                    $('#list_delegators').append('<li title="' + new Date(item.delegation_date) + '">'+Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated by @'+item.delegator+'</li>');
-                    totalIncomingDelegation += Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100;
-                });
-                $('.incoming-delegation').append(totalIncomingDelegation + ' SP');
+                if(result.length > 0)
+                {
+                    $('.delegations').append('<div class="row column"><h3 class="column incoming-delegation">Incoming delegations - </h3><ul id="list_delegators"></ul></div>');
+                    var totalIncomingDelegation = null;
+                    result.forEach(function(item){
+                        $('#list_delegators').append('<li title="' + new Date(item.delegation_date) + '">'+Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated by @'+item.delegator+'</li>');
+                        totalIncomingDelegation += Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100;
+                    });
+                    $('.incoming-delegation').append(totalIncomingDelegation + ' SP');
+                }
               },
               error: function(msg) {
                 console.log(msg);

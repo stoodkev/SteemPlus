@@ -27,14 +27,14 @@ function startArticleCount()
 function displayArticleCount()
 {
 	var usernameArticleCount = window.SteemPlus.Utils.getPageAccountName();
-	getPosts(0, null, usernameArticleCount);	
+	getPosts(0, null, usernameArticleCount);
 }
 
 function getPosts(articleCount, entry_id, usernameArticleCount){
 	steem.api.getBlogEntries(usernameArticleCount, entry_id, 100, function(err, result)
 	{
 		if(err) console.log(err)
-		else 
+		else
 		{
 			result.forEach(function(article){
 				if(article.author === usernameArticleCount)

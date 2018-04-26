@@ -28,8 +28,8 @@
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
 
-
-        checkForFollowerPage();
+        if($('.smi-followers-table-container').length===0)
+          checkForFollowerPage();
 
         followersTabStarted=true;
 
@@ -38,7 +38,8 @@
       {
         var match = (window.location.pathname || '').match(followerPageRegexp);
         if(match && match[2] !== currentPage) {
-           checkForFollowerPage();
+          if($('.smi-followers-table-container').length===0)
+            checkForFollowerPage();
         }
       }
       if(request.order==='notif'&&token_followers_table==request.token)
@@ -50,7 +51,7 @@
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
 
-        if(followersTabStarted)
+        if(followersTabStarted&&$('.smi-followers-table-container').length===0)
           checkForFollowerPage();
 
       }
@@ -79,7 +80,7 @@
         result.forEach(function(element){
           followingList.push(element);
         });
-        getFollowingList(username, lastFollowing, followingList, userList);
+        getFollowingListName(username, lastFollowing, followingList, userList);
 
       });
   }
@@ -154,14 +155,11 @@
     });
   };
 
-  var createAlertApi = function(){
 
-  }
 
-  var createFollowersTable = function(username, isFollowers, userList) {
+  function createFollowersTable(username, isFollowers, userList) {
     var container = $('<div class="smi-followers-table-container">\
       <h3>' + (isFollowers ? 'Followers' : 'Followed') + '</h3>' +
-      (createAlertApi() || '') +
       '<div class="smi-followers-table-wrapper">\
         <table class="table table-striped table-bordered dataTable no-footer dtff" role="grid">\
           <thead>\
@@ -371,13 +369,19 @@
 
 
   function checkFollowersTable(followList, name, isFollowers, userList) {
+        
     if(!userList.length){
-      return false;
+      setTimeout(function(){
+        checkFollowersTable(followList, name, isFollowers, userList);
+      }, 200);  
     }
+    if($('.smi-followers-table-added').length>0)
+      return false;
 
+    userList.addClass('smi-followers-table-added');
     var result = createFollowersTable(name, isFollowers, followList);
     userList.prepend(result);
-    userList.addClass('smi-followers-table-added');
+    
     userList.children('.row').css('display', 'none');
     return true;
   };

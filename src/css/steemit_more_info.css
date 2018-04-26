@@ -364,6 +364,10 @@ span.after-downvote-total-dollar {
   color: white !important;
 }
 
+.theme-dark .smi-followers-table-wrapper .dataTables_paginate .ellipsis{
+  color: white !important;
+}
+
 .theme-dark .smi-followers-table-wrapper .dataTables_paginate .paginate_button.current{
   color: #1C252B !important;
 }

@@ -45,7 +45,7 @@
 .removeWitnessesLink:hover, .removeAsWitnessLink:hover, .addAsWitnessLink:hover
 {
     background-color: #1A5099 !important;
-    color: #ffffff !important; 
+    color: #fcfcfc !important; 
 }
 
 .removeAsWitnessLink, .addAsWitnessLink{
@@ -54,7 +54,7 @@
 
 #addWitnessButton:hover {
     background-color: #42bb8b;
-    color: #ffffff;
+    color: #fcfcfc;
     border: 1px solid #42bb8b;
 }
 
@@ -91,13 +91,39 @@
     color: black;
 }
 
+
+
 .theme-dark .removeWitnessesLink:hover, .theme-dark .removeAsWitnessLink:hover, .theme-dark .addAsWitnessLink:hover
 {
-    background-color: #ffffff !important;
+    background-color: #fcfcfc !important;
     color: #1A5099 !important; 
 }
 
+.theme-dark .evenLine .removeWitnessesLink {
+    background-color: #fcfcfc !important;
+    color: #1A5099 !important;
+    border-color: #1A5099 !important;
+} 
+
+.theme-dark .evenLine .removeWitnessesLink:hover {
+    background-color: #1A5099 !important;
+    color: #fcfcfc !important;
+    border-color: #1A5099 !important;
+} 
+
 .theme-dark .removeAsWitnessLink, .theme-dark .addAsWitnessLink, .theme-dark .removeWitnessesLink{
-    color: #ffffff !important;
-    border-color: #ffffff !important;
+    color: #fcfcfc !important;
+    border-color: #fcfcfc !important;
+}
+
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button{
+  color: white !important;
+}
+
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button.current{
+  color: #1C252B !important;
+}
+
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .ellipsis{
+  color: white !important;
 }

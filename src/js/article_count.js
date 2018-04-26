@@ -47,7 +47,7 @@ function getPosts(articleCount, entry_id, usernameArticleCount){
 			else
 			{
 				$('.UserProfile__stats > span')[1].remove();
-				var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' article ' + (articleCount > 1 ? 's' : '') + ' </a></span>');
+				var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' post' + (articleCount > 1 ? 's' : '') + ' </a></span>');
 				$('.UserProfile__stats > span')[0].after(span[0]);
 			}
 		}

@@ -144,7 +144,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
     else
     {
       var spanVestingShares = $('.UserWallet__balance > .column')[3];
-      var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + '</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"');
+      var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
       $(spanVestingShares)[0].textContent = '';
       $(spanVestingShares).append(newDiv);
     }

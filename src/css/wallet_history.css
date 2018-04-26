@@ -1,0 +1,74 @@
+.divInputMemoKey{
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+#addMemoKeyInput {
+  width: 50%;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-right: 0.5rem;
+}
+
+#addMemoKeySubmit, #displayModalWH {
+  width: 15%;
+  background-color: transparent;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  color: #42bb8b;
+  border: 1px solid #42bb8b;
+  margin: 8px 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#addMemoKeySubmit:hover, #displayModalWH:hover {
+  background-color: #42bb8b;
+  color: #ffffff;
+  border: 1px solid #42bb8b;
+}
+
+#displayModalWH{
+  width: auto;
+}
+
+#removeMemoKeyButton{
+  margin-left:0;
+  width: 15%;
+  background-color: transparent;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  color: red;
+  border: 1px solid red;
+  border-radius: 4px;
+  cursor: pointer; 
+}
+
+.smi-transaction-table-filters-assets > div
+{
+  width: 20%;
+}
+
+.smi-transaction-table-asset-value-filter{
+  width: 80%;
+}
+
+#removeMemoKeyButton:hover {
+  background-color: red;
+  color: #ffffff;
+  border: 1px solid red;
+}
+
+.theme-dark .inputMinFilterWalletHistory, .theme-dark .inputSearchWalletHistory{
+  background-color: #fcfcfc;
+}
+
+.theme-dark .input-type-filter-unchecked > span{
+  color: #1a5099;
+}
+.theme-dark .input-type-filter-checked > span{
+  color: #fcfcfc;
+}

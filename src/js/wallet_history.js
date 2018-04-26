@@ -10,6 +10,7 @@ var dataWalletHistory = null;
 
 var modalWH = null;
 
+// Available filter types
 var typeFiltersListWH = [
 	{
     type: 'transfer_to',
@@ -22,13 +23,18 @@ var typeFiltersListWH = [
 	{
     type: 'claim',
     text: 'Claimed Rewards'
+	},
+	{
+		type: 'hide_spam',
+		text: 'Hide Spam'
 	}
 ];
 
+
 var filtersStateWH = {
-	types: {},
+	types: {'hide_spam':true},
 	search: '',
-	minAsset: {}
+	minAsset: {SP:0,STEEM:0,SBD:0}
 };
 
 function typeFilterHiddenWH(type) {
@@ -52,7 +58,7 @@ function minAmountForAssetWH(asset) {
 }
 
 function setMinAmountForAssetWH(asset, val) {
-  filtersStateWH.minAsset[asset] = val || 0;
+  filtersStateWH.minAsset[asset] = parseFloat(val) || 0;
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -84,7 +90,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-
+// Function used to start the wallet history
+// Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
 {
 	if($('.Trans').length > 0)
@@ -116,6 +123,7 @@ function startWalletHistory()
 		}, 250);
 }
 
+//Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory()
 {
 	
@@ -148,15 +156,23 @@ function displayWalletHistory()
 		var tdMemo = null;
 		if(itemWalletHistory.memo.startsWith('#') && usernameWalletHistory === accountWH.name)
 		{
-			try
+			if(memoKeyWH === '')
 			{
-				var textMemo = window.decodeMemo(memoKeyWH, itemWalletHistory.memo);
-				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>'+ textMemo.slice(1, textMemo.length) +'</i></span></td>');
+				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>This is a private memo. Please click on \'Add Private Memo Key\' button above.</i></span></td>');
 			}
-			catch(err)
+			else
 			{
-				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>Unvalid memo...</i></span></td>');
+				try
+				{
+					var textMemo = window.decodeMemo(memoKeyWH, itemWalletHistory.memo);
+					tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>'+ textMemo.slice(1, textMemo.length) +'</i></span></td>');
+				}
+				catch(err)
+				{
+					tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>Invalid memo...</i></span></td>');
+				}
 			}
+			
 		}
 		else
 		{
@@ -174,6 +190,7 @@ function displayWalletHistory()
 	createWalletHistoryFiltersUI();
 }
 
+// Function used to create the wallet filter UI (buttons, inputs ...)
 function createWalletHistoryFiltersUI()
 {
 
@@ -200,7 +217,7 @@ function createWalletHistoryFiltersUI()
 	if(usernameWalletHistory === accountWH.name)
 	{
 		$('table').parent().find('h4').after($('<div class="inputAddMemoKey" style="margin-bottom: 5px;">\
-      <input type="submit" id="displayModalWH" value="Add memo private key">\
+      <input type="submit" id="displayModalWH" value="Add private memo key">\
     </div>'));
 
     $('#displayModalWH').click(function(){
@@ -228,7 +245,7 @@ function createWalletHistoryFiltersUI()
         <div>\
           <div class="row">\
             <div class="column small-12">\
-            	Your private memo key can and will be used only to decrypt your memos. It will be stored locally and you can remove it at any time. In this case, you won\'t be able to see your private memos through SteemPlus anymore.\
+            	Your private memo key can and will be used only to decrypt your memos. You can find it in Wallet > Permissions > Memo > Show private key.<br> It will be stored locally and you can remove it at any time. In this case, you won\'t be able to see your private memos through SteemPlus anymore.\
             <br>\
             </div>\
           </div>\
@@ -337,21 +354,25 @@ function createWalletHistoryFiltersUI()
 	  setMinAmountForAssetWH($(this).data('asset'), $(this)[0].value);
 	  updateTableWH();
 	});
+
+	updateTableWH();
 }
 
+// Function used to create one filter button
+// Use the map created at the beginning
 function createTypeFiltersUIWH() 
 {
 	return '<label><span>Filter by type: </span></label>' + 
 	typeFiltersListWH.map(function(f) {
 	  return '<div class="smi-transaction-table-type-filter walletHistoryFilters">\
 	    <label class="input-type-filter-checked">\
-	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked="true"><span>' + f.text + '</span>\
+	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked="true"><span' + (f.type==='spam' ? ' title="Hide 0.001 SBD/STEEM transactions" ' : '' ) + '>' + f.text + '</span>\
 	    </label>\
 	  </div>';
 	}).join('');
 }
 
-
+// Function used to create the search bar
 function createSearchUIWH() {
 	return '<div class="smi-transaction-table-search-filter">\
 	  <label>\
@@ -361,6 +382,8 @@ function createSearchUIWH() {
 	</div>';
 }
 
+// Function used to create the first asset filter.
+// @parameter asset : name of the asset (SBD, STEEM, SP)
 function createMinAssetUIWH(asset) {
   return '<div class="smi-transaction-table-asset-value-filter">\
     <label>\
@@ -370,6 +393,8 @@ function createMinAssetUIWH(asset) {
   </div>';
 }
 
+// Function used to create other asset filter. For this one, there is no label
+// @parameter asset : name of the asset (SBD, STEEM, SP)
 function createMinAssetUIWH2(asset) {
   return '<div class="smi-transaction-table-asset-value-filter">\
     <label>\
@@ -378,57 +403,75 @@ function createMinAssetUIWH2(asset) {
   </div>';
 }
 
+// Function used to update the view by hiding all the rows which doesn't match with the filterState
 function updateTableWH(){
-
 	dataWalletHistory.forEach(function(row, index){
+		
+		// Search Bar filter
 		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
 		{
 			$('#item' + index).hide();
 			return;
 		}
+
+		// Type filter
 		var filterTypesWH = filtersStateWH.types;
 		for(filterTypeWH in filterTypesWH){
 			if(!filterTypesWH[filterTypeWH])
 			{
+				
 				if(row.type === filterTypeWH){
+					$('#item' + index).hide();
+					return;
+				}
+			}
+			// If hide spam activated, hide all the line with 0.001 value. Those one are considered as spam
+			if(filterTypeWH==='hide_spam'&&filterTypesWH[filterTypeWH])
+			{
+				if(row.amount === 0.001 || row.reward_sbd === 0.001 || row.reward_steem === 0.001)
+				{
 					$('#item' + index).hide();
 					return;
 				}
 			}
 		}
 		
+		// Filter on values
 		var valueLine = {};
-		valueLine['SP'] = getSPFromVestingSharesWH(row.reward_vests);
-
+		valueLine['SP'] = (row.reward_vests === 0 ? -1 : parseFloat(getSPFromVestingSharesWH(row.reward_vests)));
+		
 		if(row.type==='transfer_from'||row.type==='transfer_to')
 		{
 			if(row.amount_symbol==='SBD') 
 			{
 				valueLine['SBD'] = row.amount;
-				valueLine['STEEM'] = 0;
+				valueLine['STEEM'] = -1;
 			}
 			else
 			{
 				valueLine['STEEM'] = row.amount;
-				valueLine['SBD'] = 0;
+				valueLine['SBD'] = -1;
 			}
 		}
 		else
 		{
-				valueLine['STEEM'] = row.reward_steem;
-				valueLine['SBD'] = row.reward_sbd;
+				valueLine['STEEM'] = (row.reward_steem === 0 ? -1 : row.reward_steem);
+				valueLine['SBD'] = (row.reward_sbd === 0 ? -1 : row.reward_sbd);
 		}
 		var minAssets = filtersStateWH.minAsset;
-		for(var minAsset in minAssets){
-			if(valueLine[minAsset] < minAssets[minAsset]){
-				$('#item' + index).hide();
-				return;
-			}
+
+		// Display the line if one of the value respect the filter
+		if(valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP'))
+		{
+			$('#item' + index).hide();
+			return;
 		}
+
 		$('#item' + index).show();
 	});
 }
 
+// Display the SP from vesting shares.
 function getSPFromVestingSharesWH(vests)
 {
 	return steem.formatter.vestToSteem(parseFloat(vests), totalVestsWalletHistory, totalSteemWalletHistory).toFixed(3);

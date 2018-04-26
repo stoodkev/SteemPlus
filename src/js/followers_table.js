@@ -28,8 +28,8 @@
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
 
-
-        checkForFollowerPage();
+        if($('.smi-followers-table-container').length===0)
+          checkForFollowerPage();
 
         followersTabStarted=true;
 
@@ -38,7 +38,8 @@
       {
         var match = (window.location.pathname || '').match(followerPageRegexp);
         if(match && match[2] !== currentPage) {
-           checkForFollowerPage();
+          if($('.smi-followers-table-container').length===0)
+            checkForFollowerPage();
         }
       }
       if(request.order==='notif'&&token_followers_table==request.token)
@@ -79,7 +80,7 @@
         result.forEach(function(element){
           followingList.push(element);
         });
-        getFollowingList(username, lastFollowing, followingList, userList);
+        getFollowingListName(username, lastFollowing, followingList, userList);
 
       });
   }

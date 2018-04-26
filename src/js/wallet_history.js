@@ -3,7 +3,12 @@ var token_wallet_history=null;
 var totalVestsWalletHistory = null;
 var totalSteemWalletHistory = null;
 
+var accountWH = null;
+var memoKeyWH = null;
+var usernameWalletHistory = null;
 var dataWalletHistory = null;
+
+var modalWH = null;
 
 var typeFiltersListWH = [
 	{
@@ -16,7 +21,7 @@ var typeFiltersListWH = [
 	},
 	{
     type: 'claim',
-    text: 'Claim Rewards'
+    text: 'Claimed Rewards'
 	}
 ];
 
@@ -32,7 +37,6 @@ function typeFilterHiddenWH(type) {
 
 function setTypeFilterHiddenWH(type, value) {
   filtersStateWH.types[type] = value;
-  console.log(filtersStateWH);
 }
 
 function searchValueWH() {
@@ -43,6 +47,14 @@ function setSearchValueWH(val) {
   filtersStateWH.search = val || '';
 }
 
+function minAmountForAssetWH(asset) {
+  return parseFloat(filtersStateWH.minAsset[asset]) || 0;
+}
+
+function setMinAmountForAssetWH(asset, val) {
+  filtersStateWH.minAsset[asset] = val || 0;
+}
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   if(request.to=='wallet_history'){
@@ -51,15 +63,23 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       token_wallet_history=request.token;
       totalVestsWalletHistory = request.data.totalVests;
   		totalSteemWalletHistory = request.data.totalSteem;
-      startWalletHistory();
+			accountWH = request.data.account;
+			memoKeyWH = request.data.walletHistoryMemoKey;
+      
+      if($('.smi-transaction-table-filters').length===0)
+      	startWalletHistory();
     }
 
-    if(request.order==='click')
+    if(request.order==='click'&&token_wallet_history==request.token)
     {
       token_wallet_history=request.token;
       totalVestsWalletHistory = request.data.totalVests;
   		totalSteemWalletHistory = request.data.totalSteem;
-      startWalletHistory();
+  		accountWH = request.data.account;
+			memoKeyWH = request.data.walletHistoryMemoKey;
+      
+      if($('.smi-transaction-table-filters').length===0)
+      	startWalletHistory();
     }
   }
 });
@@ -69,18 +89,20 @@ function startWalletHistory()
 {
 	if($('.Trans').length > 0)
 	{
-		var usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
+		
+		$('.Trans').hide();
+		usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 		$.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
       },
-      //url: 'https://api.myjson.com/bins/ognmb',
       url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
       success: function(result) {
       	dataWalletHistory = result;
-      	displayWalletHistory();
+      	if($('.smi-transaction-table-filters').length===0)
+      		displayWalletHistory();
       },
       error: function(msg) {
         console.log(msg.responseJSON.error);
@@ -96,6 +118,7 @@ function startWalletHistory()
 
 function displayWalletHistory()
 {
+	
 	var tbodyWH = $('.Trans').parent();
 	$('.Trans').remove();
 	dataWalletHistory.forEach(function(itemWalletHistory, indexWH){
@@ -122,7 +145,27 @@ function displayWalletHistory()
 		var tdAmountWH = $('<td class="TransferHistoryRow__text" style="max-width: 40rem;">' + textAmoutWH + '</td>');
 		trWH.append(tdAmountWH);
 
-		var tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo">'+ itemWalletHistory.memo +'</span></td>');
+		var tdMemo = null;
+		if(itemWalletHistory.memo.startsWith('#') && usernameWalletHistory === accountWH.name)
+		{
+			try
+			{
+				var textMemo = window.decodeMemo(memoKeyWH, itemWalletHistory.memo);
+				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>'+ textMemo.slice(1, textMemo.length) +'</i></span></td>');
+			}
+			catch(err)
+			{
+				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>Unvalid memo...</i></span></td>');
+			}
+		}
+		else
+		{
+			if(itemWalletHistory.memo.startsWith('#'))
+				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"></span></td>');
+			else
+				tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo">'+ itemWalletHistory.memo +'</span></td>');
+		}
+
 		trWH.append(tdMemo);
 		tbodyWH.append(trWH);
 		
@@ -133,14 +176,139 @@ function displayWalletHistory()
 
 function createWalletHistoryFiltersUI()
 {
+
 	var filters = $('<div class="smi-transaction-table-filters">\
-      <div class="smi-transaction-table-filters-type">' +
-      createTypeFiltersUIWH() +
-      '</div>\
-      <div class="smi-transaction-table-filters-search">' +
-      	createSearchUIWH() +
-      '</div>\
-    </div>');
+    <div class="smi-transaction-table-filters-type">' +
+    createTypeFiltersUIWH() +
+    '</div>\
+    <div class="smi-transaction-table-filters-search">' +
+    	createSearchUIWH() +
+    '</div>\
+    <div class="smi-transaction-table-filters-assets">\
+		  <div class="">' +
+		  	createMinAssetUIWH('SBD') +
+		  '</div>\
+		  <div class="">' +
+		  	createMinAssetUIWH2('STEEM') +
+		  '</div>\
+		  <div class="">' +
+		    createMinAssetUIWH2('SP') +
+		  '</div>\
+		</div>\
+  </div>');
+
+	if(usernameWalletHistory === accountWH.name)
+	{
+		$('table').parent().find('h4').after($('<div class="inputAddMemoKey" style="margin-bottom: 5px;">\
+      <input type="submit" id="displayModalWH" value="Add memo private key">\
+    </div>'));
+
+    $('#displayModalWH').click(function(){
+			modalWH = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
+      <div class="reveal-overlay fade in" style="display: block;"></div>\
+        <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
+          <button class="close-button" type="button">\
+            <span aria-hidden="true" class="">×</span>\
+          </button>\
+        </div>\
+      </div>');
+      $('body').append(modalWH);
+
+	    modalWH.find('.close-button').on('click', function() {
+	      modalWH.remove();
+	    });
+	    modalWH.find('.reveal-overlay').on('click', function() {
+	      modalWH.remove();
+	    });
+
+			var addMemoKeyUIWH = $('<div id="modalContent">\
+        <div id="modalTitle" class="row">\
+          <h3 class="column">Add Private Memo Key</h3>\
+        </div>\
+        <div>\
+          <div class="row">\
+            <div class="column small-12">\
+            	Your private memo key can and will be used only to decrypt your memos. It will be stored locally and you can remove it at any time. In this case, you won\'t be able to see your private memos through SteemPlus anymore.\
+            <br>\
+            </div>\
+          </div>\
+          <br>\
+          <div class="row">\
+						<div class="divInputMemoKey">' + 
+			        (memoKeyWH==='' ?
+			        	'<input type="password" id="addMemoKeyInput" name="memoKey" placeholder="Add your memo key here">'
+			        :
+			        	'<input type="password" id="addMemoKeyInput" name="memoKey" value="'+ memoKeyWH + '">' ) +
+			        '<input type="submit" id="addMemoKeySubmit" value="'+ (memoKeyWH==='' ? 'Add' : 'Update') + '">\
+			        '+ (memoKeyWH==='' ? '' : '<input type="submit" id="removeMemoKeyButton" value="Remove">') +' \
+			      </div>\
+          </div>\
+        </div>\
+      </div>');
+      modalWH.find('.reveal').append(addMemoKeyUIWH);
+
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
+      var titleToastr = "SteemPlus - Memo key";
+
+      modalWH.find('#removeMemoKeyButton').click(function(){
+      	chrome.storage.local.remove(["wallet_history_memo_key"],function(){
+				 	var error = chrome.runtime.lastError;
+				    if (error) {
+				    		toastr.error(error, titleToastr);
+				        console.error(error);
+				    }
+				    else
+				    {
+				    	modalWH.remove();
+				    	toastr.success('Your private memo key has been successfully removed. You won\'t be able to read your private memos anymore.', titleToastr);
+				    	memoKeyWH='';
+				    }
+				})
+      });
+
+      modalWH.find('#addMemoKeySubmit').click(function(){
+
+      	if(accountWH.memo_key===modalWH.find('#addMemoKeyInput')[0].value)
+      	{
+      		toastr.error('You are trying to use your public memo key! Please use the private memo key instead.', titleToastr);
+      	}
+      	else
+      	{
+
+					try
+					{
+						steem.auth.wifIsValid(modalWH.find('#addMemoKeyInput')[0].value, accountWH.memo_key);
+      			chrome.storage.local.set({
+			      	wallet_history_memo_key:modalWH.find('#addMemoKeyInput')[0].value
+			    	});
+			    	memoKeyWH=modalWH.find('#addMemoKeyInput')[0].value;
+			    	toastr.success('Your private memo key has been successfully added. Please refresh the page to start reading your private memos.', titleToastr);
+			    	modalWH.remove();
+					}
+					catch(err)
+					{
+      			toastr.error('This key is incorrect, please use your private memo key.', titleToastr);
+					}
+      	}
+	    });
+    });
+	}
 
 	$('table').before(filters);
 	$(filters).find('#inputSearchWalletHistory').unbind('input').on('input',function(){
@@ -149,8 +317,25 @@ function createWalletHistoryFiltersUI()
 	});
 
 	$(filters).find('.type-filter-button').unbind('click').on('click', function(){
+		if($(this).parent().eq(0).hasClass('.input-type-filter-checked'))
+		{
+			console.log('has class');
+			$(this).parent().eq(0).addClass('input-type-filter-checked');
+			$(this).parent().eq(0).removeClass('input-type-filter-unchecked');
+		}
+		else
+		{
+			console.log('does not have class');
+			$(this).parent().eq(0).removeClass('input-type-filter-checked');
+			$(this).parent().eq(0).addClass('input-type-filter-unchecked');
+		}
 		setTypeFilterHiddenWH($(this)[0].value, $(this).prop('checked'));
 		updateTableWH();
+	});
+
+	$(filters).find('.inputMinFilterWalletHistory').unbind('input').on('input',function(){
+	  setMinAmountForAssetWH($(this).data('asset'), $(this)[0].value);
+	  updateTableWH();
 	});
 }
 
@@ -158,9 +343,9 @@ function createTypeFiltersUIWH()
 {
 	return '<label><span>Filter by type: </span></label>' + 
 	typeFiltersListWH.map(function(f) {
-	  return '<div class="smi-transaction-table-type-filter">\
-	    <label>\
-	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked><span>' + f.text + '</span>\
+	  return '<div class="smi-transaction-table-type-filter walletHistoryFilters">\
+	    <label class="input-type-filter-checked">\
+	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked="true"><span>' + f.text + '</span>\
 	    </label>\
 	  </div>';
 	}).join('');
@@ -176,10 +361,26 @@ function createSearchUIWH() {
 	</div>';
 }
 
+function createMinAssetUIWH(asset) {
+  return '<div class="smi-transaction-table-asset-value-filter">\
+    <label>\
+      <span>Min amounts</span>\
+      <input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
+    </label>\
+  </div>';
+}
+
+function createMinAssetUIWH2(asset) {
+  return '<div class="smi-transaction-table-asset-value-filter">\
+    <label>\
+      <input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
+    </label>\
+  </div>';
+}
+
 function updateTableWH(){
 
 	dataWalletHistory.forEach(function(row, index){
-		console.log(row);
 		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
 		{
 			$('#item' + index).hide();
@@ -196,6 +397,34 @@ function updateTableWH(){
 			}
 		}
 		
+		var valueLine = {};
+		valueLine['SP'] = getSPFromVestingSharesWH(row.reward_vests);
+
+		if(row.type==='transfer_from'||row.type==='transfer_to')
+		{
+			if(row.amount_symbol==='SBD') 
+			{
+				valueLine['SBD'] = row.amount;
+				valueLine['STEEM'] = 0;
+			}
+			else
+			{
+				valueLine['STEEM'] = row.amount;
+				valueLine['SBD'] = 0;
+			}
+		}
+		else
+		{
+				valueLine['STEEM'] = row.reward_steem;
+				valueLine['SBD'] = row.reward_sbd;
+		}
+		var minAssets = filtersStateWH.minAsset;
+		for(var minAsset in minAssets){
+			if(valueLine[minAsset] < minAssets[minAsset]){
+				$('#item' + index).hide();
+				return;
+			}
+		}
 		$('#item' + index).show();
 	});
 }

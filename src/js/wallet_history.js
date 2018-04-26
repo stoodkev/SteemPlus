@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   		totalSteemWalletHistory = request.data.totalSteem;
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-      
+
       if($('.smi-transaction-table-filters').length===0)
       	startWalletHistory();
     }
@@ -83,7 +83,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   		totalSteemWalletHistory = request.data.totalSteem;
   		accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-      
+
       if($('.smi-transaction-table-filters').length===0)
       	startWalletHistory();
     }
@@ -96,7 +96,7 @@ function startWalletHistory()
 {
 	if($('.Trans').length > 0)
 	{
-		
+
 		$('.Trans').hide();
 		usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 		$.ajax({
@@ -116,7 +116,7 @@ function startWalletHistory()
       }
     });
 	}
-		
+
 	else
 		setTimeout(function(){
 			startWalletHistory();
@@ -126,7 +126,7 @@ function startWalletHistory()
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory()
 {
-	
+
 	var tbodyWH = $('.Trans').parent();
 	$('.Trans').remove();
 	dataWalletHistory.forEach(function(itemWalletHistory, indexWH){
@@ -172,7 +172,7 @@ function displayWalletHistory()
 					tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>Invalid memo...</i></span></td>');
 				}
 			}
-			
+
 		}
 		else
 		{
@@ -184,7 +184,7 @@ function displayWalletHistory()
 
 		trWH.append(tdMemo);
 		tbodyWH.append(trWH);
-		
+
 	});
 
 	createWalletHistoryFiltersUI();
@@ -216,7 +216,7 @@ function createWalletHistoryFiltersUI()
 
 	if(usernameWalletHistory === accountWH.name)
 	{
-		$(filters).before($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
+		$('table').parent().find('.secondary').after($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
       <input type="submit" id="displayModalWH" value="Add private memo key">\
     </div>'));
 
@@ -251,7 +251,7 @@ function createWalletHistoryFiltersUI()
           </div>\
           <br>\
           <div class="row">\
-						<div class="divInputMemoKey">' + 
+						<div class="divInputMemoKey">' +
 			        (memoKeyWH==='' ?
 			        	'<input type="password" id="addMemoKeyInput" name="memoKey" placeholder="Add your memo key here">'
 			        :
@@ -360,9 +360,9 @@ function createWalletHistoryFiltersUI()
 
 // Function used to create one filter button
 // Use the map created at the beginning
-function createTypeFiltersUIWH() 
+function createTypeFiltersUIWH()
 {
-	return '<label><span>Filter by type: </span></label>' + 
+	return '<label><span>Filter by type: </span></label>' +
 	typeFiltersListWH.map(function(f) {
 	  return '<div class="smi-transaction-table-type-filter walletHistoryFilters">\
 	    <label class="input-type-filter-checked">\
@@ -406,7 +406,7 @@ function createMinAssetUIWH2(asset) {
 // Function used to update the view by hiding all the rows which doesn't match with the filterState
 function updateTableWH(){
 	dataWalletHistory.forEach(function(row, index){
-		
+
 		// Search Bar filter
 		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
 		{
@@ -419,7 +419,7 @@ function updateTableWH(){
 		for(filterTypeWH in filterTypesWH){
 			if(!filterTypesWH[filterTypeWH])
 			{
-				
+
 				if(row.type === filterTypeWH){
 					$('#item' + index).hide();
 					return;
@@ -435,14 +435,14 @@ function updateTableWH(){
 				}
 			}
 		}
-		
+
 		// Filter on values
 		var valueLine = {};
 		valueLine['SP'] = (row.reward_vests === 0 ? -1 : parseFloat(getSPFromVestingSharesWH(row.reward_vests)));
-		
+
 		if(row.type==='transfer_from'||row.type==='transfer_to')
 		{
-			if(row.amount_symbol==='SBD') 
+			if(row.amount_symbol==='SBD')
 			{
 				valueLine['SBD'] = row.amount;
 				valueLine['STEEM'] = -1;

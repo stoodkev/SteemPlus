@@ -216,7 +216,7 @@ function createWalletHistoryFiltersUI()
 
 	if(usernameWalletHistory === accountWH.name)
 	{
-		$('table').parent().find('h4').after($('<div class="inputAddMemoKey" style="margin-bottom: 5px;">\
+		$(filters).before($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
       <input type="submit" id="displayModalWH" value="Add private memo key">\
     </div>'));
 

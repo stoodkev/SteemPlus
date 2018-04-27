@@ -94,7 +94,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
 {
-	if($('.Trans').length > 0)
+	if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 	{
 
 		$('.Trans').hide();

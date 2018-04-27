@@ -8,6 +8,7 @@ var mentionTabStarted=false;
 var mentionsTabPostsComments=null;
 var downloadingData=false;
 
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='mentions_tab'){
     aut=request.data.user;
@@ -207,7 +208,6 @@ function createSummaryMention(mentionItem)
 {
   var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
   var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
-
   var mentionTitle = (mentionItem.title!=='' ? mentionItem.title : mentionItem.permlink.split('-').join(' '));
 
   var mentionTitle = null;
@@ -226,6 +226,8 @@ function createSummaryMention(mentionItem)
   }
 
   var urlMentionItem = '/' + mentionItem.category + '/@' + (mentionItem.parent_author==='' ? mentionItem.author : mentionItem.parent_author) + '/' + mentionItem.permlink;
+
+  var urlImgMentionDisplayed = getImagePostSummary(mentionItem);
 
   var summaryMention = $('<li>\
     <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
@@ -247,7 +249,7 @@ function createSummaryMention(mentionItem)
             </strong>\
           </span>\
         </div>\
-        <span name="imgUrl" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/http://imgtank.online/indigo/iphone-photo-236541373.png\');"></span>\
+        <span name="imgUrl" class="PostSummary__image" style="background-image: url('+ urlImgMentionDisplayed + ');"></span>\
         <div class="PostSummary__content">\
             <div class="PostSummary__header show-for-medium">\
                 <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
@@ -289,4 +291,62 @@ function stripHTML(text)
   var tmp = document.createElement("DIV");
   tmp.innerHTML = text;
   return tmp.textContent || tmp.innerText || "";
+}
+
+var createMentionItemSummary_remarkable = new Remarkable({ html: true, linkify: false })
+
+function getImagePostSummary(item)
+{
+  var imgUrl = null;
+  var imgUrl2 = null;
+  var displayedImageUrl = null;
+
+  try{
+    var json_metadata = (typeof item.json_metadata === 'object' ? item.json_metadata : JSON.parse(item.json_metadata));
+    if(typeof json_metadata == 'string') {
+        // At least one case where jsonMetadata was double-encoded: #895
+        json_metadata = JSON.parse(json_metadata)
+    }
+    if(json_metadata && json_metadata.image && Array.isArray(json_metadata.image)){
+      imgUrl = json_metadata.image[0] || null;
+    }
+  }catch(err){
+    console.log(err);
+  }
+
+  // If nothing found in json metadata, parse body and check images/links
+  if(!imgUrl) {
+      var isHtml = /^<html>([\S\s]*)<\/html>$/.test(item.body)
+      var htmlText = isHtml ? post.body : createMentionItemSummary_remarkable.render(item.body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)'))
+      var rtags = HtmlReady(htmlText, {mutate: false})
+      if(rtags.images == undefined || rtags.images === undefined )
+      {
+        var imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
+        var match = imgRegex.exec(item.body);
+
+        if(match !== null)
+        {
+          imgUrl2 = match[1];
+        }
+        else
+        {
+          var mdRegex = /!\[.*\]\((.*)\)/g;
+          match = mdRegex.exec(item.body);
+          if(match!=null)
+            imgUrl2 = match[1];
+        }
+      }
+      else
+        imgUrl2 = Array.from(rtags.images)[0];
+  }
+
+  if( (imgUrl === null || imgUrl === undefined ) && (imgUrl2 === null || imgUrl2 === undefined ) )
+  {
+    displayedImageUrl = chrome.extension.getURL(noImageAvailable);
+  }
+  else
+  {
+    displayedImageUrl = ( imgUrl !== null && imgUrl !== undefined ) ? '\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\'' : '\'https://steemitimages.com/256x512/' + imgUrl2 + '\'';
+  }
+  return displayedImageUrl;
 }

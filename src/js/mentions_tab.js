@@ -8,6 +8,8 @@ var mentionTabStarted=false;
 var mentionsTabPostsComments=null;
 var downloadingData=false;
 
+var indexLastItemDisplayed=0;
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='mentions_tab'){
@@ -96,10 +98,12 @@ function createMentionsTab(mentionsTab) {
 
   mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
     // Load more
-    displayMentions(mentionsTab, window.SteemPlus.Utils.getPageAccountName(), false);
+    var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
+    displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
   });
   mentionsTab.find('.mentions-type').on('change', function() {
     // Change display
+    indexLastItemDisplayed = 0;
     var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
     displayMentions(mentionsTab, typeMention ,window.SteemPlus.Utils.getPageAccountName(), true);
   });
@@ -175,26 +179,40 @@ function createRows(mentionsTab, type, reset)
   }
 
   var listMentions = mentionsTab.find('.PostsList__summaries');
-  mentionsTabPostsComments.forEach(function(mentionTabElement){
+
+  var nbItemAdded = 0;  
+  while(nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length)
+  {
+    var mentionTabElement = mentionsTabPostsComments[indexLastItemDisplayed];
     if(type==='posts'&&mentionTabElement.parent_author==='')
     {
       // Create row posts
       var el = createSummaryMention(mentionTabElement);
       listMentions.append(el);
+      nbItemAdded++;
     }
     else if(type==='comments'&&mentionTabElement.parent_author!=='')
     {
       // Create comments
       var el = createSummaryMention(mentionTabElement);
       listMentions.append(el);
+      nbItemAdded++;
     }
     else if(type==='both')
     {
       // Create both
       var el = createSummaryMention(mentionTabElement);
       listMentions.append(el);
+      nbItemAdded++;
     }
-  });
+    indexLastItemDisplayed++;
+  }
+  console.log(mentionsTabPostsComments.length + "= length");
+  console.log(indexLastItemDisplayed + "= index");
+  if(indexLastItemDisplayed < mentionsTabPostsComments.length-1)
+    mentionsTab.find('.MentionsTabLoadMore').show();
+  else
+    mentionsTab.find('.MentionsTabLoadMore').hide();
 
   mentionsTab.find('.MentionsTabLoading').hide();
   mentionsTab.find('.MentionsTab').show();

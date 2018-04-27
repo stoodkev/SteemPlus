@@ -246,47 +246,6 @@ html.smi-header-search .show-for-medium.Header__search > a {
   border: none;
 }
 
-
-/* Mentions tab */
-
-.mentions-type {
-  margin-right: 0px !important;
-  margin-left: 0px !important;
-}
-
-.UserProfile__tab_content_MentionsTab {
-  padding-bottom: 60px;
-}
-.UserProfile__tab_content_MentionsTab .MentionsTab {
-  padding-bottom: 20px;
-}
-.UserProfile__tab_content_MentionsTab .MentionsTabLoadMore button {
-  background-color: transparent;
-  border-radius: 6px;
-  border: 1px solid rgb(220, 220, 220);
-  display: inline-block;
-  cursor: pointer;
-  color: rgb(119, 119, 119);
-  font-size: 17px;
-  padding: 10px 24px;
-  text-decoration: none;
-}
-.UserProfile__tab_content_MentionsTab .thanks-furion {
-  float: right;
-  font-size: 14px;
-  text-transform: none;
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 8px;
-}
-
-.PostSummary__image {
-  height: 78px !important;
-  background-color: #fefefe !important;
-  background-size: cover !important;
-}
-
-
 /* Vote weight slider */
 
 #Voting__power {

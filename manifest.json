@@ -111,7 +111,8 @@
         "src/css/classification_user.css",
         "src/css/dropdown.css",
         "src/css/witnesses_tab.css",
-        "src/css/wallet_history.css"],
+        "src/css/wallet_history.css",
+        "src/css/mentions.css"],
       "run_at": "document_idle"
     }
   ]

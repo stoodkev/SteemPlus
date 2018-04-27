@@ -1,277 +1,276 @@
 
-  var token_mention_tab=null;
-  var aut=null;
-  var rewardBalanceMentionsTab=null;
-  var recentClaimsMentionsTab=null;
-  var steemPriceMentionsTab=null;
-  var mentionTabStarted=false;
+var token_mention_tab=null;
+var aut=null;
+var rewardBalanceMentionsTab=null;
+var recentClaimsMentionsTab=null;
+var steemPriceMentionsTab=null;
+var mentionTabStarted=false;
+var mentionsTabPostsComments=null;
+var downloadingData=false;
 
-  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to=='mentions_tab'){
-      aut=request.data.user;
-      if(request.order==='start'&&token_mention_tab==null)
-      {
-        token_mention_tab=request.token;
-        rewardBalanceMentionsTab=request.data.rewardBalance;
-        recentClaimsMentionsTab=request.data.recentClaims;
-        steemPriceMentionsTab=request.data.steemPrice;
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if(request.to=='mentions_tab'){
+    aut=request.data.user;
+    if(request.order==='start'&&token_mention_tab==null)
+    {
+      token_mention_tab=request.token;
+      rewardBalanceMentionsTab=request.data.rewardBalance;
+      recentClaimsMentionsTab=request.data.recentClaims;
+      steemPriceMentionsTab=request.data.steemPrice;
 
+      createTab();
+
+      mentionTabStarted=true;
+    }
+    else if(request.order==='click'&&token_mention_tab==request.token)
+    {
+      rewardBalanceMentionsTab=request.data.rewardBalance;
+      recentClaimsMentionsTab=request.data.recentClaims;
+      steemPriceMentionsTab=request.data.steemPrice;
+      createTab();
+    }
+    else if(request.order==='notif'&&token_mention_tab==request.token)
+    {
+      rewardBalanceMentionsTab=request.data.rewardBalance;
+      recentClaimsMentionsTab=request.data.recentClaims;
+      steemPriceMentionsTab=request.data.steemPrice;
+
+      if(mentionTabStarted)
         createTab();
+    }
+  }
+});
 
-        mentionTabStarted=true;
-      }
-      else if(request.order==='click'&&token_mention_tab==request.token)
-      {
-        rewardBalanceMentionsTab=request.data.rewardBalance;
-        recentClaimsMentionsTab=request.data.recentClaims;
-        steemPriceMentionsTab=request.data.steemPrice;
-        createTab();
-      }
-      else if(request.order==='notif'&&token_mention_tab==request.token)
-      {
-        rewardBalanceMentionsTab=request.data.rewardBalance;
-        recentClaimsMentionsTab=request.data.recentClaims;
-        steemPriceMentionsTab=request.data.steemPrice;
+function createTab()
+{
+  window.SteemPlus.Tabs.createTab({
+    id: 'mentions',
+    title: 'Mentions',
+    enabled: true,
+    createTab: createMentionsTab
+  });
+  if(window.location.href.includes('#mentions'))
+  window.SteemPlus.Tabs.showTab('mentions');
+}
 
-        if(mentionTabStarted)
-          createTab();
+function createMentionsTab(mentionsTab) {
+
+  mentionsTab.html('<div class="row">\
+     <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
+        <article class="articles">\
+        <div class="MentionsTab" style="display: none;">\
+          <h1 class="articles__h1" style="margin-bottom:20px">\
+            Mentions\
+            <div class="thanks-mentions">\
+              Thanks <a href="/@arcange" class="smi-navigate">@arcange</a> for the SteemSQL\
+            </div>\
+          </h1>\
+          <hr class="articles__hr"/>\
+          <div class="switch-field" style="margin-bottom: -4px;">\
+            <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="posts" checked/>\
+            <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
+            <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="comments" />\
+            <label for="mentions-type-comments" class="mentions-type">Comments</label>\
+            <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="both" />\
+            <label for="mentions-type-both" class="mentions-type">Both</label>\
+          </div>\
+          <div id="posts_list" class="PostsList" style="margin-top: 30px;">\
+            <ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts">\
+            </ul>\
+          </div>\
+        </div>\
+        <center class="MentionsTabLoading">\
+           <div class="LoadingIndicator circle">\
+              <div></div>\
+           </div>\
+        </center>\
+        <center class="MentionsTabLoadMore" style="display: none;">\
+           <button>\
+            Load more... \
+          </button>\
+        </center>\
+        </article>\
+     </div>\
+  </div>');
+
+  mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
+    // Load more
+    displayMentions(mentionsTab, window.SteemPlus.Utils.getPageAccountName(), false);
+  });
+  mentionsTab.find('.mentions-type').on('change', function() {
+    // Change display
+    var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
+    displayMentions(mentionsTab, typeMention ,window.SteemPlus.Utils.getPageAccountName(), true);
+  });
+  // Display mentions in post
+  displayMentions(mentionsTab,'posts', window.SteemPlus.Utils.getPageAccountName(),false);
+};
+
+// Display posts or comments or boths
+// @parameter mentionsTab : jquery object, tab
+// @parameter type : represent the selected element (Posts, Comments or Both)
+// @parameter usernamePageMentions : selected user
+// @parameter reset : need to reset UI or not
+function displayMentions(mentionsTab, type, usernamePageMentions,reset)
+{
+  if(mentionsTabPostsComments===null&&!downloadingData)
+  {
+    console.log("Start data downloading");
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        downloadingData=true;
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+        console.log(xhttp);
+      },
+      
+        url: 'http://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
+      success: function(result) {
+
+        mentionsTabPostsComments = result;
+        createRows(mentionsTab, type, reset);
+        downloadingData = false;
+      },
+      error: function(msg) {
+        downloadingData = false;
+        if($('.error-mentions-label').length===0){
+          var errorLabel = document.createElement('h2');
+          $(errorLabel).addClass('articles__h1');
+          $(errorLabel).addClass('error-mentions-label');
+          $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
+          $('.MentionsTabLoading').hide();
+          $('.articles').prepend(errorLabel);
+        }
       }
+    });
+  }
+  else
+  {
+    if(downloadingData)
+    {
+      console.log("downloading data");
+      // wait because data already downloading
+      setTimeout(function(){
+        displayMentions(mentionsTab, type, usernamePageMentions,reset);
+      },250);
+    }
+    else
+    {
+      console.log("already downloaded");
+      // display with local data
+      createRows(mentionsTab, type, reset);
+    }
+  }
+  
+}
+
+function createRows(mentionsTab, type, reset)
+{
+  if(reset)
+  {
+    //delete everything
+    mentionsTab.find('.PostsList__summaries').empty();
+  }
+
+  var listMentions = mentionsTab.find('.PostsList__summaries');
+  mentionsTabPostsComments.forEach(function(mentionTabElement){
+    if(type==='posts'&&mentionTabElement.parent_author==='')
+    {
+      // Create row posts
+      var el = createSummaryMention(mentionTabElement);
+      listMentions.append(el);
+    }
+    else if(type==='comments'&&mentionTabElement.parent_author!=='')
+    {
+      // Create comments
+      var el = createSummaryMention(mentionTabElement);
+      listMentions.append(el);
+    }
+    else if(type==='both')
+    {
+      // Create both
+      var el = createSummaryMention(mentionTabElement);
+      listMentions.append(el);
     }
   });
 
-  function createTab()
-  {
-    window.SteemPlus.Tabs.createTab({
-      id: 'mentions',
-      title: 'Mentions',
-      enabled: true,
-      createTab: createMentionsTab
-    });
-    if(window.location.href.includes('#mentions'))
-    window.SteemPlus.Tabs.showTab('mentions');
-  }
+  mentionsTab.find('.MentionsTabLoading').hide();
+  mentionsTab.find('.MentionsTab').show();
+}
 
-  function createMentionsTab(mentionsTab) {
+  
 
-    mentionsTab.html('<div class="row">\
-       <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
-          <article class="articles">\
-          <div class="MentionsTab" style="display: none;">\
-            <h1 class="articles__h1" style="margin-bottom:20px">\
-              Mentions\
-              <div class="thanks-furion">\
-                Thanks <a href="/@furion" class="smi-navigate">@furion</a> for the SteemData API\
-              </div>\
-            </h1>\
-            <hr class="articles__hr"/>\
-            <div class="switch-field" style="margin-bottom: -4px;">\
-              <input type="radio" id="mentions-type-posts" name="mentions-type" class="mentions-type" value="0" checked/>\
-              <label for="mentions-type-posts" class="mentions-type" >Posts</label>\
-              <input type="radio" id="mentions-type-comments" name="mentions-type" class="mentions-type" value="1" />\
-              <label for="mentions-type-comments" class="mentions-type">Comments</label>\
-              <input type="radio" id="mentions-type-both" name="mentions-type" class="mentions-type" value="2" />\
-              <label for="mentions-type-both" class="mentions-type">Both</label>\
+
+// Create one summary
+function createSummaryMention(mentionItem)
+{
+  var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
+  var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
+
+  var title = mentionItem.title;
+
+
+  var summaryMention = $('<li>\
+    <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
+        <div class="PostSummary__header show-for-small-only">\
+            <h3 class="entry-title"> <a href="/' + mentionItem.permlink + '">' + mentionTitle + '</a> </h3>\
+        </div>\
+        <div class="PostSummary__time_author_category_small show-for-small-only">\
+          <span class="vcard">\
+            <a href="/' + mentionItem.permlink + '">\
+              <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
+            </a> by \
+            <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">\
+              <strong>\
+                <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a>\
+              </strong>\
+            </span> in \
+            <strong>\
+              <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a>\
+            </strong>\
+          </span>\
+        </div>\
+        <span name="imgUrl" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/http://imgtank.online/indigo/iphone-photo-236541373.png\');"></span>\
+        <div class="PostSummary__content">\
+            <div class="PostSummary__header show-for-medium">\
+                <h3 class="entry-title"> <a href="/' + mentionItem.permlink + '">' + mentionItem.title + '</a> </h3> </div>\
+            <div class="PostSummary__body entry-content">\
+              <a href="/' + mentionItem.permlink + '">' + stripHTML(mentionItem.body) + '…</a>\
             </div>\
-            <div id="posts_list" class="PostsList" style="margin-top: 30px;">\
-              <ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts">\
-              </ul>\
+            <div class="PostSummary__footer"> <span class="Voting">\
+              <span class="Voting__inner">\
+              <div class="DropdownMenu">\
+                <a><span><span class="FormattedAsset "><span class="prefix">$</span><span class="integer">' + payoutValueMentionTab + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg> </span> </span></a>\
+                <ul class="VerticalMenu menu vertical VerticalMenu">\
+                    <li> <span> ' + payoutTextMentionTab + ' $' + payoutValueMentionTab + ' </span> </li>\
+                    <li> <span> <span title="' + new Date(mentionItem.created) + '"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span></span></li>\
+                </ul>\
             </div>\
-          </div>\
-          <center class="MentionsTabLoading">\
-             <div class="LoadingIndicator circle">\
-                <div></div>\
-             </div>\
-          </center>\
-          <center class="MentionsTabLoadMore" style="display: none;">\
-             <button>\
-              Load more... \
-            </button>\
-          </center>\
-          </article>\
-       </div>\
-    </div>');
+            </span>\
+            </span> <span class="VotesAndComments"> <span class="VotesAndComments__votes" title="' + mentionItem.net_votes + ' votes"> <span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg> </span>' + mentionItem.net_votes + '</span></a>\
+            </span>\
+            </span> <span class="PostSummary__time_author_category"><span class="show-for-medium"> <span class="vcard"> <a href="/' + mentionItem.permlink + '"> <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
+            </a> by <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <strong> <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a> </strong></span> in <strong> <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a> </strong> </span>\
+            </span>\
+            </span>\
+        </div>\
+        </div>\
+    </article>\
+  </li>');
 
-    mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
-      getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName());
-    });
-    mentionsTab.find('.mentions-type').on('change', function() {
-      getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName(), true);
-    });
+  return summaryMention;
+}
 
-    getPostsAndComments(mentionsTab, window.SteemPlus.Utils.getPageAccountName());
-  };
+function openPost(url) {
+  var postWindow = window.open();
+  postWindow.opener = null;
+  postWindow.location = url;
+}
 
-
-  function _getPostsAndComments(whats, name, info, cb) {
-    info = info || {
-      buffer: {},
-      from: {},
-      index: {},
-      posts: [],
-      hasMore: true
-    };
-    info.postsFrom = info.posts.length;
-
-    var merge = function() {
-      var keys = Object.keys(info.buffer);
-      var checkIndexes = function() {
-        for (var i = 0; i < keys.length; i++) {
-          var key = keys[i];
-          if((info.index[key] || 0) < info.buffer[key].length){
-            return true;
-          }
-        }
-        return false;
-      };
-      var checkFrom = function() {
-        for (var i = 0; i < keys.length; i++) {
-          var key = keys[i];
-          if(info.from[key] !== -1){
-            return true;
-          }
-        }
-        return false;
-      };
-      var added = 0;
-      while(added < 50 && checkIndexes()) {
-        var max = null;
-        var maxKey;
-        keys.forEach(function(key) {
-          var index = (info.index[key] || 0);
-          var post = info.buffer[key][index] || null;
-          if(post){
-            if(!max){
-              max = post;
-              maxKey = key;
-            }else{
-              var d1 = moment(max.created);
-              var d2 = moment(post.created);
-              if(d1 < d2){
-                max = post;
-                maxKey = key;
-              }
-            }
-          }
-        });
-        info.index[maxKey] = (info.index[maxKey] || 0) + 1;
-        info.posts.push(max);
-        added++;
-      }
-      info.hasMore = (checkIndexes() || checkFrom());
-    };
-
-    var done = 0;
-    var successCb = function(what, data){
-      console.log(what + ' => ' + data);
-      done++;
-      if(data){
-        var buffer = info.buffer[what] || [];
-        buffer = buffer.concat(data._items);
-        info.buffer[what] = buffer;
-
-        if(data._links.next){
-          info.from[what] = (info.from[what] || 0) + 1;
-        }else{
-          info.from[what] = -1;
-        }
-      }
-      if(done === whats.length){
-        merge();
-        cb(info);
-      }
-    };
-
-    whats.forEach(function(what) {
-      var from = info.from[what] || 0;
-      if(from === -1){
-        successCb(what, null);
-      }else{
-        var index = info.index[what] || 0;
-        var buffer = info.buffer[what] || [];
-
-        if(buffer.length >= index + 50){
-          successCb(what, null);
-        }else{
-
-          $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-              xhttp.setRequestHeader("Content-type", "application/json");
-              xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://query.steemdata.com/' + what + '?where={"$text":{"$search":"\\"@' + name + '\\""}}&sort=-created&page=' + (from+1),
-            success: function(msg) {
-              console.log(msg);
-              successCb(what, msg);
-            },
-            error: function(msg) {
-              if($('.error-mentions-label').length===0){
-                var errorLabel = document.createElement('h2');
-                $(errorLabel).addClass('articles__h1');
-                $(errorLabel).addClass('error-mentions-label');
-                $(errorLabel).append('Looks like we are having trouble retrieving information from steemData. Please try again later.');
-                $('.MentionsTabLoading').hide();
-                $('.articles').prepend(errorLabel);
-              }
-            }
-          });
-        }
-      }
-    });
-  };
-
-
-  function openPost(url) {
-    var postWindow = window.open();
-    postWindow.opener = null;
-    postWindow.location = url;
-  };
-
-
-  function getPostsAndComments(mentionsTab, name, reset) {
-    var v = mentionsTab.find('.mentions-type:checked').val();
-    var whats;
-    if(v == 0){
-      whats = ['Posts'];
-    } else if(v == 1) {
-      whats = ['Comments'];
-    } else {
-      whats = ['Posts', 'Comments'];
-    }
-
-    var loadMore = mentionsTab.find('.MentionsTabLoadMore');
-    var info1;
-    if(reset){
-      loadMore.data('posts-download-info', null);
-      mentionsTab.find('.PostsList__summaries').html('');
-    }else{
-      info1 = loadMore.data('posts-download-info');
-    }
-    loadMore.hide();
-    mentionsTab.find('.MentionsTabLoading').show();
-
-    _getPostsAndComments(whats, name, info1, function(info2){
-      loadMore.data('posts-download-info', info2);
-      var posts = info2.posts;
-      var postsFrom = info2.postsFrom;
-      var hasMore = info2.hasMore;
-
-      var postsList = mentionsTab.find('.PostsList__summaries');
-      if(postsList.length){
-        for (var i = postsFrom; i < posts.length; i++) {
-          var post = posts[i]
-          var el = window.SteemPlus.Utils.createPostSummary(post, {
-            openPost: openPost
-          }, rewardBalanceMentionsTab, recentClaimsMentionsTab, steemPriceMentionsTab);
-          postsList.append(el);
-        }
-
-        mentionsTab.find('.MentionsTabLoading').hide();
-        mentionsTab.find('.MentionsTab').show();
-        if(hasMore){
-          loadMore.show();
-        }
-      }
-    });
-
-  };
+function stripHTML(text)
+{
+  var tmp = document.createElement("DIV");
+  tmp.innerHTML = text;
+  return tmp.textContent || tmp.innerText || "";
+}

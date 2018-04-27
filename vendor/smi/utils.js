@@ -296,6 +296,7 @@
         imgUrl = json_metadata.image[0] || null;
       }
     }catch(err){
+      console.log(err);
     }
 
     // If nothing found in json metadata, parse body and check images/links

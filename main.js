@@ -309,6 +309,8 @@ function startOfflineFeatures(items, user, account)
     setTimeout(function(){
       if(urlOffline!==window.location.href)
       {
+        if(urlOffline.match(/transfers/)&&window.location.href.includes('@'+user+'/transfers'))
+          location.reload();
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
         if(transfers&&(steemit||busy))

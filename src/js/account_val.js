@@ -152,6 +152,7 @@ function startAccountValue(){
     if($('.FoundationDropdownMenu__label').length > 0)
     {
       $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(result[0].vesting_shares));
+
     }
     else
     {

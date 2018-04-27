@@ -78,7 +78,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.order==='click'&&token_wallet_history==request.token)
     {
-      token_wallet_history=request.token;
       totalVestsWalletHistory = request.data.totalVests;
   		totalSteemWalletHistory = request.data.totalSteem;
   		accountWH = request.data.account;

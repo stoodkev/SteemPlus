@@ -210,6 +210,7 @@ function createSummaryMention(mentionItem)
   var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
   var mentionTitle = (mentionItem.title!=='' ? mentionItem.title : mentionItem.permlink.split('-').join(' '));
 
+  // Get title, if item is comment then build title from permlink
   var mentionTitle = null;
   if(mentionItem.title!=='')
   {
@@ -228,6 +229,11 @@ function createSummaryMention(mentionItem)
   var urlMentionItem = '/' + mentionItem.category + '/@' + (mentionItem.parent_author==='' ? mentionItem.author : mentionItem.parent_author) + '/' + mentionItem.permlink;
 
   var urlImgMentionDisplayed = getImagePostSummary(mentionItem);
+
+  // Delete all images links or MD images links from body
+  var bodyMentionItem = stripHTML(mentionItem.body.replace(/!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/, ''));
+  bodyMentionItem = bodyMentionItem.replace(/\bhttps?:[^)''"]+\.(?:jpg|jpeg|gif|png)/, '');
+  
 
   var summaryMention = $('<li>\
     <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
@@ -254,7 +260,7 @@ function createSummaryMention(mentionItem)
             <div class="PostSummary__header show-for-medium">\
                 <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
             <div class="PostSummary__body entry-content">\
-              <a href="' + urlMentionItem + '">' + stripHTML(mentionItem.body) + '…</a>\
+              <a href="' + urlMentionItem + '">' + bodyMentionItem + '…</a>\
             </div>\
             <div class="PostSummary__footer"> <span class="Voting">\
               <span class="Voting__inner">\
@@ -286,6 +292,8 @@ function openPost(url) {
   postWindow.location = url;
 }
 
+// Remove HTML from text
+// @parameter text : text to remove html from
 function stripHTML(text)
 {
   var tmp = document.createElement("DIV");
@@ -295,6 +303,8 @@ function stripHTML(text)
 
 var createMentionItemSummary_remarkable = new Remarkable({ html: true, linkify: false })
 
+// Get image link from post
+// @parameter item : post
 function getImagePostSummary(item)
 {
   var imgUrl = null;

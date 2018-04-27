@@ -7,7 +7,7 @@ var accountWH = null;
 var memoKeyWH = null;
 var usernameWalletHistory = null;
 var dataWalletHistory = null;
-
+var retry=0;
 var modalWH = null;
 
 // Available filter types
@@ -64,6 +64,7 @@ function setMinAmountForAssetWH(asset, val) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   if(request.to=='wallet_history'){
+		retry=0;
     if(request.order==='start'&&token_wallet_history==null)
     {
       token_wallet_history=request.token;
@@ -82,7 +83,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   		totalSteemWalletHistory = request.data.totalSteem;
   		accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-
+			console.log("click");
       if($('.smi-transaction-table-filters').length===0)
       	startWalletHistory();
     }
@@ -93,6 +94,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
 {
+	console.log("start wallet",$('.Trans').length);
 	if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 	{
 
@@ -118,8 +120,11 @@ function startWalletHistory()
 
 	else
 		setTimeout(function(){
+			if(retry<=20){
+			retry++;
 			startWalletHistory();
-		}, 250);
+		}
+	}, 250);
 }
 
 //Function used to diplay the wallet when all the information is downloaded

@@ -208,17 +208,33 @@ function createSummaryMention(mentionItem)
   var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
   var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
 
-  var title = mentionItem.title;
+  var mentionTitle = (mentionItem.title!=='' ? mentionItem.title : mentionItem.permlink.split('-').join(' '));
 
+  var mentionTitle = null;
+  if(mentionItem.title!=='')
+  {
+    mentionTitle = mentionItem.title;
+  }
+  else
+  {
+    var tmp = mentionItem.permlink.split('-');
+    tmp.forEach(function(part, index, theArray) {
+      theArray[index] = part.replace(/(.*)\bre\b(.*)/i, 'Re:');
+    });
+    tmp.splice(tmp.length - 1, 1);
+    mentionTitle = tmp.join(' ');
+  }
+
+  var urlMentionItem = '/' + mentionItem.category + '/@' + (mentionItem.parent_author==='' ? mentionItem.author : mentionItem.parent_author) + '/' + mentionItem.permlink;
 
   var summaryMention = $('<li>\
     <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
         <div class="PostSummary__header show-for-small-only">\
-            <h3 class="entry-title"> <a href="/' + mentionItem.permlink + '">' + mentionTitle + '</a> </h3>\
+            <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3>\
         </div>\
         <div class="PostSummary__time_author_category_small show-for-small-only">\
           <span class="vcard">\
-            <a href="/' + mentionItem.permlink + '">\
+            <a href="' + urlMentionItem + '">\
               <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
             </a> by \
             <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">\
@@ -234,9 +250,9 @@ function createSummaryMention(mentionItem)
         <span name="imgUrl" class="PostSummary__image" style="background-image: url(\'https://steemitimages.com/256x512/http://imgtank.online/indigo/iphone-photo-236541373.png\');"></span>\
         <div class="PostSummary__content">\
             <div class="PostSummary__header show-for-medium">\
-                <h3 class="entry-title"> <a href="/' + mentionItem.permlink + '">' + mentionItem.title + '</a> </h3> </div>\
+                <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
             <div class="PostSummary__body entry-content">\
-              <a href="/' + mentionItem.permlink + '">' + stripHTML(mentionItem.body) + '…</a>\
+              <a href="' + urlMentionItem + '">' + stripHTML(mentionItem.body) + '…</a>\
             </div>\
             <div class="PostSummary__footer"> <span class="Voting">\
               <span class="Voting__inner">\
@@ -250,7 +266,7 @@ function createSummaryMention(mentionItem)
             </span>\
             </span> <span class="VotesAndComments"> <span class="VotesAndComments__votes" title="' + mentionItem.net_votes + ' votes"> <span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg> </span>' + mentionItem.net_votes + '</span></a>\
             </span>\
-            </span> <span class="PostSummary__time_author_category"><span class="show-for-medium"> <span class="vcard"> <a href="/' + mentionItem.permlink + '"> <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
+            </span> <span class="PostSummary__time_author_category"><span class="show-for-medium"> <span class="vcard"> <a href="' + urlMentionItem + '"> <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
             </a> by <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <strong> <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a> </strong></span> in <strong> <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a> </strong> </span>\
             </span>\
             </span>\

@@ -77,9 +77,12 @@ function displayPopoverUserInfo(userName){
 			pop.append(img);
 
       if(window.location.href.match(userNameRegEx)[1]==userName){
+
+        var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 2);
+        $('.UserProfile__rep').hide();
         $('.UserProfile__rep').parent().after(pop);
-  			var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 2);
-  			$('.UserProfile__rep').text('(' + reputation + ')');
+        $('.rep').remove();
+        $('.UserProfile__rep').parent().after('<span class="rep">(' + reputation + ')</span>');
 
   			var title='<h5>User Information</h5>';
   			var votingPower = values[0]/100;

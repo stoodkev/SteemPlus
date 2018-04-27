@@ -7,7 +7,7 @@ var accountWH = null;
 var memoKeyWH = null;
 var usernameWalletHistory = null;
 var dataWalletHistory = null;
-
+var retry=0;
 var modalWH = null;
 
 // Available filter types
@@ -63,12 +63,13 @@ function setMinAmountForAssetWH(asset, val) {
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
-	if(request.to=='wallet_history'){
-		if(request.order==='start'&&token_wallet_history==null)
-		{
-			token_wallet_history=request.token;
-			totalVestsWalletHistory = request.data.totalVests;
-			totalSteemWalletHistory = request.data.totalSteem;
+  if(request.to=='wallet_history'){
+		retry=0;
+    if(request.order==='start'&&token_wallet_history==null)
+    {
+      token_wallet_history=request.token;
+      totalVestsWalletHistory = request.data.totalVests;
+  		totalSteemWalletHistory = request.data.totalSteem;
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
 
@@ -76,25 +77,25 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 				startWalletHistory();
 		}
 
-		if(request.order==='click'&&token_wallet_history==request.token)
-		{
-			token_wallet_history=request.token;
-			totalVestsWalletHistory = request.data.totalVests;
-			totalSteemWalletHistory = request.data.totalSteem;
-			accountWH = request.data.account;
+    if(request.order==='click'&&token_wallet_history==request.token)
+    {
+      totalVestsWalletHistory = request.data.totalVests;
+  		totalSteemWalletHistory = request.data.totalSteem;
+  		accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-
-			if($('.smi-transaction-table-filters').length===0)
-				startWalletHistory();
-		}
-	}
+			console.log("click");
+      if($('.smi-transaction-table-filters').length===0)
+      	startWalletHistory();
+    }
+  }
 });
 
 // Function used to start the wallet history
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
 {
-	if($('.Trans').length > 0)
+	console.log("start wallet",$('.Trans').length);
+	if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 	{
 
 		$('.Trans').hide();
@@ -126,8 +127,11 @@ function startWalletHistory()
 
 	else
 		setTimeout(function(){
+			if(retry<=20){
+			retry++;
 			startWalletHistory();
-		}, 250);
+		}
+	}, 250);
 }
 
 //Function used to diplay the wallet when all the information is downloaded

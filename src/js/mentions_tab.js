@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       rewardBalanceMentionsTab=request.data.rewardBalance;
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
-
+      indexLastItemDisplayed=0;
       createTab();
 
       mentionTabStarted=true;
@@ -30,6 +30,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       rewardBalanceMentionsTab=request.data.rewardBalance;
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
+      indexLastItemDisplayed=0;
       createTab();
     }
     else if(request.order==='notif'&&token_mention_tab==request.token)
@@ -37,6 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       rewardBalanceMentionsTab=request.data.rewardBalance;
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
+      indexLastItemDisplayed=0;
 
       if(mentionTabStarted)
         createTab();
@@ -108,7 +110,7 @@ function createMentionsTab(mentionsTab) {
     displayMentions(mentionsTab, typeMention ,window.SteemPlus.Utils.getPageAccountName(), true);
   });
   // Display mentions in post
-  displayMentions(mentionsTab,'posts', window.SteemPlus.Utils.getPageAccountName(),false);
+  displayMentions(mentionsTab,'posts', window.SteemPlus.Utils.getPageAccountName(),true);
 };
 
 // Display posts or comments or boths

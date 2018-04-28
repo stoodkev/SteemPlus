@@ -1,4 +1,3 @@
-var created_a=false;
 var load_check_a='',load_check2_a='';
 var wallet_elt_a;
 var timeout_a=1000;
@@ -6,25 +5,36 @@ var account_v;
 var STEEM_A,SBD_A;
 var token_a=null;
 var accountValStarted=false;
+var acc_steemit,acc_busy,acc_global,acc_market;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
     {
       token_a=request.token;
-      startAccountValue(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+      acc_steemit=request.data.steemit;
+      acc_busy=request.data.busy;
+      acc_global=request.data.global;
+      acc_market=request.data.market;
+      startAccountValue();
       accountValStarted=true;
     }
-    else if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token)
-      onClickA(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+    else if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token){
+      acc_global=request.data.global;
+      acc_market=request.data.market;
+      onClickA();}
     else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
     {
+      console.log("notif");
       if(accountValStarted)
-        onClickA(request.data.steemit,request.data.busy,request.data.global,request.data.market);
+      {
+        acc_market=request.market;
+        onClickA();
+      }
     }
 });
 
-function startAccountValue(isSteemit,busy,globalP,market){
-        if(isSteemit) {
+function startAccountValue(){
+        if(acc_steemit) {
             load_check_a=/transfers/;
             load_check2_a=/transfers/;
             if(window.location.href.includes('@') && window.location.href.includes('/')){
@@ -33,9 +43,9 @@ function startAccountValue(isSteemit,busy,globalP,market){
             }
             else
               return;
-            
+
         }
-            else if(busy)
+            else if(acc_busy)
         {
             load_check_a=/wallet/;
             load_check2_a=/transfers/;
@@ -43,61 +53,62 @@ function startAccountValue(isSteemit,busy,globalP,market){
             account_v=(window.location.href.match(load_check))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
         }
 
-        if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a))
-            checkLoad(isSteemit,busy,globalP,market);
+        if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)){
+          checkLoad();
+        }
     }
 
-  function onClickA(isSteemit,busy,globalP,market){
+  function onClickA(){
     setTimeout(function() {
       if(window.location.href!=='')
       {
+        console.log(wallet_elt_a,"3");
         if(window.location.href.includes('@')){
-          account_v=isSteemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-          wallet_elt_a=isSteemit?$('.medium-4')[4]:".UserWalletSummary__item ";
-          created_a=false;
+          account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
+          wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
         }
-        
       }
-      if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) && !created_a) {
-        created_a = true;
-        checkLoad(isSteemit,busy,globalP,market);
-      }
-      if (!window.location.href.match(load_check_a)&&!window.location.href.match(load_check2_a)) {
-        created_a = false;
+      if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
+        console.log(wallet_elt_a,"2");
+        checkLoad();
       }
     },timeout_a);
   }
 
-  function checkLoad(isSteemit,busy,globalP,market){
+  function checkLoad(){
+
+
     if($(wallet_elt_a).length>0){
-      createTitle(isSteemit,busy,globalP,market);
+
+      createTitle();
     }
     else {
       setTimeout(checkLoad, 1000);
     }
   }
 
-  function createTitle(isSteemit,busy,globalP,market) {
+  function createTitle() {
+
     var title='<h5>Details</h5>';
     var real_val=document.createElement('span');
     var logo=document.createElement('img');
     logo.src=chrome.extension.getURL("src/img/logo.png");
     logo.id='logovalue';
-    if(isSteemit)
+    if(acc_steemit)
       logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
-    if(isSteemit&& $('.medium-4 .dropdown-arrow').length!==0)
+    if(acc_steemit&& $('.medium-4 .dropdown-arrow').length!==0)
       real_val.style.marginRight='1em';
     real_val.className='real_value';
     real_val.append(logo);
-    STEEM_A=market.priceSteem;
-    SBD_A=market.priceSBD;
+    STEEM_A=acc_market.priceSteem;
+    SBD_A=acc_market.priceSBD;
     steem.api.getAccounts([account_v], function(err, result) {
       if(err) console.log(err);
       console.log(result);
       var value=0;
       const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
       const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
-      const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, globalP.totalVests, globalP.totalSteem);
+      const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, acc_global.totalVests, acc_global.totalSteem);
       const STEEM= STEEM_BALANCE+STEEM_SAVINGS+STEEM_POWER;
       const SBD_BALANCE=SBD_A*parseFloat(result["0"].sbd_balance.split(' ')[0]);
       const SBD_SAVINGS=SBD_A*parseFloat(result[0].savings_sbd_balance.split(' ')[0]);
@@ -110,12 +121,13 @@ function startAccountValue(isSteemit,busy,globalP,market){
         pop.style.cursor='pointer';
         pop.id='popop';
 
-        if(isSteemit){
+        if(acc_steemit){
           pop.innerHTML=value;
           real_val.append(pop);
           wallet_elt_a.append(real_val);
-      if($('.real_value').length>1)
-        $('.real_value')[0].remove();}
+        if($('.real_value').length>1)
+          $('.real_value')[0].remove();
+        }
       else {
         wallet_elt_a.prepend(pop);
         $('#popop').html(logo);
@@ -140,6 +152,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
     if($('.FoundationDropdownMenu__label').length > 0)
     {
       $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(result[0].vesting_shares));
+
     }
     else
     {
@@ -148,7 +161,7 @@ function startAccountValue(isSteemit,busy,globalP,market){
       $(spanVestingShares)[0].textContent = '';
       $(spanVestingShares).append(newDiv);
     }
-    
+
 
   });
 }

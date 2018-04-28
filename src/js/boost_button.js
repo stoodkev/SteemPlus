@@ -42,7 +42,7 @@
           </div>\
         </div>');
     }
-    
+
 
     loading = $(window.SteemPlus.Utils.getLoadingHtml({
       center: true
@@ -258,6 +258,7 @@
               var endNullValue = true;
               var maxVote = 0;
               var maxNbVote = 0;
+              json=json[1].data;
               for(var i=json.length-1;i>=0;i--)
               {
                 if(endNullValue)
@@ -274,16 +275,18 @@
                   }
                 }
                 else
-                { 
+                {
                   if(json[i][1] > maxNbVote) maxNbVote = json[i][1];
                   minnowData.unshift({x:json[i][0], y:json[i][1]});
-                }  
+                }
               }
 
               var maxAvailableAmount = Math.min(
                 parseFloat(globalInfo.daily_limit) - parseFloat(accountInfo.user_daily_usage),
                 parseFloat(maxVote)
               );
+
+                console.log("success"+maxAvailableAmount);
               $('.maxAvailableAmount').append(maxAvailableAmount);
 
               var ctx = transferUI.find('.boost-button-chart')[0].getContext('2d');
@@ -291,7 +294,7 @@
                 type: 'scatter',
                 display: false,
                 data: {
-                  datasets: [{ 
+                  datasets: [{
                     display: false,
                     showLine: true,
                     lineTension: 0,
@@ -303,8 +306,8 @@
                 },
                 options: {
                   tooltips : {
-                      callbacks : { 
-                          
+                      callbacks : {
+
                           title : function() {
                               return 'Available';
                           },
@@ -318,8 +321,8 @@
                       radius: 3,
                       pointStyle:'circle',
                       hoverRadius: 4,
-                      backgroundColor: '#144aff' 
-                    } 
+                      backgroundColor: '#144aff'
+                    }
                   },
                   display: false,
                   scales: {
@@ -339,14 +342,14 @@
                         min:0,
                         max:maxNbVote
                       },
-                      afterBuildTicks: function(yValues) {    
+                      afterBuildTicks: function(yValues) {
                         yValues.ticks = [];
                         var i = 1;
                         yValues.ticks.push(i);
                         while (i < maxNbVote) {
                           i=i*10;
                           yValues.ticks.push(i);
-                        }    
+                        }
                       }
                     }],
                     xAxes: [{
@@ -377,7 +380,7 @@
           });
         }
 
-        
+
 
         var validate = function() {
           var amount = transferUI.find('input[name="amount"]').val();
@@ -552,7 +555,7 @@ function changeUIBooster(value){
 }
 
 function createSmartSteemTransferUI(){
-  
+
   loading = $(window.SteemPlus.Utils.getLoadingHtml({
     center: true
   }));
@@ -642,7 +645,7 @@ function createSmartSteemTransferUI(){
           $('#submitSmartSteem').attr('disabled', true);
       });
 
-      
+
       $('#smartSteemInformation').append('<div class="col-5">Unrestricted value :</div><div class="col-7">' + parseInt(result.total_unrestricted).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">1 star vote value :</div><div class="col-7">' + parseInt(result.total_one).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">2 stars vote value :</div><div class="col-7">' + parseInt(result.total_two).toFixed(2) + ' $</div>');

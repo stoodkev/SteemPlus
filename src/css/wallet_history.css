@@ -56,6 +56,11 @@
   width: 80%;
 }
 
+.error-wallet-label
+{
+  margin-top: 1rem !important;
+}
+
 #removeMemoKeyButton:hover {
   background-color: red;
   color: #ffffff;

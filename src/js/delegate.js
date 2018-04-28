@@ -128,12 +128,28 @@ function createButton(isSteemit,busy,globalP,account) {
                     }
                     inner+='</div><span>Click the button below to be redirected to SteemConnect to complete your transaction.</span></div><div class="ant-modal-footer"><button type="button" class="ant-btn ant-btn-lg close-button"><span>Cancel</span></button><input type="button" id="bd" style="margin-left: 1em;"disabled="" class="ant-btn ant-btn-primary ant-btn-lg delegate" value="Send"/></div></div><div tabindex="0" style="width: 0px; height: 0px; overflow: hidden;">sentinel</div></div></div></div></div>';
                     div.innerHTML=inner;
-                    
+
             }
 
             $('body').append(div);
+            $('.close-button').click(function(){$('#overlay_delegate').remove();});
+            $('#max_sp').click(function(){$('input[name=amount]').val(getMaxSP()+'');});
+            $('form input').blur(function () {
+              if(parseFloat($('input[name=amount]').val())>=0&&parseFloat($('input[name=amount]').val())<=getMaxSP()&&$('input[placeholder="Your account"]').val()!==''&&$('input[placeholder="Send to account"]').val()!=='')
+                {$('#bd').prop("disabled",false); }
+              else
+                {$('#bd').prop("disabled",true); }
+              });
+              $('#bd').click(function () {
+                  const delegated_SP = $('input[name=amount]').val();
+                  var delegated_vest = delegated_SP * globalP.totalVests / globalP.totalSteem;
+                  delegated_vest=delegated_vest.toFixed(6);
+                  var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_vest+'%20VESTS';
+                  window.open(url, '_blank');
+              });
+
             if(result.length===0) $('.outgoing-delegation').hide();
-            
+
             $.ajax({
               type: "GET",
               beforeSend: function(xhttp) {
@@ -144,11 +160,13 @@ function createButton(isSteemit,busy,globalP,account) {
               success: function(result) {
                 if(result.length > 0)
                 {
-                    $('.delegations').append('<div class="row column"><h3 class="column incoming-delegation">Incoming delegations - </h3><ul id="list_delegators"></ul></div>');
+                    $('.delegations').append('<div class="row column"><h3 class=" incoming-delegation">Incoming delegations : </h3><ul id="list_delegators"></ul></div>');
                     var totalIncomingDelegation = null;
                     result.forEach(function(item){
+                      if(item.vesting_shares!=0){
                         $('#list_delegators').append('<li title="' + new Date(item.delegation_date) + '">'+Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100 +' SP delegated by @'+item.delegator+'</li>');
                         totalIncomingDelegation += Math.round(steem.formatter.vestToSteem(item.vesting_shares,globalP.totalVests ,globalP.totalSteem)*100)/100;
+                        }
                     });
                     $('.incoming-delegation').append(totalIncomingDelegation + ' SP');
                 }
@@ -160,4 +178,4 @@ function createButton(isSteemit,busy,globalP,account) {
         });
       });
     }
-}   
+}

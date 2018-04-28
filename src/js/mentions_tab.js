@@ -67,7 +67,7 @@ function createMentionsTab(mentionsTab) {
           <h1 class="articles__h1" style="margin-bottom:20px">\
             Mentions\
             <div class="thanks-mentions">\
-              Thanks <a href="/@arcange" class="smi-navigate">@arcange</a> for the SteemSQL\
+              Thanks to <a href="/@arcange" class="smi-navigate">@arcange</a> for the SteemSQL database.\
             </div>\
           </h1>\
           <hr class="articles__hr"/>\
@@ -122,16 +122,16 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
 {
   if(mentionsTabPostsComments===null&&!downloadingData)
   {
-    console.log("Start data downloading");
+  //  console.log("Start data downloading");
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
         downloadingData=true;
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-        console.log(xhttp);
+      //  console.log(xhttp);
       },
-      
+
         url: 'http://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
       success: function(result) {
 
@@ -156,7 +156,7 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
   {
     if(downloadingData)
     {
-      console.log("downloading data");
+    //  console.log("downloading data");
       // wait because data already downloading
       setTimeout(function(){
         displayMentions(mentionsTab, type, usernamePageMentions,reset);
@@ -164,12 +164,12 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
     }
     else
     {
-      console.log("already downloaded");
+    //  console.log("already downloaded");
       // display with local data
       createRows(mentionsTab, type, reset);
     }
   }
-  
+
 }
 
 function createRows(mentionsTab, type, reset)
@@ -182,7 +182,7 @@ function createRows(mentionsTab, type, reset)
 
   var listMentions = mentionsTab.find('.PostsList__summaries');
 
-  var nbItemAdded = 0;  
+  var nbItemAdded = 0;
   while(nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length)
   {
     var mentionTabElement = mentionsTabPostsComments[indexLastItemDisplayed];
@@ -209,8 +209,8 @@ function createRows(mentionsTab, type, reset)
     }
     indexLastItemDisplayed++;
   }
-  console.log(mentionsTabPostsComments.length + "= length");
-  console.log(indexLastItemDisplayed + "= index");
+//  console.log(mentionsTabPostsComments.length + "= length");
+//  console.log(indexLastItemDisplayed + "= index");
   if(indexLastItemDisplayed < mentionsTabPostsComments.length-1)
     mentionsTab.find('.MentionsTabLoadMore').show();
   else
@@ -220,7 +220,7 @@ function createRows(mentionsTab, type, reset)
   mentionsTab.find('.MentionsTab').show();
 }
 
-  
+
 
 
 // Create one summary
@@ -253,7 +253,7 @@ function createSummaryMention(mentionItem)
   // Delete all images links or MD images links from body
   var bodyMentionItem = stripHTML(mentionItem.body.replace(/!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/, ''));
   bodyMentionItem = bodyMentionItem.replace(/\bhttps?:[^)''"]+\.(?:jpg|jpeg|gif|png)/, '');
-  
+
 
   var summaryMention = $('<li>\
     <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\

@@ -12,22 +12,22 @@ var modalWH = null;
 
 // Available filter types
 var typeFiltersListWH = [
-{
-	type: 'transfer_to',
-	text: 'Received'
-},
-{
-	type: 'transfer_from',
-	text: 'Sent'
-},
-{
-	type: 'claim',
-	text: 'Claimed Rewards'
-},
-{
-	type: 'hide_spam',
-	text: 'Hide Spam'
-}
+	{
+    type: 'transfer_to',
+    text: 'Received'
+	},
+	{
+    type: 'transfer_from',
+    text: 'Sent'
+	},
+	{
+    type: 'claim',
+    text: 'Claimed Rewards'
+	},
+	{
+		type: 'hide_spam',
+		text: 'Hide Spam'
+	}
 ];
 
 
@@ -38,27 +38,27 @@ var filtersStateWH = {
 };
 
 function typeFilterHiddenWH(type) {
-	return filtersStateWH.types[type] || false;
+    return filtersStateWH.types[type] || false;
 }
 
 function setTypeFilterHiddenWH(type, value) {
-	filtersStateWH.types[type] = value;
+  filtersStateWH.types[type] = value;
 }
 
 function searchValueWH() {
-	return filtersStateWH.search || '';
+  return filtersStateWH.search || '';
 }
 
 function setSearchValueWH(val) {
-	filtersStateWH.search = val || '';
+  filtersStateWH.search = val || '';
 }
 
 function minAmountForAssetWH(asset) {
-	return parseFloat(filtersStateWH.minAsset[asset]) || 0;
+  return parseFloat(filtersStateWH.minAsset[asset]) || 0;
 }
 
 function setMinAmountForAssetWH(asset, val) {
-	filtersStateWH.minAsset[asset] = parseFloat(val) || 0;
+  filtersStateWH.minAsset[asset] = parseFloat(val) || 0;
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -73,9 +73,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
 
-			if($('.smi-transaction-table-filters').length===0)
-				startWalletHistory();
-		}
+      if($('.smi-transaction-table-filters').length===0)
+      	startWalletHistory();
+    }
 
     if(request.order==='click'&&token_wallet_history==request.token)
     {
@@ -83,7 +83,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   		totalSteemWalletHistory = request.data.totalSteem;
   		accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-			console.log("click");
+			//console.log("click");
       if($('.smi-transaction-table-filters').length===0)
       	startWalletHistory();
     }
@@ -94,35 +94,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
 {
-	console.log("start wallet",$('.Trans').length);
+	//console.log("start wallet",$('.Trans').length);
 	if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 	{
 
 		$('.Trans').hide();
 		usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 		$.ajax({
-			type: "GET",
-			beforeSend: function(xhttp) {
-				xhttp.setRequestHeader("Content-type", "application/json");
-				xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-			},
-			url: 'http://steemplus-ai.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
-			success: function(result) {
-				dataWalletHistory = result;
-				if($('.smi-transaction-table-filters').length===0)
-					displayWalletHistory();
-			},
-			error: function(msg) {
-				if($('.error-wallet-label').length===0){
-          var errorLabel = document.createElement('h2');
-          $(errorLabel).addClass('articles__h1');
-          $(errorLabel).addClass('error-wallet-label');
-          $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
-          $('.MentionsTabLoading').hide();
-          $('table').before(errorLabel);
-        }
-			}
-		});
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+      },
+      url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
+      success: function(result) {
+      	dataWalletHistory = result;
+      	if($('.smi-transaction-table-filters').length===0)
+      		displayWalletHistory();
+      },
+      error: function(msg) {
+        console.log(msg.responseJSON.error);
+      }
+    });
 	}
 
 	else
@@ -206,136 +199,136 @@ function createWalletHistoryFiltersUI()
 {
 
 	var filters = $('<div class="smi-transaction-table-filters">\
-		<div class="smi-transaction-table-filters-type">' +
-		createTypeFiltersUIWH() +
-		'</div>\
-		<div class="smi-transaction-table-filters-search">' +
-		createSearchUIWH() +
-		'</div>\
-		<div class="smi-transaction-table-filters-assets">\
-		<div class="">' +
-		createMinAssetUIWH('SBD') +
-		'</div>\
-		<div class="">' +
-		createMinAssetUIWH2('STEEM') +
-		'</div>\
-		<div class="">' +
-		createMinAssetUIWH2('SP') +
-		'</div>\
+    <div class="smi-transaction-table-filters-type">' +
+    createTypeFiltersUIWH() +
+    '</div>\
+    <div class="smi-transaction-table-filters-search">' +
+    	createSearchUIWH() +
+    '</div>\
+    <div class="smi-transaction-table-filters-assets">\
+		  <div class="">' +
+		  	createMinAssetUIWH('SBD') +
+		  '</div>\
+		  <div class="">' +
+		  	createMinAssetUIWH2('STEEM') +
+		  '</div>\
+		  <div class="">' +
+		    createMinAssetUIWH2('SP') +
+		  '</div>\
 		</div>\
-		</div>');
+  </div>');
 
 	if(usernameWalletHistory === accountWH.name)
 	{
 		$('table').parent().find('.secondary').after($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
-			<input type="submit" id="displayModalWH" value="Add private memo key">\
-			</div>'));
+      <input type="submit" id="displayModalWH" value="Add private memo key">\
+    </div>'));
 
-		$('#displayModalWH').click(function(){
+    $('#displayModalWH').click(function(){
 			modalWH = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
-				<div class="reveal-overlay fade in" style="display: block;"></div>\
-				<div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
-				<button class="close-button" type="button">\
-				<span aria-hidden="true" class="">×</span>\
-				</button>\
-				</div>\
-				</div>');
-			$('body').append(modalWH);
+      <div class="reveal-overlay fade in" style="display: block;"></div>\
+        <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
+          <button class="close-button" type="button">\
+            <span aria-hidden="true" class="">×</span>\
+          </button>\
+        </div>\
+      </div>');
+      $('body').append(modalWH);
 
-			modalWH.find('.close-button').on('click', function() {
-				modalWH.remove();
-			});
-			modalWH.find('.reveal-overlay').on('click', function() {
-				modalWH.remove();
-			});
+	    modalWH.find('.close-button').on('click', function() {
+	      modalWH.remove();
+	    });
+	    modalWH.find('.reveal-overlay').on('click', function() {
+	      modalWH.remove();
+	    });
 
 			var addMemoKeyUIWH = $('<div id="modalContent">\
-				<div id="modalTitle" class="row">\
-				<h3 class="column">Add Private Memo Key</h3>\
-				</div>\
-				<div>\
-				<div class="row">\
-				<div class="column small-12">\
-				Your private memo key can and will be used only to decrypt your memos. You can find it in Wallet > Permissions > Memo > Show private key.<br> It will be stored locally and you can remove it at any time. In this case, you won\'t be able to see your private memos through SteemPlus anymore.\
-				<br>\
-				</div>\
-				</div>\
-				<br>\
-				<div class="row">\
-				<div class="divInputMemoKey">' +
-				(memoKeyWH==='' ?
-					'<input type="password" id="addMemoKeyInput" name="memoKey" placeholder="Add your memo key here">'
-					:
-					'<input type="password" id="addMemoKeyInput" name="memoKey" value="'+ memoKeyWH + '">' ) +
-				'<input type="submit" id="addMemoKeySubmit" value="'+ (memoKeyWH==='' ? 'Add' : 'Update') + '">\
-				'+ (memoKeyWH==='' ? '' : '<input type="submit" id="removeMemoKeyButton" value="Remove">') +' \
-				</div>\
-				</div>\
-				</div>\
-				</div>');
-			modalWH.find('.reveal').append(addMemoKeyUIWH);
+        <div id="modalTitle" class="row">\
+          <h3 class="column">Add Private Memo Key</h3>\
+        </div>\
+        <div>\
+          <div class="row">\
+            <div class="column small-12">\
+            	Your private memo key can and will be used only to decrypt your memos. You can find it in Wallet > Permissions > Memo > Show private key.<br> It will be stored locally and you can remove it at any time. In this case, you won\'t be able to see your private memos through SteemPlus anymore.\
+            <br>\
+            </div>\
+          </div>\
+          <br>\
+          <div class="row">\
+						<div class="divInputMemoKey">' +
+			        (memoKeyWH==='' ?
+			        	'<input type="password" id="addMemoKeyInput" name="memoKey" placeholder="Add your memo key here">'
+			        :
+			        	'<input type="password" id="addMemoKeyInput" name="memoKey" value="'+ memoKeyWH + '">' ) +
+			        '<input type="submit" id="addMemoKeySubmit" value="'+ (memoKeyWH==='' ? 'Add' : 'Update') + '">\
+			        '+ (memoKeyWH==='' ? '' : '<input type="submit" id="removeMemoKeyButton" value="Remove">') +' \
+			      </div>\
+          </div>\
+        </div>\
+      </div>');
+      modalWH.find('.reveal').append(addMemoKeyUIWH);
 
-			toastr.options = {
-				"closeButton": true,
-				"debug": false,
-				"newestOnTop": false,
-				"progressBar": false,
-				"positionClass": "toast-bottom-center",
-				"preventDuplicates": false,
-				"onclick": null,
-				"showDuration": "300",
-				"hideDuration": "1000",
-				"timeOut": "5000",
-				"extendedTimeOut": "1000",
-				"showEasing": "swing",
-				"hideEasing": "linear",
-				"showMethod": "fadeIn",
-				"hideMethod": "fadeOut"
-			};
-			var titleToastr = "SteemPlus - Memo key";
+      toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      };
+      var titleToastr = "SteemPlus - Memo key";
 
-			modalWH.find('#removeMemoKeyButton').click(function(){
-				chrome.storage.local.remove(["wallet_history_memo_key"],function(){
-					var error = chrome.runtime.lastError;
-					if (error) {
-						toastr.error(error, titleToastr);
-						console.error(error);
-					}
-					else
-					{
-						modalWH.remove();
-						toastr.success('Your private memo key has been successfully removed. You won\'t be able to read your private memos anymore.', titleToastr);
-						memoKeyWH='';
-					}
+      modalWH.find('#removeMemoKeyButton').click(function(){
+      	chrome.storage.local.remove(["wallet_history_memo_key"],function(){
+				 	var error = chrome.runtime.lastError;
+				    if (error) {
+				    		toastr.error(error, titleToastr);
+				        console.error(error);
+				    }
+				    else
+				    {
+				    	modalWH.remove();
+				    	toastr.success('Your private memo key has been successfully removed. You won\'t be able to read your private memos anymore.', titleToastr);
+				    	memoKeyWH='';
+				    }
 				})
-			});
+      });
 
-			modalWH.find('#addMemoKeySubmit').click(function(){
+      modalWH.find('#addMemoKeySubmit').click(function(){
 
-				if(accountWH.memo_key===modalWH.find('#addMemoKeyInput')[0].value)
-				{
-					toastr.error('You are trying to use your public memo key! Please use the private memo key instead.', titleToastr);
-				}
-				else
-				{
+      	if(accountWH.memo_key===modalWH.find('#addMemoKeyInput')[0].value)
+      	{
+      		toastr.error('You are trying to use your public memo key! Please use the private memo key instead.', titleToastr);
+      	}
+      	else
+      	{
 
 					try
 					{
 						steem.auth.wifIsValid(modalWH.find('#addMemoKeyInput')[0].value, accountWH.memo_key);
-						chrome.storage.local.set({
-							wallet_history_memo_key:modalWH.find('#addMemoKeyInput')[0].value
-						});
-						memoKeyWH=modalWH.find('#addMemoKeyInput')[0].value;
-						toastr.success('Your private memo key has been successfully added. Please refresh the page to start reading your private memos.', titleToastr);
-						modalWH.remove();
+      			chrome.storage.local.set({
+			      	wallet_history_memo_key:modalWH.find('#addMemoKeyInput')[0].value
+			    	});
+			    	memoKeyWH=modalWH.find('#addMemoKeyInput')[0].value;
+			    	toastr.success('Your private memo key has been successfully added. Please refresh the page to start reading your private memos.', titleToastr);
+			    	modalWH.remove();
 					}
 					catch(err)
 					{
-						toastr.error('This key is incorrect, please use your private memo key.', titleToastr);
+      			toastr.error('This key is incorrect, please use your private memo key.', titleToastr);
 					}
-				}
-			});
-		});
+      	}
+	    });
+    });
 	}
 
 	$('table').before(filters);
@@ -347,13 +340,13 @@ function createWalletHistoryFiltersUI()
 	$(filters).find('.type-filter-button').unbind('click').on('click', function(){
 		if($(this).parent().eq(0).hasClass('.input-type-filter-checked'))
 		{
-			console.log('has class');
+			//console.log('has class');
 			$(this).parent().eq(0).addClass('input-type-filter-checked');
 			$(this).parent().eq(0).removeClass('input-type-filter-unchecked');
 		}
 		else
 		{
-			console.log('does not have class');
+			//console.log('does not have class');
 			$(this).parent().eq(0).removeClass('input-type-filter-checked');
 			$(this).parent().eq(0).addClass('input-type-filter-unchecked');
 		}
@@ -362,8 +355,8 @@ function createWalletHistoryFiltersUI()
 	});
 
 	$(filters).find('.inputMinFilterWalletHistory').unbind('input').on('input',function(){
-		setMinAmountForAssetWH($(this).data('asset'), $(this)[0].value);
-		updateTableWH();
+	  setMinAmountForAssetWH($(this).data('asset'), $(this)[0].value);
+	  updateTableWH();
 	});
 
 	updateTableWH();
@@ -375,43 +368,43 @@ function createTypeFiltersUIWH()
 {
 	return '<label><span>Filter by type: </span></label>' +
 	typeFiltersListWH.map(function(f) {
-		return '<div class="smi-transaction-table-type-filter walletHistoryFilters">\
-		<label class="input-type-filter-checked">\
-		<input type="checkbox" value="' + f.type + '" class="type-filter-button" checked="true"><span' + (f.type==='spam' ? ' title="Hide 0.001 SBD/STEEM transactions" ' : '' ) + '>' + f.text + '</span>\
-		</label>\
-		</div>';
+	  return '<div class="smi-transaction-table-type-filter walletHistoryFilters">\
+	    <label class="input-type-filter-checked">\
+	      <input type="checkbox" value="' + f.type + '" class="type-filter-button" checked="true"><span' + (f.type==='spam' ? ' title="Hide 0.001 SBD/STEEM transactions" ' : '' ) + '>' + f.text + '</span>\
+	    </label>\
+	  </div>';
 	}).join('');
 }
 
 // Function used to create the search bar
 function createSearchUIWH() {
 	return '<div class="smi-transaction-table-search-filter">\
-	<label>\
-	<span>Search:</span>\
-	<input id="inputSearchWalletHistory" type="text" value="">\
-	</label>\
+	  <label>\
+	    <span>Search:</span>\
+	    <input id="inputSearchWalletHistory" type="text" value="">\
+	  </label>\
 	</div>';
 }
 
 // Function used to create the first asset filter.
 // @parameter asset : name of the asset (SBD, STEEM, SP)
 function createMinAssetUIWH(asset) {
-	return '<div class="smi-transaction-table-asset-value-filter">\
-	<label>\
-	<span>Min amounts</span>\
-	<input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
-	</label>\
-	</div>';
+  return '<div class="smi-transaction-table-asset-value-filter">\
+    <label>\
+      <span>Min amounts</span>\
+      <input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
+    </label>\
+  </div>';
 }
 
 // Function used to create other asset filter. For this one, there is no label
 // @parameter asset : name of the asset (SBD, STEEM, SP)
 function createMinAssetUIWH2(asset) {
-	return '<div class="smi-transaction-table-asset-value-filter">\
-	<label>\
-	<input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
-	</label>\
-	</div>';
+  return '<div class="smi-transaction-table-asset-value-filter">\
+    <label>\
+      <input class="inputMinFilterWalletHistory" type="number" placeholder="'+ asset +'" value="" lang="en-150" step="0.001" min="0" data-asset="' + asset + '">\
+    </label>\
+  </div>';
 }
 
 // Function used to update the view by hiding all the rows which doesn't match with the filterState
@@ -466,8 +459,8 @@ function updateTableWH(){
 		}
 		else
 		{
-			valueLine['STEEM'] = (row.reward_steem === 0 ? -1 : row.reward_steem);
-			valueLine['SBD'] = (row.reward_sbd === 0 ? -1 : row.reward_sbd);
+				valueLine['STEEM'] = (row.reward_steem === 0 ? -1 : row.reward_steem);
+				valueLine['SBD'] = (row.reward_sbd === 0 ? -1 : row.reward_sbd);
 		}
 		var minAssets = filtersStateWH.minAsset;
 

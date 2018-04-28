@@ -9,6 +9,7 @@
   var authorBooster=null;
   var permlinkBooster=null;
   var loading=null;
+  var normalList=1;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
@@ -254,11 +255,12 @@
             },
             url: 'https://www.minnowbooster.net/limit/chart',
             success: function(json) {
+
               var minnowData = [];
               var endNullValue = true;
               var maxVote = 0;
               var maxNbVote = 0;
-              json=json[1].data;
+              json=json[normalList].data;
               for(var i=json.length-1;i>=0;i--)
               {
                 if(endNullValue)
@@ -476,6 +478,8 @@
       url: 'https://www.minnowbooster.net/users/' + authorBooster + '/json',
       success: function(json) {
         accountInfo = json;
+        normalList=json.whitelisted?0:1;
+        console.log(normalList);
         asyncDone();
       },
       error: function(msg) {

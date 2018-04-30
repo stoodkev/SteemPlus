@@ -68,7 +68,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
 
 
     if(delegation&&(steemit||busy))
-      chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'notif',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}} });
+      chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'notif',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}}, user:user });
     if (steemit&&steemit_more_info) {
       if(post_votes_list)
         chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});

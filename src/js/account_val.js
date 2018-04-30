@@ -156,10 +156,15 @@ function startAccountValue(){
     }
     else
     {
-      var spanVestingShares = $('.UserWallet__balance > .column')[3];
-      var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
-      $(spanVestingShares)[0].textContent = '';
-      $(spanVestingShares).append(newDiv);
+      if($('.vests-added').length === 0)
+      {
+        var spanVestingShares = $('.UserWallet__balance > .column')[3];
+        var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
+        $(spanVestingShares)[0].textContent = '';
+        $(spanVestingShares).append(newDiv);
+        $(newDiv).parent().eq(0).addClass('vests-added');
+      }
+      
     }
 
 

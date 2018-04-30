@@ -27,3 +27,25 @@ color:white;
 border-color: white;
 
 }
+
+.UserWallet__buysp 
+{
+  float: right !important;
+}
+
+#list_delegators, #list_delegee
+{
+  font-size: 13.5px;
+  font-weight: normal; 
+}
+
+#popoverDelegation
+{
+  padding-left: 5px;
+  padding-right: 5px;
+  cursor:pointer;
+}
+
+.delegationDiv .popover{
+  width:300px;
+}

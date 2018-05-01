@@ -270,11 +270,17 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   $('#popoverDelegation').attr('data-placement','bottom');
   $('#popoverDelegation').attr('title','Delegations');
   $('#popoverDelegation').attr('data-html','true');
-  $('#popoverDelegation').attr('data-trigger','click');
   $('[data-toggle="popover"]').popover();
 
+  $('#popoverDelegation').click(function(){
+    setTimeout(function(){
+      $('#popoverDelegation').popover('show');
+    },200);
+
+  });
+
   $('body').on('click', function(e) {
-    if ($(e.target).data('toggle') !== 'popover' && $(e.target).parents('.popover.in').length === 0) 
-      $('[data-toggle="popover"]').popover('hide');
+    if ($(e.target).data('toggle') === undefined && $(e.target).parents('.popover.in').length === 0) 
+      $('#popoverDelegation').popover('hide');
   });
 }

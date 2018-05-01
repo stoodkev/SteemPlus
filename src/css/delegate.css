@@ -28,9 +28,48 @@ border-color: white;
 
 }
 
-.UserWallet__buysp 
+.UserWallet__buysp2 
 {
+  width: 30%;
   float: right !important;
+  background-color: transparent;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  color: #42bb8b;
+  border: 1px solid #42bb8b;
+  margin: 8px 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.UserWallet__buysp2:hover {
+    background-color: #42bb8b;
+    color: #fcfcfc;
+    border: 1px solid #42bb8b;
+}
+
+.UserWallet__buysp2:hover:disabled {
+    background-color: #e6e6e6;
+    color: #7f8082;
+    border: 1px solid #e6e6e6;
+}
+
+.UserWallet__buysp2:disabled {
+    background-color: #e6e6e6;
+    color: #7f8082;
+    border: 1px solid #e6e6e6;
+}
+
+.busy_btn {
+  background-color: transparent;
+  color: #3c4a97;
+  border-color: #3c4a97;
+}
+
+.busy_btn:hover {
+  background-color: #3c4a97;
+  color: white;
+  border-color: #3c4a97;
 }
 
 #list_delegators, #list_delegee
@@ -42,7 +81,6 @@ border-color: white;
 #popoverDelegation
 {
   padding-left: 5px;
-  padding-right: 5px;
   cursor:pointer;
 }
 

@@ -9,24 +9,30 @@ var load_check2 = '';
 var wallet_elt_d;
 var classButton;
 var timeoutD = 2000;
+var myAccountDelegation=null;
+var totalOutgoingDelegation=null;
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.to === 'delegation' && request.order === 'start' && token_del == null) {
     token_del = request.token;
-    startDelegation(request.data.steemit, request.data.busy, request.data.global, request.data.user);
+    myAccountDelegation=request.data.account;
+    startDelegation(request.data.steemit, request.data.busy, request.data.global);
     delegationStarted = true;
   } 
   else if (request.to === 'delegation' && request.order === 'click' && token_del === request.token)
-    startDelegation(request.data.steemit, request.data.busy, request.data.global, request.data.user);
+  {
+    myAccountDelegation=request.data.account;
+    startDelegation(request.data.steemit, request.data.busy, request.data.global);
+  }
   else if (request.to === 'delegation' && request.order === 'notif' && token_del == request.token) 
   {
     if (!$('.delegate'))
-      startDelegation(request.data.steemit, request.data.busy, request.data.global, request.data.user);
+      startDelegation(request.data.steemit, request.data.busy, request.data.global);
   }
 });
 
-function startDelegation(isSteemit, isBusy, globalP, account)
+function startDelegation(isSteemit, isBusy, globalP)
 {
   if (isSteemit) {
     load_check = /transfers/;
@@ -36,8 +42,8 @@ function startDelegation(isSteemit, isBusy, globalP, account)
     if (window.location.href.match(load_check))
     {
       usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
-      createButtonDelegation(isSteemit, isBusy, globalP, account);
-      getDelegationInformation(isSteemit, isBusy, globalP, account);
+      getDelegationInformation(isSteemit, isBusy, globalP);
+      createButtonDelegation(isSteemit, isBusy, globalP);
     }
 
   } 
@@ -50,19 +56,22 @@ function startDelegation(isSteemit, isBusy, globalP, account)
 
     if (window.location.href.match(load_check))
     {
-      usernamePageDelegation = account.name;
-      createButtonDelegation(isSteemit, isBusy, globalP, account);
-      getDelegationInformation(isSteemit, isBusy, globalP, account);
+      usernamePageDelegation = myAccountDelegation.name;
+      getDelegationInformation(isSteemit, isBusy, globalP);
+      createButtonDelegation(isSteemit, isBusy, globalP);
     }
     else if(window.location.href.match(load_check2)) // Not my wallet
     {
-      usernamePageDelegation = window.location.href.match(/https:\/\/busy.org\/@(.*)\/.*/);
-      getDelegationInformation(isSteemit, isBusy, globalP, account);
+      usernamePageDelegation = window.location.href.match(/https:\/\/busy.org\/@(.*)\/.*/)[1];
+      getDelegationInformation(isSteemit, isBusy, globalP);
+      createButtonDelegation(isSteemit, isBusy, globalP);
     }
   }
 }
 
-function createButtonDelegation(isSteemit, busy, globalP, account) {
+function createButtonDelegation(isSteemit, busy, globalP) {
+  if(totalOutgoingDelegation) setTimeout(function(){createButtonDelegation(isSteemit, busy, globalP)});
+
   console.log('Create Delegation Button');
   if ($('.delegate').length === 0) {
 
@@ -83,7 +92,7 @@ function createButtonDelegation(isSteemit, busy, globalP, account) {
 
     if (isSteemit)
     {
-      if(usernamePageDelegation === account)
+      if(usernamePageDelegation === myAccountDelegation.name)
       {
         $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
       }
@@ -93,7 +102,7 @@ function createButtonDelegation(isSteemit, busy, globalP, account) {
           $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
         else
           setTimeout(function(){
-            createButtonDelegation(isSteemit, busy, globalP, account);
+            createButtonDelegation(isSteemit, busy, globalP);
           },250);
       }
       $('.delegate').parent().css('float', 'right');
@@ -101,13 +110,23 @@ function createButtonDelegation(isSteemit, busy, globalP, account) {
     }
     else if(busy)
     {
-      $('.Action--primary ')[0].parentNode.appendChild(delegate_div);
+      $('.CryptoTrendingCharts').parent().prepend(delegate_div);
+      $('.delegate').css('margin-bottom', '10px');
     }
 
-    function getMaxSP() {
-      if (isSteemit) return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',', '')) - 5.001).toFixed(3);
-      else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',', '')) - 5.001).toFixed(3);
+    // function getMaxSP() {
+    //   if (isSteemit) return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',', '')) - 5.001).toFixed(3);
+    //   else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',', '')) - 5.001).toFixed(3);
+    // }
+
+    function getMaxSP(){
+      var myVests = parseFloat(steem.formatter.vestToSteem(myAccountDelegation.vesting_shares.replace(' VESTS',''), globalP.totalVests, globalP.totalSteem) * 100) / 100;
+      var maxSP = myVests - totalOutgoingDelegation - 5.000;
+
+      return (maxSP > 0 ? maxSP : 0);
     }
+
+
 
     $('.delegate').click(function() {
       var div = document.createElement('div');
@@ -116,23 +135,20 @@ function createButtonDelegation(isSteemit, busy, globalP, account) {
       if (isSteemit) {
         inner = '<div data-reactroot="" role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;"><div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;"><button class="close-button" type="button"><span aria-hidden="true" class="">×</span></button><div><div class="row"><h3 class="column">Delegate</h3>' +
         '</div><form ><div><div class="row"><div class="column small-12">Delegate SP to another Steemit account.</div></div><br></div><div class="row"><div class="column small-2" style="padding-top: 5px;">From</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span>' +
-        '<input type="text" class="input-group-field bold"  placeholder="Your account"value=' + account + ' style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=&quot;);"></div></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
-        'To</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span><input type="text" class="input-group-field" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value=""></div><p></p></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
+        '<input type="text" class="input-group-field bold"  placeholder="Your account"value=' + myAccountDelegation.name + ' style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGP6zwAAAgcBApocMXEAAAAASUVORK5CYII=&quot;);"></div></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
+        'To</div><div class="column small-10"><div class="input-group" style="margin-bottom: 1.25rem;"><span class="input-group-label">@</span><input type="text" class="input-group-field" placeholder="Send to account" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" name="to" value="' + (myAccountDelegation.name===usernamePageDelegation ? '' : usernamePageDelegation) + '"></div><p></p></div></div><div class="row"><div class="column small-2" style="padding-top: 5px;">' +
         'Amount</div><div class="column small-10"><div class="input-group" style="margin-bottom: 5px;"><input type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"><span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">' +
         '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">' +
         'Max*: ' + (getMaxSP() > 0 ? getMaxSP() : 0) + ' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp button hollow delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
         div.innerHTML = inner;
-      } else {
+      } 
+      else if(busy) {
         inner = '<div><div><div class="ant-modal-mask"></div><div tabindex="-1" class="ant-modal-wrap " role="dialog" aria-labelledby="rcDialogTitle0"><div role="document" class="ant-modal" style="width: 520px; transform-origin: 620.8px 9px 0px;"><div class="ant-modal-content"><button aria-label="Close" class="ant-modal-close"><span class="ant-modal-close-x close-button"></span></button>' +
-        '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0">Delegate SP to another account</div></div><div class="ant-modal-body"><form class="ant-form ant-form-horizontal ant-form-hide-required-mark Transfer container"><div class="ant-row ant-form-item"><div class="ant-form-item-label"><label for="from" class="ant-form-item-required" title=""><span>From</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><input type="text" placeholder="Your account" value="" id="from" data-__meta="[object Object]" class="ant-input ant-input-lg"></div></div>' +
-        '<div class="ant-form-item-label"><label for="to" class="ant-form-item-required" title=""><span>To</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><input type="text" placeholder="Send to account" value="" id="to" data-__meta="[object Object]" class="ant-input ant-input-lg"></div></div></div>' +
+        '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0">Delegate SP to another account</div></div><div class="ant-modal-body"><form class="ant-form ant-form-horizontal ant-form-hide-required-mark Transfer container"><div class="ant-row ant-form-item"><div class="ant-form-item-label"><label for="from" class="ant-form-item-required" title=""><span>From</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><input type="text" placeholder="Your account" value="'+ myAccountDelegation.name + '" id="from" data-__meta="[object Object]" class="ant-input ant-input-lg"></div></div>' +
+        '<div class="ant-form-item-label"><label for="to" class="ant-form-item-required" title=""><span>To</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><input type="text" placeholder="Send to account" value="' + (myAccountDelegation.name===usernamePageDelegation ? '' : usernamePageDelegation) + '" id="to" data-__meta="[object Object]" class="ant-input ant-input-lg"></div></div></div>' +
         '<div class="ant-row ant-form-item"><div class="ant-form-item-label"><label for="amount" class="ant-form-item-required" title=""><span>Amount</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><span class="ant-input-group-wrapper" style="width: 100%;"><span class="ant-input-wrapper ant-input-group"><input type="text" placeholder="How much do you want to send" value="" id="amount" data-__meta="[object Object]" name="amount" class="ant-input ant-input-lg"><span class="ant-input-group-addon"><div class="ant-radio-group"><label class="ant-radio-button-wrapper"><span class="ant-radio-button"><input type="radio" class="ant-radio-button-input" value="on"><span class="ant-radio-button-inner"></span></span><span>SP</span></label></div></span></span></span>' +
         '<span id="max_sp">Max*: <span role="presentation" class="balance">' + getMaxSP() + '</span>.<br/>* Maximum delegation available if no SP is currently delegated.' +
-        '</span></div></div></div></form><div class="del_busy" style="margin-bottom:1em;"><div class="ant-modal-header" style="padding:0;"><div class="ant-modal-title outgoing-delegation" id="rcDialogTitle0">Current delegations</div></div><ul>';
-        for (resul of result) {
-          inner += '<li>' + Math.round(steem.formatter.vestToSteem(resul.vesting_shares, globalP.totalVests, globalP.totalSteem) * 100) / 100 + ' SP delegated to @' + resul.delegatee + '<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account + '&delegatee=' + resul.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; " class="">×</span></button></a></li>';
-        }
-        inner += '</div><span>Click the button below to be redirected to SteemConnect to complete your transaction.</span></div><div class="ant-modal-footer"><button type="button" class="ant-btn ant-btn-lg close-button"><span>Cancel</span></button><input type="button" id="bd" style="margin-left: 1em;"disabled="" class="ant-btn ant-btn-primary ant-btn-lg delegate" value="Send"/></div></div><div tabindex="0" style="width: 0px; height: 0px; overflow: hidden;">sentinel</div></div></div></div></div>';
+        '</span></div></div></div></form>';
         div.innerHTML = inner;
 
       }
@@ -172,7 +188,7 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
       url: 'https://steemplus-api.herokuapp.com/api/get-incoming-delegations/' + usernamePageDelegation,
       // url: 'https://localhost:80/api/get-incoming-delegations/' + account,
       success: function(incomingDelegations) {
-        createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account);
+        createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP);
       },
       error: function(msg) {
         console.log(msg);
@@ -182,7 +198,7 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
   
 }
 
-function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP)
+function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account)
 {
   var divDelegation = $('<div class="delegation"></div>');
   console.log(incomingDelegations);
@@ -198,7 +214,7 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
       }
       
     });
-    $(divDelegation).find('.incoming-delegation').append(totalIncomingDelegation + ' SP');
+    $(divDelegation).find('.incoming-delegation').append(totalIncomingDelegation.toFixed(3) + ' SP');
   }
   console.log(divDelegation);
 
@@ -206,28 +222,28 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   if(outgoingDelegations.length > 0)
   {
     var inner = '';
-    var totalOutgoingDelegation = 0;
+    totalOutgoingDelegation = 0;
     
     $(divDelegation).append('<h5 class="outgoing-delegation">Outgoing - </h5><div id="list_delegee"></div>');
     console.log($(divDelegation).find('#list_delegee'));
     for (outgoingDelegation of outgoingDelegations) {
       var valueDelegation = Math.round(steem.formatter.vestToSteem(outgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem) * 100) / 100;
       if(valueDelegation>0){
-        if(account.name===usernamePageDelegation)
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + account.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></span><br>');
+        if(myAccountDelegation.name===usernamePageDelegation)
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></span><br>');
         else
           $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '</span><br>');
         totalOutgoingDelegation += valueDelegation;
       }
     }
-    $(divDelegation).find('.outgoing-delegation').append(totalOutgoingDelegation + ' SP');
+    $(divDelegation).find('.outgoing-delegation').append(totalOutgoingDelegation.toFixed(3) + ' SP');
   }
 
   if(isSteemit)
   {
     if($('.delegate').length > 0)
     {
-      if(account.name === usernamePageDelegation)
+      if(myAccountDelegation.name === usernamePageDelegation)
       {
         $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
       }
@@ -237,13 +253,6 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
       }
       $('#popoverDelegation').css('float', 'right');
       $('#popoverDelegation').css('width', '40%');
-      $('#popoverDelegation').attr('data-toggle','popover');
-      $('#popoverDelegation').attr('data-content',divDelegation[0].outerHTML);
-      $('#popoverDelegation').attr('data-placement','bottom');
-      $('#popoverDelegation').attr('title','Delegations');
-      $('#popoverDelegation').attr('data-html','true');
-      $('#popoverDelegation').attr('data-trigger','click');
-      $('[data-toggle="popover"]').popover();
     }
     else
     {
@@ -254,6 +263,13 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   }
   else if(isBusy)
   {
-
+    $('.UserWalletSummary__value > span').eq(1).find('span').eq(1).attr('id', 'popoverDelegation');
   }
+  $('#popoverDelegation').attr('data-toggle','popover');
+  $('#popoverDelegation').attr('data-content',divDelegation[0].outerHTML);
+  $('#popoverDelegation').attr('data-placement','bottom');
+  $('#popoverDelegation').attr('title','Delegations');
+  $('#popoverDelegation').attr('data-html','true');
+  $('#popoverDelegation').attr('data-trigger','click');
+  $('[data-toggle="popover"]').popover();
 }

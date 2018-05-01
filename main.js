@@ -68,7 +68,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
 
 
     if(delegation&&(steemit||busy))
-      chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'notif',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}}, user:user });
+      chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'notif',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteem,totalVests:totalVests}}});
     if (steemit&&steemit_more_info) {
       if(post_votes_list)
         chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
@@ -255,7 +255,7 @@ function startOfflineFeatures(items, user, account)
 
   console.log('Starting features...',user);
   if(delegation&&(steemit||busy))
-    chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
+    chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},account:account} });
   if(transfers&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
   if(account_value&&(steemit||busy))
@@ -312,7 +312,7 @@ function startOfflineFeatures(items, user, account)
         if(urlOffline.match(/transfers/)&&window.location.href.includes('@'+user+'/transfers'))
           location.reload();
         if(delegation&&(steemit||busy))
-          chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},user:user} });
+          chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},account:account} });
         if(transfers&&(steemit||busy))
           chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
         if(account_value&&(steemit||busy))

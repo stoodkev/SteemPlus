@@ -46,6 +46,6 @@ border-color: white;
   cursor:pointer;
 }
 
-.delegationDiv .popover{
+.delegationDiv .popover, .UserWalletSummary__value .popover{
   width:300px;
 }

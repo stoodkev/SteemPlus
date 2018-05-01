@@ -93,7 +93,8 @@
         "src/js/classification_user.js",
         "src/js/witnesses_tab.js",
         "src/js/article_count.js",
-        "src/js/wallet_history.js"],
+        "src/js/wallet_history.js",
+        "src/js/rewards_tab.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
@@ -111,7 +112,8 @@
         "src/css/classification_user.css",
         "src/css/dropdown.css",
         "src/css/witnesses_tab.css",
-        "src/css/wallet_history.css"],
+        "src/css/wallet_history.css",
+        "src/css/rewards_tab.css"],
       "run_at": "document_idle"
     }
   ]

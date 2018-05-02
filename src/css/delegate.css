@@ -2,28 +2,119 @@
   position:absolute;
   cursor: pointer;
   right:0;
+  background: transparent;
+  border: none; 
 }
-
-.delegations li{
-  width:100%;
-}
-
-.delegations h3{margin-bottom: 1em;}
 
 .del_busy button {
 
   background: none !important;
-    color: inherit;
-    border: none;
-    padding: 0! important;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit !important;
-    margin-right:1em;
+  color: inherit;
+  border: none;
+  padding: 0! important;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit !important;
+  margin-right:1em;
 }
 
-.theme-dark #delegateButton{
-color:white;
-border-color: white;
 
+
+.theme-dark #delegateButton{
+  color:white;
+  border-color: white;
+}
+
+.UserWallet__buysp2 
+{
+  width: 30%;
+  float: right !important;
+  background-color: transparent;
+  padding-bottom: 0.5rem;
+  padding-top: 0.5rem;
+  color: #42bb8b;
+  border: 1px solid #42bb8b;
+  margin: 8px 0;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.UserWallet__buysp2:hover {
+    background-color: #42bb8b;
+    color: #fcfcfc;
+    border: 1px solid #42bb8b;
+}
+
+.UserWallet__buysp2:hover:disabled {
+    background-color: #e6e6e6;
+    color: #7f8082;
+    border: 1px solid #e6e6e6;
+}
+
+.UserWallet__buysp2:disabled {
+    background-color: #e6e6e6;
+    color: #7f8082;
+    border: 1px solid #e6e6e6;
+}
+
+.busy_btn {
+  background-color: transparent;
+  color: #3c4a97;
+  border-color: #3c4a97;
+}
+
+.busy_btn:hover {
+  background-color: #3c4a97;
+  color: white;
+  border-color: #3c4a97;
+}
+
+#list_delegators, #list_delegee
+{
+  font-size: 1em;
+  font-weight: normal; 
+  overflow-y: auto;
+  overflow-x: visible;
+  max-height: 13em;
+}
+
+#list_delegators
+{
+  margin-bottom: 0.25em;
+}
+
+#list_delegee > span, #list_delegators > span{
+  width: 100%;
+}
+
+#popoverDelegation
+{
+  padding-left: 5px;
+  cursor:pointer;
+}
+
+.delegationDiv .popover, .UserWalletSummary__value .popover{
+  min-width: 30em;
+  max-height: 30em;
+}
+
+.delegationDiv .delegate {
+  margin-right: 0px !important;
+}
+
+.span-steemit .stop_del {
+  margin-top: 0.25em;
+}
+
+.delegation {
+  padding-left: 0px !important;
+}
+
+h5.incoming-delegation, h5.outgoing-delegation {
+  font-size: 1.05em;
+  margin-bottom: 0.5em;
+}
+
+.delegation-pop-title{
+  font-size: 1.25em;
 }

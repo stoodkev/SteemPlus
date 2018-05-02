@@ -25,6 +25,11 @@
       return 'http://steem.supply/@' + username;
     }
   }, {
+    title: 'Minnow Support',
+    href: function(username) {
+      return 'http://minnowpond.org';
+    }
+  }, {
     title: 'Mentions',
     href: function(username) {
       return 'http://steemistry.com/steemit-mentions-tool/?mention=@' + username;

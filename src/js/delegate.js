@@ -185,7 +185,6 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
         xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
       },
       url: 'https://steemplus-api.herokuapp.com/api/get-incoming-delegations/' + usernamePageDelegation,
-      // url: 'https://localhost:80/api/get-incoming-delegations/' + account,
       success: function(incomingDelegations) {
         createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP);
       },
@@ -199,8 +198,7 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
 
 function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account)
 {
-  var divDelegation = $('<div class="delegation"></div>');
-  console.log(incomingDelegations);
+  var divDelegation = $('<div class="delegation column"></div>');
   if (incomingDelegations.length > 0) 
   {
     $(divDelegation).append('<h5 class="incoming-delegation">Incoming - </h5><div id="list_delegators"></div>');
@@ -211,27 +209,23 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
         $(divDelegation).find('#list_delegators').append('<span style="float:left; margin-bottom:3px;" title="' + new Date(item.delegation_date) + '">' + valueDelegation + ' SP delegated by @' + item.delegator + '</span><br>');
       totalIncomingDelegation += valueDelegation;
       }
-      
     });
+    $(divDelegation).find('#list_delegators').append('<br>');
     $(divDelegation).find('.incoming-delegation').append(totalIncomingDelegation.toFixed(3) + ' SP');
   }
-  console.log(divDelegation);
-
-  console.log(outgoingDelegations);
   if(outgoingDelegations.length > 0)
   {
     var inner = '';
     totalOutgoingDelegation = 0;
     
     $(divDelegation).append('<h5 class="outgoing-delegation">Outgoing - </h5><div id="list_delegee"></div>');
-    console.log($(divDelegation).find('#list_delegee'));
     for (outgoingDelegation of outgoingDelegations) {
       var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(outgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
       if(valueDelegation>0){
         if(myAccountDelegation.name===usernamePageDelegation)
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '<a href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del" type="button"><span aria-hidden="true" style="color:red ; margin-right:1em;" class="">×</span></button></a></span><br>');
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '<a target="_blank" href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del '+ (isBusy ? 'stop_del_busy' : '') +'" type="button"><span aria-hidden="true" style="color:red ; margin-right:2em;" class="">×</span></button></a></span>');
         else
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '</span><br>');
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '</span>');
         totalOutgoingDelegation += valueDelegation;
       }
     }
@@ -251,7 +245,6 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
         $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
       }
       $('#popoverDelegation').css('float', 'right');
-      $('#popoverDelegation').css('width', '40%');
     }
     else
     {

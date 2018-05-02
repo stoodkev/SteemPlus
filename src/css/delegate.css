@@ -2,30 +2,27 @@
   position:absolute;
   cursor: pointer;
   right:0;
+  background: transparent;
+  border: none; 
 }
-
-.delegations li{
-  width:100%;
-}
-
-.delegations h3{margin-bottom: 1em;}
 
 .del_busy button {
 
   background: none !important;
-    color: inherit;
-    border: none;
-    padding: 0! important;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit !important;
-    margin-right:1em;
+  color: inherit;
+  border: none;
+  padding: 0! important;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit !important;
+  margin-right:1em;
 }
 
-.theme-dark #delegateButton{
-color:white;
-border-color: white;
 
+
+.theme-dark #delegateButton{
+  color:white;
+  border-color: white;
 }
 
 .UserWallet__buysp2 
@@ -76,6 +73,18 @@ border-color: white;
 {
   font-size: 13.5px;
   font-weight: normal; 
+  overflow-y: auto;
+  overflow-x: visible;
+  max-height: 200px;
+}
+
+#list_delegators
+{
+  margin-bottom: 10px;
+}
+
+#list_delegee > span, #list_delegators > span{
+  width: 100%;
 }
 
 #popoverDelegation
@@ -85,5 +94,14 @@ border-color: white;
 }
 
 .delegationDiv .popover, .UserWalletSummary__value .popover{
-  width:300px;
+  min-width: 450px;
+  max-height: 500px;
+}
+
+.delegationDiv .delegate {
+  margin-right: 0px !important;
+}
+
+.span-steemit .stop_del {
+  margin-top: 0.25em;
 }

@@ -11,6 +11,7 @@ var classButton;
 var timeoutD = 2000;
 var myAccountDelegation=null;
 var totalOutgoingDelegation=-1;
+var totalIncomingDelegation=-1;
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -32,6 +33,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
+// startDelegation checks if delegation can start or not
+// @parameter isSteemit : boolean, true if used website is steemit
+// @parameter isBusy : boolean, true if used website is busy
+// @parameter globalP : contains total steem and total vests
 function startDelegation(isSteemit, isBusy, globalP)
 {
   if(!window.location.href.includes('#')) 
@@ -74,6 +79,10 @@ function startDelegation(isSteemit, isBusy, globalP)
   
 }
 
+// createButtonDelegation creates delegation button and delegation modal.
+// @parameter isSteemit : boolean, true if used website is steemit
+// @parameter isBusy : boolean, true if used website is busy
+// @parameter globalP : contains total steem and total vests
 function createButtonDelegation(isSteemit, busy, globalP) {
   if(totalOutgoingDelegation===-1) 
   {
@@ -125,11 +134,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
         $('.delegate').css('margin-bottom', '10px');
       }
 
-      // function getMaxSP() {
-      //   if (isSteemit) return (parseFloat($(".FoundationDropdownMenu__label")[1].innerHTML.split('-->')[1].split(' ')[0].replace(',', '')) - 5.001).toFixed(3);
-      //   else return (parseFloat(($('.UserWalletSummary__value span')[3].innerHTML).replace(',', '')) - 5.001).toFixed(3);
-      // }
-
+      // Function used to get the maximum SP user can delegate
       function getMaxSP(){
         var myVests = parseFloat(steem.formatter.vestToSteem(myAccountDelegation.vesting_shares.replace(' VESTS',''), globalP.totalVests, globalP.totalSteem) * 100) / 100;
         var maxSP = myVests - totalOutgoingDelegation - 5.000;
@@ -186,9 +191,17 @@ function createButtonDelegation(isSteemit, busy, globalP) {
   }
 }
 
+// getDelegationInformation get all the delegation information : incoming and outgoing
+// @parameter isSteemit : boolean, true if used website is steemit
+// @parameter isBusy : boolean, true if used website is busy
+// @parameter globalP : contains total steem and total vests
+// @parameter account : account of user 
 function getDelegationInformation(isSteemit, isBusy, globalP, account)
 {
+  // get outgoing delegation from the blockchain using steemjs
   steem.api.getVestingDelegations(usernamePageDelegation, null, 10, function(err, outgoingDelegations) {
+    
+    // get incoming delegation from steemSQL
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
@@ -207,13 +220,21 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
   
 }
 
+
+// createPopoverDelegation creates popover displaying delegations
+// @parameter isSteemit : boolean, true if used website is steemit
+// @parameter isBusy : boolean, true if used website is busy
+// @parameter incomingDelegations : list of all incoming delegations
+// @parameter outgoingDelegations : list of all outgoing delegations
+// @parameter globalP : contains total steem and total vests
+// @parameter account : account of user 
 function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account)
 {
   var divDelegation = $('<div class="delegation column"></div>');
   if (incomingDelegations.length > 0) 
   {
     $(divDelegation).append('<h5 class="incoming-delegation">Incoming - </h5><div id="list_delegators"></div>');
-    var totalIncomingDelegation = 0;
+    totalIncomingDelegation = 0;
     incomingDelegations.forEach(function(item) {
       var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(item.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
       if(valueDelegation > 0){
@@ -223,6 +244,10 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     });
     $(divDelegation).find('#list_delegators').append('<br>');
     $(divDelegation).find('.incoming-delegation').append(totalIncomingDelegation.toFixed(3) + ' SP');
+  }
+  else
+  {
+    totalIncomingDelegation = 0;
   }
   if(outgoingDelegations.length > 0)
   {
@@ -246,48 +271,54 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     totalOutgoingDelegation = 0;
   }
 
-  if(isSteemit)
+  // If total incoming delegation > 0 or total outgoing delegation > 0 so display popover
+  // Else don't display popover
+  if(totalIncomingDelegation>0||totalOutgoingDelegation>0)
   {
-    if($('.delegate').length > 0)
+    if(isSteemit)
     {
-      if(myAccountDelegation.name === usernamePageDelegation)
+      if($('.delegate').length > 0)
       {
-        $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
+        if(myAccountDelegation.name === usernamePageDelegation)
+        {
+          $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
+        }
+        else
+        {
+          $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
+        }
+        $('#popoverDelegation').css('float', 'right');
       }
       else
       {
-        $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
+        setTimeout(function(){
+          createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account);
+        },250);
       }
-      $('#popoverDelegation').css('float', 'right');
     }
-    else
+    else if(isBusy)
     {
-      setTimeout(function(){
-        createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account);
-      },250);
+      $('.UserWalletSummary__value > span').eq(1).find('span').eq(1).attr('id', 'popoverDelegation');
     }
+
+    $('#popoverDelegation').attr('data-toggle','popover');
+    $('#popoverDelegation').attr('data-content',divDelegation[0].outerHTML);
+    $('#popoverDelegation').attr('data-placement','bottom');
+    $('#popoverDelegation').attr('title','<span class="delegation-pop-title">Delegations</span>');
+    $('#popoverDelegation').attr('data-html','true');
+    $('[data-toggle="popover"]').popover();
+
+    $('#popoverDelegation').click(function(){
+      setTimeout(function(){
+        $('#popoverDelegation').popover('show');
+      },200);
+
+    });
+
+    $('body').on('click', function(e) {
+      if ($(e.target).data('toggle') === undefined && $(e.target).parents('.popover.in').length === 0) 
+        $('#popoverDelegation').popover('hide');
+    });
   }
-  else if(isBusy)
-  {
-    $('.UserWalletSummary__value > span').eq(1).find('span').eq(1).attr('id', 'popoverDelegation');
-  }
-
-  $('#popoverDelegation').attr('data-toggle','popover');
-  $('#popoverDelegation').attr('data-content',divDelegation[0].outerHTML);
-  $('#popoverDelegation').attr('data-placement','bottom');
-  $('#popoverDelegation').attr('title','<span class="delegation-pop-title">Delegations</span>');
-  $('#popoverDelegation').attr('data-html','true');
-  $('[data-toggle="popover"]').popover();
-
-  $('#popoverDelegation').click(function(){
-    setTimeout(function(){
-      $('#popoverDelegation').popover('show');
-    },200);
-
-  });
-
-  $('body').on('click', function(e) {
-    if ($(e.target).data('toggle') === undefined && $(e.target).parents('.popover.in').length === 0) 
-      $('#popoverDelegation').popover('hide');
-  });
+  
 }

@@ -34,39 +34,44 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startDelegation(isSteemit, isBusy, globalP)
 {
-  if (isSteemit) {
-    load_check = /transfers/;
-    wallet_elt_d = ".FoundationDropdownMenu__label";
-    classButton = "'UserWallet__buysp button hollow delegate";
-
-    if (window.location.href.match(load_check))
-    {
-      usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
-      getDelegationInformation(isSteemit, isBusy, globalP);
-      createButtonDelegation(isSteemit, isBusy, globalP);
-    }
-
-  } 
-  else if (isBusy) 
+  if(!window.location.href.includes('#')) 
   {
-    load_check = /wallet/;
-    load_check2 = /transfers/;
-    wallet_elt_d = ".UserWalletSummary__item ";
-    classButton = "Action ant-btn-lg Action--primary delegate";
+    if (isSteemit)
+    {
+      load_check = /transfers/;
+      wallet_elt_d = ".FoundationDropdownMenu__label";
+      classButton = "'UserWallet__buysp button hollow delegate";
 
-    if (window.location.href.match(load_check))
+      if (window.location.href.match(load_check))
+      {
+        usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
+        getDelegationInformation(isSteemit, isBusy, globalP);
+        createButtonDelegation(isSteemit, isBusy, globalP);
+      }
+
+    } 
+    else if (isBusy) 
     {
-      usernamePageDelegation = myAccountDelegation.name;
-      getDelegationInformation(isSteemit, isBusy, globalP);
-      createButtonDelegation(isSteemit, isBusy, globalP);
-    }
-    else if(window.location.href.match(load_check2)) // Not my wallet
-    {
-      usernamePageDelegation = window.location.href.match(/https:\/\/busy.org\/@(.*)\/.*/)[1];
-      getDelegationInformation(isSteemit, isBusy, globalP);
-      createButtonDelegation(isSteemit, isBusy, globalP);
+      load_check = /wallet/;
+      load_check2 = /transfers/;
+      wallet_elt_d = ".UserWalletSummary__item ";
+      classButton = "Action ant-btn-lg Action--primary delegate";
+
+      if (window.location.href.match(load_check))
+      {
+        usernamePageDelegation = myAccountDelegation.name;
+        getDelegationInformation(isSteemit, isBusy, globalP);
+        createButtonDelegation(isSteemit, isBusy, globalP);
+      }
+      else if(window.location.href.match(load_check2)) // Not my wallet
+      {
+        usernamePageDelegation = window.location.href.match(/https:\/\/busy.org\/@(.*)\/.*/)[1];
+        getDelegationInformation(isSteemit, isBusy, globalP);
+        createButtonDelegation(isSteemit, isBusy, globalP);
+      }
     }
   }
+  
 }
 
 function createButtonDelegation(isSteemit, busy, globalP) {
@@ -176,7 +181,6 @@ function createButtonDelegation(isSteemit, busy, globalP) {
           });
 
         $('body').append(div);
-        if (result.length === 0) $('.outgoing-delegation').hide();
       });
     }
   }

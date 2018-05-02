@@ -24,7 +24,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       onClickA();}
     else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
     {
-      console.log("notif");
       if(accountValStarted)
       {
         acc_market=request.market;
@@ -62,14 +61,12 @@ function startAccountValue(){
     setTimeout(function() {
       if(window.location.href!=='')
       {
-        console.log(wallet_elt_a,"3");
         if(window.location.href.includes('@')){
           account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
           wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
         }
       }
       if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
-        console.log(wallet_elt_a,"2");
         checkLoad();
       }
     },timeout_a);
@@ -104,7 +101,6 @@ function startAccountValue(){
     SBD_A=acc_market.priceSBD;
     steem.api.getAccounts([account_v], function(err, result) {
       if(err) console.log(err);
-      console.log(result);
       var value=0;
       const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
       const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
@@ -156,10 +152,15 @@ function startAccountValue(){
     }
     else
     {
-      var spanVestingShares = $('.UserWallet__balance > .column')[3];
-      var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
-      $(spanVestingShares)[0].textContent = '';
-      $(spanVestingShares).append(newDiv);
+      if($('.vests-added').length === 0)
+      {
+        var spanVestingShares = $('.UserWallet__balance > .column')[3];
+        var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
+        $(spanVestingShares)[0].textContent = '';
+        $(spanVestingShares).append(newDiv);
+        $(newDiv).parent().eq(0).addClass('vests-added');
+      }
+      
     }
 
 

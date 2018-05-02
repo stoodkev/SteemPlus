@@ -271,7 +271,7 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   $('#popoverDelegation').attr('data-toggle','popover');
   $('#popoverDelegation').attr('data-content',divDelegation[0].outerHTML);
   $('#popoverDelegation').attr('data-placement','bottom');
-  $('#popoverDelegation').attr('title','Delegations');
+  $('#popoverDelegation').attr('title','<span class="delegation-pop-title">Delegations</span>');
   $('#popoverDelegation').attr('data-html','true');
   $('[data-toggle="popover"]').popover();
 

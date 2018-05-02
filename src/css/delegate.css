@@ -71,16 +71,16 @@
 
 #list_delegators, #list_delegee
 {
-  font-size: 13.5px;
+  font-size: 1em;
   font-weight: normal; 
   overflow-y: auto;
   overflow-x: visible;
-  max-height: 200px;
+  max-height: 13em;
 }
 
 #list_delegators
 {
-  margin-bottom: 10px;
+  margin-bottom: 0.25em;
 }
 
 #list_delegee > span, #list_delegators > span{
@@ -94,8 +94,8 @@
 }
 
 .delegationDiv .popover, .UserWalletSummary__value .popover{
-  min-width: 450px;
-  max-height: 500px;
+  min-width: 30em;
+  max-height: 30em;
 }
 
 .delegationDiv .delegate {
@@ -104,4 +104,17 @@
 
 .span-steemit .stop_del {
   margin-top: 0.25em;
+}
+
+.delegation {
+  padding-left: 0px !important;
+}
+
+h5.incoming-delegation, h5.outgoing-delegation {
+  font-size: 1.05em;
+  margin-bottom: 0.5em;
+}
+
+.delegation-pop-title{
+  font-size: 1.25em;
 }

@@ -4,3 +4,24 @@
   margin-left: 0px !important;
   text-transform: capitalize;
 }
+
+.rewards-odd
+{
+	background-color: #eeeeee;
+}
+
+/* Night mode */
+
+.theme-dark .subtypeItem
+{
+	color: white !important;
+}
+.theme-dark .subtypeItem:hover
+{
+	color: #4ba2f2 !important;
+}
+
+.theme-dark .rewards-odd
+{
+	color: black;
+}

@@ -185,7 +185,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	$('.RewardsTabLoading').show();
 	$('.container-rewards').find('.row').empty();
 	var indexDisplayReward = 0;
-	var style = 'background-color:#eeeeee;';
+	var classOdd = 'rewards-odd';
 	rewardsListLocal.forEach(function(item){
 		if(item.type===subtype + '_' + type)
 		{
@@ -200,7 +200,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 			{
 				rewardText.push(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
 			}
-			$('.container-rewards').find('.row').append('<span style="' + (indexDisplayReward%2===0 ? style : '') + '" class="col-2" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span style="' + (indexDisplayReward%2===0 ? style : '') + '" class="col-4">' + rewardText.join(', ') + '</span><span style="' + (indexDisplayReward%2===0 ? style : '') + '" class="col-6">' + item.permlink + '</span>');
+			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-4 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-6 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + item.permlink + '</span>');
 			indexDisplayReward++;
 		}
 	});

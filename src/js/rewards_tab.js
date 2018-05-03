@@ -104,6 +104,8 @@ function createRewardsTab(rewardsTab)
 	rewardsTab.find('.rewards-type').on('change', function() {
     // Change display
     var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
+    $('.subtypeItem').removeClass('active');
+		$('.subtypeItem').eq(0).addClass('active');
     displayRewards(rewardsTab, typeReward,'pending',window.SteemPlus.Utils.getPageAccountName());
 	});
 

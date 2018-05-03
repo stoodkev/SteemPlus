@@ -101,6 +101,7 @@ function createRewardsTab(rewardsTab)
 	</div>');
 
 	// On change type
+	// Display pending rewards for chosen type
 	rewardsTab.find('.rewards-type').on('change', function() {
     // Change display
     var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
@@ -110,6 +111,7 @@ function createRewardsTab(rewardsTab)
 	});
 
 	// Change subtype
+	// Display chosen subtype for selected type
 	rewardsTab.find('.subtypeItem').click(function(){
 		var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
 		var subTypeReward = $(this).attr('name');
@@ -119,6 +121,7 @@ function createRewardsTab(rewardsTab)
 	});
 
   // Display mentions in post
+  // Default : display author pending rewards
   displayRewards(rewardsTab,'author', 'pending', window.SteemPlus.Utils.getPageAccountName());
 }
 
@@ -150,10 +153,10 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
       },
       error: function(msg) {
       	downloadingDataRewardTab = false;
-      	if($('.error-mentions-label').length===0){
+      	if($('.error-rewards-label').length===0){
       		var errorLabel = document.createElement('h2');
       		$(errorLabel).addClass('articles__h1');
-      		$(errorLabel).addClass('error-mentions-label');
+      		$(errorLabel).addClass('error-rewards-label');
       		$(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
       		$('.RewardsTabLoading').hide();
       		$('.articles').prepend(errorLabel);
@@ -206,6 +209,19 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 			indexDisplayReward++;
 		}
 	});
+
+	// subtype and type doesn't match any information
+	if(indexDisplayReward===0)
+	{
+		if($('.error-rewards-label').length===0){
+  		var errorLabel = document.createElement('h2');
+  		$(errorLabel).addClass('articles__h1');
+  		$(errorLabel).addClass('error-rewards-label');
+  		$(errorLabel).append('No information to display for ' + subtype + ' ' + type + ' rewards.');
+  		$('.RewardsTabLoading').hide();
+  		$('.container-rewards').prepend(errorLabel);
+  	}
+	}
 
 	$('.Rewards').show();
 	$('.RewardsTabLoading').hide();

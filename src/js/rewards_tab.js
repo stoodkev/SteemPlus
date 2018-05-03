@@ -219,7 +219,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
   		$(errorLabel).addClass('error-rewards-label');
   		$(errorLabel).append('No information to display for ' + subtype + ' ' + type + ' rewards.');
   		$('.RewardsTabLoading').hide();
-  		$('.container-rewards').prepend(errorLabel);
+  		$('.container-rewards').find('.row').prepend(errorLabel);
   	}
 	}
 

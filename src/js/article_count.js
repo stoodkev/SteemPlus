@@ -26,59 +26,30 @@ function startArticleCount()
 
 function displayArticleCount()
 {
-	getPosts(window.SteemPlus.Utils.getPageAccountName());
+	var usernameArticleCount = window.SteemPlus.Utils.getPageAccountName();
+	getPosts(0, null, usernameArticleCount);
 }
 
-function getPosts(usernameArticleCount){
-	
-	var entry_id = null;
-	var articleCount = 0;
-	var nbNew = null;
-
-	var tryCount = 0;
-
-	console.log('here', nbNew!==0);
-	while(nbNew !== 0&&tryCount<20)
+function getPosts(articleCount, entry_id, usernameArticleCount){
+	steem.api.getBlogEntries(usernameArticleCount, entry_id, 100, function(err, result)
 	{
-		tryCount++;
-		Promise.resolve(steem.api.getBlogEntriesAsync(usernameArticleCount, entry_id, 100)).then(function(result){
-			console.log(result);
-			console.log(entry_id);
-			nbNew = result.length;
+		if(err) console.log(err)
+		else
+		{
 			result.forEach(function(article){
 				if(article.author === usernameArticleCount)
 					articleCount++;
 			});
-			entry_id = result[result.length-1].entry_id-1;
-		})
-		.catch(function(err){
-			console.log(err);
-		});
-	}
-	
-	$('.UserProfile__stats > span')[1].remove();
-	var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' post' + (articleCount > 1 ? 's' : '') + ' </a></span>');
-	$('.UserProfile__stats > span')[0].after(span[0]);
-
-	// steem.api.getBlogEntries(usernameArticleCount, entry_id, 100, function(err, result)
-	// {
-	// 	if(err) console.log(err)
-	// 	else
-	// 	{
-	// 		result.forEach(function(article){
-	// 			if(article.author === usernameArticleCount)
-	// 				articleCount++;
-	// 		});
-	// 		if(result.length === 100)
-	// 		{
-	// 			getPosts(articleCount, result[result.length-1].entry_id-1, usernameArticleCount);
-	// 		}
-	// 		else
-	// 		{
-	// 			$('.UserProfile__stats > span')[1].remove();
-	// 			var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' post' + (articleCount > 1 ? 's' : '') + ' </a></span>');
-	// 			$('.UserProfile__stats > span')[0].after(span[0]);
-	// 		}
-	// 	}
-	// });
+			if(result.length === 100)
+			{
+				getPosts(articleCount, result[result.length-1].entry_id-1, usernameArticleCount);
+			}
+			else
+			{
+				$('.UserProfile__stats > span')[1].remove();
+				var span = $('<span><a href="/@' + usernameArticleCount + '">' + articleCount + ' post' + (articleCount > 1 ? 's' : '') + ' </a></span>');
+				$('.UserProfile__stats > span')[0].after(span[0]);
+			}
+		}
+	});
 }

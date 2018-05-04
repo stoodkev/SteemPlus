@@ -144,7 +144,7 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
       //  console.log(xhttp);
   		},
 
-      url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageMentions,
+      url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
       // url: 'https://api.myjson.com/bins/142hsa',
       success: function(result) {
       	rewardsListLocal = result;

@@ -20,6 +20,11 @@
 	font-weight: bold;
 }
 
+#rewards-information-message
+{
+	font-style: italic;
+}
+
 /* Night mode */
 
 .theme-dark .subtypeItem

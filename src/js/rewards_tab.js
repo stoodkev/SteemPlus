@@ -80,6 +80,7 @@ function createRewardsTab(rewardsTab)
 						</div>\
 					</div>\
 					<div class="bootstrap-wrapper">\
+						<h6 id="rewards-information-message"></h6>\
 	          			<div class="container container-rewards">\
 	          				<div class="row"></div>\
 	          			</div>\
@@ -141,11 +142,11 @@ function createRewardsTab(rewardsTab)
 
 // Function used to download infomation about a post like title and url
 // This function use async and await to be sure that data processing will be launch only if all data is downloaded
-function initListReward(list, rewardsTab, type, subtype, usernamePageReward)
+function initListReward(list, rewardsTab, type, subtype)
 {
 	rewardsListLocal = [];
 	list.forEach(async function(item, index, list){
-		await steem.api.getContentAsync(usernamePageReward, item.permlink).then(function(content) {
+		await steem.api.getContentAsync(item.author, item.permlink).then(function(content) {
 			item.url = content.url;
 			item.title = (content.title==='' ? 'Re : ' : '') + content.root_title;
 			rewardsListLocal.push(item);
@@ -181,7 +182,7 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
       url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
       success: function(result) {
       	downloadingDataRewardTab = false;
-		initListReward(result, rewardsTab, type, subtype, usernamePageReward);
+		initListReward(result, rewardsTab, type, subtype);
       },
       error: function(msg) {
       	downloadingDataRewardTab = false;
@@ -230,6 +231,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	var totalSP=0;
 
 	rewardsListLocal.forEach(function(item){
+
 		if(item.type===subtype + '_' + type)
 		{	
 			hasDataToDisplay = true;
@@ -274,7 +276,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 				rewardText.push(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
 				totalSP+=parseFloat(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3));
 			}
-			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-3 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-7 ' + (indexDisplayReward%2===0 ? classOdd : '') + '"><a target="_blank" href="'+ item.url + '">' + item.title + '</a></span>');
+			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + (subtype==='paid' ? 'Paid ' : '') + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-3 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-7 ' + (indexDisplayReward%2===0 ? classOdd : '') + '"><a target="_blank" href="'+ item.url + '">' + item.title + '</a></span>');
 			indexDisplayReward++; 
 		}
 	});
@@ -293,6 +295,12 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	}
 	else
 	{
+		$('#rewards-information-message').eq(0).empty();
+		if(subtype==='paid')
+			$('#rewards-information-message').eq(0).append('Those are all the ' + type + ' rewards paid the last 7 days');
+		else
+			$('#rewards-information-message').eq(0).append('Those are all the ' + type + ' rewards pending. Remember that rewards are paid after seven days.');
+
 		var totalPendingLabel = [];
 		if(totalSBD>0)
 		{

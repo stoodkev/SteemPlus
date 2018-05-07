@@ -36,7 +36,6 @@ function startTabReward()
 	else
 	{
 		// Create the new tab
-		console.log($('.UserProfile__top-nav > div > div > ul > li'));
 		$('.UserProfile__top-nav > div > div > ul > li').eq(3).hide();
 		window.SteemPlus.Tabs.createTab({
 			id: 'rewards',
@@ -136,10 +135,10 @@ function initListReward(list, rewardsTab, type, subtype)
 			item.url = content.url;
 			item.title = (content.title==='' ? 'Re : ' : '') + content.root_title;
 			rewardsListLocal.push(item);
-			if(index === list.length-1)
+			if(rewardsListLocal.length === list.length)
 			{
 				rewardsListLocal.sort(function(a,b){
-				    return new Date(b.timestamp) - new Date(a.timestamp);
+			    	return new Date(b.timestamp) - new Date(a.timestamp);
 				});
 				createRowsRewardsTab(rewardsTab, type, subtype);
 			}
@@ -167,7 +166,6 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
 
       url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
       success: function(result) {
-      	console.log(result);
       	downloadingDataRewardTab = false;
 		initListReward(result, rewardsTab, type, subtype);
       },
@@ -279,7 +277,6 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 			{
 				totalPendingLabel.push(pendingTotalSteem.toFixed(3) + ' STEEM');
 			}
-			console.log(totalPendingLabel);
 			$('.container-rewards').find('.row').prepend('<span class="col-2 total-pending-label">Total</span><span class="col-9 total-pending-label">' + totalPendingLabel.join(', ') + '</span>');
 		}
 	}

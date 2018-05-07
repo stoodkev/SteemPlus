@@ -10,6 +10,16 @@
 	background-color: #eeeeee;
 }
 
+.container-rewards > div > span {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.total-pending-label
+{
+	font-weight: bold;
+}
+
 /* Night mode */
 
 .theme-dark .subtypeItem

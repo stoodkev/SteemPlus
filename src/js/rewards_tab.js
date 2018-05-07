@@ -81,10 +81,10 @@ function createRewardsTab(rewardsTab)
 						</div>\
 					</div>\
 					<div class="bootstrap-wrapper">\
-	          <div class="container container-rewards">\
-	          	<div class="row"></div>\
-	          </div>\
-	        </div>\
+	          			<div class="container container-rewards">\
+	          				<div class="row"></div>\
+	          			</div>\
+	        		</div>\
 				</div>\
 				<center class="RewardsTabLoading">\
 					<div class="LoadingIndicator circle">\
@@ -125,6 +125,28 @@ function createRewardsTab(rewardsTab)
   displayRewards(rewardsTab,'author', 'pending', window.SteemPlus.Utils.getPageAccountName());
 }
 
+
+// Function used to download infomation about a post like title and url
+// This function use async and await to be sure that data processing will be launch only if all data is downloaded
+function initListReward(list, rewardsTab, type, subtype)
+{
+	rewardsListLocal = [];
+	list.forEach(async function(item, index, list){
+		await steem.api.getContentAsync(item.author, item.permlink).then(function(content) {
+			item.url = content.url;
+			item.title = (content.title==='' ? 'Re : ' : '') + content.root_title;
+			rewardsListLocal.push(item);
+			if(index === list.length-1)
+			{
+				rewardsListLocal.sort(function(a,b){
+				    return new Date(b.timestamp) - new Date(a.timestamp);
+				});
+				createRowsRewardsTab(rewardsTab, type, subtype);
+			}
+		});
+  	});
+}
+
 // Display rewards depending on type and sub type
 // @parameter reward : jquery object, tab
 // @parameter type : represent the selected element (Author, Curation or Benefactor)
@@ -141,15 +163,13 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
 				downloadingDataRewardTab=true;
 				xhttp.setRequestHeader("Content-type", "application/json");
 				xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-      //  console.log(xhttp);
   		},
 
       url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
-      // url: 'https://api.myjson.com/bins/142hsa',
       success: function(result) {
-      	rewardsListLocal = result;
-      	createRowsRewardsTab(rewardsTab, type, subtype);
+      	console.log(result);
       	downloadingDataRewardTab = false;
+		initListReward(result, rewardsTab, type, subtype);
       },
       error: function(msg) {
       	downloadingDataRewardTab = false;
@@ -191,36 +211,77 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	$('.container-rewards').find('.row').empty();
 	var indexDisplayReward = 0;
 	var classOdd = 'rewards-odd';
+	var hasDataToDisplay = false;
+
+	var pendingTotalSBD=0;
+	var pendingTotalSteem=0;
+	var pendingTotalVests=0;
+
 	rewardsListLocal.forEach(function(item){
 		if(item.type===subtype + '_' + type)
-		{
+		{	
+			hasDataToDisplay = true;
 			var rewardText = [];
 			if(item.reward===-1)
 			{
-				if(item.sbd_payout>0) rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');
-				if(item.vests_payout>0) rewardText.push(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
-				if(item.steem_payout>0) rewardText.push(item.steem_payout.toFixed(3) + ' STEEM');
+				if(item.sbd_payout>0)
+				{
+					rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');
+					pendingTotalSBD+=item.sbd_payout;
+				} 
+				if(item.vests_payout>0)
+				{
+					rewardText.push(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
+					pendingTotalVests+=parseFloat(item.vests_payout);
+				} 
+				if(item.steem_payout>0) 
+				{
+					rewardText.push(item.steem_payout.toFixed(3) + ' STEEM');
+					pendingTotalSteem+=parseFloat(item.steem_payout);
+				}
 			}
 			else
 			{
 				rewardText.push(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
+				pendingTotalVests+=parseFloat(item.reward);
 			}
-			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-4 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-6 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + item.permlink + '</span>');
-			indexDisplayReward++;
+			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-3 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-7 ' + (indexDisplayReward%2===0 ? classOdd : '') + '"><a target="_blank" href="'+ item.url + '">' + item.title + '</a></span>');
+			indexDisplayReward++; 
 		}
 	});
 
 	// subtype and type doesn't match any information
-	if(indexDisplayReward===0)
+	if(!hasDataToDisplay)
 	{
 		if($('.error-rewards-label').length===0){
-  		var errorLabel = document.createElement('h2');
-  		$(errorLabel).addClass('articles__h1');
-  		$(errorLabel).addClass('error-rewards-label');
-  		$(errorLabel).append('No information to display for ' + subtype + ' ' + type + ' rewards.');
-  		$('.RewardsTabLoading').hide();
-  		$('.container-rewards').find('.row').prepend(errorLabel);
-  	}
+	  		var errorLabel = document.createElement('h2');
+	  		$(errorLabel).addClass('articles__h1');
+	  		$(errorLabel).addClass('error-rewards-label');
+	  		$(errorLabel).append('No information to display for ' + subtype + ' ' + type + ' rewards.');
+	  		$('.RewardsTabLoading').hide();
+	  		$('.container-rewards').find('.row').prepend(errorLabel);
+	  	}
+	}
+	else
+	{
+		if(subtype === 'pending')
+		{
+			var totalPendingLabel = [];
+			if(pendingTotalSBD>0)
+			{
+				totalPendingLabel.push(pendingTotalSBD.toFixed(3) + ' SBD');
+			} 
+			if(pendingTotalVests>0)
+			{
+				totalPendingLabel.push(steem.formatter.vestToSteem(parseFloat(pendingTotalVests), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
+			} 
+			if(pendingTotalSteem>0) 
+			{
+				totalPendingLabel.push(pendingTotalSteem.toFixed(3) + ' STEEM');
+			}
+			console.log(totalPendingLabel);
+			$('.container-rewards').find('.row').prepend('<span class="col-2 total-pending-label">Total</span><span class="col-9 total-pending-label">' + totalPendingLabel.join(', ') + '</span>');
+		}
 	}
 
 	$('.Rewards').show();

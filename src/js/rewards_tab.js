@@ -102,11 +102,25 @@ function createRewardsTab(rewardsTab)
 	// On change type
 	// Display pending rewards for chosen type
 	rewardsTab.find('.rewards-type').on('change', function() {
-    // Change display
-    var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
-    $('.subtypeItem').removeClass('active');
-		$('.subtypeItem').eq(0).addClass('active');
-    displayRewards(rewardsTab, typeReward,'pending',window.SteemPlus.Utils.getPageAccountName());
+	    // Change display
+	    var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
+	    var subtypeRewardDefault;
+	    if(typeReward === 'author')
+	    {
+	    	$('.subtypeItem').eq(0).show();
+	    	$('.subtypeItem').removeClass('active');
+			$('.subtypeItem').eq(0).addClass('active');
+			subtypeRewardDefault = 'pending';
+	    }
+	    else
+	    {
+			$('.subtypeItem').removeClass('active');
+			$('.subtypeItem').eq(1).addClass('active');
+			$('.subtypeItem').eq(0).hide();
+			subtypeRewardDefault = 'paid';
+	    }
+
+	    displayRewards(rewardsTab, typeReward, subtypeRewardDefault, window.SteemPlus.Utils.getPageAccountName());
 	});
 
 	// Change subtype
@@ -127,11 +141,11 @@ function createRewardsTab(rewardsTab)
 
 // Function used to download infomation about a post like title and url
 // This function use async and await to be sure that data processing will be launch only if all data is downloaded
-function initListReward(list, rewardsTab, type, subtype)
+function initListReward(list, rewardsTab, type, subtype, usernamePageReward)
 {
 	rewardsListLocal = [];
 	list.forEach(async function(item, index, list){
-		await steem.api.getContentAsync(item.author, item.permlink).then(function(content) {
+		await steem.api.getContentAsync(usernamePageReward, item.permlink).then(function(content) {
 			item.url = content.url;
 			item.title = (content.title==='' ? 'Re : ' : '') + content.root_title;
 			rewardsListLocal.push(item);
@@ -167,7 +181,7 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
       url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
       success: function(result) {
       	downloadingDataRewardTab = false;
-		initListReward(result, rewardsTab, type, subtype);
+		initListReward(result, rewardsTab, type, subtype, usernamePageReward);
       },
       error: function(msg) {
       	downloadingDataRewardTab = false;
@@ -211,37 +225,54 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	var classOdd = 'rewards-odd';
 	var hasDataToDisplay = false;
 
-	var pendingTotalSBD=0;
-	var pendingTotalSteem=0;
-	var pendingTotalVests=0;
+	var totalSBD=0;
+	var totalSteem=0;
+	var totalSP=0;
 
 	rewardsListLocal.forEach(function(item){
 		if(item.type===subtype + '_' + type)
 		{	
 			hasDataToDisplay = true;
 			var rewardText = [];
-			if(item.reward===-1)
+			if(item.type==='pending_author')
+			{
+				var beneficiariesList = JSON.parse(item.beneficiaries);
+				var beneficiariesTotalWeight = 0;
+				beneficiariesList.forEach(function(bene){
+					beneficiariesTotalWeight += bene["weight"] / 10000;
+				});
+
+				var pendingAuthorSDB = parseFloat(item.pending_payout_value) * 0.75 * (1 - beneficiariesTotalWeight) * 0.5;
+				var pendingAuthorSP = pendingAuthorSDB / 3.50;
+
+				rewardText.push(pendingAuthorSDB.toFixed(3) + ' SBD');
+				rewardText.push(pendingAuthorSP.toFixed(3) + ' SP');
+
+				totalSBD+=pendingAuthorSDB;
+				totalSP+=pendingAuthorSP;
+			}
+			else if(item.reward===-1)
 			{
 				if(item.sbd_payout>0)
 				{
 					rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');
-					pendingTotalSBD+=item.sbd_payout;
+					totalSBD+=item.sbd_payout;
 				} 
 				if(item.vests_payout>0)
 				{
 					rewardText.push(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
-					pendingTotalVests+=parseFloat(item.vests_payout);
+					totalSP+=parseFloat(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab));
 				} 
 				if(item.steem_payout>0) 
 				{
 					rewardText.push(item.steem_payout.toFixed(3) + ' STEEM');
-					pendingTotalSteem+=parseFloat(item.steem_payout);
+					totalSteem+=parseFloat(item.steem_payout);
 				}
 			}
 			else
 			{
 				rewardText.push(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
-				pendingTotalVests+=parseFloat(item.reward);
+				totalSP+=parseFloat(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3));
 			}
 			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-3 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-7 ' + (indexDisplayReward%2===0 ? classOdd : '') + '"><a target="_blank" href="'+ item.url + '">' + item.title + '</a></span>');
 			indexDisplayReward++; 
@@ -262,23 +293,21 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	}
 	else
 	{
-		if(subtype === 'pending')
+		var totalPendingLabel = [];
+		if(totalSBD>0)
 		{
-			var totalPendingLabel = [];
-			if(pendingTotalSBD>0)
-			{
-				totalPendingLabel.push(pendingTotalSBD.toFixed(3) + ' SBD');
-			} 
-			if(pendingTotalVests>0)
-			{
-				totalPendingLabel.push(steem.formatter.vestToSteem(parseFloat(pendingTotalVests), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
-			} 
-			if(pendingTotalSteem>0) 
-			{
-				totalPendingLabel.push(pendingTotalSteem.toFixed(3) + ' STEEM');
-			}
-			$('.container-rewards').find('.row').prepend('<span class="col-2 total-pending-label">Total</span><span class="col-9 total-pending-label">' + totalPendingLabel.join(', ') + '</span>');
+			totalPendingLabel.push(totalSBD.toFixed(3) + ' SBD');
+		} 
+		if(totalSP>0)
+		{
+			totalPendingLabel.push(totalSP.toFixed(3) + ' SP');
+		} 
+		if(totalSteem>0) 
+		{
+			totalPendingLabel.push(totalSteem.toFixed(3) + ' STEEM');
 		}
+		if(totalPendingLabel.length > 0)
+			$('.container-rewards').find('.row').prepend('<span class="col-2 total-pending-label">Total</span><span class="col-9 total-pending-label">' + totalPendingLabel.join(', ') + '</span>');
 	}
 
 	$('.Rewards').show();

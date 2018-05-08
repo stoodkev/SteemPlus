@@ -214,7 +214,7 @@ function startOfflineFeatures(items, user, account)
   const totalVestsLS = (items.totalVestsLS==undefined ? 1 : items.totalVestsLS);
   const rewardBalanceLS = (items.rewardBalanceLS==undefined ? 1 : items.rewardBalanceLS);
   const recentClaimsLS = (items.recentClaimsLS==undefined ? 1 : items.recentClaimsLS);
-  const steemPriceLS = (items.steemPriceLS==undefined ? 1 : items.steemPriceLS);
+  const steemPriceLS = (items.steemPriceLS==undefined ? 3.5 : items.steemPriceLS);
 
   console.log('Getting settings...');
   const delegation=(items.del==undefined||items.del=="show");
@@ -246,7 +246,7 @@ function startOfflineFeatures(items, user, account)
   const wallet_history_memo_key=(items.wallet_history_memo_key== undefined ? '' : items.wallet_history_memo_key);
   const rewards_tab=(items.rewards_tab == undefined || items.rewards_tab=='show');
 
-  
+
   const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
   const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
   const last_post_url=items.last_post_url;
@@ -278,7 +278,7 @@ function startOfflineFeatures(items, user, account)
   if(wallet_history&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
   if(rewards_tab&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS}});
+      chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -353,7 +353,7 @@ function startOfflineFeatures(items, user, account)
         if(wallet_history&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
         if(rewards_tab&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS}});
+          chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

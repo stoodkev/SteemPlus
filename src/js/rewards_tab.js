@@ -1,6 +1,7 @@
 var token_rewards_tab=null;
 var totalVestsRewardsTab=null
 var totalSteemRewardsTab=null;
+var base=null;
 var downloadingDataRewardTab=false;
 
 var rewardsListLocal=null;
@@ -13,6 +14,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			token_rewards_tab=request.token;
 			totalVestsRewardsTab = request.data.totalVests;
 			totalSteemRewardsTab = request.data.totalSteem;
+			base=request.data.base;
 			startTabReward();
 		}
 
@@ -20,6 +22,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		{
 			totalVestsRewardsTab = request.data.totalVests;
 			totalSteemRewardsTab = request.data.totalSteem;
+			base=request.data.base;
 			startTabReward();
 		}
 	}
@@ -233,7 +236,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	rewardsListLocal.forEach(function(item){
 
 		if(item.type===subtype + '_' + type)
-		{	
+		{
 			hasDataToDisplay = true;
 			var rewardText = [];
 			if(item.type==='pending_author')
@@ -245,7 +248,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 				});
 
 				var pendingAuthorSDB = parseFloat(item.pending_payout_value) * 0.75 * (1 - beneficiariesTotalWeight) * 0.5;
-				var pendingAuthorSP = pendingAuthorSDB / 3.50;
+				var pendingAuthorSP = pendingAuthorSDB / base;
 
 				rewardText.push(pendingAuthorSDB.toFixed(3) + ' SBD');
 				rewardText.push(pendingAuthorSP.toFixed(3) + ' SP');
@@ -259,13 +262,13 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 				{
 					rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');
 					totalSBD+=item.sbd_payout;
-				} 
+				}
 				if(item.vests_payout>0)
 				{
 					rewardText.push(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3) + ' SP');
 					totalSP+=parseFloat(steem.formatter.vestToSteem(parseFloat(item.vests_payout), totalVestsRewardsTab, totalSteemRewardsTab));
-				} 
-				if(item.steem_payout>0) 
+				}
+				if(item.steem_payout>0)
 				{
 					rewardText.push(item.steem_payout.toFixed(3) + ' STEEM');
 					totalSteem+=parseFloat(item.steem_payout);
@@ -277,7 +280,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 				totalSP+=parseFloat(steem.formatter.vestToSteem(parseFloat(item.reward), totalVestsRewardsTab, totalSteemRewardsTab).toFixed(3));
 			}
 			$('.container-rewards').find('.row').append('<span class="col-2 ' + (indexDisplayReward%2===0 ? classOdd : '') + '" title="' + new Date(item.timestamp) + '">' + (subtype==='paid' ? 'Paid ' : '') + moment(new Date(item.timestamp)).fromNow() + '</span> <span class="col-3 ' + (indexDisplayReward%2===0 ? classOdd : '') + '">' + rewardText.join(', ') + '</span><span class="col-7 ' + (indexDisplayReward%2===0 ? classOdd : '') + '"><a target="_blank" href="'+ item.url + '">' + item.title + '</a></span>');
-			indexDisplayReward++; 
+			indexDisplayReward++;
 		}
 	});
 
@@ -297,20 +300,20 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 	{
 		$('#rewards-information-message').eq(0).empty();
 		if(subtype==='paid')
-			$('#rewards-information-message').eq(0).append('Those are all the ' + type + ' rewards paid the last 7 days');
+			$('#rewards-information-message').eq(0).append('List of all the ' + type + ' rewards paid within the last 7 days');
 		else
-			$('#rewards-information-message').eq(0).append('Those are all the ' + type + ' rewards pending. Remember that rewards are paid after seven days.');
+			$('#rewards-information-message').eq(0).append('List of all the panding ' + type + ' rewards. They will be paid 7 days after creation. The pending payout is an estimation that may vary over time.');
 
 		var totalPendingLabel = [];
 		if(totalSBD>0)
 		{
 			totalPendingLabel.push(totalSBD.toFixed(3) + ' SBD');
-		} 
+		}
 		if(totalSP>0)
 		{
 			totalPendingLabel.push(totalSP.toFixed(3) + ' SP');
-		} 
-		if(totalSteem>0) 
+		}
+		if(totalSteem>0)
 		{
 			totalPendingLabel.push(totalSteem.toFixed(3) + ' STEEM');
 		}

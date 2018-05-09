@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.11.3",
+  "version": "2.12",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -62,8 +62,8 @@
   "content_scripts": [
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
-      "js": ["vendor/jquery.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/decode.min.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js",  "vendor/Chart.min.js", "vendor/toastr.min.js",
-        "vendor/smi/HtmlReady.js","vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js","vendor/logger.js","vendor/unslider/unslider-min.js",
+      "js": ["vendor/jquery.js","vendor/logger.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/decode.min.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js",  "vendor/Chart.min.js", "vendor/toastr.min.js",
+        "vendor/smi/HtmlReady.js","vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js","vendor/unslider/unslider-min.js",
         "main.js",
         "src/js/loginSteemPlus.js",
         "src/js/delegate.js",
@@ -93,7 +93,8 @@
         "src/js/classification_user.js",
         "src/js/witnesses_tab.js",
         "src/js/article_count.js",
-        "src/js/wallet_history.js"],
+        "src/js/wallet_history.js",
+        "src/js/rewards_tab.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
@@ -111,7 +112,8 @@
         "src/css/classification_user.css",
         "src/css/dropdown.css",
         "src/css/witnesses_tab.css",
-        "src/css/wallet_history.css"],
+        "src/css/wallet_history.css",
+        "src/css/rewards_tab.css"],
       "run_at": "document_idle"
     }
   ]

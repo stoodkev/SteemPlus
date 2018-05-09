@@ -1,0 +1,42 @@
+
+.rewards-type {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+  text-transform: capitalize;
+}
+
+.rewards-odd
+{
+	background-color: #eeeeee;
+}
+
+.container-rewards > div > span {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.total-pending-label
+{
+	font-weight: bold;
+}
+
+#rewards-information-message
+{
+	font-style: italic;
+}
+
+/* Night mode */
+
+.theme-dark .subtypeItem
+{
+	color: white !important;
+}
+.theme-dark .subtypeItem:hover
+{
+	color: #4ba2f2 !important;
+}
+
+.theme-dark .rewards-odd
+{
+	color: black;
+}

@@ -109,13 +109,10 @@ function startWalletHistory()
 {	
 	chrome.storage.local.get(['filters_state_wallet'], function (items)
 	{
-		console.log(items.filters_state_wallet);
 		if(items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
-		//console.log("start wallet",$('.Trans').length);
+
 		if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 		{
-
-			$('.Trans').hide();
 			usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 			$.ajax({
 				type: "GET",
@@ -125,6 +122,7 @@ function startWalletHistory()
 				},
 				url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
 				success: function(result) {
+					$('.Trans').hide();
 					dataWalletHistory = result;
 					if($('.smi-transaction-table-filters').length===0)
 						displayWalletHistory();
@@ -134,14 +132,16 @@ function startWalletHistory()
 				}
 			});
 		}
-
 		else
-			setTimeout(function(){
+		{
+			setTimeout(function()
+			{
 				if(retry<=20){
 					retry++;
 					startWalletHistory();
 				}
 			}, 250);
+		}		
 	});
 }
 

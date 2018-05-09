@@ -7,6 +7,7 @@ const regexFeedSteemit = /^https:\/\/steemit\.com\/(created|hot|promoted|trendin
 const regexFeedBusy = /^https:\/\/busy\.org\/(created|hot|active|trending)\/.*$/;
 const regexFeedPlusSteemit = /^https:\/\/steemit\.com\/(created|hot|promoted|trending)\/*#plus$/;
 const regexPostSteemit = /^https:\/\/steemit\.com\/[a-zA-Z0-9]+\/@[\.\-a-zA-Z0-9]*\/.*$/;
+const regexCreatePostSteemit = /^https:\/\/steemit\.com\/submit\.html$/;
 
 // Warning! To use this one you'll have to test the wallet too cause the format is the same
 const regexPostBusy = /^https:\/\/busy\.org\/@[a-zA-Z0-9\.\-]*\/.*$/;

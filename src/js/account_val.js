@@ -33,30 +33,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-function startAccountValue(){
-        if(acc_steemit) {
-            load_check_a=/transfers/;
-            load_check2_a=/transfers/;
-            if(window.location.href.includes('@') && window.location.href.includes('/')){
-              account_v=window.location.href.split('@')[1].split('/')[0];
-              wallet_elt_a=$('.medium-4')[4];
-            }
-            else
-              return;
-
-        }
-            else if(acc_busy)
-        {
-            load_check_a=/wallet/;
-            load_check2_a=/transfers/;
-            wallet_elt_a=$('.UserWalletSummary__value')[4];
-            account_v=(window.location.href.match(load_check))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-        }
-
-        if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)){
-          checkLoad();
-        }
+function startAccountValue()
+{
+  if(regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))
+  {
+    if(acc_steemit) 
+    {
+      load_check_a=/transfers/;
+      load_check2_a=/transfers/;
+      if(window.location.href.includes('@') && window.location.href.includes('/')){
+        account_v=window.location.href.split('@')[1].split('/')[0];
+        wallet_elt_a=$('.medium-4')[4];
+      }
+      else
+        return;
     }
+    else if(acc_busy)
+    {
+      load_check_a=/wallet/;
+      load_check2_a=/transfers/;
+      wallet_elt_a=$('.UserWalletSummary__value')[4];
+      account_v=(window.location.href.match(load_check))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
+    }
+
+    if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)){
+      checkLoad();
+    }
+  }
+}
 
   function onClickA(){
     setTimeout(function() {

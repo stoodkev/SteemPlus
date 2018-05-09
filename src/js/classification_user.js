@@ -27,38 +27,44 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function canStartClassificationUser()
 {
-
-  if($('.Post').length > 0)
+  if( window.location.href.match(regexClassificationUserBlogSteemit)
+    ||window.location.href.match(regexFeedPlusSteemit)
+    ||window.location.href.match(regexFeedSteemit)
+    ||window.location.href.match(regexPostSteemit))
   {
-    // Case article
-    if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
+    if($('.Post').length > 0)
     {
-      startClassificationUser();
+      // Case article
+      if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
+      {
+        startClassificationUser();
+      }
+      else
+      {
+        setTimeout(function(){
+          canStartClassificationUser();
+        }, 500);
+      }
     }
     else
     {
-      setTimeout(function(){
-        canStartClassificationUser();
-      }, 500);
-    }
-  }
-  else
-  {
-    // Case feed, blog
-    if(nbElementPageAuthor===$('.author').length)
-    {
-      setTimeout(function(){
-        canStartClassificationUser();
-      }, 500);
-    }
-    else
-    {
-      startClassificationUser();
+      // Case feed, blog
+      if(nbElementPageAuthor===$('.author').length)
+      {
+        setTimeout(function(){
+          canStartClassificationUser();
+        }, 500);
+      }
+      else
+      {
+        startClassificationUser();
+      }
     }
   }
 }
 
 function startClassificationUser(){
+  console.log('startClassification');
   //$('.classification-section').remove();
   var elementUserListCU = $('.ptc');
   var elementUserListCU2 = $('.author > strong > a');

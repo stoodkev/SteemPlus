@@ -24,15 +24,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 function startBeneficiaries(){
-  if(window.location.href.match(/submit/))
+  if(window.location.href.match(regexCreatePostSteemit))
     addBeneficiariesButton();
 }
 
 function onClickB(){
-  if(window.location.href.match(/submit/)&&!created_benef){
+  if(window.location.href.match(regexCreatePostSteemit)&&!created_benef){
     addBeneficiariesButton();
   }
-  if(!window.location.href.match(/submit/)){
+  if(!window.location.href.match(regexCreatePostSteemit)){
     created_benef=false;
   }
 }

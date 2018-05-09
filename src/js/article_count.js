@@ -16,12 +16,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startArticleCount()
 {
-	if($('.UserProfile__stats').length===0)
-		setTimeout(function(){
-			startArticleCount();
-		},200);
-	else
-		displayArticleCount();
+	// If url matches blog url then start the feature
+	if(window.location.href.match(regexBlogSteemit))
+	{
+		if($('.UserProfile__stats').length===0)
+			setTimeout(function(){
+				startArticleCount();
+			},200);
+		else
+			displayArticleCount();
+	}
+	
 }
 
 function displayArticleCount()

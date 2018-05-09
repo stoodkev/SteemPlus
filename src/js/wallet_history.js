@@ -97,25 +97,24 @@ function startWalletHistory()
 	//console.log("start wallet",$('.Trans').length);
 	if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 	{
-
-		$('.Trans').hide();
 		usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 		$.ajax({
-      type: "GET",
-      beforeSend: function(xhttp) {
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-      },
-      url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
-      success: function(result) {
-      	dataWalletHistory = result;
-      	if($('.smi-transaction-table-filters').length===0)
-      		displayWalletHistory();
-      },
-      error: function(msg) {
-        console.log(msg.responseJSON.error);
-      }
-    });
+	      type: "GET",
+	      beforeSend: function(xhttp) {
+	        xhttp.setRequestHeader("Content-type", "application/json");
+	        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+	      },
+	      url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
+	      success: function(result) {
+	      	$('.Trans').hide();
+	      	dataWalletHistory = result;
+	      	if($('.smi-transaction-table-filters').length===0)
+	      		displayWalletHistory();
+	      },
+	      error: function(msg) {
+	        console.log(msg.responseJSON.error);
+	      }
+	    });
 	}
 
 	else

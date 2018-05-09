@@ -6,7 +6,7 @@ var recentClaimsMentionsTab=null;
 var steemPriceMentionsTab=null;
 var mentionTabStarted=false;
 var mentionsTabPostsComments=null;
-var downloadingData=false;
+var downloadingDataMentionTab=false;
 
 var indexLastItemDisplayed=0;
 
@@ -120,13 +120,13 @@ function createMentionsTab(mentionsTab) {
 // @parameter reset : need to reset UI or not
 function displayMentions(mentionsTab, type, usernamePageMentions,reset)
 {
-  if(mentionsTabPostsComments===null&&!downloadingData)
+  if(mentionsTabPostsComments===null&&!downloadingDataMentionTab)
   {
   //  console.log("Start data downloading");
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
-        downloadingData=true;
+        downloadingDataMentionTab=true;
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       //  console.log(xhttp);
@@ -136,11 +136,11 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
       success: function(result) {
 
         mentionsTabPostsComments = result;
-        createRows(mentionsTab, type, reset);
-        downloadingData = false;
+        createRowsMentionTab(mentionsTab, type, reset);
+        downloadingDataMentionTab = false;
       },
       error: function(msg) {
-        downloadingData = false;
+        downloadingDataMentionTab = false;
         if($('.error-mentions-label').length===0){
           var errorLabel = document.createElement('h2');
           $(errorLabel).addClass('articles__h1');
@@ -154,7 +154,7 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
   }
   else
   {
-    if(downloadingData)
+    if(downloadingDataMentionTab)
     {
     //  console.log("downloading data");
       // wait because data already downloading
@@ -166,13 +166,13 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
     {
     //  console.log("already downloaded");
       // display with local data
-      createRows(mentionsTab, type, reset);
+      createRowsMentionTab(mentionsTab, type, reset);
     }
   }
 
 }
 
-function createRows(mentionsTab, type, reset)
+function createRowsMentionTab(mentionsTab, type, reset)
 {
   if(reset)
   {

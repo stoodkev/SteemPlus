@@ -86,7 +86,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   });
 });
 
-chrome.storage.local.get(['wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
+chrome.storage.local.get(['rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
   var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
   chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
   market=items.market==undefined?{SBDperSteem:0,priceSteem:0,priceSBD:0}:items.market;
@@ -214,7 +214,7 @@ function startOfflineFeatures(items, user, account)
   const totalVestsLS = (items.totalVestsLS==undefined ? 1 : items.totalVestsLS);
   const rewardBalanceLS = (items.rewardBalanceLS==undefined ? 1 : items.rewardBalanceLS);
   const recentClaimsLS = (items.recentClaimsLS==undefined ? 1 : items.recentClaimsLS);
-  const steemPriceLS = (items.steemPriceLS==undefined ? 1 : items.steemPriceLS);
+  const steemPriceLS = (items.steemPriceLS==undefined ? 3.5 : items.steemPriceLS);
 
   console.log('Getting settings...');
   const delegation=(items.del==undefined||items.del=="show");
@@ -244,6 +244,9 @@ function startOfflineFeatures(items, user, account)
   const article_count=(items.article_count == undefined || items.article_count=='show');
   const wallet_history=(items.wallet_history == undefined || items.wallet_history=='show');
   const wallet_history_memo_key=(items.wallet_history_memo_key== undefined ? '' : items.wallet_history_memo_key);
+  const rewards_tab=(items.rewards_tab == undefined || items.rewards_tab=='show');
+
+
   const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
   const smi_installed_remind_me_time=items.smi_installed_remind_me_time;
   const last_post_url=items.last_post_url;
@@ -274,6 +277,8 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'start',data:{}});
   if(wallet_history&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
+  if(rewards_tab&&steemit)
+      chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -347,6 +352,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'click',data:{}});
         if(wallet_history&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
+        if(rewards_tab&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

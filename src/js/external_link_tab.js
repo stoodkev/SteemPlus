@@ -90,7 +90,7 @@
       }
       else if(request.order==='click'&&token_external_link_tab==request.token)
       {
-                addExternalLinksMenu();
+        addExternalLinksMenu();
       }
     }
   });
@@ -123,33 +123,38 @@
   };
 
   function addExternalLinksMenu() {
-    var name = window.SteemPlus.Utils.getPageAccountName();
-    if(!name){
-      return;
-    }
-    console.log('Adding external links menu: ' + name);
 
-    window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus){
-      var menu = menus.eq(1); // second menu
-      var el = menu.find('li.' + menuClass);
-      if(el.length){
-        el.remove();
+    if(window.location.href.match(regexBlogSteemit))
+    {
+
+      var name = window.SteemPlus.Utils.getPageAccountName();
+      if(!name){
+        return;
       }
-      el = createMenu(menu, name);
-      el.find('a.smi-open-menu-ELT').on('click', function(e) {
-        e.preventDefault();
+      console.log('Adding external links menu: ' + name);
 
-        if($('.' + menuClass + ' .dropdown-pane-ELT').hasClass('is-open'))
-        {
-          $('.' + menuClass + ' .dropdown-pane-ELT').removeClass('is-open');
+      window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus){
+        var menu = menus.eq(1); // second menu
+        var el = menu.find('li.' + menuClass);
+        if(el.length){
+          el.remove();
         }
-        else
-        {
-          el.find('.dropdown-pane-ELT').addClass('is-open');
-        }
+        el = createMenu(menu, name);
+        el.find('a.smi-open-menu-ELT').on('click', function(e) {
+          e.preventDefault();
+
+          if($('.' + menuClass + ' .dropdown-pane-ELT').hasClass('is-open'))
+          {
+            $('.' + menuClass + ' .dropdown-pane-ELT').removeClass('is-open');
+          }
+          else
+          {
+            el.find('.dropdown-pane-ELT').addClass('is-open');
+          }
 
 
+        });
+        menu.prepend(el);
       });
-      menu.prepend(el);
-    });
+    }
   };

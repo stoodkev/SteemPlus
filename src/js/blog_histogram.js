@@ -6,7 +6,6 @@ var resteemBarBackgroundColor = '#008000';
 var resteemBarBorderColor = '#006100';
 var selectedBarBackgroundColor = 'red';
 var selectedBarBorderColor = 'red';
-var blogPageRegexp = /\/@([a-z0-9\-\.]*)$/;
 
 var rewardBalance=null;
 var recentClaims=null;
@@ -358,6 +357,9 @@ $('body').on('click', function(e) {
 
 
 function checkHistogram(postsList, name) {
+
+
+
   if(getShowHistogram() === 'disabled'){
     return true;
   }
@@ -388,14 +390,25 @@ function checkHistogram(postsList, name) {
 
 
 function checkForBlogPage() {
-  var match = (window.location.pathname || '').match(blogPageRegexp);
-  if(match) {
-    var name = match[1];
-    var postsList = $('#posts_list');
-    var added = checkHistogram(postsList, name);
-    if(!added){
-      // histogram UI not added, try again later
-      setTimeout(checkForBlogPage, 100);
+  if(window.location.href.match(regexBlogSteemit))
+  {
+    var match = (window.location.pathname || '').match(/\/@([a-z0-9\-\.]*)$/);
+    if(match)
+    {
+      var name = match[1];
+      var postsList = $('#posts_list');
+      var added = checkHistogram(postsList, name);
+      if(!added){
+        // histogram UI not added, try again later
+        setTimeout(checkForBlogPage, 100);
+      }
     }
+    else
+    {
+      $('.smi-posts-histogram-container').remove();
+      $('.smi-posts-histogram-added').removeClass('smi-posts-histogram-added');
+    }
+    
   }
+  
 };

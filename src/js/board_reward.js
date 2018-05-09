@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
-	if(window.location.match(regexBlogSteemit))
+	if(window.location.href.match(regexBlogSteemit))
 	{
 		if(!$('.board-reward-tab').length > 0)
 		{

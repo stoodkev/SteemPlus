@@ -30,7 +30,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	{
 		if(request.order==='start'&&token_board_reward==null)
 		{
-
 			startBoardReward();
 		}
 	}
@@ -39,10 +38,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
-	if(!$('.board-reward-tab').length > 0)
+	if(window.location.match(regexBlogSteemit))
 	{
-		createBoardRewardTab();
+		if(!$('.board-reward-tab').length > 0)
+		{
+			createBoardRewardTab();
+		}
 	}
+	
 }
 
 function createBoardRewardTab()
@@ -50,7 +53,6 @@ function createBoardRewardTab()
 	if($('.menu').length===0)
 	{
 		setTimeout(function(){
-			console.log('timeout250');
 			createBoardRewardTab();
 		}, 250);
 	}

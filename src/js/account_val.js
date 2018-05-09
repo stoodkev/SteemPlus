@@ -8,6 +8,7 @@ var accountValStarted=false;
 var acc_steemit,acc_busy,acc_global,acc_market;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
     {
       token_a=request.token;

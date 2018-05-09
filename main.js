@@ -354,6 +354,9 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
         if(rewards_tab&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
+        if(gif_picker&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
+    
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

@@ -39,20 +39,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // @parameter globalP : contains total steem and total vests
 function startDelegation(isSteemit, isBusy, globalP)
 {
-  if(!window.location.href.includes('#')) 
+  if(window.location.href.match(regexWalletBusy)||window.location.href.match(regexWalletSteemit)) 
   {
     if (isSteemit)
     {
-      load_check = /transfers/;
       wallet_elt_d = ".FoundationDropdownMenu__label";
       classButton = "'UserWallet__buysp button hollow delegate";
 
-      if (window.location.href.match(load_check))
-      {
-        usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
-        getDelegationInformation(isSteemit, isBusy, globalP);
-        createButtonDelegation(isSteemit, isBusy, globalP);
-      }
+      usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
+      getDelegationInformation(isSteemit, isBusy, globalP);
+      createButtonDelegation(isSteemit, isBusy, globalP);
 
     } 
     else if (isBusy) 

@@ -390,7 +390,7 @@ function checkHistogram(postsList, name) {
 
 
 function checkForBlogPage() {
-  if(window.location.href.match(regexBlogSteemit))
+  if(regexBlogSteemit.test(window.location.href))
   {
     var match = (window.location.pathname || '').match(/\/@([a-z0-9\-\.]*)$/);
     if(match)

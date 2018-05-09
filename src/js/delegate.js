@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // @parameter globalP : contains total steem and total vests
 function startDelegation(isSteemit, isBusy, globalP)
 {
-  if(window.location.href.match(regexWalletBusy)||window.location.href.match(regexWalletSteemit)) 
+  if(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href)) 
   {
     if (isSteemit)
     {
@@ -88,7 +88,6 @@ function createButtonDelegation(isSteemit, busy, globalP) {
   }
   else
   {
-    console.log('Create Delegation Button', totalOutgoingDelegation);
     if ($('.delegate').length === 0) {
 
       if ($('.transfer_to').length !== 0) $('.transfer_to').remove();

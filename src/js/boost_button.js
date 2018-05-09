@@ -522,7 +522,7 @@
 
 function addPostBoostButton() {
 
-  if(window.location.href.match(regexPostSteemit))
+  if(regexPostSteemit.test(window.location.href))
   {
     var promoteButton = $('.Promote__button');
     var boostButton = $('.smi-boost-button');

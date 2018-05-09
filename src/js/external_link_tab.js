@@ -124,7 +124,7 @@
 
   function addExternalLinksMenu() {
 
-    if(window.location.href.match(regexBlogSteemit))
+    if(regexBlogSteemit.test(window.location.href))
     {
 
       var name = window.SteemPlus.Utils.getPageAccountName();

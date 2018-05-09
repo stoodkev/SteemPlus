@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startArticleCount()
 {
 	// If url matches blog url then start the feature
-	if(window.location.href.match(regexBlogSteemit))
+	if(regexBlogSteemit.test(window.location.href))
 	{
 		if($('.UserProfile__stats').length===0)
 			setTimeout(function(){

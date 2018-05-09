@@ -27,10 +27,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function canStartClassificationUser()
 {
-  if( window.location.href.match(regexClassificationUserBlogSteemit)
-    ||window.location.href.match(regexFeedPlusSteemit)
-    ||window.location.href.match(regexFeedSteemit)
-    ||window.location.href.match(regexPostSteemit))
+  if( regexClassificationUserBlogSteemit.test(window.location.href)
+    ||regexFeedPlusSteemit.test(window.location.href)
+    ||regexFeedSteemit.test(window.location.href)
+    ||regexPostSteemit.test(window.location.href))
   {
     if($('.Post').length > 0)
     {

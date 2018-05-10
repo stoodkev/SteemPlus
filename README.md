@@ -1,11 +1,11 @@
 # SteemPlus
 ## Goal
-Augment Steemit and Busy with relevant and usefull functionnalities
+Augment Steemit, Busy, Utopian and SteemD with relevant and usefull functionnalities.
 
 ## Features
 Here's a quick list of feature by platform that is detailed below
 ### Both (Busy & Steemit)
-* Voting % slider (Hability to vote less than 100%)
+* Voting % slider (Ability to vote less than 100%)
 * Quick Switch between Steemit, Busy, Utopian and Steemd
 * Delegations details and actions
 * Login via Steem Connect
@@ -22,7 +22,7 @@ Here's a quick list of feature by platform that is detailed below
 * Favorite users
 * Sticky Footer
 * Beneficiaries
-* Rank Badges (Plankton, Minnow, Dolphin, Orca and Whales)
+* Rank Badges with grades (Plankton, Minnow, Dolphin, Orca and Whales)
 * SteemBoard Trophies
 * Markdown visualizer (Side by side)
 * Votes tab
@@ -39,23 +39,25 @@ If you're using Chrome, it's very straightforward, you just have to install Stee
 
 <a href="https://steemit.com/steem/@steem-plus/steemplus-extension-now-available-on-chrome-opera-and-firefox">Install in Opera and Firefox</a>
 
+More details can be found at the end of this documentation.
+
 ## [Voting % Slider](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
-Allow you to specify a specific voting % and see what value it worth.
+Allow you to specify a voting % and see what value it worth.
 ![Voting Slider](https://steemitimages.com/0x0/https://steemitimages.com/0x0/https://user-images.githubusercontent.com/36294589/36656209-2a99ad5a-1b02-11e8-9e49-bf0950243288.gif)
 [More details](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
 ## [Quick Switch](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 Quick links from the extension dropdown
 ### Shortcuts
-Shift+Alt+S : Steemit
-Shift+Alt+U : Utopian
-Shift+Alt+B : Busy
-Shift+Alt+D : Steemd
+* Shift+Alt+S : Steemit
+* Shift+Alt+U : Utopian
+* Shift+Alt+B : Busy
+* Shift+Alt+D : Steemd
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 ## [Delegation Button](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 ![Delagation Button](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515045882/kute57zw6gwzl5apdcpt.png)
-### Delegation form and Current delegations display
+### Delegation form and current delegations display
 ![Delagation Form](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515045889/mhn2iki3fzrkib6c3gp2.png)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
@@ -74,8 +76,9 @@ Allow you to filter and sort your feed.
 [More details](https://busy.org/@steem-plus/steemplus-2-5-3-feed-improvements-dropdown-correction-and-searchbar-fix)
 
 ## [Login via Steem Connect](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
+
 ## [Votes information](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
-Display of percentage and SBD value of the votes received. Works on posts and comments.
+Display of percentage and SBD value of the votes received. It works on posts and comments.
 ![Votes information](https://steemitimages.com/0x0/https://steemitimages.com/DQmd2PcmAbpHs1WShJANemTtELkhP1BvtixRiLGtvnzGJvy/image.png)
 [More details](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
@@ -89,12 +92,12 @@ Decimals added to user reputation. On mouse over, displays a steemian current Vo
 [More details](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
 ## [Boost Button](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
-Integration with MinnowSupport to allow you to quickly get a boost form this community.
+Integration with MinnowSupport to allow a quick boost form this community.
 ![Boost Button](https://steemitimages.com/0x0/https://steemitimages.com/0x0/https://user-images.githubusercontent.com/36294589/36831162-7c933d0e-1d61-11e8-8564-cf5f41b379a2.gif)
 [More details](https://busy.org/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
 ## [Sticky Footer](https://busy.org/@steem-plus/steemplus-2-5-2)
-Allow to see a post information without having to scroll to the end of the article
+See a post information without having to scroll to the end of the article
 ![Sticky Footer](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1521011075/omwku5h8vwnm0wnusdpd.png)
 [More details](https://busy.org/@steem-plus/steemplus-2-5-2)
 
@@ -118,7 +121,7 @@ This feature will cost you 5% of your profits.
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 ## [Rank Badges](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-Display a rank badge (visual indicator) on steemian you visit
+Display a rank badge (visual indicator) with declinated grades on steemian you visit
 ![Rank Badges](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515046250/tb7wkmoy0i5xeoyeyqu2.png)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
@@ -147,7 +150,7 @@ Filter and sort your followers and followees. Also display relevant information 
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 ## Technical
-The estension is available on Chrome, Opera and Firefox, but work best under Chrome
+The extension is available on Chrome, Opera and Firefox, but work best under Chrome
 ### On Chrome
 If you're using Chrome, it's very straightforward, you just have to install SteemPlus from the Chrome Store [here](https://chrome.google.com/webstore/detail/steemplus/mjbkjgcplmaneajhcbegoffkedeankaj?hl=en) and enjoy!
 
@@ -167,4 +170,4 @@ If you're using Chrome, it's very straightforward, you just have to install Stee
 @stoodkev for @steem-plus
 Powered by @adsactly
 Powered by @utopian-io
-Like what I do? [Vote @stoodkev for witness](https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1)!
+You like Steem-Plus? [Vote @stoodkev for witness](https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1)!

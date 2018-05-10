@@ -111,7 +111,7 @@ function startWalletHistory()
 	{
 		if(items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
 
-		if($('.Trans').length > 0&&window.location.href.match(/transfers/))
+		if($('.Trans').length > 0&&regexWalletSteemit.test(window.location.href))
 		{
 			usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
 			$.ajax({

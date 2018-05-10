@@ -58,10 +58,10 @@ Display of percentage and SBD value of the votes received. It works on posts and
 ![Votes information](https://steemitimages.com/0x0/https://steemitimages.com/DQmd2PcmAbpHs1WShJANemTtELkhP1BvtixRiLGtvnzGJvy/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
-## [Reward tab](https://busy.org/@steem-plus/steemplus-2-12-rewards-tab)
+## [Reward tab](https://steemit.com/@steem-plus/steemplus-2-12-rewards-tab)
 Pending and recent author and curation rewards as well as benefactor rewards.
 ![Reward tab](https://steemitimages.com/0x0/https://steemitimages.com/DQmUtYxPgX5ktqx7mch8V6qWB5chUZd7WpkPffXUAKdEtW1/image.png)
-[More details](https://busy.org/@steem-plus/steemplus-2-12-rewards-tab)
+[More details](https://steemit.com/@steem-plus/steemplus-2-12-rewards-tab)
 
 ## [Feed+](https://steemit.com/@steem-plus/steemplus-2-5-3-feed-improvements-dropdown-correction-and-searchbar-fix)
 Allow you to filter and sort your feed.
@@ -75,6 +75,7 @@ Allow you to filter and sort your feed.
 * Old
 * Payout
 * Votes
+
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-3-feed-improvements-dropdown-correction-and-searchbar-fix)
 
 ## [User Information](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
@@ -82,12 +83,12 @@ Decimals added to user reputation. On mouse over, displays a steemian current Vo
 ![user Information](https://steemitimages.com/0x0/https://steemitimages.com/DQmbZx6GJNCKLoDgmnKBEgcihm8Y1W1BU5SLx7R8vn58vr4/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
-## [Wallet filters](https://busy.org/@stoodkev/steemplus-wallet-filter)
+## [Wallet filters](https://steemit.com/@stoodkev/steemplus-wallet-filter)
 Allow filtering of your transaction, hide spam, research by user, minimum amout up to the last 500 results.
 ![Wallet filters](hhttps://steemitimages.com/0x0/https://steemitimages.com/DQmNLhrEJ3a5zawBkvcKAgaKmV15ygaRvxMNQZ3PyzpGfKq/refreshwallet.gif)
-[More details](https://busy.org/@stoodkev/steemplus-wallet-filter)
-[More details - Improvements](https://busy.org/@steem-plus/steemplus-2-11-wallet-filter)
-[More details - More improvements](https://busy.org/@stoodkev/steemplus-wallet-changes-and-more)
+[More details](https://steemit.com/@stoodkev/steemplus-wallet-filter)
+[More details - Improvements](https://steemit.com/@steem-plus/steemplus-2-11-wallet-filter)
+[More details - More improvements](https://steemit.com/@stoodkev/steemplus-wallet-changes-and-more)
 
 ## [Delegation Button](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 ![Delagation Button](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515045882/kute57zw6gwzl5apdcpt.png)
@@ -97,7 +98,7 @@ Allow filtering of your transaction, hide spam, research by user, minimum amout 
 On mouse over of a delegation, it's not possible to see the incoming and outgoing delegations.
 ![Delegation Details](https://steemitimages.com/0x0/https://cdn.utopian.io/posts/22a560c07d3c148fd4870e3ceea054e2a80cinoutdel_s.gif)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-[More details - Possible to delegate to an account from his page](https://busy.org/@stoodkev/steemplus-delegation-details)
+[More details - Possible to delegate to an account from his page](https://steemit.com/@stoodkev/steemplus-delegation-details)
 
 ## [Boost Button](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 Integration with MinnowSupport to allow a quick boost form this community.
@@ -129,6 +130,7 @@ Quick links from the extension dropdown
 * Shift+Alt+U : Utopian
 * Shift+Alt+B : Busy
 * Shift+Alt+D : Steemd
+
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 ## [SteemBoard Trophies](https://steemit.com/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
@@ -151,7 +153,7 @@ Display a rank badge (visual indicator) with declinated grades on steemian you v
 ![Rank Badges](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515046250/tb7wkmoy0i5xeoyeyqu2.png)
 ![New ranks](https://steemitimages.com/0x0/https://cdn.utopian.io/posts/c1c31e108ec21fcc30eab17a2c55f795bad9image.png)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-[More details - Update sub ranks](https://busy.org/@stoodkev/more-ranks-on-steemplus-to-track-your-progression)
+[More details - Update sub ranks](https://steemit.com/@stoodkev/more-ranks-on-steemplus-to-track-your-progression)
 
 ## [Markdown visualizer](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 Side by side display for easier readability and adjustments.
@@ -167,7 +169,7 @@ All incoming and outgoing votes in a dedicated tab.
 Display mentions and their location in a dedicated tab.
 ![Mentions Tab](https://steemitimages.com/0x0/https://steemitimages.com/DQmZuT6af5DouNrJednuHwqot88LLEsVgCQXekMcGZHTmDD/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
-[More details - Improvements to use SteemSQL and bug fixes](https://busy.org/@steem-plus/steemsql-powered-mentions-and-various-bug-fixes)
+[More details - Improvements to use SteemSQL and bug fixes](https://steemit.com/@steem-plus/steemsql-powered-mentions-and-various-bug-fixes)
 
 ## [Followers Improvements](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 Filter and sort your followers and followees. Also display relevant information (Reputation, Steem Power and Vote Value)
@@ -185,8 +187,8 @@ Witness votes recieved is also searchable and sortable
 ![Witness votes received](https://steemitimages.com/0x0/https://steemitimages.com/DQmVnze8AhMAWsf7aDNTdTPs8ZXFS3jBsE5H2jSsvbjS9dm/datatable.PNG)
 
 [More details](https://steemit.com/@steem-plus/steemplus-2-10-witness-tab)
-[More details - Witness details](https://busy.org/@steem-plus/steemplus-2-10-2-adding-witness-detailed-information)
-[More details - Votes received and improvements](https://busy.org/@steem-plus/even-more-information-for-witnesses-on-steemplus)
+[More details - Witness details](https://steemit.com/@steem-plus/steemplus-2-10-2-adding-witness-detailed-information)
+[More details - Votes received and improvements](https://steemit.com/@steem-plus/even-more-information-for-witnesses-on-steemplus)
 
 ## [Steem Sincerity](https://steemit.com/@steem-plus/steemplus-2-8-steem-sincerity)
 Class users into 4 categories with Artificial Intelligence and users contributions.
@@ -195,6 +197,7 @@ Class users into 4 categories with Artificial Intelligence and users contributio
 * Bot
 * Spammers
 * Pending (If the certainty isn't over 80% to reduce wrong categorization)
+
 ![Steem Sincerity](https://steemitimages.com/0x0/https://steemitimages.com/DQmQCYzDMTaUdcTCCrwaJ1wrv6RbN51rwLN8uPwvtHKgBUW/feedback-popover.PNG)
 [More details](https://steemit.com/@steem-plus/steemplus-2-8-steem-sincerity)
 [More details (2nd update)](https://steemit.com/@steem-plus/update-of-the-steem-sincerity-feature)
@@ -205,9 +208,9 @@ Class users into 4 categories with Artificial Intelligence and users contributio
 ![Gif Picker](https://steemitimages.com/DQmNSbhZeiaz3tynbD8Mh5nu3uEM1vrC1Xt85ta1LHHswje/image.png)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
-# [Backend](https://busy.org/@stoodkev/introducing-steemplus-backend)
+# [Backend](https://steemit.com/@stoodkev/introducing-steemplus-backend)
 A new satellite project has been created to allow new features to be provided in the navigator extention. A backend will precalculate some information so that some features can exists with decent performance.
-[More details](https://busy.org/@stoodkev/introducing-steemplus-backend)
+[More details](https://steemit.com/@stoodkev/introducing-steemplus-backend)
 
 [GitHub project and usage & installation documentation](https://github.com/stoodkev/steemplus-api)
 

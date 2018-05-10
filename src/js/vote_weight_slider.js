@@ -41,16 +41,19 @@
 
   function startVoteWeightSlider()
   {
-    $('body').on('click', 'span.Voting__button > a', function(){
-      var votingButton = $(this);
-      setTimeout(function() {
-        tryUpdateVotingSlider();
-      }, 1);
-    });
+    if(regexVoteWeightSliderBlogSteemit.test(window.location.href))
+    {
+      $('body').on('click', 'span.Voting__button > a', function(){
+        var votingButton = $(this);
+        setTimeout(function() {
+          tryUpdateVotingSlider();
+        }, 1);
+      });
 
-    $("body").on('DOMSubtreeModified', ".weight-display", function() {
-      tryUpdateVotingSlider();
-    });
+      $("body").on('DOMSubtreeModified', ".weight-display", function() {
+        tryUpdateVotingSlider();
+      });
+    }
   }
 
  function updateVotingSlider(weightDisplay) {
@@ -67,6 +70,8 @@
     }
 
     var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
+    
+    console.log(dollars);   
     if(typeof dollars === 'undefined'){
       setTimeout(function() {
         tryUpdateVotingSlider();
@@ -120,6 +125,7 @@
   };
 
   function tryUpdateVotingSlider() {
+    console.log('tryUpdateVotingSlider')
     var weightDisplay = $('span.Voting__button .weight-display');
     if(weightDisplay.length){
       updateVotingSlider(weightDisplay);

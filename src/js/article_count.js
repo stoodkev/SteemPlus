@@ -44,9 +44,7 @@ async function getPosts(usernameArticleCount){
 
 	while(entry_id !== -1)
 	{
-		console.log(tryCount, usernameArticleCount, entry_id, articleCount);
 		const result = await steem.api.getBlogEntriesAsync(usernameArticleCount, entry_id, 100);
-		console.log(result);
 		nbNew = result.length;
 		result.forEach(function(article){
 			if(article.author === usernameArticleCount)

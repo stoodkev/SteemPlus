@@ -1,6 +1,3 @@
-
-var DEBUG_MODE = true;
-
 var xhttp = new XMLHttpRequest();
 const steemit =(window.location.href.includes('steemit.com')||window.location.href.includes('mspsteem.com'));
 const busy =window.location.href.includes('busy.org');
@@ -15,7 +12,8 @@ var user=null;
 
 steem.api.setOptions({ url: 'https://api.steemit.com' });
 const token=makeToken();
-
+logInfo('test');
+logDebug('testDebug');
 Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMedianHistoryPriceAsync(), steem.api.getRewardFundAsync("post")])
 .then(function(values) {
 

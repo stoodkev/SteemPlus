@@ -98,6 +98,7 @@
 
       "css":["vendor/unslider/unslider.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
+        "src/css/mentions.css",
         "src/css/account_val.css",
         "src/css/beneficiaries.css",
         "src/css/rank.css",

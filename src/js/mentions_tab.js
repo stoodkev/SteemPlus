@@ -48,14 +48,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function createTab()
 {
-  window.SteemPlus.Tabs.createTab({
-    id: 'mentions',
-    title: 'Mentions',
-    enabled: true,
-    createTab: createMentionsTab
-  });
-  if(window.location.href.includes('#mentions'))
-  window.SteemPlus.Tabs.showTab('mentions');
+  if(regexBlogSteemit.test(window.location.href))
+  {
+      window.SteemPlus.Tabs.createTab({
+        id: 'mentions',
+        title: 'Mentions',
+        enabled: true,
+        createTab: createMentionsTab
+      });
+      if(window.location.href.includes('#mentions'))
+      window.SteemPlus.Tabs.showTab('mentions');
+  }
 }
 
 function createMentionsTab(mentionsTab) {

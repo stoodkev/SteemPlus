@@ -42,13 +42,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function checkUserForInfoPopover()
 {
-  setTimeout(function(){
+  if(regexBlogSteemit.test(window.location.href))
+  {
+    setTimeout(function(){
 
       if(window.location.href.match(userNameRegEx)!==null){
         var userName = window.location.href.match(userNameRegEx)[1];
         checkDisplayPopoverUserInfo(userName);
       }
     },100);
+  }
 }
 
 function checkDisplayPopoverUserInfo(userName)

@@ -110,7 +110,7 @@ function startWalletHistory()
 	chrome.storage.local.get(['filters_state_wallet'], function (items)
 	{
 		if(items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
-
+		
 		if($('.Trans').length > 0&&window.location.href.match(/transfers/))
 		{
 			usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
@@ -352,7 +352,7 @@ function createWalletHistoryFiltersUI()
 	$('table').before(filters);
 
 	typeFiltersListWH.map(function(f) {
-		$('input[value="'+ f.type + '"').eq(0).prop('checked', typeFilterHiddenWH(f.type));
+		$('input[value="'+ f.type + '"').eq(0).prop('checked', filtersStateWH.types[f.type]);
 	});
 
 	$(filters).find('#inputSearchWalletHistory').unbind('input').on('input',function(){

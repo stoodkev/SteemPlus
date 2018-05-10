@@ -37,17 +37,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startWitnessesTab()
 {
-  console.log('startWitnessesTab');
-  window.SteemPlus.Tabs.createTab({
-    id: 'witnesses',
-    title: 'Witness',
-    enabled: true,
-    createTab: createTabWitnesses
-  });
-  if(window.location.href.includes('#witnesses'))
-    window.SteemPlus.Tabs.showTab('witnesses');
+  if(regexBlogSteemit.test(window.location.href))
+  {
+    window.SteemPlus.Tabs.createTab({
+      id: 'witnesses',
+      title: 'Witness',
+      enabled: true,
+      createTab: createTabWitnesses
+    });
+    if(window.location.href.includes('#witnesses'))
+      window.SteemPlus.Tabs.showTab('witnesses');
+  }
+  
 }
-// ' + (isMyPageWitnesses ? 'My witnesses' : '@'+usernameTabWitnesses + '\'s witnesses') + '
+
 function createTabWitnesses(witnessesTab)
 {
   var usernameTabWitnesses = window.SteemPlus.Utils.getPageAccountName();
@@ -87,7 +90,6 @@ function createTabWitnesses(witnessesTab)
 
   if(witnessRankLocal===null)
   {
-    console.log("Launch request get-witness-rank");
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
@@ -107,7 +109,6 @@ function createTabWitnesses(witnessesTab)
   }
   else
   {
-    console.log("Local get-witness-rank");
     managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
   }
 
@@ -565,7 +566,6 @@ function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteRe
       return jQuery.fn.dataTableExt.oSort["datetime-desc"](y, x);
   };
 
-  console.log(witnessVoteReceivedLocal);
   $('#witness-received-votes-table').dataTable( {
     data: witnessVoteReceivedLocal,
     "order": [[ 0, "asc" ]],

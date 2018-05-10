@@ -32,7 +32,7 @@ var typeFiltersListWH = [
 
 
 var filtersStateWH = {
-	types: {'hide_spam':false},
+	types: {'hide_spam':false, 'transfer_to':true, 'transfer_from':true, 'claim':true},
 	search: '',
 	minAsset: {SP:0,STEEM:0,SBD:0}
 };

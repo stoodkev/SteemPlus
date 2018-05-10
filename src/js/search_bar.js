@@ -174,7 +174,6 @@
     }
 
     if($('html').hasClass('smi-header-search')) {
-      console.log('here');
       return;
     }
 

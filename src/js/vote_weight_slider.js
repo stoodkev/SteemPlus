@@ -41,7 +41,10 @@
 
   function startVoteWeightSlider()
   {
-    if(regexVoteWeightSliderBlogSteemit.test(window.location.href))
+    if( regexVoteWeightSliderBlogSteemit.test(window.location.href)
+    ||regexFeedPlusSteemit.test(window.location.href)
+    ||regexFeedSteemit.test(window.location.href)
+    ||regexPostSteemit.test(window.location.href))
     {
       $('body').on('click', 'span.Voting__button > a', function(){
         var votingButton = $(this);

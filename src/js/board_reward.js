@@ -55,7 +55,7 @@ function createBoardRewardTab()
 		{
 			retryCountBoardReward++;
 			setTimeout(function(){
-				timeoutBoardReward = createBoardRewardTab();
+				createBoardRewardTab();
 			}, 1000);
 		}
 		else

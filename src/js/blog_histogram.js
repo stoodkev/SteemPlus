@@ -11,7 +11,6 @@ var rewardBalance=null;
 var recentClaims=null;
 var steemPrice=null;
 
-var timeoutBlogHistogram=null;
 var retryCountBlogHistogram=0;
 
 
@@ -20,6 +19,7 @@ var token_blog_histogram=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='blog_histogram'&&request.order==='start'&&token_blog_histogram==null)
     {
+      retryCountBlogHistogram=0;
       token_blog_histogram=request.token;
       rewardBalance=request.data.rewardBalance;
       recentClaims=request.data.recentClaims;
@@ -29,6 +29,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to==='blog_histogram'&&request.order==='click'&&token_del===request.token)
     {
+      retryCountBlogHistogram=0;
       rewardBalance=request.data.rewardBalance;
       recentClaims=request.data.recentClaims;
       steemPrice=request.data.steemPrice;
@@ -401,7 +402,7 @@ function checkForBlogPage() {
       if(!added){
         // histogram UI not added, try again later
         retryCountBlogHistogram++;
-        timeoutBlogHistogram = setTimeout(checkForBlogPage, 100);
+        setTimeout(checkForBlogPage, 1000);
       }
     }
     else

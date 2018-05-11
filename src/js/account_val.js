@@ -7,13 +7,13 @@ var token_a=null;
 var accountValStarted=false;
 var acc_steemit,acc_busy,acc_global,acc_market;
 
-var timerAccountVal = null;
 var retryAccountVal = 0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
     {
+      retryAccountVal = 0;
       token_a=request.token;
       acc_steemit=request.data.steemit;
       acc_busy=request.data.busy;
@@ -23,11 +23,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       accountValStarted=true;
     }
     else if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token){
+      retryAccountVal = 0;
       acc_global=request.data.global;
       acc_market=request.data.market;
       onClickA();}
     else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
     {
+      retryAccountVal = 0;
       if(accountValStarted)
       {
         acc_market=request.market;
@@ -94,14 +96,9 @@ function startAccountValue()
       else 
       {
         retryAccountVal++;
-        timerAccountVal = setTimeout(checkLoad, 1000);
+        setTimeout(checkLoad, 1000);
       }
     }
-    else
-    {
-      clearTimeout(timerAccountVal);
-    }
-    
   }
 
 function createTitle() {

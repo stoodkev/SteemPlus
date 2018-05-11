@@ -115,7 +115,7 @@ function isEverythingFilled()
     }
     if(hasWrongPercent!==0)
     {
-        alert("Percentage should be greater than 0 and smaller or equal to 100!");
+        alert("Percentage should be greater than 0 and smaller or equal to 100! (Including 5% SteemPlus fee)");
         return false;
     }
     if(total_percent>95)

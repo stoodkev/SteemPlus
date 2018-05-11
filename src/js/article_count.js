@@ -1,10 +1,10 @@
 var token_article_count=null;
 
-var timeoutArticleCount=null;
 var retryCountArticleCount=0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='article_count'){
+    	retryCountArticleCount=0;
       if(request.order==='start'&&token_article_count==null)
       {
         token_article_count=request.token;
@@ -20,24 +20,19 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function startArticleCount()
 {
 	// If url matches blog url then start the feature
-	if(regexBlogSteemit.test(window.location.href)&&retryCountArticleCount<5)
+	if(regexBlogSteemit.test(window.location.href)&&retryCountArticleCount<20)
 	{
 		if($('.UserProfile__stats').length===0)
 		{
 			retryCountArticleCount++;
 			timeoutArticleCount = setTimeout(function(){
 				startArticleCount();
-			},200);
+			},1000);
 		}
 			
 		else
 			displayArticleCount();
 	}
-	else
-	{
-		clearTimeout(timeoutArticleCount);
-	}
-	
 }
 
 function displayArticleCount()

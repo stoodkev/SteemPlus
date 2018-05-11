@@ -11,10 +11,13 @@
   var loading=null;
   var normalList=1;
 
+  var retryCountBoostButton=0;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to=='boost_button'){
       aut=request.data.user;
+      retryCountBoostButton=0;
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
@@ -522,7 +525,7 @@
 
 function addPostBoostButton() {
 
-  if(regexPostSteemit.test(window.location.href))
+  if(regexPostSteemit.test(window.location.href)&&retryCountBoostButton<20)
   {
     var promoteButton = $('.Promote__button');
     var boostButton = $('.smi-boost-button');
@@ -547,9 +550,10 @@ function addPostBoostButton() {
     }
     else
     {
-      setTimeout(function(){
+      retryCountBoostButton++;
+      timeoutBoostButton = setTimeout(function(){
         addPostBoostButton();
-      },200);
+      },1000);
     }
   }
 };

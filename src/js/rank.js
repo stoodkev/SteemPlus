@@ -69,6 +69,7 @@ function displayBadges(badge)
     }
     else
     {
+      retryCountRank++;
       setTimeout(function(){
         displayBadges(badge);
       }, 1000);

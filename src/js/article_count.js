@@ -51,12 +51,18 @@ async function getPosts(usernameArticleCount){
 	while(entry_id !== -1)
 	{
 		const result = await steem.api.getBlogEntriesAsync(usernameArticleCount, entry_id, 100);
-		nbNew = result.length;
-		result.forEach(function(article){
-			if(article.author === usernameArticleCount)
-				articleCount++;
-		});
-		entry_id = result[result.length-1].entry_id-1;
+		if(result[result.length-1]!==undefined)
+		{
+			nbNew = result.length;
+			result.forEach(function(article){
+				if(article.author === usernameArticleCount)
+					articleCount++;
+			});
+			entry_id = result[result.length-1].entry_id-1;
+		}
+		else
+			entry_id = -1;
+		
 	}
 	
 	$('.UserProfile__stats > span')[1].remove();

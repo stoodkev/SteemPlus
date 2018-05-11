@@ -1,6 +1,5 @@
 token_board_reward=null;
 
-var timeoutBoardReward=null;
 var retryCountBoardReward=0;
 
 var badgesList = [
@@ -31,6 +30,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 	if(request.to==='board_reward')
 	{
+		retryCountBoardReward=0;
 		if(request.order==='start'&&token_board_reward==null)
 		{
 			startBoardReward();
@@ -56,7 +56,7 @@ function createBoardRewardTab()
 			retryCountBoardReward++;
 			setTimeout(function(){
 				timeoutBoardReward = createBoardRewardTab();
-			}, 250);
+			}, 1000);
 		}
 		else
 		{

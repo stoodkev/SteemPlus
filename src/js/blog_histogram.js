@@ -11,6 +11,9 @@ var rewardBalance=null;
 var recentClaims=null;
 var steemPrice=null;
 
+var timeoutBlogHistogram=null;
+var retryCountBlogHistogram=0;
+
 
 var token_blog_histogram=null;
 
@@ -373,24 +376,21 @@ function checkHistogram(postsList, name) {
   }
   if(postsList.hasClass('smi-posts-histogram-added')){
     if(postsList.data('histogram-account') !== name){
-      console.log('posts list has already histogram but of different account');
       postsList.find('.smi-posts-histogram-container').remove();
     }else{
-      console.log('posts list has already histogram');
       return true;
     }
   }
   postsList.prepend(createHistogram(name));
   postsList.addClass('smi-posts-histogram-added');
   postsList.data('histogram-account', name);
-  console.log('histogram added');
   return true;
 };
 
 
 
 function checkForBlogPage() {
-  if(regexBlogSteemit.test(window.location.href))
+  if(regexBlogSteemit.test(window.location.href)&&retryCountBlogHistogram<5)
   {
     var match = (window.location.pathname || '').match(/\/@([a-z0-9\-\.]*)$/);
     if(match)
@@ -400,7 +400,8 @@ function checkForBlogPage() {
       var added = checkHistogram(postsList, name);
       if(!added){
         // histogram UI not added, try again later
-        setTimeout(checkForBlogPage, 100);
+        retryCountBlogHistogram++;
+        timeoutBlogHistogram = setTimeout(checkForBlogPage, 100);
       }
     }
     else
@@ -409,6 +410,10 @@ function checkForBlogPage() {
       $('.smi-posts-histogram-added').removeClass('smi-posts-histogram-added');
     }
     
+  }
+  else
+  {
+    clearTimeout(timeoutBlogHistogram);
   }
   
 };

@@ -396,6 +396,7 @@
   function checkForFollowerPage() {
 
     var match = (window.location.pathname || '').match(followerPageRegexp);
+    if(retryCountFollowTable<20)
     if(match) {
       var name = match[1];
       var isFollowers = match[2] === 'followers';
@@ -403,6 +404,7 @@
       var userList = $('.UserList');
       if(userList.length === 0)
       {
+        retryCountFollowTable++;
         setTimeout(function(){
           checkForFollowerPage();
         }, 1000);

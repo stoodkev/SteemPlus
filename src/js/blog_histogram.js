@@ -412,9 +412,4 @@ function checkForBlogPage() {
     }
     
   }
-  else
-  {
-    clearTimeout(timeoutBlogHistogram);
-  }
-  
 };

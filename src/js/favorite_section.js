@@ -8,23 +8,27 @@ var indexFav=null;
 var nameFav=null;
 var myUsername=null;
 
+var retryCountFavoriteSection = 0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='favorite_section'&&request.order==='start'&&token_favorite_section==null)
   {
     token_favorite_section=request.token;
     myUsername=request.data.user;
+    retryCountFavoriteSection=0;
     startFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
   {
     myUsername=request.data.user;
+    retryCountFavoriteSection=0;
     startFavoriteSection();
   }
 });
 
 function startFavoriteSection()
 {
-  if(!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+  if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
   {
     chrome.storage.local.get(['favorite_list'], function(items){
       favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
@@ -153,9 +157,13 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
 {
   if($('.articles__header-col').length===0)
   {
-    setTimeout(function(){
-      displayButtonAddRemoveFavorites(userNameCurrentPage);
-    },500);
+    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+    {
+      retryCountFavoriteSection++;
+      setTimeout(function(){
+        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      },1000);
+    }
   }
   else
   {

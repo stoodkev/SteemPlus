@@ -71,7 +71,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       {
         setTimeout(function(){
           makePostBottomBarFloating();
-        },200);
+        },1000);
       }
     }
   };

@@ -45,7 +45,7 @@ function startTransfer(isSteemit,busy,account,balance)
 }
 
 function onClickTr(isSteemit,busy,account,balance){
-  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy(window.location.href))&&retryCountTransferTo<20)
+  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))&&retryCountTransferTo<20)
   {
     setTimeout(function() {
       if (window.location.href.match(load_checkt) && !createdt) {

@@ -10,6 +10,8 @@
 
   var voteWeightSliderStarted=false;
 
+  var retryCountVoteWeightSlider = 0;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_weight_slider'){
       aut=request.data.user;
@@ -21,6 +23,7 @@
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
         account=request.data.account;
+        retryCountVoteWeightSlider = 0;
 
         startVoteWeightSlider();
         voteWeightSliderStarted=true;
@@ -28,6 +31,7 @@
       }
       else if(request.order==="notif"&&token_vote_weight_slider==request.token)
       {
+        retryCountVoteWeightSlider = 0;
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
@@ -75,10 +79,11 @@
     var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
     
     console.log(dollars);   
-    if(typeof dollars === 'undefined'){
+    if(typeof dollars === 'undefined'&&retryCountVoteWeightSlider<20){
+      retryCountVoteWeightSlider++;
       setTimeout(function() {
         tryUpdateVotingSlider();
-      }, 100);
+      }, 1000);
     }else{
       weightDollars.text(dollars.toFixed(2) + '$');
     }

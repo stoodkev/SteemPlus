@@ -12,16 +12,22 @@ var indexT=0;
 var currency='STEEM';
 var max=0;
 
+var retryCountTransferTo = 0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='transfers'&&request.order==='start'&&token_tr==null)
   {
     token_tr=request.token;
     startTransfer(request.data.steemit,request.data.busy,request.data.user,request.data.balance);
+    retryCountTransferTo = 0;
     max=request.data.balance.steem;
   }
 
   if(request.to==='transfers'&&request.order==='click'&&token_tr===request.token)
+  {
+    retryCountTransferTo = 0;
     onClickTr(request.data.steemit,request.data.busy,request.data.user,request.data.balance);
+  }
 });
 
 
@@ -39,27 +45,29 @@ function startTransfer(isSteemit,busy,account,balance)
 }
 
 function onClickTr(isSteemit,busy,account,balance){
-  setTimeout(function() {
-    if (window.location.href.match(load_checkt) && !createdt) {
-      createdt = true;
-      checkLoadTr(isSteemit,busy,account,balance);
-    }
-    if (!window.location.href.match(load_checkt)) {
-      createdt = false;
-    }
-  },timeoutT);
+  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy(window.location.href))&&retryCountTransferTo<20)
+  {
+    setTimeout(function() {
+      if (window.location.href.match(load_checkt) && !createdt) {
+        createdt = true;
+        checkLoadTr(isSteemit,busy,account,balance);
+      }
+      if (!window.location.href.match(load_checkt)) {
+        createdt = false;
+      }
+    },timeoutT);
+  }
 }
 
 function checkLoadTr(isSteemit,busy,account,balance){
-  indexT++;
 
-  if(regexWalletSteemit.test(window.location.href)||regexWalletBusy(window.location.href))
+  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy(window.location.href))&&retryCountTransferTo<20)
   {
     if($(wallet_elt_t).length===0){
     createButtonT(isSteemit,busy,account,balance);
     }
     else {
-      if(indexT<5)
+        retryCountTransferTo++;
         setTimeout(checkLoadTr, 2000);
     }
   }

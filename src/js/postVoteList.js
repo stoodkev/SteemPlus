@@ -121,8 +121,6 @@ function addPostVoteList(votersList)
 
 
       });
-      console.log(voteElsByVoter);
-
       getSteemContent(author, permlink, function(err, result){
         if(!result){
           	return;

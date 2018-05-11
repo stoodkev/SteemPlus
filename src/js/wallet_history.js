@@ -139,7 +139,7 @@ function startWalletHistory()
 					retry++;
 					startWalletHistory();
 				}
-			}, 250);
+			}, 1000);
 		}		
 	});
 }

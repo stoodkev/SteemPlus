@@ -7,6 +7,9 @@ var token_a=null;
 var accountValStarted=false;
 var acc_steemit,acc_busy,acc_global,acc_market;
 
+var timerAccountVal = null;
+var retryAccountVal = 0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
@@ -37,7 +40,6 @@ function startAccountValue()
 {
   if(regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))
   {
-    console.log('start account val');
     if(acc_steemit) 
     {
       load_check_a=/transfers/;
@@ -64,30 +66,42 @@ function startAccountValue()
 }
 
   function onClickA(){
-    setTimeout(function() {
-      if(window.location.href!=='')
-      {
-        if(window.location.href.includes('@')){
-          account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-          wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+    if(regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))
+    {
+      setTimeout(function() {
+        if(window.location.href!=='')
+        {
+          if(window.location.href.includes('@')){
+            account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
+            wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+          }
         }
-      }
-      if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
-        checkLoad();
-      }
-    },timeout_a);
+        if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
+          checkLoad();
+        }
+      },timeout_a);
+    }
+    
   }
 
   function checkLoad(){
 
-
-    if($(wallet_elt_a).length>0){
-
-      createTitle();
+    if((regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))&&retryAccountVal<5)
+    {
+      if($(wallet_elt_a).length>0){
+        createTitle();
+      }
+      else 
+      {
+        retryAccountVal++;
+        timerAccountVal = setTimeout(checkLoad, 1000);
+      }
     }
-    else {
-      setTimeout(checkLoad, 1000);
+    else
+    {
+      clearTimeout(timerAccountVal);
     }
+    
   }
 
 function createTitle() {

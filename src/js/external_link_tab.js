@@ -4,6 +4,8 @@
   var menuClass = 'smi-external-links-menu';
   var isOpen = false;
 
+  var retryCountExternalLink = 0;
+
   var externalLinks = [{
     title: 'Steemd.com',
     href: function(username) {
@@ -75,6 +77,7 @@
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='external_link_tab'){
       aut=request.data.user;
+      retryCountExternalLink = 0;
       if(request.order==='start'&&token_external_link_tab==null)
       {
         token_external_link_tab=request.token;
@@ -124,7 +127,7 @@
 
   function addExternalLinksMenu() {
 
-    if(regexBlogSteemit.test(window.location.href))
+    if(regexBlogSteemit.test(window.location.href)&&retryCountExternalLink<20)
     {
 
       var name = window.SteemPlus.Utils.getPageAccountName();

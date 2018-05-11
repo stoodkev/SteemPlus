@@ -1,5 +1,8 @@
 token_board_reward=null;
 
+var timeoutBoardReward=null;
+var retryCountBoardReward=0;
+
 var badgesList = [
 	{ name:"firstpost", title:"First Post", description:'Write your first post and you will get this award.'},
 	{ name:"firstcomment", title:"First Comment", description:'Write your first comment on someone else post or comment and you will get this award.'},
@@ -38,34 +41,34 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
-	if(regexBlogSteemit.test(window.location.href))
+	if(!$('.board-reward-tab').length > 0)
 	{
-		if(!$('.board-reward-tab').length > 0)
-		{
-			createBoardRewardTab();
-		}
+		createBoardRewardTab();
 	}
-	
 }
 
 function createBoardRewardTab()
 {
-	if($('.menu').length===0)
+	if(regexBlogSteemit.test(window.location.href)&&retryCountBoardReward<5)
 	{
-		setTimeout(function(){
-			createBoardRewardTab();
-		}, 250);
-	}
-	else
-	{
-		window.SteemPlus.Tabs.createTab({
-	      id: 'board-reward',
-	      title: 'Awards',
-	      enabled: true,
-	      createTab: createBoardRewardPage
-	    });
-	    if(window.location.href.includes('#board-reward'))
-    		window.SteemPlus.Tabs.showTab('board-reward');
+		if($('.menu').length===0)
+		{
+			retryCountBoardReward++;
+			setTimeout(function(){
+				timeoutBoardReward = createBoardRewardTab();
+			}, 250);
+		}
+		else
+		{
+			window.SteemPlus.Tabs.createTab({
+		      id: 'board-reward',
+		      title: 'Awards',
+		      enabled: true,
+		      createTab: createBoardRewardPage
+		    });
+		    if(window.location.href.includes('#board-reward'))
+				window.SteemPlus.Tabs.showTab('board-reward');
+		}
 	}
 }
 

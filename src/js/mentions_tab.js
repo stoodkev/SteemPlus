@@ -107,6 +107,7 @@ function createMentionsTab(mentionsTab) {
 
   mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
     // Load more
+    currentAction === 'load-more'
     var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
     displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
   });
@@ -161,9 +162,10 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
     if(downloadingDataMentionTab)
     {
       // wait because data already downloading
-      setTimeout(function(){
-        displayMentions(mentionsTab, type, usernamePageMentions,reset);
-      },250);
+      if(currentAction==='notif')
+        setTimeout(function(){
+          displayMentions(mentionsTab, type, usernamePageMentions,reset);
+        },1000);
     }
     else
     {
@@ -185,10 +187,7 @@ function createRowsMentionTab(mentionsTab, type, reset)
   var listMentions = mentionsTab.find('.PostsList__summaries');
 
   if(currentAction === 'notif')
-  {
     indexLastItemDisplayed = 0;
-    currentAction = '';
-  } 
 
   var nbItemAdded = 0;
   while(nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length)

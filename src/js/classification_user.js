@@ -6,12 +6,15 @@ var myUsernameCU=null;
 var scrollBottomReachedCU = false;
 var nbElementPageAuthor=0;
 
+var retryCountClassificationUser=0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
   {
     token_classification_user=request.token;
     myUsernameCU = request.data.user;
     nbElementPageAuthor=0;
+    retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
     canStartClassificationUser();
 
@@ -20,6 +23,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   {
     myUsernameCU = request.data.user;
     nbElementPageAuthor=0;
+    retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
     canStartClassificationUser();
   }
@@ -27,10 +31,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function canStartClassificationUser()
 {
-  if( regexClassificationUserBlogSteemit.test(window.location.href)
+  if( (regexClassificationUserBlogSteemit.test(window.location.href)
     ||regexFeedPlusSteemit.test(window.location.href)
     ||regexFeedSteemit.test(window.location.href)
     ||regexPostSteemit.test(window.location.href))
+    &&retryCountClassificationUser<20)
   {
     if($('.Post').length > 0)
     {
@@ -43,7 +48,7 @@ function canStartClassificationUser()
       {
         setTimeout(function(){
           canStartClassificationUser();
-        }, 500);
+        }, 1000);
       }
     }
     else
@@ -53,7 +58,7 @@ function canStartClassificationUser()
       {
         setTimeout(function(){
           canStartClassificationUser();
-        }, 500);
+        }, 1000);
       }
       else
       {
@@ -64,8 +69,6 @@ function canStartClassificationUser()
 }
 
 function startClassificationUser(){
-  console.log('startClassification');
-  //$('.classification-section').remove();
   var elementUserListCU = $('.ptc');
   var elementUserListCU2 = $('.author > strong > a');
   var userListCU = [];

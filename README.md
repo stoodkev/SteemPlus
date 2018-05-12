@@ -1,9 +1,9 @@
 # SteemPlus
 ## Goal
-Augment Steemit, Busy, Utopian and SteemD with relevant and usefull functionnalities.
+Augment Steemit, Busy and Utopian with relevant and usefull functionnalities.
 
 ## Features
-Here's a quick list of feature by platform that is detailed below.
+Here's a quick list of feature by platform that is detailed with images below.
 ### Both (Busy & Steemit)
 * Voting % slider (Ability to vote less than 100%)
 * Quick Switch between Steemit, Busy, Utopian and Steemd
@@ -16,7 +16,7 @@ Here's a quick list of feature by platform that is detailed below.
 
 ### Steemit
 * Votes information (% and SBD values)
-* Reward tab of planned and recent rewards
+* Rewards tab for pending and paid rewards
 * Feed+ : Filter your feed by tags, resteems, reputation and sorting options
 * User information
 * Wallet filters
@@ -30,7 +30,7 @@ Here's a quick list of feature by platform that is detailed below.
 * Markdown visualizer (Side by side)
 * Votes tab
 * Mentions tab
-* Followers improvement
+* Followers tab
 * Withness Tab
 * Steem Sincerity ( Classification of users : Human | Bot | Spammer | Pending )
 * Gif Picker
@@ -58,9 +58,9 @@ Display of percentage and SBD value of the votes received. It works on posts and
 ![Votes information](https://steemitimages.com/0x0/https://steemitimages.com/DQmd2PcmAbpHs1WShJANemTtELkhP1BvtixRiLGtvnzGJvy/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
-## [Reward tab](https://steemit.com/@steem-plus/steemplus-2-12-rewards-tab)
+## [Rewards tab](https://steemit.com/@steem-plus/steemplus-2-12-rewards-tab)
 Pending and recent author and curation rewards as well as benefactor rewards.
-![Reward tab](https://steemitimages.com/0x0/https://steemitimages.com/DQmUtYxPgX5ktqx7mch8V6qWB5chUZd7WpkPffXUAKdEtW1/image.png)
+![Rewards tab](https://steemitimages.com/0x0/https://steemitimages.com/DQmUtYxPgX5ktqx7mch8V6qWB5chUZd7WpkPffXUAKdEtW1/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-12-rewards-tab)
 
 ## [Feed+](https://steemit.com/@steem-plus/steemplus-2-5-3-feed-improvements-dropdown-correction-and-searchbar-fix)
@@ -84,7 +84,7 @@ Decimals added to user reputation. On mouse over, displays a steemian current Vo
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
 ## [Wallet filters](https://steemit.com/@stoodkev/steemplus-wallet-filter)
-Allow filtering of your transaction, hide spam, research by user, minimum amout up to the last 500 results.
+Allow filtering of your transactions, hide spam, research by user, minimum amount up to the last 500 results.
 ![Wallet filters](hhttps://steemitimages.com/0x0/https://steemitimages.com/DQmNLhrEJ3a5zawBkvcKAgaKmV15ygaRvxMNQZ3PyzpGfKq/refreshwallet.gif)
 [More details](https://steemit.com/@stoodkev/steemplus-wallet-filter)
 [More details - Improvements](https://steemit.com/@steem-plus/steemplus-2-11-wallet-filter)
@@ -95,7 +95,7 @@ Allow filtering of your transaction, hide spam, research by user, minimum amout 
 ### Delegation form and current delegations display
 ![Delagation Form](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515045889/mhn2iki3fzrkib6c3gp2.png)
 ### Delegation detailled information
-On mouse over of a delegation, it's not possible to see the incoming and outgoing delegations.
+On mouse over of a delegation, it is possible to see the incoming and outgoing delegations.
 ![Delegation Details](https://steemitimages.com/0x0/https://cdn.utopian.io/posts/22a560c07d3c148fd4870e3ceea054e2a80cinoutdel_s.gif)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 [More details - Possible to delegate to an account from his page](https://steemit.com/@stoodkev/steemplus-delegation-details)
@@ -124,11 +124,11 @@ Store up to 10 favorite users in the browser local storage and quick links to th
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-6-favorite-users)
 
 ## [Quick Switch](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-Quick links from the extension dropdown
+Quick links from the extension dropdown or shortcuts
 ### Shortcuts
 * Shift+Alt+S : Steemit
 * Shift+Alt+U : Utopian
-* Shift+Alt+B : Busy
+* Shift+Alt+B : Busy (need to configure in Chrome so that Steem Plus shortcuts override existing shortcuts)
 * Shift+Alt+D : Steemd
 
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
@@ -145,15 +145,15 @@ This feature will cost you 5% of your profits.
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 ## [Offline Mode](https://steemit.com/@steem-plus/steemplus-2-9-offline-mode)
-No need to login via Steem COnnect to use most of the features.
+No need to login via Steem Connect to use most of the features.
 [More details](https://steemit.com/@steem-plus/steemplus-2-9-offline-mode)
 
 ## [Rank Badges](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-Display a rank badge (visual indicator) with declinated grades on steemian you visit
+Display a rank badge (visual indicator) with declinated grades on steemian you visit or yourself.
 ![Rank Badges](https://steemitimages.com/0x0/https://res.cloudinary.com/hpiynhbhq/image/upload/v1515046250/tb7wkmoy0i5xeoyeyqu2.png)
 ![New ranks](https://steemitimages.com/0x0/https://cdn.utopian.io/posts/c1c31e108ec21fcc30eab17a2c55f795bad9image.png)
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
-[More details - Update sub ranks](https://steemit.com/@stoodkev/more-ranks-on-steemplus-to-track-your-progression)
+[More details - Update for sub ranks](https://steemit.com/@stoodkev/more-ranks-on-steemplus-to-track-your-progression)
 
 ## [Markdown visualizer](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 Side by side display for easier readability and adjustments.
@@ -191,7 +191,7 @@ Witness votes recieved is also searchable and sortable
 [More details - Votes received and improvements](https://steemit.com/@steem-plus/even-more-information-for-witnesses-on-steemplus)
 
 ## [Steem Sincerity](https://steemit.com/@steem-plus/steemplus-2-8-steem-sincerity)
-Class users into 4 categories with Artificial Intelligence and users contributions.
+Class users into 4 categories with Machine Learning and users contributions.
 **Categories**
 * Human
 * Bot
@@ -209,13 +209,13 @@ Class users into 4 categories with Artificial Intelligence and users contributio
 [More details](https://steemit.com/utopian-io/@steem-plus/steemplus-2-7-access-your-trophies-from-steemitboard)
 
 # [Backend](https://steemit.com/@stoodkev/introducing-steemplus-backend)
-A new satellite project has been created to allow new features to be provided in the navigator extention. A backend will precalculate some information so that some features can exists with decent performance.
+A new satellite project, SteemPlus-API will serve as SteemPlus backend. It is mainly intended to automate tasks and query data from @arcange's SteemSQL database.
 [More details](https://steemit.com/@stoodkev/introducing-steemplus-backend)
 
-[GitHub project and usage & installation documentation](https://github.com/stoodkev/steemplus-api)
+[GitHub project with usage & installation documentation](https://github.com/stoodkev/steemplus-api)
 
 # Technical
-The extension is available on Chrome, Opera and Firefox, but work best under Chrome
+The extension is available on Chrome, Opera and Firefox, but works best under Chrome
 ### On Chrome
 If you're using Chrome, it's very straightforward, you just have to install SteemPlus from the Chrome Store [here](https://chrome.google.com/webstore/detail/steemplus/mjbkjgcplmaneajhcbegoffkedeankaj?hl=en) and enjoy!
 
@@ -230,9 +230,9 @@ If you're using Chrome, it's very straightforward, you just have to install Stee
 1. Install [Chrome Store Foxified](https://addons.mozilla.org/en-US/firefox/addon/chrome-store-foxified/).
 1. Select Add to Firefox in [here](https://chrome.google.com/webstore/detail/steemplus/mjbkjgcplmaneajhcbegoffkedeankaj?hl=en).
 1. If you wish to install the add-on permanently, you need to login to addons.mozilla.org and have your cookies enabled!
-1. SteemPlus is opensource and available on Github here.
+1. SteemPlus is open source and available on [Github](https://github.com/stoodkev/SteemPlus).
 
 @stoodkev for @steem-plus
 Powered by @adsactly
 Powered by @utopian-io
-You like Steem-Plus? [Vote @stoodkev for witness](https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1)!
+You like Steem-Plus ? [Vote @stoodkev for witness](https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1)!

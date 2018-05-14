@@ -115,7 +115,8 @@
         "src/css/dropdown.css",
         "src/css/witnesses_tab.css",
         "src/css/wallet_history.css",
-        "src/css/rewards_tab.css"],
+        "src/css/rewards_tab.css",
+        "src/css/author_popup_info.css"],
       "run_at": "document_idle"
     }
   ]

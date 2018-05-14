@@ -283,7 +283,7 @@ function startOfflineFeatures(items, user, account)
   if(rewards_tab&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
   if(author_popup_info&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{}});
+      chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{user:user}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -362,7 +362,7 @@ function startOfflineFeatures(items, user, account)
         if(gif_picker&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{}});
+          chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
     
 
         if($('.favorite-star').length > 0){

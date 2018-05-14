@@ -1,5 +1,6 @@
 var token_author_popup_info=null;
 var retryCountAuthorPopupInfo=0;
+var myUsernameAuthorPopupInfo=null;
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -7,11 +8,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     {
       	token_author_popup_info=request.token;
       	retryCountAuthorPopupInfo=0;
+      	myUsernameAuthorPopupInfo=request.data.user;
         startAuthorPopupInfo();
     }
     else if(request.to==='author_popup_info'&&request.order==='click'&&token_author_popup_info==request.token)
     {
     	retryCountAuthorPopupInfo=0;
+    	myUsernameAuthorPopupInfo=request.data.user;
       	startAuthorPopupInfo();
     }
 });
@@ -30,6 +33,18 @@ function startAuthorPopupInfo()
 		{
 			$('.ptc').unbind('click').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
+				$('.Author__dropdown').prepend('<div class="author-popup-message"></div>');
+				steem.api.getAccounts([userAuthorPopupInfo], function(err, result) {
+					if(err) console.log(err);
+					else
+					{
+						console.log(result);
+						if(result[0].witness_votes.includes(myUsernameAuthorPopupInfo))
+						{
+							$('.author-popup-message').prepend('<span class="author-popup-witness">Voted for you as a witness</span><br>');
+						}
+					}
+				});
 			});
 		}
 

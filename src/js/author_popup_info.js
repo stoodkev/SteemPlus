@@ -34,11 +34,30 @@ function startAuthorPopupInfo()
 			$('.ptc').unbind('click').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
 				$('.Author__dropdown').prepend('<div class="author-popup-message"></div>');
+				
+				$.ajax({
+			      type: "GET",
+			      beforeSend: function(xhttp) {
+			        xhttp.setRequestHeader("Content-type", "application/json");
+			        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+			      },
+			      url: 'http://steemplus-api.herokuapp.com/api/get-followers-followee/'+myUsernameAuthorPopupInfo,
+			      success: function(response) {
+			        var isFollowing = response.find(function(elem){
+						return elem.following===userAuthorPopupInfo;
+			        });
+			        if(isFollowing!==undefined)
+			        	$('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br>');
+			      },
+			      error: function(msg) {
+			        console.log(msg);
+			      }
+			    });
+
 				steem.api.getAccounts([userAuthorPopupInfo], function(err, result) {
 					if(err) console.log(err);
 					else
 					{
-						console.log(result);
 						if(result[0].proxy===myUsernameAuthorPopupInfo)
 						{
 							$('.author-popup-message').append('<span class="author-popup-proxy">Choose you as proxy</span><br>');

@@ -39,9 +39,13 @@ function startAuthorPopupInfo()
 					else
 					{
 						console.log(result);
-						if(result[0].witness_votes.includes(myUsernameAuthorPopupInfo))
+						if(result[0].proxy===myUsernameAuthorPopupInfo)
 						{
-							$('.author-popup-message').prepend('<span class="author-popup-witness">Voted for you as a witness</span><br>');
+							$('.author-popup-message').append('<span class="author-popup-proxy">Choose you as proxy</span><br>');
+						}
+						else if(result[0].witness_votes.includes(myUsernameAuthorPopupInfo))
+						{
+							$('.author-popup-message').append('<span class="author-popup-witness">Voted for you as a witness</span><br>');
 						}
 					}
 				});

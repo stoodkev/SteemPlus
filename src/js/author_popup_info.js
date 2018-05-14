@@ -33,7 +33,7 @@ function startAuthorPopupInfo()
 		{
 			$('.ptc').unbind('click').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
-				$('.Author__dropdown').prepend('<div class="author-popup-message"></div>');
+				
 				
 				$.ajax({
 			      type: "GET",
@@ -43,6 +43,8 @@ function startAuthorPopupInfo()
 			      },
 			      url: 'http://steemplus-api.herokuapp.com/api/get-followers-followee/'+myUsernameAuthorPopupInfo,
 			      success: function(response) {
+			      	if($('.author-popup-message').length===0)
+			      		$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 			        var isFollowing = response.find(function(elem){
 						return elem.following===userAuthorPopupInfo;
 			        });
@@ -60,10 +62,14 @@ function startAuthorPopupInfo()
 					{
 						if(result[0].proxy===myUsernameAuthorPopupInfo)
 						{
+							if($('.author-popup-message').length===0)
+			      				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 							$('.author-popup-message').append('<span class="author-popup-proxy">Choose you as proxy</span><br>');
 						}
 						else if(result[0].witness_votes.includes(myUsernameAuthorPopupInfo))
 						{
+							if($('.author-popup-message').length===0)
+			      				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 							$('.author-popup-message').append('<span class="author-popup-witness">Voted for you as a witness</span><br>');
 						}
 					}

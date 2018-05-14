@@ -10,6 +10,8 @@ var urlOffline=window.location.href;
 var urlOnline=window.location.href;
 var user=null;
 
+var offlineModeRetryCount=0;
+
 steem.api.setOptions({ url: 'https://api.steemit.com' });
 const token=makeToken();
 logInfo('test');
@@ -177,32 +179,34 @@ chrome.storage.local.get(['rewards_tab','wallet_history','wallet_history_memo_ke
 
 function initOfflineFeatures(isConnected, items, user, account)
 {
-  if(!isConnected)
+  if(offlineModeRetryCount<30)
   {
-    if($('.Header__userpic > a').length > 0)
+    if(!isConnected)
     {
-      console.log('end waiting for header');
-      user = $('.Header__userpic > a')[0].title; //Get username in offline mode
-      steem.api.getAccounts([user], function(err, result) {
-        if(err) console.log(err);
-        else
-        {
-          console.log('getting account');
-          startOfflineFeatures(items, user, result[0]);
-        }
-      });
+      if($('.Header__userpic > a').length > 0)
+      {
+        user = $('.Header__userpic > a')[0].title; //Get username in offline mode
+        steem.api.getAccounts([user], function(err, result) {
+          if(err) console.log(err);
+          else
+          {
+            startOfflineFeatures(items, user, result[0]);
+          }
+        });
+      }
+      else
+      {
+        offlineModeRetryCount++;
+        setTimeout(function(){
+          initOfflineFeatures(isConnected, items, null, null);
+        },1000);
+      }
     }
     else
-      setTimeout(function(){
-        console.log('waiting for header');
-        initOfflineFeatures(isConnected, items, null, null);
-      },250);
+    {
+      startOfflineFeatures(items, user, account);
+    } 
   }
-  else
-  {
-    startOfflineFeatures(items, user, account);
-  }
-
 }
 
 function startOfflineFeatures(items, user, account)

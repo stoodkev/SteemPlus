@@ -27,7 +27,7 @@
       rewardBalancePostVoteList=request.data.rewardBalance;
       recentClaimsPostVoteList=request.data.recentClaims;
       steemPricePostVoteList=request.data.steemPrice;
-      
+
       startPostVoteList();
     }
     else if(request.order==='notif'&&token_post_vote_list==request.token)
@@ -35,7 +35,7 @@
       rewardBalancePostVoteList=request.data.rewardBalance;
       recentClaimsPostVoteList=request.data.recentClaims;
       steemPricePostVoteList=request.data.steemPrice;
-      
+
       if(postVoteListStarted)
         startPostVoteList();
     }
@@ -52,7 +52,7 @@ function startPostVoteList(){
     	    var ul = votersButton.parent().find('ul.VerticalMenu');
     	    addPostVoteList(ul);
     	  }
-    	}, 1);
+    	}, 100);
     });
   }
 }

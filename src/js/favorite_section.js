@@ -8,66 +8,72 @@ var indexFav=null;
 var nameFav=null;
 var myUsername=null;
 
+var retryCountFavoriteSection = 0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='favorite_section'&&request.order==='start'&&token_favorite_section==null)
   {
     token_favorite_section=request.token;
     myUsername=request.data.user;
+    retryCountFavoriteSection=0;
     startFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
   {
     myUsername=request.data.user;
+    retryCountFavoriteSection=0;
     startFavoriteSection();
   }
 });
 
 function startFavoriteSection()
 {
-  chrome.storage.local.get(['favorite_list'], function(items){
-    favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
-    // Display favorites
-    favorite_list.forEach(function(favorite, indexFavList, fav_list)
-    {
-      steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
+  if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+  {
+    chrome.storage.local.get(['favorite_list'], function(items){
+      favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
+      // Display favorites
+      favorite_list.forEach(function(favorite, indexFavList, fav_list)
       {
-        if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
+        steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
         {
-          fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
-          fav_list[indexFavList].read = false;
-        }
+          if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
+          {
+            fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
+            fav_list[indexFavList].read = false;
+          }
 
-        if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
-        {
-          fav_list[indexFavList].read = true;
-        }
-        chrome.storage.local.set({
-          favorite_list:fav_list
+          if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
+          {
+            fav_list[indexFavList].read = true;
+          }
+          chrome.storage.local.set({
+            favorite_list:fav_list
+          });
         });
       });
-    });
-    if($('.c-sidebar--right').length > 0){
-      if(favorite_list.length>0)
-        displayFavoriteSection();
-    }
-    
-    // Display add to / remove from favorites
-    if(window.location.href.match(userPageRegex)!==null){
-      var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
-      if(userNameCurrentPage!==myUsername)
-      {
-        isFavorite=favoriteListContains(userNameCurrentPage);
-        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      if($('.c-sidebar--right').length > 0){
+        if(favorite_list.length>0)
+          displayFavoriteSection();
       }
-      else
-      {
-        console.log('Same name');
-        if($('.favorite-star').length > 0){
-          $('.favorite-star').remove();
+      
+      // Display add to / remove from favorites
+      if(window.location.href.match(userPageRegex)!==null){
+        var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
+        if(userNameCurrentPage!==myUsername)
+        {
+          isFavorite=favoriteListContains(userNameCurrentPage);
+          displayButtonAddRemoveFavorites(userNameCurrentPage);
+        }
+        else
+        {
+          if($('.favorite-star').length > 0){
+            $('.favorite-star').remove();
+          }
         }
       }
-    }
-  });
+    });
+  }
 }
 
 function displayFavoriteSection()
@@ -151,10 +157,13 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
 {
   if($('.articles__header-col').length===0)
   {
-    setTimeout(function(){
-      console.log('wait page ready');
-      displayButtonAddRemoveFavorites(userNameCurrentPage);
-    },500);
+    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+    {
+      retryCountFavoriteSection++;
+      setTimeout(function(){
+        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      },1000);
+    }
   }
   else
   {
@@ -209,7 +218,6 @@ function addToFavorites(userNameCurrentPage)
         chrome.storage.local.set({
           favorite_list:favorite_list
         });
-        console.log(favorite_list);
       });
       return true;
     }

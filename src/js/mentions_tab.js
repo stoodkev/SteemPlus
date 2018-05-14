@@ -10,6 +10,8 @@ var downloadingDataMentionTab=false;
 
 var indexLastItemDisplayed=0;
 
+var currentAction = '';
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='mentions_tab'){
@@ -21,6 +23,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
       indexLastItemDisplayed=0;
+      currentAction = 'start';
       createTab();
 
       mentionTabStarted=true;
@@ -31,6 +34,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
       indexLastItemDisplayed=0;
+      currentAction = 'click';
       createTab();
     }
     else if(request.order==='notif'&&token_mention_tab==request.token)
@@ -39,7 +43,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       recentClaimsMentionsTab=request.data.recentClaims;
       steemPriceMentionsTab=request.data.steemPrice;
       indexLastItemDisplayed=0;
-
+      currentAction = 'notif';
       if(mentionTabStarted)
         createTab();
     }
@@ -48,14 +52,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function createTab()
 {
-  window.SteemPlus.Tabs.createTab({
-    id: 'mentions',
-    title: 'Mentions',
-    enabled: true,
-    createTab: createMentionsTab
-  });
-  if(window.location.href.includes('#mentions'))
-  window.SteemPlus.Tabs.showTab('mentions');
+  if(regexBlogSteemit.test(window.location.href))
+  {
+      window.SteemPlus.Tabs.createTab({
+        id: 'mentions',
+        title: 'Mentions',
+        enabled: true,
+        createTab: createMentionsTab
+      });
+      if(window.location.href.includes('#mentions'))
+      window.SteemPlus.Tabs.showTab('mentions');
+  }
 }
 
 function createMentionsTab(mentionsTab) {
@@ -100,6 +107,7 @@ function createMentionsTab(mentionsTab) {
 
   mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
     // Load more
+    currentAction === 'load-more'
     var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
     displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
   });
@@ -122,19 +130,16 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
 {
   if(mentionsTabPostsComments===null&&!downloadingDataMentionTab)
   {
-  //  console.log("Start data downloading");
     $.ajax({
       type: "GET",
       beforeSend: function(xhttp) {
         downloadingDataMentionTab=true;
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-      //  console.log(xhttp);
       },
-
-        url: 'http://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
+      url: 'http://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
       success: function(result) {
-
+        if($('.error-mentions-label').length===0) $('.error-mentions-label').remove();
         mentionsTabPostsComments = result;
         createRowsMentionTab(mentionsTab, type, reset);
         downloadingDataMentionTab = false;
@@ -156,15 +161,14 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
   {
     if(downloadingDataMentionTab)
     {
-    //  console.log("downloading data");
       // wait because data already downloading
-      setTimeout(function(){
-        displayMentions(mentionsTab, type, usernamePageMentions,reset);
-      },250);
+      if(currentAction==='notif')
+        setTimeout(function(){
+          displayMentions(mentionsTab, type, usernamePageMentions,reset);
+        },1000);
     }
     else
     {
-    //  console.log("already downloaded");
       // display with local data
       createRowsMentionTab(mentionsTab, type, reset);
     }
@@ -181,6 +185,9 @@ function createRowsMentionTab(mentionsTab, type, reset)
   }
 
   var listMentions = mentionsTab.find('.PostsList__summaries');
+
+  if(currentAction === 'notif')
+    indexLastItemDisplayed = 0;
 
   var nbItemAdded = 0;
   while(nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length)
@@ -228,25 +235,10 @@ function createSummaryMention(mentionItem)
 {
   var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
   var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
-  var mentionTitle = (mentionItem.title!=='' ? mentionItem.title : mentionItem.permlink.split('-').join(' '));
+  var mentionTitle = mentionItem.root_title;
 
-  // Get title, if item is comment then build title from permlink
-  var mentionTitle = null;
-  if(mentionItem.title!=='')
-  {
-    mentionTitle = mentionItem.title;
-  }
-  else
-  {
-    var tmp = mentionItem.permlink.split('-');
-    tmp.forEach(function(part, index, theArray) {
-      theArray[index] = part.replace(/(.*)\bre\b(.*)/i, 'Re:');
-    });
-    tmp.splice(tmp.length - 1, 1);
-    mentionTitle = tmp.join(' ');
-  }
 
-  var urlMentionItem = '/' + mentionItem.category + '/@' + (mentionItem.parent_author==='' ? mentionItem.author : mentionItem.parent_author) + '/' + mentionItem.permlink;
+  var urlMentionItem = mentionItem.url;
 
   var urlImgMentionDisplayed = getImagePostSummary(mentionItem);
 

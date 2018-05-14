@@ -20,39 +20,58 @@
       {
         token_gif_picker=request.token;
 
-        // $('body').attrchange(function(attrName) {
-        //   if(attrName === 'class'){
-        //     if($('body').hasClass('with-post-overlay')) {
-        //       addPostBoostButton();
-        //     }
-        //   }
-        // });
-
-        $('body').on('click', function(e) {
-          var t = $(e.target);
-          if(t.closest('.smi-gif-picker-container2').length){
-            return;
-          }
-          if(t.closest('.smi-gif-picker-button-container').length){
-            return;
-          }
-          closeGifPicker($('.ReplyEditor__body textarea')); // close all gif picker
-        });
-
-        $('.float-right.secondary').click(function(){
-          $('.smi-gif-picker-button-container').remove();
-        });
-
-        setInterval(function(){
-          $('.ReplyEditor__body textarea').each(function() {
-            var textarea = $(this);
-            setupGifPickerIfNeeded(textarea);
-          });
-        },100);
+        startGifPicker();
 
       }
     }
+    else if(request.order==='click'&&token_gif_picker==request.token)
+    {
+      startGifPicker();
+    }
   });
+
+  function startGifPicker()
+  {
+    if(regexCreatePostSteemit.test(window.location.href)||regexPostSteemit.test(window.location.href))
+    {
+      $('body').unbind('click').on('click', function(e) {
+        var t = $(e.target);
+        if(t.closest('.smi-gif-picker-container2').length){
+          return;
+        }
+        if(t.closest('.smi-gif-picker-button-container').length){
+          return;
+        }
+        closeGifPicker($('.ReplyEditor__body textarea')); // close all gif picker
+      });
+
+      $('.float-right.secondary').click(function(){
+        $('.smi-gif-picker-button-container').remove();
+      });
+
+      $('.ReplyEditor__body textarea').each(function() {
+        var textarea = $(this);
+        setupGifPickerIfNeeded(textarea);
+      });
+
+      $('.Comment__footer__controls > a').unbind('click').click(function(){
+        $('.ReplyEditor__body textarea').each(function() {
+          var textarea = $(this);
+          setupGifPickerIfNeeded(textarea);
+        });
+      });
+
+      $('.PostFull__reply > a').unbind('click').click(function(){
+        $('.ReplyEditor__body textarea').each(function() {
+          var textarea = $(this);
+          setupGifPickerIfNeeded(textarea);
+        });
+      });
+
+
+    }
+  }
+    
 
   function addGifToTextArea(textarea, gif) {
     var t = textarea[0];
@@ -245,9 +264,6 @@
     if(textarea.hasClass('smi-gif-picker-textarea')){
       return;
     }
-
-    //if(textarea.parents.find('.smi-gif-picker-button-container'))
-
 
     textarea.addClass('smi-gif-picker-textarea');
     var pickerButtonContainer = $('<div class="smi-gif-picker-button-container">\

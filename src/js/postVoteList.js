@@ -14,7 +14,6 @@
     aut=request.data.user;
     if(request.order==='start'&&token_post_vote_list==null)
     {
-      console.log("Start notified");
       postVoteListStarted=true;
       token_post_vote_list=request.token;
       rewardBalancePostVoteList=request.data.rewardBalance;
@@ -25,8 +24,6 @@
     }
     else if(request.order==='click'&&token_post_vote_list==request.token)
     {
-      console.log("Update notified");
-
       rewardBalancePostVoteList=request.data.rewardBalance;
       recentClaimsPostVoteList=request.data.recentClaims;
       steemPricePostVoteList=request.data.steemPrice;
@@ -35,8 +32,6 @@
     }
     else if(request.order==='notif'&&token_post_vote_list==request.token)
     {
-      console.log("Update notified");
-
       rewardBalancePostVoteList=request.data.rewardBalance;
       recentClaimsPostVoteList=request.data.recentClaims;
       steemPricePostVoteList=request.data.steemPrice;
@@ -48,15 +43,18 @@
 });
 
 function startPostVoteList(){
-	$('body').on('click', 'div.Voting__voters_list > a', function(){
-		var votersButton = $(this);
-		setTimeout(function() {
-		  if(votersButton.parent().hasClass('show')){
-		    var ul = votersButton.parent().find('ul.VerticalMenu');
-		    addPostVoteList(ul);
-		  }
-		}, 1);
-	});
+  if(regexPostSteemit.test(window.location.href))
+  {
+    $('body').on('click', 'div.Voting__voters_list > a', function(){
+    	var votersButton = $(this);
+    	setTimeout(function() {
+    	  if(votersButton.parent().hasClass('show')){
+    	    var ul = votersButton.parent().find('ul.VerticalMenu');
+    	    addPostVoteList(ul);
+    	  }
+    	}, 1);
+    });
+  }
 }
 
 function addPostVoteList(votersList)
@@ -123,8 +121,6 @@ function addPostVoteList(votersList)
 
 
       });
-      console.log(voteElsByVoter);
-
       getSteemContent(author, permlink, function(err, result){
         if(!result){
           	return;

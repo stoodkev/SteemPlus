@@ -14,6 +14,8 @@
 
   var followersTabStarted=false;
 
+  var retryCountFollowTable=0;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='followers_table'){
       aut=request.data.user;
@@ -27,6 +29,7 @@
         myaccount=request.data.account;
         totalVestingFund=request.data.totalVestingFund;
         totalVestingShares=request.data.totalVestingShares;
+        retryCountFollowTable=0;
 
         if($('.smi-followers-table-container').length===0)
           checkForFollowerPage();
@@ -36,6 +39,7 @@
       }
       else if(request.order==='click')
       {
+        retryCountFollowTable=0;
         var match = (window.location.pathname || '').match(followerPageRegexp);
         if(match && match[2] !== currentPage) {
           if($('.smi-followers-table-container').length===0)
@@ -44,6 +48,7 @@
       }
       if(request.order==='notif'&&token_followers_table==request.token)
       {
+        retryCountFollowTable=0;
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
@@ -391,6 +396,7 @@
   function checkForFollowerPage() {
 
     var match = (window.location.pathname || '').match(followerPageRegexp);
+    if(retryCountFollowTable<20)
     if(match) {
       var name = match[1];
       var isFollowers = match[2] === 'followers';
@@ -398,6 +404,7 @@
       var userList = $('.UserList');
       if(userList.length === 0)
       {
+        retryCountFollowTable++;
         setTimeout(function(){
           checkForFollowerPage();
         }, 1000);
@@ -432,26 +439,28 @@ function getFollowingListName(username, lastFollowing, followingList, callback)
 {
 
   sendGetFollowingRequest(username, lastFollowing).then(function(result){
-    lastFollowing = result[result.length-1].following;
+    if(result[result.length-1]!==undefined)
+    {
+      lastFollowing = result[result.length-1].following;
 
-    if(result.length < 100){
-      if(followingList.length > 0){
-        result.shift();
+      if(result.length < 100){
+        if(followingList.length > 0){
+          result.shift();
+        }
+        result.forEach(function(element){
+          followingList.push(element);
+        });
+        callback(null, followingList);
+        return;
       }
+      if(followingList.length > 0)
+        result.shift();
+
       result.forEach(function(element){
         followingList.push(element);
       });
-      callback(null, followingList);
-      return;
+      getFollowingListName(username, lastFollowing, followingList, callback);
     }
-    if(followingList.length > 0)
-      result.shift();
-
-    result.forEach(function(element){
-      followingList.push(element);
-    });
-    getFollowingListName(username, lastFollowing, followingList, callback);
-
   });
 }
 

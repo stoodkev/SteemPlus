@@ -24,15 +24,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 function startBeneficiaries(){
-  if(window.location.href.match(/submit/))
+  if(regexCreatePostSteemit.test(window.location.href))
     addBeneficiariesButton();
 }
 
 function onClickB(){
-  if(window.location.href.match(/submit/)&&!created_benef){
+  if(regexCreatePostSteemit.test(window.location.href)&&!created_benef){
     addBeneficiariesButton();
   }
-  if(!window.location.href.match(/submit/)){
+  if(!regexCreatePostSteemit.test(window.location.href)){
     created_benef=false;
   }
 }
@@ -115,7 +115,7 @@ function isEverythingFilled()
     }
     if(hasWrongPercent!==0)
     {
-        alert("Percentage should be greater than 0 and smaller or equal to 100!");
+        alert("Percentage should be greater than 0 and smaller or equal to 100! (Including 5% SteemPlus fee)");
         return false;
     }
     if(total_percent>95)

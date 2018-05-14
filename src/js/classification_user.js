@@ -6,12 +6,15 @@ var myUsernameCU=null;
 var scrollBottomReachedCU = false;
 var nbElementPageAuthor=0;
 
+var retryCountClassificationUser=0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
   {
     token_classification_user=request.token;
     myUsernameCU = request.data.user;
     nbElementPageAuthor=0;
+    retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
     canStartClassificationUser();
 
@@ -20,6 +23,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   {
     myUsernameCU = request.data.user;
     nbElementPageAuthor=0;
+    retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
     canStartClassificationUser();
   }
@@ -27,39 +31,44 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function canStartClassificationUser()
 {
-
-  if($('.Post').length > 0)
+  if( (regexClassificationUserBlogSteemit.test(window.location.href)
+    ||regexFeedPlusSteemit.test(window.location.href)
+    ||regexFeedSteemit.test(window.location.href)
+    ||regexPostSteemit.test(window.location.href))
+    &&retryCountClassificationUser<20)
   {
-    // Case article
-    if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
+    if($('.Post').length > 0)
     {
-      startClassificationUser();
+      // Case article
+      if(document.readyState == 'complete'&&$('.Comment__body').length>(parseFloat($('.PostFull__responses > a')[0].innerText) / 2))
+      {
+        startClassificationUser();
+      }
+      else
+      {
+        setTimeout(function(){
+          canStartClassificationUser();
+        }, 1000);
+      }
     }
     else
     {
-      setTimeout(function(){
-        canStartClassificationUser();
-      }, 500);
-    }
-  }
-  else
-  {
-    // Case feed, blog
-    if(nbElementPageAuthor===$('.author').length)
-    {
-      setTimeout(function(){
-        canStartClassificationUser();
-      }, 500);
-    }
-    else
-    {
-      startClassificationUser();
+      // Case feed, blog
+      if(nbElementPageAuthor===$('.author').length)
+      {
+        setTimeout(function(){
+          canStartClassificationUser();
+        }, 1000);
+      }
+      else
+      {
+        startClassificationUser();
+      }
     }
   }
 }
 
 function startClassificationUser(){
-  //$('.classification-section').remove();
   var elementUserListCU = $('.ptc');
   var elementUserListCU2 = $('.author > strong > a');
   var userListCU = [];

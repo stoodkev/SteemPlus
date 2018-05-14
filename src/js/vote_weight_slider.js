@@ -10,6 +10,8 @@
 
   var voteWeightSliderStarted=false;
 
+  var retryCountVoteWeightSlider = 0;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_weight_slider'){
       aut=request.data.user;
@@ -21,6 +23,7 @@
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
         account=request.data.account;
+        retryCountVoteWeightSlider = 0;
 
         startVoteWeightSlider();
         voteWeightSliderStarted=true;
@@ -28,6 +31,7 @@
       }
       else if(request.order==="notif"&&token_vote_weight_slider==request.token)
       {
+        retryCountVoteWeightSlider = 0;
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
@@ -41,16 +45,22 @@
 
   function startVoteWeightSlider()
   {
-    $('body').on('click', 'span.Voting__button > a', function(){
-      var votingButton = $(this);
-      setTimeout(function() {
-        tryUpdateVotingSlider();
-      }, 1);
-    });
+    if( regexVoteWeightSliderBlogSteemit.test(window.location.href)
+    ||regexFeedPlusSteemit.test(window.location.href)
+    ||regexFeedSteemit.test(window.location.href)
+    ||regexPostSteemit.test(window.location.href))
+    {
+      $('body').on('click', 'span.Voting__button > a', function(){
+        var votingButton = $(this);
+        setTimeout(function() {
+          tryUpdateVotingSlider();
+        }, 1);
+      });
 
-    $("body").on('DOMSubtreeModified', ".weight-display", function() {
-      tryUpdateVotingSlider();
-    });
+      $("body").on('DOMSubtreeModified', ".weight-display", function() {
+        tryUpdateVotingSlider();
+      });
+    }
   }
 
  function updateVotingSlider(weightDisplay) {
@@ -67,10 +77,13 @@
     }
 
     var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
-    if(typeof dollars === 'undefined'){
+    
+    console.log(dollars);   
+    if(typeof dollars === 'undefined'&&retryCountVoteWeightSlider<20){
+      retryCountVoteWeightSlider++;
       setTimeout(function() {
         tryUpdateVotingSlider();
-      }, 100);
+      }, 1000);
     }else{
       weightDollars.text(dollars.toFixed(2) + '$');
     }
@@ -120,6 +133,7 @@
   };
 
   function tryUpdateVotingSlider() {
+    console.log('tryUpdateVotingSlider')
     var weightDisplay = $('span.Voting__button .weight-display');
     if(weightDisplay.length){
       updateVotingSlider(weightDisplay);

@@ -40,17 +40,18 @@ function waitInsertedDropImage()
 {
   if($('textarea')[0].textLength === 0)
   {
-    console.log('textarea vide');
-    setTimeout(function () {
-      console.log('waiting for preview');
-      waitInsertedDropImage();
-    }, 200);
+    if(regexCreatePostSteemit.test(window.location.href))
+    {
+      setTimeout(function () {
+        waitInsertedDropImage();
+      }, 200);
+    }
+    
   }
   else
   {
     if($('.MarkdownViewer2').length === 0)
     {
-      console.log('preview pas cree');
       waitingForPreview = false;
       setTimeout(function () {
         $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
@@ -101,7 +102,7 @@ function bindTextArea()
     {
       setTimeout(function(){
         $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
-      }, 200);
+      }, 100);
       waitingForPreview = false;
     }
   });
@@ -109,39 +110,42 @@ function bindTextArea()
 } 
 
 function setupPreview(){
-
-  if(waitingForPreview || $('.Preview').length === 0)
+  if(regexCreatePostSteemit.test(window.location.href))
   {
-      setTimeout(function(){
-        setupPreview();
-      }, 200);
-      return;
+    if(waitingForPreview || $('.Preview').length === 0)
+    {
+        setTimeout(function(){
+          setupPreview();
+        }, 500);
+        return;
+    }
+
+    // Put editor next to preview
+    markdownSource=$('.Preview');
+    preview = markdownSource.clone();
+    preview.id = 'mypreview';
+    preview.addClass('Preview2');
+    markdownSource.hide();
+    preview.find('div.MarkdownViewer').addClass('MarkdownViewer2');
+
+
+    if($('.myrow').length > 0)
+    {
+      preview.appendTo($('.myrow'));
+    }
+    else
+    {
+      preview.appendTo($('.column'));
+      $('.column').removeClass('small-12');
+      $('.column').addClass('row');
+      $('.column').addClass('myrow');
+      $('.column').removeClass('column');
+
+      $('.ReplyEditor').removeClass('row');
+      $('.ReplyEditor').addClass('ReplyEditor2');
+      $('.vframe').addClass('vframe2');
+    }
   }
-
-  // Put editor next to preview
-  markdownSource=$('.Preview');
-  preview = markdownSource.clone();
-  preview.id = 'mypreview';
-  preview.addClass('Preview2');
-  markdownSource.hide();
-  preview.find('div.MarkdownViewer').addClass('MarkdownViewer2');
-
-
-  if($('.myrow').length > 0)
-  {
-    preview.appendTo($('.myrow'));
-  }
-  else
-  {
-    preview.appendTo($('.column'));
-    $('.column').removeClass('small-12');
-    $('.column').addClass('row');
-    $('.column').addClass('myrow');
-    $('.column').removeClass('column');
-
-    $('.ReplyEditor').removeClass('row');
-    $('.ReplyEditor').addClass('ReplyEditor2');
-    $('.vframe').addClass('vframe2');
-  }
+  
 }
 

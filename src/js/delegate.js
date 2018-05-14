@@ -13,21 +13,26 @@ var myAccountDelegation=null;
 var totalOutgoingDelegation=-1;
 var totalIncomingDelegation=-1;
 
+var retryCountDelegate=0;
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.to === 'delegation' && request.order === 'start' && token_del == null) {
     token_del = request.token;
     myAccountDelegation=request.data.account;
+    retryCountDelegate = 0;
     startDelegation(request.data.steemit, request.data.busy, request.data.global);
     delegationStarted = true;
   } 
   else if (request.to === 'delegation' && request.order === 'click' && token_del === request.token)
   {
     myAccountDelegation=request.data.account;
+    retryCountDelegate = 0;
     startDelegation(request.data.steemit, request.data.busy, request.data.global);
   }
   else if (request.to === 'delegation' && request.order === 'notif' && token_del == request.token) 
   {
+    retryCountDelegate = 0;
     if (!$('.delegate'))
       startDelegation(request.data.steemit, request.data.busy, request.data.global);
   }
@@ -39,20 +44,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // @parameter globalP : contains total steem and total vests
 function startDelegation(isSteemit, isBusy, globalP)
 {
-  if(!window.location.href.includes('#')) 
+  if(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href)) 
   {
     if (isSteemit)
     {
-      load_check = /transfers/;
       wallet_elt_d = ".FoundationDropdownMenu__label";
       classButton = "'UserWallet__buysp button hollow delegate";
 
-      if (window.location.href.match(load_check))
-      {
-        usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
-        getDelegationInformation(isSteemit, isBusy, globalP);
-        createButtonDelegation(isSteemit, isBusy, globalP);
-      }
+      usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
+      getDelegationInformation(isSteemit, isBusy, globalP);
+      createButtonDelegation(isSteemit, isBusy, globalP);
 
     } 
     else if (isBusy) 
@@ -84,7 +85,7 @@ function startDelegation(isSteemit, isBusy, globalP)
 // @parameter isBusy : boolean, true if used website is busy
 // @parameter globalP : contains total steem and total vests
 function createButtonDelegation(isSteemit, busy, globalP) {
-  if(totalOutgoingDelegation===-1) 
+  if(totalOutgoingDelegation===-1&&(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))&&retryCountDelegate<20) 
   {
     setTimeout(function(){
       createButtonDelegation(isSteemit, busy, globalP)
@@ -92,7 +93,6 @@ function createButtonDelegation(isSteemit, busy, globalP) {
   }
   else
   {
-    console.log('Create Delegation Button', totalOutgoingDelegation);
     if ($('.delegate').length === 0) {
 
       if ($('.transfer_to').length !== 0) $('.transfer_to').remove();

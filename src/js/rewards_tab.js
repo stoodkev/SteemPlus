@@ -31,26 +31,30 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Start Tab Reward if it can
 function startTabReward()
 {
-	// Wait for the nav bar to be ready
-	if($('.UserProfile__top-nav').length === 0)
-		setTimeout(function(){
-			startTabReward();
-		}, 250);
-	else
+	if(regexBlogSteemit.test(window.location.href))
 	{
-		// Create the new tab
-		$('.UserProfile__top-nav > div > div > ul > li').eq(3).hide();
-		window.SteemPlus.Tabs.createTab({
-			id: 'rewards',
-			title: 'Rewards',
-			enabled: true,
-			createTab: createRewardsTab
-		});
+		// Wait for the nav bar to be ready
+		if($('.UserProfile__top-nav').length === 0)
+			setTimeout(function(){
+				startTabReward();
+			}, 250);
+		else
+		{
+			// Create the new tab
+			$('.UserProfile__top-nav > div > div > ul > li').eq(3).hide();
+			window.SteemPlus.Tabs.createTab({
+				id: 'rewards',
+				title: 'Rewards',
+				enabled: true,
+				createTab: createRewardsTab
+			});
 
-		// Display the tab if #rewards in url
-		if(window.location.href.includes('#rewards'))
-			window.SteemPlus.Tabs.showTab('rewards');
+			// Display the tab if #rewards in url
+			if(window.location.href.includes('#rewards'))
+				window.SteemPlus.Tabs.showTab('rewards');
+		}
 	}
+	
 }
 
 

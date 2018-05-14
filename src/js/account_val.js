@@ -7,9 +7,13 @@ var token_a=null;
 var accountValStarted=false;
 var acc_steemit,acc_busy,acc_global,acc_market;
 
+var retryAccountVal = 0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+
     if(request.to==='acc_v'&&request.order==='start'&&token_a==null)
     {
+      retryAccountVal = 0;
       token_a=request.token;
       acc_steemit=request.data.steemit;
       acc_busy=request.data.busy;
@@ -19,11 +23,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       accountValStarted=true;
     }
     else if(request.to==='acc_v'&&request.order==='click'&&token_a===request.token){
+      retryAccountVal = 0;
       acc_global=request.data.global;
       acc_market=request.data.market;
       onClickA();}
     else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
     {
+      retryAccountVal = 0;
       if(accountValStarted)
       {
         acc_market=request.market;
@@ -32,104 +38,119 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-function startAccountValue(){
-        if(acc_steemit) {
-            load_check_a=/transfers/;
-            load_check2_a=/transfers/;
-            if(window.location.href.includes('@') && window.location.href.includes('/')){
-              account_v=window.location.href.split('@')[1].split('/')[0];
-              wallet_elt_a=$('.medium-4')[4];
-            }
-            else
-              return;
-
-        }
-            else if(acc_busy)
-        {
-            load_check_a=/wallet/;
-            load_check2_a=/transfers/;
-            wallet_elt_a=$('.UserWalletSummary__value')[4];
-            account_v=(window.location.href.match(load_check))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-        }
-
-        if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)){
-          checkLoad();
-        }
+function startAccountValue()
+{
+  if(regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))
+  {
+    if(acc_steemit) 
+    {
+      load_check_a=/transfers/;
+      load_check2_a=/transfers/;
+      if(window.location.href.includes('@') && window.location.href.includes('/')){
+        account_v=window.location.href.split('@')[1].split('/')[0];
+        wallet_elt_a=$('.medium-4')[4];
+      }
+      else
+        return;
+    }
+    else if(acc_busy)
+    {
+      load_check_a=/wallet/;
+      load_check2_a=/transfers/;
+      wallet_elt_a=$('.UserWalletSummary__value')[4];
+      account_v=(window.location.href.match(load_check_a))?$('.Topnav__user').eq(0).attr('href').split('@')[1]:window.location.href.split('@')[1].split('/')[0];
     }
 
+    if(window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)){
+      checkLoad();
+    }
+  }
+}
+
   function onClickA(){
-    setTimeout(function() {
-      if(window.location.href!=='')
-      {
-        if(window.location.href.includes('@')){
-          account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-          wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+    if(regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))
+    {
+      setTimeout(function() {
+        if(window.location.href!=='')
+        {
+          if(window.location.href.includes('@')){
+            account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
+            wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+          }
         }
-      }
-      if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
-        checkLoad();
-      }
-    },timeout_a);
+        if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {
+          checkLoad();
+        }
+      },timeout_a);
+    }
+    
   }
 
   function checkLoad(){
 
-
-    if($(wallet_elt_a).length>0){
-
-      createTitle();
-    }
-    else {
-      setTimeout(checkLoad, 1000);
+    if((regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))&&retryAccountVal<5)
+    {
+      if($(wallet_elt_a).length>0){
+        createTitle();
+      }
+      else 
+      {
+        retryAccountVal++;
+        setTimeout(checkLoad, 1000);
+      }
     }
   }
 
-  function createTitle() {
+function createTitle() {
 
-    var title='<h5>Details</h5>';
-    var real_val=document.createElement('span');
-    var logo=document.createElement('img');
-    logo.src=chrome.extension.getURL("src/img/logo.png");
-    logo.id='logovalue';
-    if(acc_steemit)
-      logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
-    if(acc_steemit&& $('.medium-4 .dropdown-arrow').length!==0)
-      real_val.style.marginRight='1em';
-    real_val.className='real_value';
-    real_val.append(logo);
-    STEEM_A=acc_market.priceSteem;
-    SBD_A=acc_market.priceSBD;
-    steem.api.getAccounts([account_v], function(err, result) {
-      if(err) console.log(err);
-      var value=0;
-      const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
-      const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
-      const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, acc_global.totalVests, acc_global.totalSteem);
-      const STEEM= STEEM_BALANCE+STEEM_SAVINGS+STEEM_POWER;
-      const SBD_BALANCE=SBD_A*parseFloat(result["0"].sbd_balance.split(' ')[0]);
-      const SBD_SAVINGS=SBD_A*parseFloat(result[0].savings_sbd_balance.split(' ')[0]);
-      const SBD=SBD_BALANCE+SBD_SAVINGS;
-      const TOTAL_VALUE=SBD+STEEM;
-      value=postProcess(TOTAL_VALUE);
+  var title='<h5>Details</h5>';
+  var real_val=document.createElement('span');
+  var logo=document.createElement('img');
+  logo.src=chrome.extension.getURL("src/img/logo.png");
+  logo.id='logovalue';
+  if(acc_steemit)
+    logo.title='Real account value calculated by SteemPlus according to Bittrex price for STEEM and SBD';
+  if(acc_steemit&& $('.medium-4 .dropdown-arrow').length!==0)
+    real_val.style.marginRight='1em';
+  real_val.className='real_value';
+  real_val.append(logo);
+  STEEM_A=acc_market.priceSteem;
+  SBD_A=acc_market.priceSBD;
+  steem.api.getAccounts([account_v], function(err, result) 
+  {
+    if(err) console.log(err);
+    var value=0;
+    const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
+    const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
+    const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, acc_global.totalVests, acc_global.totalSteem);
+    const STEEM= STEEM_BALANCE+STEEM_SAVINGS+STEEM_POWER;
+    const SBD_BALANCE=SBD_A*parseFloat(result["0"].sbd_balance.split(' ')[0]);
+    const SBD_SAVINGS=SBD_A*parseFloat(result[0].savings_sbd_balance.split(' ')[0]);
+    const SBD=SBD_BALANCE+SBD_SAVINGS;
+    const TOTAL_VALUE=SBD+STEEM;
+    value=postProcess(TOTAL_VALUE);
 
 
-        var pop=document.createElement('a');
-        pop.style.cursor='pointer';
-        pop.id='popop';
+    var pop=document.createElement('a');
+    pop.style.cursor='pointer';
+    pop.id='popop';
 
-        if(acc_steemit){
-          pop.innerHTML=value;
-          real_val.append(pop);
-          wallet_elt_a.append(real_val);
-        if($('.real_value').length>1)
-          $('.real_value')[0].remove();
-        }
-      else {
-        wallet_elt_a.prepend(pop);
-        $('#popop').html(logo);
-        title='<h5>Total <span class="value_of">'+value+'</class></h5>';
+    if(acc_steemit){
+      pop.innerHTML=value;
+      real_val.append(pop);
+      wallet_elt_a.append(real_val);
+      if($('.real_value').length>1)
+        $('.real_value')[0].remove();
+    }
+    else 
+    {
+      $('#popop').remove();
+      wallet_elt_a.prepend(pop);
+      $('#popop').html(logo);
+      title='<h5>Total <span class="value_of">'+value+'</class></h5>';
 
-        url=window.location.href;}
+      url=window.location.href;
+    }
 
     $('#popop').attr('data-toggle','popover');
     $('#popop').attr('data-content','<h5>STEEM:  <span class="value_of">'+postProcess(STEEM)+'</span>'
@@ -152,7 +173,7 @@ function startAccountValue(){
     }
     else
     {
-      if($('.vests-added').length === 0)
+      if($('.vests-added').length === 0 && acc_steemit)
       {
         var spanVestingShares = $('.UserWallet__balance > .column')[3];
         var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));

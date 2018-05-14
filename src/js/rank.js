@@ -6,16 +6,20 @@ var totalSteemRank = null;
 
 var medal_level_folders = ['3','2'];
 
+var retryCountRank=0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
       token_rank=request.token;
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      retryCountRank=0;
       displayBadges(request.badge);
     }
     else if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      retryCountRank=0;
       displayBadges(request.badge);
     }
 });
@@ -23,50 +27,53 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function displayBadges(badge)
 {
-  if($('.UserProfile__banner ').length!==0)
+  if(regexBlogSteemit.test(window.location.href)&&retryCountRank<20)
   {
-    getAccountData(getUsernameFromProfile()).then(function (result){
-      if (result.length > 0)
-      {
-        const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
-        console.log(vesting_shares);
-        const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
-
-        var rank = null;
-        if(medal_level_folders.includes(badge_serie))
+    if($('.UserProfile__banner ').length!==0)
+    {
+      getAccountData(getUsernameFromProfile()).then(function (result){
+        if (result.length > 0)
         {
-          rank = getUserRankLevel(vesting_shares);
-        }
-        else
-        {
-          rank = getUserRank(vesting_shares);
+          const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
+          const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
+
+          var rank = null;
+          if(medal_level_folders.includes(badge_serie))
+          {
+            rank = getUserRankLevel(vesting_shares);
+          }
+          else
+          {
+            rank = getUserRank(vesting_shares);
+          }
+
+          const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
+          var titleBadge = getUserRankLevel(vesting_shares);
+          var div= document.createElement('div');
+          div.className="ranker";
+          var img=document.createElement('img');
+          img.src=chrome.extension.getURL(medal_url);
+          img.title=getTitleString(titleBadge, vesting_shares);
+          div.appendChild(img);
+          if($('.ranker').length!==0)
+            $('.ranker').remove();
+          if($('.wrapper ').length===0)
+          {
+            $('.UserProfile__banner ').first().children().first().wrapInner('<div class="wrapper"></div>');
+            $('.wrapper ').first().children().first().insertBefore($('.wrapper'));
+          }
+          $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
         }
 
-        const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
-        var titleBadge = getUserRankLevel(vesting_shares);
-        var div= document.createElement('div');
-        div.className="ranker";
-        var img=document.createElement('img');
-        img.src=chrome.extension.getURL(medal_url);
-        img.title=getTitleString(titleBadge, vesting_shares);
-        div.appendChild(img);
-        if($('.ranker').length!==0)
-          $('.ranker').remove();
-        if($('.wrapper ').length===0)
-        {
-          $('.UserProfile__banner ').first().children().first().wrapInner('<div class="wrapper"></div>');
-          $('.wrapper ').first().children().first().insertBefore($('.wrapper'));
-        }
-        $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
-      }
-
-    });
-  }
-  else
-  {
-    setTimeout(function(){
-      displayBadges(badge);
-    }, 500);
+      });
+    }
+    else
+    {
+      retryCountRank++;
+      setTimeout(function(){
+        displayBadges(badge);
+      }, 1000);
+    }
   }
 }
 

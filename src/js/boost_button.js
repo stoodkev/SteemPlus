@@ -11,10 +11,13 @@
   var loading=null;
   var normalList=1;
 
+  var retryCountBoostButton=0;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to=='boost_button'){
       aut=request.data.user;
+      retryCountBoostButton=0;
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
@@ -522,34 +525,37 @@
 
 function addPostBoostButton() {
 
-  var promoteButton = $('.Promote__button');
-  var boostButton = $('.smi-boost-button');
-
-  if(promoteButton.length && !boostButton.length) {
-
-    boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
-
-    promoteButton.before(boostButton);
-    promoteButton.addClass('smi-promote-button');
-
-    boostButton.on('click', function() {
-      modal=null;
-      urlBooster = window.location.pathname;
-      matchBooster = urlBooster.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
-      categoryBooster = matchBooster[1];
-      authorBooster = matchBooster[2];
-      permlinkBooster = matchBooster[3];
-      createMinnowBoosterTransferUI();
-    });
-
-  }
-  else
+  if(regexPostSteemit.test(window.location.href)&&retryCountBoostButton<20)
   {
-    setTimeout(function(){
-      addPostBoostButton();
-    },200);
-  }
+    var promoteButton = $('.Promote__button');
+    var boostButton = $('.smi-boost-button');
 
+    if(promoteButton.length && !boostButton.length) {
+
+      boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
+
+      promoteButton.before(boostButton);
+      promoteButton.addClass('smi-promote-button');
+
+      boostButton.on('click', function() {
+        modal=null;
+        urlBooster = window.location.pathname;
+        matchBooster = urlBooster.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
+        categoryBooster = matchBooster[1];
+        authorBooster = matchBooster[2];
+        permlinkBooster = matchBooster[3];
+        createMinnowBoosterTransferUI();
+      });
+
+    }
+    else
+    {
+      retryCountBoostButton++;
+      timeoutBoostButton = setTimeout(function(){
+        addPostBoostButton();
+      },1000);
+    }
+  }
 };
 
 function changeUIBooster(value){

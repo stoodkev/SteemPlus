@@ -1,4 +1,3 @@
-console.log("Starting FeedPlus");
 const LIMIT_PER_CALL=100;
 var feed=false;
 var feed_url,user_fp,feedplus_url=null;

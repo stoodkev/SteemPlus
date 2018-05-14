@@ -1,7 +1,10 @@
 var token_article_count=null;
 
+var retryCountArticleCount=0;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='article_count'){
+    	retryCountArticleCount=0;
       if(request.order==='start'&&token_article_count==null)
       {
         token_article_count=request.token;
@@ -16,12 +19,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startArticleCount()
 {
-	if($('.UserProfile__stats').length===0)
-		setTimeout(function(){
-			startArticleCount();
-		},200);
-	else
-		displayArticleCount();
+	// If url matches blog url then start the feature
+	if(regexBlogSteemit.test(window.location.href)&&retryCountArticleCount<20)
+	{
+		if($('.UserProfile__stats').length===0)
+		{
+			retryCountArticleCount++;
+			timeoutArticleCount = setTimeout(function(){
+				startArticleCount();
+			},1000);
+		}
+			
+		else
+			displayArticleCount();
+	}
 }
 
 function displayArticleCount()
@@ -39,15 +50,19 @@ async function getPosts(usernameArticleCount){
 
 	while(entry_id !== -1)
 	{
-		console.log(tryCount, usernameArticleCount, entry_id, articleCount);
 		const result = await steem.api.getBlogEntriesAsync(usernameArticleCount, entry_id, 100);
-		console.log(result);
-		nbNew = result.length;
-		result.forEach(function(article){
-			if(article.author === usernameArticleCount)
-				articleCount++;
-		});
-		entry_id = result[result.length-1].entry_id-1;
+		if(result[result.length-1]!==undefined)
+		{
+			nbNew = result.length;
+			result.forEach(function(article){
+				if(article.author === usernameArticleCount)
+					articleCount++;
+			});
+			entry_id = result[result.length-1].entry_id-1;
+		}
+		else
+			entry_id = -1;
+		
 	}
 	
 	$('.UserProfile__stats > span')[1].remove();

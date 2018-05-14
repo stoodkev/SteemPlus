@@ -10,6 +10,8 @@ var urlOffline=window.location.href;
 var urlOnline=window.location.href;
 var user=null;
 
+var offlineModeRetryCount=0;
+
 steem.api.setOptions({ url: 'https://api.steemit.com' });
 const token=makeToken();
 logInfo('test');
@@ -177,32 +179,34 @@ chrome.storage.local.get(['rewards_tab','wallet_history','wallet_history_memo_ke
 
 function initOfflineFeatures(isConnected, items, user, account)
 {
-  if(!isConnected)
+  if(offlineModeRetryCount<30)
   {
-    if($('.Header__userpic > a').length > 0)
+    if(!isConnected)
     {
-      console.log('end waiting for header');
-      user = $('.Header__userpic > a')[0].title; //Get username in offline mode
-      steem.api.getAccounts([user], function(err, result) {
-        if(err) console.log(err);
-        else
-        {
-          console.log('getting account');
-          startOfflineFeatures(items, user, result[0]);
-        }
-      });
+      if($('.Header__userpic > a').length > 0)
+      {
+        user = $('.Header__userpic > a')[0].title; //Get username in offline mode
+        steem.api.getAccounts([user], function(err, result) {
+          if(err) console.log(err);
+          else
+          {
+            startOfflineFeatures(items, user, result[0]);
+          }
+        });
+      }
+      else
+      {
+        offlineModeRetryCount++;
+        setTimeout(function(){
+          initOfflineFeatures(isConnected, items, null, null);
+        },1000);
+      }
     }
     else
-      setTimeout(function(){
-        console.log('waiting for header');
-        initOfflineFeatures(isConnected, items, null, null);
-      },250);
+    {
+      startOfflineFeatures(items, user, account);
+    } 
   }
-  else
-  {
-    startOfflineFeatures(items, user, account);
-  }
-
 }
 
 function startOfflineFeatures(items, user, account)
@@ -352,6 +356,9 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
         if(rewards_tab&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
+        if(gif_picker&&steemit&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
+    
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();
@@ -383,27 +390,84 @@ function updateSteemPrice()
 {
   getSteemPrice();
   setInterval(function() {
-    getSteemPrice();
-}, 60 * 1000);
-
+      getSteemPrice();
+  }, 60 * 1000);
 }
 
-function getSteemPrice(){
-  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC", false);
-  xhttp.send();
-  const btc_price=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
-  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM", false);
-  xhttp.send();
-  const priceSteem=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
-  xhttp.open("GET", "https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD", false);
-  xhttp.send();
-  const priceSBD=parseFloat(JSON.parse(xhttp.responseText).result.Bid);
-  market={SBDperSteem:priceSteem/priceSBD,priceSteem:priceSteem*btc_price,priceSBD:priceSBD*btc_price};
-  chrome.storage.local.set({
-    market:market
+function getPriceSteemAsync()
+{
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+      },
+      url: 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM',
+      success: function(response) {
+        resolve(response.result['Bid']);
+      },
+      error: function(msg) {
+        resolve(msg);
+      }
+    });
   });
-  chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'notif',market:market});
-  console.log(market);
+}
+
+function getPriceSBDAsync()
+{
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+      },
+      url: 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD',
+      success: function(response) {
+        resolve(response.result['Bid']);
+      },
+      error: function(msg) {
+        resolve(msg);
+      }
+    });
+  });
+}
+
+function getBTCPriceAsync()
+{
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+      },
+      url: 'https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC',
+      success: function(response) {
+        resolve(response.result['Bid']);
+      },
+      error: function(msg) {
+        resolve(msg);
+      }
+    });
+  });
+}
+
+function getSteemPrice()
+{
+  Promise.all([getBTCPriceAsync(), getPriceSBDAsync(), getPriceSteemAsync()])
+  .then(function(values){
+    const btc_price = values[0];
+    const priceSBD = values[1];
+    const priceSteem = values[2];
+    market={SBDperSteem:priceSteem/priceSBD,priceSteem:priceSteem*btc_price,priceSBD:priceSBD*btc_price};
+    chrome.storage.local.set({
+      market:market
+    });
+    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'notif',market:market});
+    console.log(market);
+  });
 }
 
 function makeToken() {

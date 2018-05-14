@@ -6,11 +6,12 @@ var resteemBarBackgroundColor = '#008000';
 var resteemBarBorderColor = '#006100';
 var selectedBarBackgroundColor = 'red';
 var selectedBarBorderColor = 'red';
-var blogPageRegexp = /\/@([a-z0-9\-\.]*)$/;
 
 var rewardBalance=null;
 var recentClaims=null;
 var steemPrice=null;
+
+var retryCountBlogHistogram=0;
 
 
 var token_blog_histogram=null;
@@ -18,6 +19,7 @@ var token_blog_histogram=null;
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='blog_histogram'&&request.order==='start'&&token_blog_histogram==null)
     {
+      retryCountBlogHistogram=0;
       token_blog_histogram=request.token;
       rewardBalance=request.data.rewardBalance;
       recentClaims=request.data.recentClaims;
@@ -27,6 +29,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to==='blog_histogram'&&request.order==='click'&&token_del===request.token)
     {
+      retryCountBlogHistogram=0;
       rewardBalance=request.data.rewardBalance;
       recentClaims=request.data.recentClaims;
       steemPrice=request.data.steemPrice;
@@ -358,6 +361,9 @@ $('body').on('click', function(e) {
 
 
 function checkHistogram(postsList, name) {
+
+
+
   if(getShowHistogram() === 'disabled'){
     return true;
   }
@@ -371,31 +377,39 @@ function checkHistogram(postsList, name) {
   }
   if(postsList.hasClass('smi-posts-histogram-added')){
     if(postsList.data('histogram-account') !== name){
-      console.log('posts list has already histogram but of different account');
       postsList.find('.smi-posts-histogram-container').remove();
     }else{
-      console.log('posts list has already histogram');
       return true;
     }
   }
   postsList.prepend(createHistogram(name));
   postsList.addClass('smi-posts-histogram-added');
   postsList.data('histogram-account', name);
-  console.log('histogram added');
   return true;
 };
 
 
 
 function checkForBlogPage() {
-  var match = (window.location.pathname || '').match(blogPageRegexp);
-  if(match) {
-    var name = match[1];
-    var postsList = $('#posts_list');
-    var added = checkHistogram(postsList, name);
-    if(!added){
-      // histogram UI not added, try again later
-      setTimeout(checkForBlogPage, 100);
+  if(regexBlogSteemit.test(window.location.href)&&retryCountBlogHistogram<5)
+  {
+    var match = (window.location.pathname || '').match(/\/@([a-z0-9\-\.]*)$/);
+    if(match)
+    {
+      var name = match[1];
+      var postsList = $('#posts_list');
+      var added = checkHistogram(postsList, name);
+      if(!added){
+        // histogram UI not added, try again later
+        retryCountBlogHistogram++;
+        setTimeout(checkForBlogPage, 1000);
+      }
     }
+    else
+    {
+      $('.smi-posts-histogram-container').remove();
+      $('.smi-posts-histogram-added').removeClass('smi-posts-histogram-added');
+    }
+    
   }
 };

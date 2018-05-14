@@ -33,7 +33,6 @@
         
         if(voteTabStarted)
         {
-          console.log("start again");
           startVotesTab();
         }
       }
@@ -41,15 +40,18 @@
   });
 
   function startVotesTab(){
-
-    window.SteemPlus.Tabs.createTab({
-      id: 'votes',
-      title: 'Votes',
-      enabled: true,
-      createTab: createVotesTab
-    });
-    if(window.location.href.includes('#votes'))
-    window.SteemPlus.Tabs.showTab('votes');
+    if(regexBlogSteemit.test(window.location.href))
+    {
+      window.SteemPlus.Tabs.createTab({
+        id: 'votes',
+        title: 'Votes',
+        enabled: true,
+        createTab: createVotesTab
+      });
+      if(window.location.href.includes('#votes'))
+        window.SteemPlus.Tabs.showTab('votes');
+    }
+    
   }
 
 

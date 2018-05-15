@@ -116,20 +116,52 @@ function createTitle() {
   real_val.append(logo);
   STEEM_A=acc_market.priceSteem;
   SBD_A=acc_market.priceSBD;
-  steem.api.getAccounts([account_v], function(err, result) 
-  {
-    if(err) console.log(err);
-    var value=0;
-    const STEEM_BALANCE=STEEM_A*parseFloat(result[0].balance.split(' ')[0]);
-    const STEEM_SAVINGS=STEEM_A*+parseFloat(result[0].savings_balance.split(' ')[0]);
-    const STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(result[0].vesting_shares, acc_global.totalVests, acc_global.totalSteem);
-    const STEEM= STEEM_BALANCE+STEEM_SAVINGS+STEEM_POWER;
-    const SBD_BALANCE=SBD_A*parseFloat(result["0"].sbd_balance.split(' ')[0]);
-    const SBD_SAVINGS=SBD_A*parseFloat(result[0].savings_sbd_balance.split(' ')[0]);
-    const SBD=SBD_BALANCE+SBD_SAVINGS;
-    const TOTAL_VALUE=SBD+STEEM;
-    value=postProcess(TOTAL_VALUE);
+  
+  Promise.all([steem.api.getAccountsAsync([account_v]),steem.api.getOpenOrdersAsync(account_v),steem.api.getSavingsWithdrawFromAsync(account_v)])
+  .then(function(result){
+    console.log(result);
 
+    var accountAccountValue = result[0];
+    var openOrdersAccountValue = result[1];
+    var savingsWithdrawFromAccountValue = result[2];
+
+    var value=0;
+    var STEEM_BALANCE=STEEM_A*parseFloat(accountAccountValue[0].balance.split(' ')[0]);
+    var STEEM_SAVINGS=STEEM_A*+parseFloat(accountAccountValue[0].savings_balance.split(' ')[0]);
+    var STEEM_POWER=STEEM_A*steem.formatter.vestToSteem(accountAccountValue[0].vesting_shares, acc_global.totalVests, acc_global.totalSteem);
+    
+    
+    var SBD_BALANCE=SBD_A*parseFloat(accountAccountValue["0"].sbd_balance.split(' ')[0]);
+    var SBD_SAVINGS=SBD_A*parseFloat(accountAccountValue[0].savings_sbd_balance.split(' ')[0]);
+
+
+    openOrdersAccountValue.forEach(function(item){
+      if(item.sell_price.base.split(' ')[1]==='SBD')
+      {
+        SBD_BALANCE+=(SBD_A*parseFloat(item.sell_price.base.split(' ')[0]));
+      }
+      else
+      {
+        STEEM_BALANCE+=(STEEM_A*parseFloat(item.sell_price.base.split(' ')[0]));
+      }
+    });
+    
+    savingsWithdrawFromAccountValue.forEach(function(item){
+      if(item.amount.split(' ')[1]==='SBD')
+      {
+        SBD_SAVINGS+=(SBD_A*parseFloat(item.amount.split(' ')[0]));
+      }
+      else
+      {
+        STEEM_SAVINGS+=(STEEM_A*parseFloat(item.amount.split(' ')[0]));
+      }
+    });
+
+    var STEEM= STEEM_BALANCE+STEEM_SAVINGS+STEEM_POWER;
+    var SBD=SBD_BALANCE+SBD_SAVINGS;
+    var TOTAL_VALUE=SBD+STEEM;
+
+    value=postProcess(TOTAL_VALUE);
 
     var pop=document.createElement('a');
     pop.style.cursor='pointer';
@@ -168,7 +200,7 @@ function createTitle() {
 
     if($('.FoundationDropdownMenu__label').length > 0)
     {
-      $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(result[0].vesting_shares));
+      $($('.FoundationDropdownMenu__label')[1]).attr('title',getVestString(accountAccountValue[0].vesting_shares));
 
     }
     else
@@ -176,23 +208,21 @@ function createTitle() {
       if($('.vests-added').length === 0 && acc_steemit)
       {
         var spanVestingShares = $('.UserWallet__balance > .column')[3];
-        var newDiv = $('<div title="' + getVestString(result[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
+        var newDiv = $('<div title="' + getVestString(accountAccountValue[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1]==undefined?'</div>':'</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
         $(spanVestingShares)[0].textContent = '';
         $(spanVestingShares).append(newDiv);
         $(newDiv).parent().eq(0).addClass('vests-added');
       }
       
     }
-
-
   });
 }
 
 function postProcess(value)
 {
-  value=Math.round(value*100)/100;
+  value=Math.round(value*1000)/1000;
   value=value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return '$' +value;
+  return '$' + value;
 }
 
 function getVestString(vests)

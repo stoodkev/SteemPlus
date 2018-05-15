@@ -348,7 +348,8 @@ function createWalletHistoryFiltersUI()
 		});
 	}
 
-	$('table').before(filters);
+	if(!$('table').parent().parent().parent().hasClass('SavingsWithdrawHistory'))
+		$('table').before(filters);
 
 	typeFiltersListWH.map(function(f) {
 		$('input[value="'+ f.type + '"').eq(0).prop('checked', filtersStateWH.types[f.type]);

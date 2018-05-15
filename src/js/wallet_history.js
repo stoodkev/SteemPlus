@@ -96,7 +96,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			totalSteemWalletHistory = request.data.totalSteem;
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-			//console.log("click");
 			if($('.smi-transaction-table-filters').length===0)
 				startWalletHistory();
 		}
@@ -147,11 +146,11 @@ function startWalletHistory()
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory()
 {
-
+	console.log('displayWalletHistory');
 	var tbodyWH = $('.Trans').parent();
 	$('.Trans').remove();
 	dataWalletHistory.forEach(function(itemWalletHistory, indexWH){
-		var trWH = $('<tr class="Trans wh-type-'+ itemWalletHistory.type + '" id="item' + indexWH + '"></tr>');
+		var trWH = $('<tr class="Trans-wallet-filter wh-type-'+ itemWalletHistory.type + '" id="item' + indexWH + '"></tr>');
 		var tdTimestampWH = $('<td><span title="' + new Date(itemWalletHistory.timestamp) + '">'+ moment(new Date(itemWalletHistory.timestamp)).fromNow() + '</span></td>');
 		trWH.append(tdTimestampWH);
 
@@ -347,9 +346,12 @@ function createWalletHistoryFiltersUI()
 			});
 		});
 	}
-
-	if(!$('table').parent().parent().parent().hasClass('SavingsWithdrawHistory'))
-		$('table').before(filters);
+	$('table').each(function()
+	{
+		if(!$(this).parent().parent().parent().hasClass('SavingsWithdrawHistory'))
+			$(this).before(filters);
+	});
+	
 
 	typeFiltersListWH.map(function(f) {
 		$('input[value="'+ f.type + '"').eq(0).prop('checked', filtersStateWH.types[f.type]);
@@ -432,11 +434,13 @@ function createMinAssetUIWH2(asset) {
 
 // Function used to update the view by hiding all the rows which doesn't match with the filterState
 function updateTableWH(){
+	console.log(dataWalletHistory.length);
+	console.log(filtersStateWH);
 	dataWalletHistory.forEach(function(row, index){
-
 		// Search Bar filter
 		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
 		{
+			console.log("Hide because of searh");
 			$('#item' + index).hide();
 			return;
 		}
@@ -448,6 +452,7 @@ function updateTableWH(){
 			{
 
 				if(row.type === filterTypeWH){
+					console.log("Hide because of type");
 					$('#item' + index).hide();
 					return;
 				}
@@ -457,6 +462,7 @@ function updateTableWH(){
 			{
 				if(row.amount === 0.001 || row.reward_sbd === 0.001 || row.reward_steem === 0.001)
 				{
+					console.log("Hide because of spam");
 					$('#item' + index).hide();
 					return;
 				}
@@ -490,10 +496,11 @@ function updateTableWH(){
 		// Display the line if one of the value respect the filter
 		if(valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP'))
 		{
+			console.log("Hide because of value");
 			$('#item' + index).hide();
 			return;
 		}
-
+		console.log("show");
 		$('#item' + index).show();
 	});
 }

@@ -9,6 +9,8 @@
  var recentClaimsPostVoteList=null;
  var steemPricePostVoteList=null;
  var postVoteListStarted=false;
+
+ // Listener on message to start the function
  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='post_votes_list'){
     aut=request.data.user;
@@ -32,6 +34,7 @@
     }
     else if(request.order==='notif'&&token_post_vote_list==request.token)
     {
+      // Notification of new steem price
       rewardBalancePostVoteList=request.data.rewardBalance;
       recentClaimsPostVoteList=request.data.recentClaims;
       steemPricePostVoteList=request.data.steemPrice;
@@ -42,9 +45,13 @@
   }
 });
 
+// Function used to start the feature
+// No parameters
 function startPostVoteList(){
+  // Check URL. Here we need a post
   if(regexPostSteemit.test(window.location.href))
   {
+    // Bind every html element to a click
     $('div.Voting__voters_list > a').click(function(){
       var votersButton = $(this);
       setTimeout(function() {
@@ -57,6 +64,8 @@ function startPostVoteList(){
   }
 }
 
+// Function used to add the new post vote list
+// @parameter votersList : list of all the people who has voted for the selected comment (comment could be a post or a real comment)
 function addPostVoteList(votersList)
 {
     //var votersList = e.state;
@@ -162,6 +171,10 @@ function addPostVoteList(votersList)
     }
 }
 
+// Function used to calculate every value
+// @parameter Author : author of the comment or post
+// @parameter permlink : permlink of the comment or post
+// @parameter cb : callback
 function getSteemContent(Author, permlink, cb)
 {
 	steem.api.getContent(Author, permlink, function(err, result){

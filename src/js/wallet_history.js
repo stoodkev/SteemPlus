@@ -134,7 +134,7 @@ function displayMessageSynchronisation()
 		};
 		toastr.info('SteemSQL is out of synchronisation for more than 3 minutes </br>'+
 		          'You can decide to display Steemit wallet or Steemplus wallet. But some information might be missing</br></br>'+
-		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button>', "Message from SteemPlus");
+		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"> Don\'t ask me again', "Message from SteemPlus");
 
         $('#steemit-wallet').click(function(){
          	$(this).parent().parent().remove();

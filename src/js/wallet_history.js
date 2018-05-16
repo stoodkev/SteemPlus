@@ -87,7 +87,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			memoKeyWH = request.data.walletHistoryMemoKey;
 
 			if($('.smi-transaction-table-filters').length===0)
-				startWalletHistory();
+				if(isSteemSQLSynchronized())
+					startWalletHistory();
+				else
+				{
+					displayMessageSynchronisation();
+				}
 		}
 
 		if(request.order==='click'&&token_wallet_history==request.token)
@@ -97,10 +102,49 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
 			if($('.smi-transaction-table-filters').length===0)
-				startWalletHistory();
+				if(isSteemSQLSynchronized())
+					startWalletHistory();
+				else
+				{
+					displayMessageSynchronisation();
+				}
 		}
 	}
 });
+
+function displayMessageSynchronisation()
+{
+	toastr.options = {
+		"closeButton": false,
+		"debug": false,
+		"newestOnTop": false,
+		"progressBar": false,
+		"positionClass": "toast-top-full-width",
+		"preventDuplicates": false,
+		"onclick": null,
+		"showDuration": "300",
+		"hideDuration": "1000",
+		"timeOut": 0,
+		"extendedTimeOut": 0,
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut",
+		"tapToDismiss": false
+		};
+		toastr.info('SteemSQL is out of synchronisation for more than 3 minutes </br>'+
+		          'You can decide to display Steemit wallet or Steemplus wallet. But some information might be missing</br></br>'+
+		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button>', "Message from SteemPlus");
+
+        $('#steemit-wallet').click(function(){
+         	$(this).parent().parent().remove();
+        });
+
+        $('#steemplus-wallet').click(function(){
+        	$(this).parent().parent().remove();
+          	startWalletHistory();
+        });
+}
 
 // Function used to start the wallet history
 // Check if the page is ready and start. If not, wait and try again
@@ -120,7 +164,6 @@ function startWalletHistory()
 				},
 				url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
 				success: function(result) {
-					$('.Trans').hide();
 					dataWalletHistory = result;
 					if($('.smi-transaction-table-filters').length===0)
 						displayWalletHistory();
@@ -146,9 +189,8 @@ function startWalletHistory()
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory()
 {
-	console.log('displayWalletHistory');
 	var tbodyWH = $('.Trans').parent();
-	$('.Trans').remove();
+	$('.Trans').hide();
 	dataWalletHistory.forEach(function(itemWalletHistory, indexWH){
 		var trWH = $('<tr class="Trans-wallet-filter wh-type-'+ itemWalletHistory.type + '" id="item' + indexWH + '"></tr>');
 		var tdTimestampWH = $('<td><span title="' + new Date(itemWalletHistory.timestamp) + '">'+ moment(new Date(itemWalletHistory.timestamp)).fromNow() + '</span></td>');
@@ -349,7 +391,11 @@ function createWalletHistoryFiltersUI()
 	$('table').each(function()
 	{
 		if(!$(this).parent().parent().parent().hasClass('SavingsWithdrawHistory'))
+		{
+			$(this).parent().addClass('new-wallet');
 			$(this).before(filters);
+		}
+
 	});
 	
 
@@ -509,4 +555,9 @@ function updateTableWH(){
 function getSPFromVestingSharesWH(vests)
 {
 	return steem.formatter.vestToSteem(parseFloat(vests), totalVestsWalletHistory, totalSteemWalletHistory).toFixed(3);
+}
+
+function isSteemSQLSynchronized()
+{
+	return false;
 }

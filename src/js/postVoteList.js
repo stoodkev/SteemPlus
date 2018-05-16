@@ -45,14 +45,14 @@
 function startPostVoteList(){
   if(regexPostSteemit.test(window.location.href))
   {
-    $('body').on('click', 'div.Voting__voters_list > a', function(){
-    	var votersButton = $(this);
-    	setTimeout(function() {
-    	  if(votersButton.parent().hasClass('show')){
-    	    var ul = votersButton.parent().find('ul.VerticalMenu');
-    	    addPostVoteList(ul);
-    	  }
-    	}, 100);
+    $('div.Voting__voters_list > a').click(function(){
+      var votersButton = $(this);
+      setTimeout(function() {
+        if(votersButton.parent().hasClass('show')){
+          var ul = votersButton.parent().find('ul.VerticalMenu');
+          addPostVoteList(ul);
+        }
+      }, 100);
     });
   }
 }

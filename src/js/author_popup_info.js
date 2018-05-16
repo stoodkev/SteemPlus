@@ -33,7 +33,7 @@ function startAuthorPopupInfo()
 		{
 			$('.ptc').unbind('click').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
-				
+				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 				
 				$.ajax({
 			      type: "GET",
@@ -43,13 +43,17 @@ function startAuthorPopupInfo()
 			      },
 			      url: 'http://steemplus-api.herokuapp.com/api/get-followers-followee/'+myUsernameAuthorPopupInfo,
 			      success: function(response) {
-			      	if($('.author-popup-message').length===0)
-			      		$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 			        var isFollowing = response.find(function(elem){
 						return elem.following===userAuthorPopupInfo;
 			        });
 			        if(isFollowing!==undefined)
+			        {
 			        	$('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br>');
+			        }
+			        else
+			        {
+			        	$('.author-popup-message').append('<span class="author-popup-witness">Not following you</span><br>');
+			        }
 			      },
 			      error: function(msg) {
 			        console.log(msg);
@@ -62,15 +66,21 @@ function startAuthorPopupInfo()
 					{
 						if(result[0].proxy===myUsernameAuthorPopupInfo)
 						{
-							if($('.author-popup-message').length===0)
-			      				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 							$('.author-popup-message').append('<span class="author-popup-proxy">Choose you as proxy</span><br>');
 						}
 						else if(result[0].witness_votes.includes(myUsernameAuthorPopupInfo))
 						{
-							if($('.author-popup-message').length===0)
-			      				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 							$('.author-popup-message').append('<span class="author-popup-witness">Voted for you as a witness</span><br>');
+						}
+						else
+						{
+							steem.api.getWitnessByAccount(myUsernameAuthorPopupInfo, function(err, res){
+								console.log(res);
+								if(res!=='')
+								{
+									$('.author-popup-message').append('<span class="author-popup-witness">Didn\'t vote for you as a witness</span><br>');
+								}
+							});
 						}
 					}
 				});

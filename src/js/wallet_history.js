@@ -129,13 +129,23 @@ function displayMessageSynchronisation(nbBlockDifference)
 
 		toastr.info('SteemSQL is out of synchronisation for more than ' + nbMinutesDifference + ' minutes (' + nbBlockDifference + ' blocks) </br>'+
 		          'You can decide to display Steemit wallet or Steemplus wallet. But some information might be missing</br></br>'+
-		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"> Remember for the next 24 hours', "Message from SteemPlus");
+		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button><input class="form-check-input" type="checkbox" value="" id="remember-checkbox"> Don\'t ask again', "Message from SteemPlus");
 
         $('#steemit-wallet').click(function(){
+         	chrome.storage.local.set({
+         		wallet_choice:"steemit-wallet",
+        		wallet_dont_ask:$('#remember-checkbox').eq(0).prop('checked'),
+        		wallet_date_remember:Date.now()
+    		});	
          	$(this).parent().parent().remove();
         });
 
         $('#steemplus-wallet').click(function(){
+        	chrome.storage.local.set({
+        		wallet_choice:"steemplus-wallet",
+        		wallet_dont_ask:$('#remember-checkbox').eq(0).prop('checked'),
+        		wallet_date_remember:Date.now()
+    		});
         	$(this).parent().parent().remove();
           	startWalletHistory();
         });
@@ -550,14 +560,41 @@ function isSteemSQLSynchronized()
 {
 	Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), getLastBlockID()])
 	.then(function(value){
-		console.log(value);
+		console.log(parseInt(value[0].last_irreversible_block_num), parseInt(value[1]));
 		var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
-		console.log(nbBlockDifference);
-		// 60 blocks difference means 3 minutes
-		if(nbBlockDifference < 60 )
+		console.log('nbblockdifference', nbBlockDifference);
+		
+		// 60 blocks difference means 3 minutes.
+		// if(nbBlockDifference < 60 )
+		if(false)
 			startWalletHistory();
 		else
-			displayMessageSynchronisation(nbBlockDifference);
+		{
+			chrome.storage.local.get(['wallet_choice', 'wallet_date_remember', 'wallet_dont_ask'], function (items)
+			{
+				console.log(items);
+				if(items.wallet_dont_ask!==undefined)
+				{
+					console.log(items.wallet_dont_ask);
+					if(!items.wallet_dont_ask)
+					{
+						if(date_diff_indays(items.wallet_date_remember, Date.now()) >= 1)
+						{
+							displayMessageSynchronisation(nbBlockDifference);
+						}
+					}
+					else
+					{
+						if(items.wallet_choice === 'steemplus-wallet')
+							startWalletHistory();
+					}
+				}
+				else
+				{
+					displayMessageSynchronisation(nbBlockDifference);
+				}
+			});
+		}
 	});
 }
 

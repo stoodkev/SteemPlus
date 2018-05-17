@@ -560,22 +560,17 @@ function isSteemSQLSynchronized()
 {
 	Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), getLastBlockID()])
 	.then(function(value){
-		console.log(parseInt(value[0].last_irreversible_block_num), parseInt(value[1]));
 		var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
-		console.log('nbblockdifference', nbBlockDifference);
 		
 		// 60 blocks difference means 3 minutes.
-		// if(nbBlockDifference < 60 )
-		if(false)
+		if(nbBlockDifference < 60 )
 			startWalletHistory();
 		else
 		{
 			chrome.storage.local.get(['wallet_choice', 'wallet_date_remember', 'wallet_dont_ask'], function (items)
 			{
-				console.log(items);
 				if(items.wallet_dont_ask!==undefined)
 				{
-					console.log(items.wallet_dont_ask);
 					if(!items.wallet_dont_ask)
 					{
 						if(date_diff_indays(items.wallet_date_remember, Date.now()) >= 1)

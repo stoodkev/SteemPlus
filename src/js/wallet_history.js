@@ -10,6 +10,8 @@ var dataWalletHistory = null;
 var retry=0;
 var modalWH = null;
 
+const NB_BLOCK_PER_SECOND = 3;
+
 // Available filter types
 var typeFiltersListWH = [
 {
@@ -86,13 +88,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
 
-			if($('.smi-transaction-table-filters').length===0)
-				if(isSteemSQLSynchronized())
-					startWalletHistory();
-				else
-				{
-					displayMessageSynchronisation();
-				}
+			if($('.smi-transaction-table-filters').length===0&&regexWalletSteemit.test(window.location.href))
+				isSteemSQLSynchronized();
 		}
 
 		if(request.order==='click'&&token_wallet_history==request.token)
@@ -101,18 +98,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			totalSteemWalletHistory = request.data.totalSteem;
 			accountWH = request.data.account;
 			memoKeyWH = request.data.walletHistoryMemoKey;
-			if($('.smi-transaction-table-filters').length===0)
-				if(isSteemSQLSynchronized())
-					startWalletHistory();
-				else
-				{
-					displayMessageSynchronisation();
-				}
+			if($('.smi-transaction-table-filters').length===0&&regexWalletSteemit.test(window.location.href))
+				isSteemSQLSynchronized();
 		}
 	}
 });
 
-function displayMessageSynchronisation()
+function displayMessageSynchronisation(nbBlockDifference)
 {
 	toastr.options = {
 		"closeButton": false,
@@ -132,9 +124,12 @@ function displayMessageSynchronisation()
 		"hideMethod": "fadeOut",
 		"tapToDismiss": false
 		};
-		toastr.info('SteemSQL is out of synchronisation for more than 3 minutes </br>'+
+
+		var nbMinutesDifference = ((nbBlockDifference * 3)/60).toFixed(0);
+
+		toastr.info('SteemSQL is out of synchronisation for more than ' + nbMinutesDifference + ' minutes (' + nbBlockDifference + ' blocks) </br>'+
 		          'You can decide to display Steemit wallet or Steemplus wallet. But some information might be missing</br></br>'+
-		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"> Don\'t ask me again', "Message from SteemPlus");
+		          '<button class="btn btn-primary" id="steemit-wallet">Steemit Wallet</button> <button id="steemplus-wallet" class="btn btn-primary">Steemplus Wallet</button><input class="form-check-input" type="checkbox" value="" id="defaultCheck1"> Remember for the next 24 hours', "Message from SteemPlus");
 
         $('#steemit-wallet').click(function(){
          	$(this).parent().parent().remove();
@@ -480,13 +475,10 @@ function createMinAssetUIWH2(asset) {
 
 // Function used to update the view by hiding all the rows which doesn't match with the filterState
 function updateTableWH(){
-	console.log(dataWalletHistory.length);
-	console.log(filtersStateWH);
 	dataWalletHistory.forEach(function(row, index){
 		// Search Bar filter
 		if(!row.memo.includes(searchValueWH()) && !row.to_from.includes(searchValueWH()) && searchValueWH()!=='')
 		{
-			console.log("Hide because of searh");
 			$('#item' + index).hide();
 			return;
 		}
@@ -498,7 +490,6 @@ function updateTableWH(){
 			{
 
 				if(row.type === filterTypeWH){
-					console.log("Hide because of type");
 					$('#item' + index).hide();
 					return;
 				}
@@ -508,7 +499,6 @@ function updateTableWH(){
 			{
 				if(row.amount === 0.001 || row.reward_sbd === 0.001 || row.reward_steem === 0.001)
 				{
-					console.log("Hide because of spam");
 					$('#item' + index).hide();
 					return;
 				}
@@ -542,11 +532,9 @@ function updateTableWH(){
 		// Display the line if one of the value respect the filter
 		if(valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP'))
 		{
-			console.log("Hide because of value");
 			$('#item' + index).hide();
 			return;
 		}
-		console.log("show");
 		$('#item' + index).show();
 	});
 }
@@ -557,7 +545,38 @@ function getSPFromVestingSharesWH(vests)
 	return steem.formatter.vestToSteem(parseFloat(vests), totalVestsWalletHistory, totalSteemWalletHistory).toFixed(3);
 }
 
+// Function used to determine if SteemSQL is synchronized
 function isSteemSQLSynchronized()
 {
-	return false;
+	Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), getLastBlockID()])
+	.then(function(value){
+		console.log(value);
+		var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
+		console.log(nbBlockDifference);
+		// 60 blocks difference means 3 minutes
+		if(nbBlockDifference < 60 )
+			startWalletHistory();
+		else
+			displayMessageSynchronisation(nbBlockDifference);
+	});
+}
+
+function getLastBlockID()
+{
+  return new Promise(function (resolve, reject) {
+    $.ajax({
+      type: "GET",
+      beforeSend: function(xhttp) {
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+      },
+      url: 'http://steemplus-api.herokuapp.com/api/get-last-block-id',
+      success: function(response) {
+        resolve(response[0]['block_num']);
+      },
+      error: function(msg) {
+        resolve(msg);
+      }
+    });
+  });
 }

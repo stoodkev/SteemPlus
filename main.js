@@ -286,7 +286,7 @@ function startOfflineFeatures(items, user, account)
   if(author_popup_info&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{user:user}});
   if(add_signature&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'start',data:{user:user}});
+      chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'start',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -367,7 +367,7 @@ function startOfflineFeatures(items, user, account)
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
         if(add_signature&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user}});
+          chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
     
 
         if($('.favorite-star').length > 0){

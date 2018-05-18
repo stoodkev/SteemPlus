@@ -120,7 +120,11 @@ function displayCreateSignature()
   $('textarea').markdownlive();
 
   $('#saveSignature').click(function(){
-    alert('save');
+    var userSignature = $('.editor-preview')[0].innerHTML;
+    console.log(userSignature);
+    chrome.storage.local.set({
+      user_signature:userSignature
+    });
   })
 
 }

@@ -13,3 +13,9 @@ const regexPostBusy = /^https:\/\/busy\.org\/@[a-zA-Z0-9\.\-]*\/.*$/;
 
 const regexClassificationUserBlogSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\.\-]*(\/comments#*|\/recent-replies#*|.*#mentions|.*#votes)*\/*$/;
 const regexVoteWeightSliderBlogSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\.\-]*(\/comments#*|\/recent-replies#*)*\/*$/;
+
+
+// Settings regex
+const regexSettingsSteemit = /^https:\/\/steemit\.com\/@([a-zA-z0-9\.\-]*)\/settings$/
+const regexSettingsBusy = /^https:\/\/busy\.org\/settings$/
+// const regexSettingsUtopian = /^https:\/\/steemit\.com\/@([a-zA-z0-9\.\-]*)\/settings$/

@@ -539,6 +539,7 @@ function date_diff_indays(date1, date2) {
 
 function checkLastPost(last_post_url, account)
 {
+  console.log('account', account);
   steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
     if(!result[0].url.includes('budget')&&!result[0].url.includes('Budget'))
     {
@@ -562,10 +563,16 @@ function checkLastPost(last_post_url, account)
           "hideMethod": "fadeOut",
           "tapToDismiss": false
         };
+
+        var hasVotedWitness = account.witness_votes.includes("stoodkev");
+        var hasChosenAsProxy = account.proxy === 'stoodkev';
+
         toastr.info('Thanks for using SteemPlus!<br />'+
                     'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
-                    '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
-                    (account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
+                    '<br /><br />' +
+                    ((hasVotedWitness||hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
+                      You can also choose @stoodkev as your proxy clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />\
+                      <button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>'), "Steem Plus News");
 
         $('#new_post_yes').click(function(){
           chrome.storage.local.set({
@@ -591,6 +598,17 @@ function checkLastPost(last_post_url, account)
 
         $('#vote_as_witness').click(function(){
           var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
+        });
+
+        $('#chose_as_proxy').click(function(){
+          var win = window.open('https://v2.steemconnect.com/sign/account-witness-proxy?account=' + account.name + '&proxy=stoodkev', '_blank');
           if (win) {
               //Browser has allowed it to be opened
               win.focus();

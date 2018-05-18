@@ -103,7 +103,7 @@ function bindTextArea()
     {
       setTimeout(function(){
         $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
-      }, 100);
+      }, 1000);
       waitingForPreview = false;
     }
   });

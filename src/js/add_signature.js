@@ -58,22 +58,26 @@ function startAddSignature()
         setupAddCommentSignature(textarea);
       });
 
-      $('.Comment__footer__controls > a').bind('click', function(){
-        console.log('Comment__footer__controls');
-        $('.ReplyEditor__body textarea').each(function() {
-          var textarea = $(this);
-          console.log(textarea);
-          setupAddCommentSignature(textarea);
-        });
+      $('.Comment__footer__controls > a').click(function(){
+        setTimeout(function(){
+          console.log('Comment__footer__controls');
+          $('.ReplyEditor__body textarea').each(function() {
+            var textarea = $(this);
+            console.log(textarea);
+            setupAddCommentSignature(textarea);
+          });
+        },1000);  
       });
 
-      $('.PostFull__reply > a').bind('click', function(){
-        console.log('PostFull__reply');
-        $('.ReplyEditor__body textarea').each(function() {
-          var textarea = $(this);
-          console.log(textarea);
-          setupAddCommentSignature(textarea);
-        });
+      $('.PostFull__reply > a').click(function(){
+        setTimeout(function(){
+          console.log('PostFull__reply');
+          $('.ReplyEditor__body textarea').each(function() {
+            var textarea = $(this);
+            console.log(textarea);
+            setupAddCommentSignature(textarea);
+          });
+        },1000);
       });
     } 
     else if(regexCreatePostSteemit.test(window.location.href))
@@ -201,7 +205,7 @@ function displayCreateSignature()
         userSignaturePosts = $('.signature-editor')[0].value;
         toastr.success('Posts signature saved! <br> You cannow use it in posts', "Message from SteemPlus");
         chrome.storage.local.set({
-          user_signature_posts:userSignaturePosts
+          user_signature_posts:userSignaturePosts.trim()
         });
       }
       else if($('#select-type-signature')[0].value === 'comments')
@@ -209,7 +213,7 @@ function displayCreateSignature()
         userSignatureComments = $('.signature-editor')[0].value;
         toastr.success('Comments signature saved! <br> You cannot use it in comments', "Message from SteemPlus");
         chrome.storage.local.set({
-          user_signature_comments:userSignatureComments
+          user_signature_comments:userSignatureComments.trim()
         });
       }
       
@@ -225,10 +229,7 @@ function setupAddPostSignature(textarea)
       $(textarea).after('<a class="add-signature-post">Add Posts Signature</a>');
       $('.add-signature-post').on('click', function(){
           $(textarea).val($(textarea).val() + '\n' + (item.user_signature_posts));
-          $(textarea)[0].dispatchEvent(new Event('paste'));
-          $(textarea)[0].dispatchEvent(new Event('keyup'));
-          $(textarea)[0].dispatchEvent(new Event('keydown'));
-          console.log($(textarea)[0]);
+          $(textarea).trigger( "input" );
       });
     }  
     $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Posts Signature</a>');
@@ -245,8 +246,7 @@ function setupAddCommentSignature(textarea)
         $(textarea).after('<a class="add-signature-comment">Add Comments Signature</a>');
         $('.add-signature-comment').on('click', function(){
             $(textarea).val($(textarea).val() + '\n' + (item.user_signature_comments));
-            $(textarea)[0].dispatchEvent(new Event('keyup'));
-            $(textarea)[0].dispatchEvent(new Event('keydown'));
+            $(textarea).change();
         });
       }  
       $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Comments Signature</a>');
@@ -256,15 +256,14 @@ function setupAddCommentSignature(textarea)
 
 
 function updatePreview(textarea){
+  var markdown_text = $(textarea).val(),
+      markdown_html = Markdown(markdown_text),
+      preview = $();
 
-                var markdown_text = $(textarea).val(),
-                    markdown_html = Markdown(markdown_text),
-                    preview = $();
-
-                if ($preview.length >0){
-                    $preview.html(markdown_html);    
-                }
-            }
+  if ($preview.length >0){
+      $preview.html(markdown_html);    
+  }
+}
 
 
 

@@ -39,7 +39,7 @@ function startAuthorPopupInfo()
 			$('.ptc').unbind('click').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
 				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
-				
+
 				// Get followers from steemSQL
 				$.ajax({
 			      type: "GET",
@@ -52,7 +52,7 @@ function startAuthorPopupInfo()
 			      success: function(response) {
 
 			        var isFollowing = response.find(function(elem){
-						return elem.following===userAuthorPopupInfo;
+						return elem.follower===userAuthorPopupInfo;
 			        });
 
 			        // if author is following you

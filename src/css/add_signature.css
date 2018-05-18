@@ -64,3 +64,12 @@
 ul.markdownlive-bar {
 	margin-left: 0px !important;
 }
+
+#select-type-signature
+{
+	margin-bottom: 1em !important;
+}
+
+.add-signature-post, .add-signature-comment{
+	margin-left: 1em;
+}

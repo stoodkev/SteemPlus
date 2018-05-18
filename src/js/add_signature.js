@@ -228,8 +228,12 @@ function setupAddPostSignature(textarea)
     {
       $(textarea).after('<a class="add-signature-post">Add Posts Signature</a>');
       $('.add-signature-post').on('click', function(){
-          $(textarea).val($(textarea).val() + '\n' + (item.user_signature_posts));
-          $(textarea).trigger( "input" );
+          $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
+          var event = new Event('input', { bubbles: true });
+          $(textarea)[0].dispatchEvent(event);
+          event = new Event('keyup', { bubbles: true });
+          $(textarea)[0].dispatchEvent(event);
+          $(textarea).focus();
       });
     }  
     $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Posts Signature</a>');
@@ -245,8 +249,12 @@ function setupAddCommentSignature(textarea)
       {
         $(textarea).after('<a class="add-signature-comment">Add Comments Signature</a>');
         $('.add-signature-comment').on('click', function(){
-            $(textarea).val($(textarea).val() + '\n' + (item.user_signature_comments));
-            $(textarea).change();
+            $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_comments);
+            setTimeout(function(){
+              var event = new Event('input', { bubbles: true });
+              $(textarea)[0].dispatchEvent(event);
+              $(textarea).focus();
+            },1000);
         });
       }  
       $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Comments Signature</a>');

@@ -105,7 +105,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Function used to start the wallet history
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory()
-{	
+{
 	chrome.storage.local.get(['filters_state_wallet'], function (items)
 	{
 		if(items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
@@ -118,7 +118,7 @@ function startWalletHistory()
 					xhttp.setRequestHeader("Content-type", "application/json");
 					xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
 				},
-				url: 'http://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
+				url: 'https://steemplus-api.herokuapp.com/api/get-wallet-content/'+usernameWalletHistory,
 				success: function(result) {
 					$('.Trans').hide();
 					dataWalletHistory = result;
@@ -139,7 +139,7 @@ function startWalletHistory()
 					startWalletHistory();
 				}
 			}, 1000);
-		}		
+		}
 	});
 }
 
@@ -351,7 +351,7 @@ function createWalletHistoryFiltersUI()
 		if(!$(this).parent().parent().parent().hasClass('SavingsWithdrawHistory'))
 			$(this).before(filters);
 	});
-	
+
 
 	typeFiltersListWH.map(function(f) {
 		$('input[value="'+ f.type + '"').eq(0).prop('checked', filtersStateWH.types[f.type]);

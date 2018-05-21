@@ -203,7 +203,7 @@ function displayCreateSignature()
       if($('#select-type-signature')[0].value === 'posts')
       {
         userSignaturePosts = $('.signature-editor')[0].value;
-        toastr.success('Posts signature saved! <br> You cannow use it in posts', "Message from SteemPlus");
+        toastr.success('Posts signature saved! <br> You can now use it in posts', "Message from SteemPlus");
         chrome.storage.local.set({
           user_signature_posts:userSignaturePosts.trim()
         });
@@ -211,7 +211,7 @@ function displayCreateSignature()
       else if($('#select-type-signature')[0].value === 'comments')
       {
         userSignatureComments = $('.signature-editor')[0].value;
-        toastr.success('Comments signature saved! <br> You cannot use it in comments', "Message from SteemPlus");
+        toastr.success('Comments signature saved! <br> You can now use it in comments', "Message from SteemPlus");
         chrome.storage.local.set({
           user_signature_comments:userSignatureComments.trim()
         });
@@ -226,7 +226,7 @@ function setupAddPostSignature(textarea)
   chrome.storage.local.get(['user_signature_posts'], function(item){
     if(item.user_signature_posts!==undefined&&item.user_signature_posts!=='')
     {
-      $(textarea).after('<a class="add-signature-post">Add Posts Signature</a>');
+      $(textarea).after('<a class="add-signature-post">Add Signature</a>');
       $('.add-signature-post').on('click', function(){
           $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
           var event = new Event('input', { bubbles: true });
@@ -236,7 +236,7 @@ function setupAddPostSignature(textarea)
           $(textarea).focus();
       });
     }  
-    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Posts Signature</a>');
+    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
   });
 }
 
@@ -247,7 +247,7 @@ function setupAddCommentSignature(textarea)
     chrome.storage.local.get(['user_signature_comments'], function(item){
       if(item.user_signature_comments!==undefined&&item.user_signature_comments!=='')
       {
-        $(textarea).after('<a class="add-signature-comment">Add Comments Signature</a>');
+        $(textarea).after('<a class="add-signature-comment">Add Signature</a>');
         $('.add-signature-comment').on('click', function(){
             $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_comments);
             setTimeout(function(){
@@ -257,7 +257,7 @@ function setupAddCommentSignature(textarea)
             },1000);
         });
       }  
-      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Comments Signature</a>');
+      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
     });
   }
 }

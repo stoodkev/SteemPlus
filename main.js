@@ -129,7 +129,7 @@ chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wa
       var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
       var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
       var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
-      var classif=(items.classif!==undefined)?items.classif:{};
+      var classif=(items.classif!==undefined)?items.classif:{bot: true, human: true, pending: true, spammer: true};
 
 
       console.log('Starting features online...',user);
@@ -206,7 +206,7 @@ function initOfflineFeatures(isConnected, items, user, account)
     else
     {
       startOfflineFeatures(items, user, account);
-    } 
+    }
   }
 }
 
@@ -364,7 +364,7 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
-    
+
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();
@@ -572,8 +572,8 @@ function checkLastPost(last_post_url, account)
                     'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
                     '<br /><br />' +
                     ((hasVotedWitness||hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
-                      You can also choose @stoodkev as your proxy clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />\
-                      <button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>'), "Steem Plus News");
+                      You can also choose @stoodkev as your proxy clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />')+
+                      '<button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
         $('#new_post_yes').click(function(){
           chrome.storage.local.set({

@@ -86,7 +86,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   });
 });
 
-chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
+chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'classif','whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
   var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
   chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
   market=items.market==undefined?{SBDperSteem:0,priceSteem:0,priceSBD:0}:items.market;
@@ -129,6 +129,7 @@ chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wa
       var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
       var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
       var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
+      var classif=(items.classif!==undefined)?items.classif:{};
 
 
       console.log('Starting features online...',user);
@@ -137,7 +138,7 @@ chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wa
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
         chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
       if(steemit&&feedp)
-        chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
+        chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts, classif:classif}}});
       if(oneup&&utopian)
         chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
 

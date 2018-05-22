@@ -71,6 +71,11 @@
     href: function(username) {
       return 'https://steembottracker.com';
     }
+  }, {
+    title: 'SteemOcean',
+    href: function(username) {
+      return 'http://steemocean.com/voter/'+ username;
+    }
   }];
 
 

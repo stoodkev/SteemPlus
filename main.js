@@ -572,7 +572,7 @@ function checkLastPost(last_post_url, account)
                     'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
                     '<br /><br />' +
                     ((hasVotedWitness||hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
-                      You can also choose @stoodkev as your proxy clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />')+
+                      You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />')+
                       '<button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
         $('#new_post_yes').click(function(){

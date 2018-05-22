@@ -18,6 +18,7 @@
       if(request.order==='start'&&token_vote_weight_slider==null)
       {
         token_vote_weight_slider=request.token;
+        
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
@@ -29,6 +30,18 @@
         voteWeightSliderStarted=true;
   		  
       }
+      else if(request.order==="click"&&token_vote_weight_slider==request.token)
+      {
+        retryCountVoteWeightSlider = 0;
+        rewardBalance=request.data.rewardBalance;
+        recentClaims=request.data.recentClaims;
+        steemPrice=request.data.steemPrice;
+        votePowerReserveRate=request.data.votePowerReserveRate;
+        account=request.data.account;
+        
+        if(voteWeightSliderStarted)
+          startVoteWeightSlider();
+      }
       else if(request.order==="notif"&&token_vote_weight_slider==request.token)
       {
         retryCountVoteWeightSlider = 0;
@@ -36,6 +49,7 @@
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
+        account=request.data.account;
         
         if(voteWeightSliderStarted)
           startVoteWeightSlider();
@@ -50,11 +64,12 @@
     ||regexFeedSteemit.test(window.location.href)
     ||regexPostSteemit.test(window.location.href))
     {
-      $('body').on('click', 'span.Voting__button > a', function(){
+      $('.Voting__button > a').click(function(){
+        console.log('test');
         var votingButton = $(this);
         setTimeout(function() {
           tryUpdateVotingSlider();
-        }, 1);
+        }, 500);
       });
 
       $("body").on('DOMSubtreeModified', ".weight-display", function() {
@@ -64,7 +79,6 @@
   }
 
  function updateVotingSlider(weightDisplay) {
-
     weightDisplay.css('margin-top', '-10px');
     var weightDollars = weightDisplay.parent().find('.voting_weight_dollars');
     if(weightDollars.length === 0){
@@ -76,10 +90,11 @@
       weightDisplay.after(weightDollars);
     }
 
+    console.log(account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
     var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
     
     console.log(dollars);   
-    if(typeof dollars === 'undefined'&&retryCountVoteWeightSlider<20){
+    if((typeof dollars === 'undefined'||dollars===undefined)&&retryCountVoteWeightSlider<20){
       retryCountVoteWeightSlider++;
       setTimeout(function() {
         tryUpdateVotingSlider();
@@ -133,7 +148,6 @@
   };
 
   function tryUpdateVotingSlider() {
-    console.log('tryUpdateVotingSlider')
     var weightDisplay = $('span.Voting__button .weight-display');
     if(weightDisplay.length){
       updateVotingSlider(weightDisplay);

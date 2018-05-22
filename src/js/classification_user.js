@@ -117,6 +117,10 @@ function startClassificationUser(){
       }
     }
   });
+
+  $('#validate_settings').on('click', function(){
+    setTimeout(startClassificationUser, 1000);
+  });
 }
 
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)

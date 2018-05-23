@@ -235,3 +235,19 @@ li.big-view .PostSummary__footer{
 .PostsIndex__left > li.grid-view:first-child {
     margin-bottom: 0;
 }
+
+.spammer_classif:hover{
+  color:#d82727;
+}
+
+.bot_classif:hover{
+  color:#ea9041;
+}
+
+.human_classif:hover{
+  color:#42bb8b;
+}
+
+.pending_classif:hover{
+  color:#a8b2c1;
+}

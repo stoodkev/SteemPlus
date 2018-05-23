@@ -86,7 +86,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   });
 });
 
-chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
+chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'classif','whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
   var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
   chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
   market=items.market==undefined?{SBDperSteem:0,priceSteem:0,priceSBD:0}:items.market;
@@ -129,6 +129,7 @@ chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wa
       var list_tags=(items.list_tags!==undefined)?items.list_tags:null;
       var voted_check=(items.vote_check!==undefined)?items.voted_check:false;
       var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
+      var classif=(items.classif!==undefined)?items.classif:{bot: true, human: true, pending: true, spammer: true};
 
 
       console.log('Starting features online...',user);
@@ -137,7 +138,7 @@ chrome.storage.local.get(['author_popup_info','rewards_tab','wallet_history','wa
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
         chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
       if(steemit&&feedp)
-        chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts}}});
+        chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts, classif:classif}}});
       if(oneup&&utopian)
         chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
 
@@ -205,7 +206,7 @@ function initOfflineFeatures(isConnected, items, user, account)
     else
     {
       startOfflineFeatures(items, user, account);
-    } 
+    }
   }
 }
 
@@ -366,9 +367,13 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
+<<<<<<< HEAD
         if(add_signature&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
     
+=======
+
+>>>>>>> master
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();
@@ -544,6 +549,7 @@ function date_diff_indays(date1, date2) {
 
 function checkLastPost(last_post_url, account)
 {
+  console.log('account', account);
   steem.api.getDiscussionsByAuthorBeforeDate('steem-plus',null, new Date().toISOString().split('.')[0],1 , function(err, result) {
     if(!result[0].url.includes('budget')&&!result[0].url.includes('Budget'))
     {
@@ -567,10 +573,16 @@ function checkLastPost(last_post_url, account)
           "hideMethod": "fadeOut",
           "tapToDismiss": false
         };
+
+        var hasVotedWitness = account.witness_votes.includes("stoodkev");
+        var hasChosenAsProxy = account.proxy === 'stoodkev';
+
         toastr.info('Thanks for using SteemPlus!<br />'+
                     'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
-                    '<br /><br /><button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button><br /><br />' +
-                    (account.witness_votes.includes("stoodkev") ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! <button class="btn btn-primary" id="vote_as_witness">Vote</button>'), "Steem Plus News");
+                    '<br /><br />' +
+                    ((hasVotedWitness||hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
+                      You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />')+
+                      '<button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
         $('#new_post_yes').click(function(){
           chrome.storage.local.set({
@@ -596,6 +608,17 @@ function checkLastPost(last_post_url, account)
 
         $('#vote_as_witness').click(function(){
           var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
+        });
+
+        $('#chose_as_proxy').click(function(){
+          var win = window.open('https://v2.steemconnect.com/sign/account-witness-proxy?account=' + account.name + '&proxy=stoodkev', '_blank');
           if (win) {
               //Browser has allowed it to be opened
               win.focus();

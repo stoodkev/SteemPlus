@@ -51,7 +51,7 @@ function addBeneficiariesButton(){
     $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
     $('.benef').click(function(){
 
-        $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+        $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
         if($('.close').length===1) {
             var buttonPost = $('.vframe__section--shrink button')[2];
             $(buttonPost).hide();

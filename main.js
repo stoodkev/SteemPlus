@@ -367,13 +367,9 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
-<<<<<<< HEAD
         if(add_signature&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
     
-=======
-
->>>>>>> master
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

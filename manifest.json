@@ -96,7 +96,8 @@
         "src/js/wallet_history.js",
         "src/js/rewards_tab.js",
         "src/js/author_popup_info.js",
-        "src/js/add_signature.js"],
+        "src/js/add_signature.js",
+        "src/js/resteem_indicator.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css",
         "src/css/delegate.css",
@@ -118,7 +119,8 @@
         "src/css/wallet_history.css",
         "src/css/rewards_tab.css",
         "src/css/author_popup_info.css",
-        "src/css/add_signature.css"],
+        "src/css/add_signature.css",
+        "src/css/resteem_indicator.css"],
       "run_at": "document_idle"
     }
   ]

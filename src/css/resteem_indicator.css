@@ -1,0 +1,17 @@
+.resteem-list
+{
+	margin-right: 0.25rem;
+}
+
+.resteem-item > a
+{
+	line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-bottom: 0.25rem !important;
+
+}
+.ul-resteem-list
+{
+	padding-left: 0.25rem !important;
+}

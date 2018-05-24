@@ -14,4 +14,6 @@
 .ul-resteem-list
 {
 	padding-left: 0.25rem !important;
+	overflow-y: scroll;
+	max-height: 200px;
 }

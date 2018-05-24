@@ -8,6 +8,8 @@ var isUtopian = null;
 
 var myUsernameSignature = null;
 
+
+// Listener to messages start, click
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='add_signature'&&request.order==='start'&&token_add_signature==null)
   {
@@ -88,19 +90,13 @@ function startAddSignature()
       });
     }
   }
-  else if(isBusy)
-  {
-
-  }
-  else if(isUtopian)
-  {
-
-  }
-  
 }
 
+// Function used to display the panel to create the signature
+// This panel contains a dropdown list to choose between post and comment and a MD Editor
 function displayCreateSignature()
 {
+  // Get comment signature and post signature from local storage
   chrome.storage.local.get(['user_signature_comments', 'user_signature_posts'], function(item){
     var userSignatureComments = (item.user_signature_comments===undefined ? '' : item.user_signature_comments );
     var userSignaturePosts = (item.user_signature_posts===undefined ? '' : item.user_signature_posts );
@@ -160,8 +156,10 @@ function displayCreateSignature()
       </div>\
     </div>');
 
+    // Add panel to setting page
     $('.Settings').append(divSignature);
 
+    // Listener on change dropdown lists
     $('#select-type-signature').on('change', function(){
       if($(this)[0].value === 'posts')
       {
@@ -177,10 +175,14 @@ function displayCreateSignature()
       }
     });
 
+    // Start markdown editor
     $('textarea').markdownlive();
 
+
+    // Listener save button
     $('#saveSignature').click(function(){
 
+      // Set config of toastr
       toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -200,6 +202,8 @@ function displayCreateSignature()
         "tapToDismiss": false
       };
 
+
+      // Save signature in local storage and display a toastr to inform users
       if($('#select-type-signature')[0].value === 'posts')
       {
         userSignaturePosts = $('.signature-editor')[0].value;
@@ -221,14 +225,22 @@ function displayCreateSignature()
   });
 }
 
+// Function used to setup the post signature's add button
+// @parameter textarea : textarea linked to the add button
+// A click on add will add the post signature to the post
 function setupAddPostSignature(textarea)
 {
+  // Get signature from local storage
+  // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
   chrome.storage.local.get(['user_signature_posts'], function(item){
     if(item.user_signature_posts!==undefined&&item.user_signature_posts!=='')
     {
       $(textarea).after('<a class="add-signature-post">Add Signature</a>');
       $('.add-signature-post').on('click', function(){
           $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
+          
+          // Fire event to refresh the preview
+          // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
           var event = new Event('input', { bubbles: true });
           $(textarea)[0].dispatchEvent(event);
           event = new Event('keyup', { bubbles: true });
@@ -236,20 +248,29 @@ function setupAddPostSignature(textarea)
           $(textarea).focus();
       });
     }  
+    // Add edit button. Open page in another tab
     $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
   });
 }
 
+// Function used to setup the comment signature's add button
+// @parameter textarea : textarea linked to the add button
+// A click on add will add the comment signature to the comment
 function setupAddCommentSignature(textarea)
 {
   if($(textarea).parent().find('.edit-signature-comment').length === 0)
   {
+    // Get signature from local storage
+    // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
       if(item.user_signature_comments!==undefined&&item.user_signature_comments!=='')
       {
         $(textarea).after('<a class="add-signature-comment">Add Signature</a>');
         $('.add-signature-comment').on('click', function(){
             $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_comments);
+            
+            // Fire event to refresh the preview
+            // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
             setTimeout(function(){
               var event = new Event('input', { bubbles: true });
               $(textarea)[0].dispatchEvent(event);
@@ -257,12 +278,14 @@ function setupAddCommentSignature(textarea)
             },1000);
         });
       }  
+      // Add edit button. Open page in another tab
       $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
     });
   }
 }
 
-
+// Function use to update preview
+// @parameter textarea : textarea linked to the preview which need a refresh
 function updatePreview(textarea){
   var markdown_text = $(textarea).val(),
       markdown_html = Markdown(markdown_text),

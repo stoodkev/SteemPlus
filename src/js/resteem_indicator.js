@@ -25,7 +25,28 @@ function startResteemIndicator()
 {
 	if(retryCountResteemIndicator < 20)
 	{
-		if(regexPostSteemit.test(window.location.href))
+		if(window.location.href.includes('#mentions'))
+		{
+			if($('.MentionsTab').find('.PostSummary').length > 0)
+			{
+				console.log('ready');
+				var paramsQuery = [];
+				$('article.PostSummary').each(function(){
+					var usernameResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[2].replace('@', '');
+					var permlinkResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[3];
+					$(this).attr('name', usernameResteemIndicator + '_' + permlinkResteemIndicator);
+					paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
+				});
+				displayResteemIndicatorListPost($('article.PostSummary'), '.PostSummary__time_author_category', paramsQuery);
+			}
+			else
+			{
+				console.log(retryCountResteemIndicator);
+				retryCountResteemIndicator++;
+				setTimeout(startResteemIndicator, 1000);
+			}
+		}
+		else if(regexPostSteemit.test(window.location.href))
 		{
 			var matches = window.location.href.match(regexPostSteemitParameters);
 			var usernameResteemIndicator = matches[1];
@@ -54,17 +75,17 @@ function startResteemIndicator()
 		}
 		else if(regexFeedPlusSteemit.test(window.location.href))
 		{
-			if($('article').length > 0)
+			if($('article.PostSummary').length > 0)
 			{
 				console.log('ready');
 				var paramsQuery = [];
-				$('article').each(function(){
+				$('article.PostSummary').each(function(){
 					var usernameResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[2].replace('@', '');
 					var permlinkResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[3];
 					$(this).attr('name', usernameResteemIndicator + '_' + permlinkResteemIndicator);
 					paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
 				});
-				displayResteemIndicatorListPost($('article'), '.PostSummary__time_author_category', paramsQuery);
+				displayResteemIndicatorListPost($('article.PostSummary'), '.PostSummary__time_author_category', paramsQuery);
 			}
 			else
 			{
@@ -114,6 +135,7 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
 // Function used to display resteem indicator on list post pages (feed, feed+, blogs)
 function displayResteemIndicatorListPost(listPosts, locationIndicator, paramsQuery)
 {
+	console.log('paramsQuery', paramsQuery);
 	$.ajax({
       type: "POST",
       beforeSend: function(xhttp) {

@@ -31,7 +31,7 @@ function startResteemIndicator()
 		if($('.resteem-list').length===0)
 			displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteemIndicator);
 	}
-	else if(regexBlogSteemit.test(window.location.href))
+	else if(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href))
 	{
 		var paramsQuery = [];
 		$('.articles__summary').each(function(){
@@ -41,10 +41,6 @@ function startResteemIndicator()
 			paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
 		});
 		displayResteemIndicatorListPost($('.articles__summary'), '.PostSummary__time_author_category', paramsQuery);
-	}
-	else if(regexFeedSteemit.test(window.location.href))
-	{
-
 	}
 	else if(regexFeedPlusSteemit.test(window.location.href))
 	{

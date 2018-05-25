@@ -306,7 +306,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype)
 		if(subtype==='paid')
 			$('#rewards-information-message').eq(0).append('List of all the ' + type + ' rewards paid within the last 7 days');
 		else
-			$('#rewards-information-message').eq(0).append('List of all the panding ' + type + ' rewards. They will be paid 7 days after creation. The pending payout is an estimation that may vary over time.');
+			$('#rewards-information-message').eq(0).append('List of all the pending ' + type + ' rewards. They will be paid 7 days after creation. The pending payout is an estimation that may vary over time.');
 
 		var totalPendingLabel = [];
 		if(totalSBD>0)

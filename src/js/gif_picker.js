@@ -54,14 +54,14 @@
         setupGifPickerIfNeeded(textarea);
       });
 
-      $('.Comment__footer__controls > a').unbind('click').click(function(){
+      $('.Comment__footer__controls > a').click(function(){
         $('.ReplyEditor__body textarea').each(function() {
           var textarea = $(this);
           setupGifPickerIfNeeded(textarea);
         });
       });
 
-      $('.PostFull__reply > a').unbind('click').click(function(){
+      $('.PostFull__reply > a').click(function(){
         $('.ReplyEditor__body textarea').each(function() {
           var textarea = $(this);
           setupGifPickerIfNeeded(textarea);

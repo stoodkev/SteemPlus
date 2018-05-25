@@ -249,6 +249,7 @@ function startOfflineFeatures(items, user, account)
   const wallet_history_memo_key=(items.wallet_history_memo_key== undefined ? '' : items.wallet_history_memo_key);
   const rewards_tab=(items.rewards_tab == undefined || items.rewards_tab=='show');
   const author_popup_info=(items.author_popup_info == undefined || items.author_popup_info=='show');
+  const add_signature=(items.add_signature == undefined || items.add_signature=='show');
 
 
   const smi_installed_remind_me=(items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
@@ -285,6 +286,8 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
   if(author_popup_info&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{user:user}});
+  if(add_signature&&steemit)
+      chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'start',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
 
   if (steemit&&steemit_more_info) {
     if(post_votes_list)
@@ -364,7 +367,9 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
-
+        if(add_signature&&steemit)
+          chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
+    
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

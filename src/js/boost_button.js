@@ -437,7 +437,7 @@
         <div class="column small-10">\
           <div class="input-group" style="margin-bottom: 1.25rem;">\
             <span class="input-group-label">@</span>\
-            <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
+            <select id="selectBooster" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
               <option value="MinnowBooster" selected>MinnowBooster</option>\
               <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
             </select>\

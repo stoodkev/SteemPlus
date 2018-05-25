@@ -1,0 +1,75 @@
+.signature-panel{
+	margin-top: 1.5em;
+}
+
+.signature-preview, .signature-editor
+{
+	min-height: 15em !important;
+}
+
+/* Markdownlive Toolbar
+=======================================================================*/
+
+.markdownlive-bar {
+	padding:15px 10px;
+	background-color: #4a4a4a;
+	list-style:none;
+}
+
+.markdownlive-bar li {
+	color: #ddd;
+	padding:10px;
+	display:inline;
+}
+
+.markdownlive-bar li:hover {
+	color: #fff;
+	background-color: #313131;
+	cursor:pointer;
+}
+
+
+/* Markdownlive Preview
+=======================================================================*/
+
+.markdownlive-preview {
+    background-color: #f6f6f6;
+    padding:10px;
+    overflow:auto;
+}
+
+
+.markdownlive-preview table {
+	border: 1px solid #373737;
+	margin-bottom: 20px;
+	text-align: left;
+}
+
+.markdownlive-preview th {
+	padding: 10px;
+	background: #373737;
+	color: #fff;
+}
+
+.markdownlive-preview td {
+	padding: 10px;
+	border: 1px solid #373737;
+}
+
+.bar{
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+}
+
+ul.markdownlive-bar {
+	margin-left: 0px !important;
+}
+
+#select-type-signature
+{
+	margin-bottom: 1em !important;
+}
+
+.add-signature-post, .add-signature-comment{
+	margin-left: 1em;
+}

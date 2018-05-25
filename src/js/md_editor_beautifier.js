@@ -92,7 +92,8 @@ function bindTextArea()
   });
 
 
-  $('textarea').bind('input propertychange', function(event){
+  $('textarea').bind('keyup', function(event){
+  // $('textarea').bind('input propertychange', function(event){
     if(event.currentTarget.value.length === 0){
       preview.remove();
       waitingForPreview = true;
@@ -102,7 +103,7 @@ function bindTextArea()
     {
       setTimeout(function(){
         $('.MarkdownViewer')[1].innerHTML = $('.MarkdownViewer')[0].innerHTML;
-      }, 100);
+      }, 1000);
       waitingForPreview = false;
     }
   });

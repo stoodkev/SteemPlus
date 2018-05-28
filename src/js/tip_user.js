@@ -109,7 +109,7 @@ function startTipUser()
             amountTip = $(this).attr('name');
 
 
-          var memoTip = 'Tip sent from ' + myUsernameTip + ' to ' + userAuthorPopupInfoTip + ' using <a target="_blank" href="https://steemit.com/@steem-plus">@steem-plus</a> tipping system!';
+          var memoTip = 'Tip sent from ' + myUsernameTip + ' to ' + userAuthorPopupInfoTip + ' using steem-plus tipping system! (https://steemit.com/@steem-plus)';
           var urlTip = 'https://v2.steemconnect.com/sign/transfer?from='+myUsernameTip+'&to='+userAuthorPopupInfoTip+'&amount='+amountTip+'%20SBD&memo='+ memoTip;
           var win = window.open(urlTip, '_blank');
           if (win) {

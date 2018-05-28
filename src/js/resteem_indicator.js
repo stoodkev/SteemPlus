@@ -2,6 +2,7 @@ var token_resteem_indicator=null;
 
 var retryCountResteemIndicator=0;
 
+// Listener on message coming from main.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='resteem_indicator'&&request.order==='start'&&token_resteem_indicator==null)
   {

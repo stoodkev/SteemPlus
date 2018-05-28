@@ -47,7 +47,6 @@ function startTipUser()
             <input type="button" value="2$" name="2" class="btn btn-primary btn-sm tip-button">\
             <input type="button" value="5$" name="5" class="btn btn-primary btn-sm tip-button">\
             <input type="button" value="10$" name="10" class="btn btn-primary btn-sm tip-button">\
-            <input type="button" value="20$" name="20" class="btn btn-primary btn-sm tip-button">\
             <input class="input-value-tip" id="value-tip" type="text" placeholder="..." name="tip" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
             <input type="button" value="$" name="other" class="btn btn-primary btn-sm tip-button">\
           </div>');

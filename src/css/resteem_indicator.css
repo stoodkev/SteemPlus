@@ -17,3 +17,8 @@
 	overflow-y: scroll;
 	max-height: 200px;
 }
+
+.count-resteem-label
+{
+	font-weight: normal;
+}

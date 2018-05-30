@@ -2,18 +2,23 @@ var token_resteem_indicator=null;
 
 var retryCountResteemIndicator=0;
 
+var scrollBottomReachedRI = false;
+var nbElementPageAuthorRI=0;
+
 // Listener on message coming from main.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='resteem_indicator'&&request.order==='start'&&token_resteem_indicator==null)
   {
     token_resteem_indicator=request.token;
     retryCountResteemIndicator = 0;
+    nbElementPageAuthorRI=0;
     startResteemIndicator();
   }
   else if(request.to==='resteem_indicator'&&request.order==='click'&&token_resteem_indicator==request.token)
   {
     myUsernameSignature = request.data.user;
     retryCountResteemIndicator = 0;
+    nbElementPageAuthorRI=0;
     startResteemIndicator();
   }
 });
@@ -59,11 +64,15 @@ function startResteemIndicator()
 			{
 				var paramsQuery = [];
 				$('.articles__summary').each(function(){
-					var usernameResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[2].replace('@', '');
-					var permlinkResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[3];
-					$(this).attr('name', usernameResteemIndicator + '_' + permlinkResteemIndicator);
-					paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
+					if($(this).find('.count-resteem-label').length === 0)
+					{
+						var usernameResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[2].replace('@', '');
+						var permlinkResteemIndicator = $(this).children().find('.entry-title > a').eq(0).attr('href').split('/')[3];
+						$(this).attr('name', usernameResteemIndicator + '_' + permlinkResteemIndicator);
+						paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
+					}
 				});
+				console.log(paramsQuery.length);
 				displayResteemIndicatorListPost($('.articles__summary'), '.PostSummary__time_author_category', paramsQuery);
 			}
 			else
@@ -112,7 +121,7 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
 		$('.Reblog__button').before('<div class="DropdownMenu resteem-list">\
 			<a class="resteem-list-link">\
 				<span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span>\
-				<span>'+ result.length +'\
+				<span class="count-resteem-label">'+ result.length +'\
 			</a>\
 			<ul class="VerticalMenu menu vertical VerticalMenu ul-resteem-list"></ul>\
 		</div>');
@@ -160,7 +169,7 @@ function displayResteemIndicatorListPost(listPosts, locationIndicator, paramsQue
 					var divReblogs = $('<div class="DropdownMenu resteem-list">\
 						<a class="resteem-list-link">\
 							<span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span>\
-							<span>'+ countResteem +'\
+							<span class="count-resteem-label">'+ countResteem +'\
 						</a>\
 					</div>');
 					divReblogs.find('.resteem-list-link').after(listUserResteem);
@@ -181,7 +190,7 @@ function displayResteemIndicatorListPost(listPosts, locationIndicator, paramsQue
 					var divReblogs = $('<div class="DropdownMenu resteem-list">\
 						<a class="resteem-list-link">\
 							<span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span>\
-							<span>'+ countResteem +'\
+							<span class="count-resteem-label">'+ countResteem +'\
 						</a>\
 					</div>\
 					<span class="Reblog__button Reblog__button_sp"><a><span class="Icon reblog" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"><path d="M448,192l-128,96v-64H128v128h248c4.4,0,8,3.6,8,8v48c0,4.4-3.6,8-8,8H72c-4.4,0-8-3.6-8-8V168c0-4.4,3.6-8,8-8h248V96 L448,192z"></path></svg></span></a></span>');
@@ -197,9 +206,43 @@ function displayResteemIndicatorListPost(listPosts, locationIndicator, paramsQue
 			else
 				$(this).parent().find('.resteem-list').addClass('show');
 		});
+
+		$(window).scroll(function() {
+		    if($(window).scrollTop() + $(window).height() >= $('.articles').height()) {
+		      if(!scrollBottomReachedRI){
+		        scrollBottomReachedRI=true;
+		        onScrollUpdateRI();
+		      }
+		    }
+		});
+
+		nbElementPageAuthorRI = $('.articles__summary').length;
+
       },
       error: function(msg) {
         console.log(msg);
       }
     });
+}
+
+function onScrollUpdateRI()
+{
+  if($('.articles__summary').length===nbElementPageAuthorRI)
+  {
+  	if(retryCountResteemIndicator<20)
+  	{
+  		retryCountResteemIndicator++;
+  		setTimeout(function() {
+	      onScrollUpdateRI();
+	    }, 1000);
+  	}
+    
+  }
+  else
+  {
+    startResteemIndicator();
+    retryCountResteemIndicator=0;
+    scrollBottomReachedRI=false;
+  }
+
 }

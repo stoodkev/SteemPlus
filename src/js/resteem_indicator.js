@@ -72,7 +72,6 @@ function startResteemIndicator()
 						paramsQuery.push({'author':usernameResteemIndicator, 'permlink':permlinkResteemIndicator});
 					}
 				});
-				console.log(paramsQuery.length);
 				displayResteemIndicatorListPost($('.articles__summary'), '.PostSummary__time_author_category', paramsQuery);
 			}
 			else

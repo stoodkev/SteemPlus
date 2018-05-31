@@ -287,9 +287,9 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
   if(author_popup_info&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{user:user}});
-  if(add_signature&&steemit)
+  if(add_signature&&(steemit||busy))
       chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'start',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
-  if(add_signature&&steemit)
+  if(resteem_indicator&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'resteem_indicator', order: 'start',data:{}});
 
 
@@ -371,7 +371,7 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'click',data:{user:user}});
-        if(add_signature&&steemit)
+        if(add_signature&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'add_signature', order: 'click',data:{user:user, steemit:steemit, busy:busy, utopian:utopian}});
         if(resteem_indicator&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'resteem_indicator', order: 'click',data:{}});

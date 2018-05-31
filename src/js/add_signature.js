@@ -62,10 +62,8 @@ function startAddSignature()
 
       $('.Comment__footer__controls > a').click(function(){
         setTimeout(function(){
-          console.log('Comment__footer__controls');
           $('.ReplyEditor__body textarea').each(function() {
             var textarea = $(this);
-            console.log(textarea);
             setupAddCommentSignature(textarea);
           });
         },1000);  
@@ -90,6 +88,53 @@ function startAddSignature()
       });
     }
   }
+  else if(isBusy)
+  {
+    if(regexCreatePostBusy.test(window.location.href))
+    {
+      if($('textarea.ant-input').length===0)
+      {
+        retryCountAddSignature++;
+        setTimeout(startAddSignature, 1000);
+      }
+      else
+      {
+        setupAddPostSignature($('textarea.ant-input'));
+      }
+    }
+    else if(regexSettingsBusySignature.test(window.location.href))
+    {
+      if(window.location.href.match(regexSettingsBusySignature)[1]===myUsernameSignature)
+      {
+        $('.content').children().remove();
+        displayCreateSignature();
+      }
+    }
+    else if(regexPostBusy.test(window.location.href))
+    {
+      console.log('post busy');
+      
+      setTimeout(function(){
+        console.log($('textarea.ant-input'));
+        $('textarea.ant-input').each(function() {
+          console.log($(this));
+          var textarea = $(this);
+          setupAddCommentSignature(textarea);
+        });
+      },2000);
+      
+
+      $('a.CommentFooter__link').click(function(){
+        console.log('click');
+        setTimeout(function(){
+          $('textarea.ant-input').each(function() {
+            var textarea = $(this);
+            setupAddCommentSignature(textarea);
+          });
+        },1000);  
+      });
+    }
+  }
 }
 
 // Function used to display the panel to create the signature
@@ -101,11 +146,16 @@ function displayCreateSignature()
     var userSignatureComments = (item.user_signature_comments===undefined ? '' : item.user_signature_comments );
     var userSignaturePosts = (item.user_signature_posts===undefined ? '' : item.user_signature_posts );
 
+    var classButtonSaveSignature = '';
+    if(isBusy) classButtonSaveSignature = 'ant-btn Action--primary';
+    else if(isSteemit) classButtonSaveSignature = 'button';
+
+
     var divSignature = $('<div class="signature-panel">\
       <div class="bootstrap-wrapper">\
-        <h4>Signature</h4>\
           <div class="container container-signature-md">\
             <div class="row">\
+              <h4>Signature</h4>\
               <select id="select-type-signature" class="col-12">\
                 <option value="posts">Posts</option> \
                 <option value="comments">Comments</option>\
@@ -150,14 +200,22 @@ function displayCreateSignature()
               </div>\
               <textarea class="col-6 signature-editor" data-bar=".editor-bar" data-preview=".editor-preview">'+ userSignaturePosts + '</textarea>\
               <div class="markdownlive-preview editor-preview col-6 signature-preview"></div>\
-              <input id="saveSignature" class="button" value="Save Posts Signature" style="margin-top: 1em;">\
+              <input id="saveSignature" class="' + classButtonSaveSignature + '" value="Save Posts Signature" style="margin-top: 1em;">\
             </div>\
           </div>\
       </div>\
     </div>');
-
+    
     // Add panel to setting page
-    $('.Settings').append(divSignature);
+    if(isSteemit)
+      $('.Settings').append(divSignature);
+    else if(isBusy)
+    {
+      document.title = 'Edit signature';
+      $('.content').children().remove();
+      $('.content').append(divSignature);
+
+    }
 
     // Listener on change dropdown lists
     $('#select-type-signature').on('change', function(){
@@ -215,6 +273,7 @@ function displayCreateSignature()
       else if($('#select-type-signature')[0].value === 'comments')
       {
         userSignatureComments = $('.signature-editor')[0].value;
+        console.log(userSignatureComments);
         toastr.success('Comments signature saved! <br> You can now use it in comments', "Message from SteemPlus");
         chrome.storage.local.set({
           user_signature_comments:userSignatureComments.trim()
@@ -263,6 +322,7 @@ function setupAddCommentSignature(textarea)
     // Get signature from local storage
     // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
+      console.log(item.user_signature_comments);
       if(item.user_signature_comments!==undefined&&item.user_signature_comments!=='')
       {
         $(textarea).after('<a class="add-signature-comment">Add Signature</a>');

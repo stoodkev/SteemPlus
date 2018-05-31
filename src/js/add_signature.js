@@ -273,7 +273,6 @@ function displayCreateSignature()
       else if($('#select-type-signature')[0].value === 'comments')
       {
         userSignatureComments = $('.signature-editor')[0].value;
-        console.log(userSignatureComments);
         toastr.success('Comments signature saved! <br> You can now use it in comments', "Message from SteemPlus");
         chrome.storage.local.set({
           user_signature_comments:userSignatureComments.trim()

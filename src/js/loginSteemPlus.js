@@ -59,7 +59,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if(request.data.steemit)
         showButtonOnSteemit(loginIcon);
       else if(request.data.busy)
-        $('.Topnav__version').after(loginIcon);
+        $('.Topnav__item-user').prepend(loginIcon);
       else if(request.data.utopian)
         $('.Topnav__version').eq(0).after(loginIcon);
     }

@@ -55,6 +55,13 @@
               </button>\
             </div>\
           </div>');
+
+        modal.find('.close-button').on('click', function() {
+          modal.remove();
+        });
+        modal.find('.reveal-overlay').on('click', function() {
+          modal.remove();
+        });
       }
       else if(isBusy)
       {
@@ -63,6 +70,15 @@
             <span class="close-busy">&times;</span>\
           </div>\
         </div>');
+
+        modal.find('.close-busy').on('click', function() {
+          modal.remove();
+        });
+        window.onclick = function(event) {
+          if (event.target == modal[0]) {
+              modal.remove();
+          }
+        }
       }
     }
 
@@ -71,13 +87,6 @@
       center: true
     }));
     modal.find('.reveal').append(loading);
-
-    modal.find('.close-button').on('click', function() {
-      modal.remove();
-    });
-    modal.find('.reveal-overlay').on('click', function() {
-      modal.remove();
-    });
 
     var missingAsync = 4;
     var alreadyBoosted = false;
@@ -497,6 +506,8 @@
         $('#selectBooster').each(function(){
           $(this).eq(0).addClass('select-busy');
         });
+
+
       }
     };
 
@@ -619,8 +630,7 @@ function addPostBoostButton()
         boostButton = $('<li class="PopoverMenuItem boost-link"><a role="presentation"><i class="iconfont icon-flashlight_fill"></i><span>Boost</span></a></li>');
 
         boostButton.on('click', function() {
-          $('.ant-popover-open').eq(0).removeClass('ant-popover-open');
-          $('.PopoverMenu').parent().parent().hide();
+          $(boostButton).parent().parent().parent().parent().parent().parent().parent().addClass('ant-popover-hidden');
           modal=null;
           urlBooster = window.location.href;
           matchBooster = urlBooster.match(/^.*\/@([^\/]*)\/(.*)$/);
@@ -631,28 +641,25 @@ function addPostBoostButton()
 
         });
 
-        if($('.PopoverMenu').length > 0)
-          $('.PopoverMenu').append(boostButton);
-        else
-        {
-          $('.Buttons__post-menu').click(function(){
-            if($('.boost-link').length === 0) {
-              setTimeout(function(){
-                $('.PopoverMenu').append(boostButton);
-              },500);
-              
-            }
-          });
+        $('.Buttons__post-menu').click(function(){
+          setTimeout(function(){
+            $('.PopoverMenu').each(function(){
+              if($(this).find('.boost-link').length === 0) {
+                  $('.PopoverMenu').append(boostButton);
+              }
+            });
+          },500);
+        });
 
-          $('.StoryFull__header__more').click(function(){
-            if($('.boost-link').length === 0) {
-              setTimeout(function(){
-                $('.PopoverMenu').append(boostButton);
-              },500);
-              
-            }
-          });
-        }
+        $('.StoryFull__header__more').click(function(){
+          setTimeout(function(){
+            $('.PopoverMenu').each(function(){
+              if($(this).find('.boost-link').length === 0) {
+                  $('.PopoverMenu').append(boostButton);
+              }
+            });
+          },500);
+        });
         
 
       }

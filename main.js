@@ -133,8 +133,8 @@ chrome.storage.local.get(['resteem_indicator','add_signature','author_popup_info
 
 
       console.log('Starting features online...',user);
-      if(beneficiaries&&steemit)
-        chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user}});
+      if(beneficiaries&&(steemit||busy))
+        chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
         chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
       if(steemit&&feedp)
@@ -151,8 +151,8 @@ chrome.storage.local.get(['resteem_indicator','add_signature','author_popup_info
         setTimeout(function(){
           if(urlOnline!==window.location.href)
           {
-            if(beneficiaries&&steemit)
-              chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user}});
+            if(beneficiaries&&(steemit||busy))
+              chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
             if(steemit&&followers_table&&steemit_more_info)
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
 

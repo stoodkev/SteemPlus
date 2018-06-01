@@ -11,9 +11,16 @@ var communities=['minnowsupport',
                 'utopian-io',
                 'adsactly'
               ];
+
+var isSteemit=null;
+var isBusy=null;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='ben'){
     autb=request.data.user;
+    isSteemit=request.data.steemit;
+    isBusy=request.data.busy;
+
     if(request.order==='start'&&token_benef==null)
     {
       token_benef=request.token;
@@ -24,49 +31,80 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 function startBeneficiaries(){
-  if(regexCreatePostSteemit.test(window.location.href))
+  if(regexCreatePostSteemit.test(window.location.href)||regexCreatePostBusy.test(window.location.href))
     addBeneficiariesButton();
 }
 
 function onClickB(){
-  if(regexCreatePostSteemit.test(window.location.href)&&!created_benef){
+  if((regexCreatePostSteemit.test(window.location.href)||regexCreatePostBusy.test(window.location.href))&&!created_benef){
     addBeneficiariesButton();
   }
-  if(!regexCreatePostSteemit.test(window.location.href)){
+  if(!(regexCreatePostSteemit.test(window.location.href)&&regexCreatePostBusy.test(window.location.href))){
     created_benef=false;
   }
 }
 
 function addBeneficiariesButton(){
 
-    var benef_div = document.createElement('div');
-    benef_div.style.width = '100%';
-    benef_div.style.marginBottom = '2em;';
-    var benef_button = document.createElement('input');
-    benef_button.value = 'Add beneficiaries';
-    benef_button.type='button';
-    benef_button.className = 'UserWallet__buysp button benef';
+    if(isSteemit)
+    {
+        var benef_div = document.createElement('div');
+        benef_div.style.width = '100%';
+        benef_div.style.marginBottom = '2em;';
+        var benef_button = document.createElement('input');
+        benef_button.value = 'Add beneficiaries';
+        benef_button.type='button';
+        benef_button.className = 'UserWallet__buysp button benef';
 
-    benef_div.appendChild(benef_button);
-    $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
-    $('.benef').click(function(){
+        benef_div.appendChild(benef_button);
+        $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
+        $('.benef').click(function(){
 
-        $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
-        if($('.close').length===1) {
-            var buttonPost = $('.vframe__section--shrink button')[2];
-            $(buttonPost).hide();
-            if($('.post').length===0) {
-                $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
-                $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
-                }
-                else
-                 $('h5,.post').show();
-        }
+            $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+            if($('.close').length===1) {
+                var buttonPost = $('.vframe__section--shrink button')[2];
+                $(buttonPost).hide();
+                if($('.post').length===0) {
+                    $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
+                    $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
+                    }
+                    else
+                     $('h5,.post').show();
+            }
+            setCloseListener();
+        });
+        created_benef=true;
+    }
+    else if(isBusy)
+    {
+        var benef_div = document.createElement('div');
+        benef_div.style.width = '100%';
+        benef_div.style.marginBottom = '2em;';
+        var benef_button = document.createElement('input');
+        benef_button.value = 'Add beneficiaries';
+        benef_button.type='button';
+        benef_button.className = 'Action benef Action--primary';
 
-        setCloseListener();
+        benef_div.appendChild(benef_button);
+        $('.Editor__bottom').after(benef_div);
+        $('.benef').click(function(){
 
-    });
-    created_benef=true;
+            $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+            if($('.close').length===1) {
+                var buttonPost = $('.Editor__bottom__submit')[0];
+                $(buttonPost).hide();
+                if($('.post').length===0) {
+                    $('.beneficiaries').after('<li class="post"><div><input type="button" class="Action postbutton-busy Action--primary" value="Post"/></div></li>');
+                    $('.postbutton-busy').click(function (){if(isEverythingFilled()) postBeneficiaries();});
+                    }
+                    else
+                     $('h5,.post').show();
+            }
+            setCloseListener();
+        });
+        created_benef=true;
+    }
+    
 }
 
 function setCloseListener(){
@@ -75,8 +113,16 @@ function setCloseListener(){
         $(this).on("click",function() {
             $('.beneficiaries')[i].remove();
             if($('.close').length===0) {
-                $('.vframe__section--shrink button').show();
-                $('h5,.post').hide();
+                if(isSteemit)
+                {
+                    $('.vframe__section--shrink button').show();
+                    $('h5,.post').hide();
+                }
+                else if(isBusy)
+                {
+                    $('.Editor__bottom__submit').show();
+                    $('h5,.post').hide();
+                }
             }
             setCloseListener();
         });
@@ -87,16 +133,29 @@ function setCloseListener(){
 
 function isEverythingFilled()
 {
-    beneficiaries=[];
-    if($('.vframe__section--shrink button').is(":disabled"))
-    {
-        alert("Please enter a title, body and tags to your post!");
-        return false;
-    }
-
     var total_percent=0;
     var hasEmpty=0;
     var hasWrongPercent=0;
+    beneficiaries=[];
+
+    if(isSteemit)
+    {
+        if($('.vframe__section--shrink button').is(":disabled"))
+        {
+            alert("Please enter a title, body and tags to your post!");
+            return false;
+        }
+    }
+    else if(isBusy)
+    {
+        console.log($('.Editor__title').eq(0).val()==='',$('.ant-select-selection__choice__content').length===0,$('textarea#body').eq(0).innerHTML==='')
+        if($('.Editor__title').eq(0).val()===''||$('.ant-select-selection__choice__content').length===0||$('textarea#body').eq(0).innerHTML==='')
+        {
+            alert("Please enter a title, body and tags to your post!");
+            return false;
+        }
+    }
+
     $('.beneficiaries').each(function(i,e){
         hasEmpty+=$(e).find('input').eq(0).val()===''?1:0;
         hasEmpty+=$(e).find('input').eq(1).val()===''?1:0;

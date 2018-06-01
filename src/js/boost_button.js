@@ -11,6 +11,9 @@
   var loading=null;
   var normalList=1;
 
+  var isSteemit=null;
+  var isBusy=null;
+
   var retryCountBoostButton=0;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -18,6 +21,8 @@
     if(request.to=='boost_button'){
       aut=request.data.user;
       retryCountBoostButton=0;
+      isSteemit=request.data.steemit;
+      isBusy=request.data.busy;
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
@@ -34,17 +39,47 @@
 
 
   function createMinnowBoosterTransferUI() {
-    var link = window.location.origin + '/' + categoryBooster + '/@' + authorBooster + '/' + permlinkBooster;
+    var link = '';
+    if(isSteemit) link = window.location.origin + '/' + categoryBooster + '/@' + authorBooster + '/' + permlinkBooster;
+    else if(isBusy) link = window.location.origin + '/@' + authorBooster + '/' + permlinkBooster;
+
     if(modal === null)
     {
-      modal = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
-        <div class="reveal-overlay fade in" style="display: block;"></div>\
-          <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
-            <button class="close-button" type="button">\
-              <span aria-hidden="true" class="">×</span>\
-            </button>\
+      if(isSteemit)
+      {
+        modal = $('<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">\
+          <div class="reveal-overlay fade in" style="display: block;"></div>\
+            <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">\
+              <button class="close-button" type="button">\
+                <span aria-hidden="true" class="">×</span>\
+              </button>\
+            </div>\
+          </div>');
+
+        modal.find('.close-button').on('click', function() {
+          modal.remove();
+        });
+        modal.find('.reveal-overlay').on('click', function() {
+          modal.remove();
+        });
+      }
+      else if(isBusy)
+      {
+        modal = $('<div id="myModal" class="modal-busy">\
+          <div class="modal-content-busy">\
+            <span class="close-busy">&times;</span>\
           </div>\
         </div>');
+
+        modal.find('.close-busy').on('click', function() {
+          modal.remove();
+        });
+        window.onclick = function(event) {
+          if (event.target == modal[0]) {
+              modal.remove();
+          }
+        }
+      }
     }
 
 
@@ -52,13 +87,6 @@
       center: true
     }));
     modal.find('.reveal').append(loading);
-
-    modal.find('.close-button').on('click', function() {
-      modal.remove();
-    });
-    modal.find('.reveal-overlay').on('click', function() {
-      modal.remove();
-    });
 
     var missingAsync = 4;
     var alreadyBoosted = false;
@@ -238,7 +266,7 @@
             <div class="row">\
               <div class="column">\
                 <span>\
-                <button type="submit" disabled="" class="button">Submit</button>\
+                <button type="submit" disabled="" class="Action button">Submit</button>\
                 </span>\
               </div>\
             </div>\
@@ -291,7 +319,6 @@
                 parseFloat(maxVote)
               );
 
-                console.log("success"+maxAvailableAmount);
               $('.maxAvailableAmount').append(maxAvailableAmount);
 
               var ctx = transferUI.find('.boost-button-chart')[0].getContext('2d');
@@ -369,7 +396,6 @@
                       ticks: {
                         maxRotation: 75,
                         callback: function(tick, index, ticks) {
-                          console.log(ticks.length);
                           if(index%2===1||index===ticks.length-1||index===0)
                             return tick.toLocaleString()
                         }
@@ -431,24 +457,58 @@
       }
 
       loading.remove();
-      modal.find('.reveal').append(transferUI);
-      $('#modalTitle').after($('<div class="row">\
-        <div class="column small-2" style="padding-top: 5px;">To</div>\
-        <div class="column small-10">\
-          <div class="input-group" style="margin-bottom: 1.25rem;">\
-            <span class="input-group-label">@</span>\
-            <select id="selectBooster" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
-              <option value="MinnowBooster" selected>MinnowBooster</option>\
-              <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
-            </select>\
+      if(isSteemit)
+      {
+        modal.find('.reveal').append(transferUI);
+        $('#modalTitle').after($('<div class="row">\
+          <div class="column small-2" style="padding-top: 5px;">To</div>\
+          <div class="column small-10">\
+            <div class="input-group" style="margin-bottom: 1.25rem;">\
+              <span class="input-group-label">@</span>\
+              <select id="selectBooster" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
+                <option value="MinnowBooster" selected>MinnowBooster</option>\
+                <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
+              </select>\
+            </div>\
+            <p></p>\
           </div>\
-          <p></p>\
-        </div>\
-      </div>'));
+        </div>'));
+      }
+      else if(isBusy)
+      {
+        modal.find('.modal-content-busy').append(transferUI);
+        $('#modalTitle').after($('<div class="row">\
+          <div class="column small-2" style="padding-top: 5px;">To</div>\
+          <div class="column small-10">\
+            <div class="input-group" style="margin-bottom: 1.25rem;">\
+              <span class="input-group-label">@</span>\
+              <select id="selectBooster" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
+                <option value="MinnowBooster" selected>MinnowBooster</option>\
+                <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
+              </select>\
+            </div>\
+            <p></p>\
+          </div>\
+        </div>'));
+      }
+      
 
       $('#selectBooster').unbind('change').on('change', function(){
         changeUIBooster(this.value);
       });
+
+      if(isBusy)
+      {
+        $('input').each(function(){
+          $(this).eq(0).addClass('input-busy');
+        });
+
+        $('#selectBooster').each(function(){
+          $(this).eq(0).addClass('select-busy');
+        });
+
+
+      }
     };
 
     $('body').append(modal);
@@ -482,7 +542,6 @@
       success: function(json) {
         accountInfo = json;
         normalList=json.whitelisted?0:1;
-        console.log(normalList);
         asyncDone();
       },
       error: function(msg) {
@@ -523,40 +582,98 @@
 
 
 
-function addPostBoostButton() {
-
-  if(regexPostSteemit.test(window.location.href)&&retryCountBoostButton<20)
+function addPostBoostButton() 
+{
+  if(isSteemit)
   {
-    var promoteButton = $('.Promote__button');
-    var boostButton = $('.smi-boost-button');
-
-    if(promoteButton.length && !boostButton.length) {
-
-      boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
-
-      promoteButton.before(boostButton);
-      promoteButton.addClass('smi-promote-button');
-
-      boostButton.on('click', function() {
-        modal=null;
-        urlBooster = window.location.pathname;
-        matchBooster = urlBooster.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
-        categoryBooster = matchBooster[1];
-        authorBooster = matchBooster[2];
-        permlinkBooster = matchBooster[3];
-        createMinnowBoosterTransferUI();
-      });
-
-    }
-    else
+    console.log('steemit');
+    if(regexPostSteemit.test(window.location.href)&&retryCountBoostButton<20)
     {
-      retryCountBoostButton++;
-      timeoutBoostButton = setTimeout(function(){
-        addPostBoostButton();
-      },1000);
+      var promoteButton = $('.Promote__button');
+      var boostButton = $('.smi-boost-button');
+
+      if(promoteButton.length && !boostButton.length) {
+
+        boostButton = $('<button class="smi-boost-button float-right button hollow tiny">Boost</button>');
+
+        promoteButton.before(boostButton);
+        promoteButton.addClass('smi-promote-button');
+
+        boostButton.on('click', function() {
+          modal=null;
+          urlBooster = window.location.pathname;
+          matchBooster = urlBooster.match(/^\/([^\/]*)\/@([^\/]*)\/(.*)$/);
+          categoryBooster = matchBooster[1];
+          authorBooster = matchBooster[2];
+          permlinkBooster = matchBooster[3];
+          createMinnowBoosterTransferUI();
+        });
+
+      }
+      else
+      {
+        retryCountBoostButton++;
+        timeoutBoostButton = setTimeout(function(){
+          addPostBoostButton();
+        },1000);
+      }
     }
   }
-};
+  else if(isBusy)
+  {
+    if(regexPostBusy.test(window.location.href)&&retryCountBoostButton<20)
+    {
+      var boostButton = $('.boost-link');
+      if(!boostButton.length) {
+
+
+        boostButton = $('<li class="PopoverMenuItem boost-link"><a role="presentation"><i class="iconfont icon-flashlight_fill"></i><span>Boost</span></a></li>');
+
+        boostButton.on('click', function() {
+          $(boostButton).parent().parent().parent().parent().parent().parent().parent().addClass('ant-popover-hidden');
+          modal=null;
+          urlBooster = window.location.href;
+          matchBooster = urlBooster.match(/^.*\/@([^\/]*)\/(.*)$/);
+          authorBooster = matchBooster[1];
+          permlinkBooster = matchBooster[2];
+          createMinnowBoosterTransferUI();
+          $('#myModal').show();
+
+        });
+
+        $('.Buttons__post-menu').click(function(){
+          setTimeout(function(){
+            $('.PopoverMenu').each(function(){
+              if($(this).find('.boost-link').length === 0) {
+                  $('.PopoverMenu').append(boostButton);
+              }
+            });
+          },500);
+        });
+
+        $('.StoryFull__header__more').click(function(){
+          setTimeout(function(){
+            $('.PopoverMenu').each(function(){
+              if($(this).find('.boost-link').length === 0) {
+                  $('.PopoverMenu').append(boostButton);
+              }
+            });
+          },500);
+        });
+        
+
+      }
+      else
+      {
+        retryCountBoostButton++;
+        timeoutBoostButton = setTimeout(function(){
+          addPostBoostButton();
+        },1000);
+      }
+    }
+  }
+  
+}
 
 function changeUIBooster(value){
   $('#modalContent').remove();
@@ -569,7 +686,12 @@ function createSmartSteemTransferUI(){
   loading = $(window.SteemPlus.Utils.getLoadingHtml({
     center: true
   }));
-  modal.find('.reveal').append(loading);
+  
+  var classModalLocation = '';
+  if(isSteemit) classModalLocation = '.reveal';
+  else if(isBusy) classModalLocation = '.modal-content-busy';
+
+  modal.find(classModalLocation).append(loading);
 
   var transferUI = $('\
     <div id="modalContent">\
@@ -587,7 +709,8 @@ function createSmartSteemTransferUI(){
     url: 'https://smartsteem.com/api/general',
     success: function(result) {
       loading.remove();
-      modal.find('.reveal').append(transferUI);
+
+      modal.find(classModalLocation).append(transferUI);
       $('#modalTitle').after($('\
         <div class="row">\
           <div class="column small-2" style="padding-top: 5px;">To</div>\
@@ -615,7 +738,7 @@ function createSmartSteemTransferUI(){
         <br>\
         <div class="row">\
           <div class="input-group" style="margin-bottom: 5px;">\
-            <input id="amountSmartSteem" type="text" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
+            <input id="amountSmartSteem" type="number" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
             <span class="input-group-label" style="padding-left: 0px; padding-right: 0px; min-width: 5rem; height: inherit; border: none; text-align:center;" >\
               <select id="currency" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
                 <option value="SBD" selected>SBD</option>\
@@ -623,7 +746,7 @@ function createSmartSteemTransferUI(){
               </select>\
             </span>\
           </div>\
-          <button id="submitSmartSteem" type="submit" disabled="" class="button">Submit</button>\
+          <button id="submitSmartSteem" type="submit" disabled="" class="Action button">Submit</button>\
         </div>'));
 
       $('#selectBooster').unbind('change').on('change', function(){
@@ -660,7 +783,18 @@ function createSmartSteemTransferUI(){
       $('#smartSteemInformation').append('<div class="col-5">1 star vote value :</div><div class="col-7">' + parseInt(result.total_one).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">2 stars vote value :</div><div class="col-7">' + parseInt(result.total_two).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">3 stars vote value :</div><div class="col-7">' + parseInt(result.total_three).toFixed(2) + ' $</div>');
+      
+      if(isBusy)
+      {
+        $('input').each(function(){
+          $(this).eq(0).addClass('input-busy');
+        });
 
+        $('#selectBooster').each(function(){
+          $(this).eq(0).addClass('select-busy');
+        });
+      }
+      
     },
     error: function(msg) {
       $('#smartSteemInformation').append('<small style="color:red;">' + msg.responseJSON.error + '</small>');

@@ -61,7 +61,7 @@ function onClickTr(isSteemit,busy,account,balance){
 
 function checkLoadTr(isSteemit,busy,account,balance){
 
-  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy(window.location.href))&&retryCountTransferTo<20)
+  if((regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))&&retryCountTransferTo<20)
   {
     if($(wallet_elt_t).length===0){
     createButtonT(isSteemit,busy,account,balance);

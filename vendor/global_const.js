@@ -8,6 +8,7 @@ const regexFeedPlusSteemit = /^https:\/\/steemit\.com\/(created[a-zA-Z0-9\-\.\/]
 const regexPostSteemit = /^https:\/\/steemit\.com\/[a-z0-9\-]+\/@[\.\-a-zA-Z0-9]*\/.*$/;
 const regexPostSteemitParameters = /^https:\/\/steemit\.com\/[a-z0-9\-]+\/@([\.\-a-zA-Z0-9]*)\/(.*)$/;
 const regexCreatePostSteemit = /^https:\/\/steemit\.com\/submit\.html$/;
+const regexCreatePostBusy = /^https:\/\/busy\.org\/editor.*$/;
 
 // Warning! To use this one you'll have to test the wallet too cause the format is the same
 const regexPostBusy = /^https:\/\/busy\.org\/@[a-zA-Z0-9\.\-]*\/.*$/;
@@ -18,5 +19,6 @@ const regexVoteWeightSliderBlogSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\.
 
 // Settings regex
 const regexSettingsSteemit = /^https:\/\/steemit\.com\/@([a-zA-z0-9\.\-]*)\/settings$/
+const regexSettingsBusySignature = /^https:\/\/busy\.org\/@([a-zA-z0-9\.\-]*)\/settings$/
 const regexSettingsBusy = /^https:\/\/busy\.org\/settings$/
 // const regexSettingsUtopian = /^https:\/\/steemit\.com\/@([a-zA-z0-9\.\-]*)\/settings$/

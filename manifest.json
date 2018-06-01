@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.16",
+  "version": "2.16.1",
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -111,6 +111,7 @@
         "src/css/transferTo.css",
         "src/css/oneup.css",
         "src/css/favorite_section.css",
+        "src/css/boost_button.css",
         "src/css/steemit_more_info.css",
         "src/css/board_reward.css",
         "src/css/classification_user.css",

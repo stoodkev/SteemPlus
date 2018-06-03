@@ -1,0 +1,40 @@
+.tip-button
+{
+	height:  1.5rem;
+	line-height:  1;
+	padding-left: 0.25rem;
+	padding-right: 0.25rem;
+	margin-left: 0.25rem;
+	margin-right: 0.25rem;
+}
+
+.input-value-tip
+{
+	height: 1.5rem !important;
+    width: 20%;
+    margin-right: 0;
+    margin-left: 0.25rem !important;
+    border-radius: 3px 0px 0px 3px !important;
+}
+
+.input-group > :first-child
+{
+    border-radius: 3px !important;
+}
+
+.input-group > :last-child
+{
+	border-radius: 0px 3px 3px 0px !important;
+    margin-left: 0;
+
+}
+
+.div-tip
+{
+	margin-top: 1rem;
+}
+
+.Author__container, .Author__dropdown
+{
+	width: 320px !important;
+}

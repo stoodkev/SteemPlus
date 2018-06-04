@@ -80,7 +80,7 @@ function addBeneficiariesButton(){
           if($('.benef-steemit-percentage').length===0)
           {
             $('.benef').parent().before('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
-                          <option name="percentage" value="50000">50/50</option>\
+                          <option name="percentage" value="5000">50/50</option>\
                           <option name="percentage" value="10000">100% Steem Power</option>\
                         </select></div>');
           }
@@ -108,9 +108,8 @@ function addBeneficiariesButton(){
             $('.ant-form-item-control').each(function(){
               if($(this).children().find('.ant-select-selection-selected-value').length > 0)
               {
-                console.log($(this));
                 $(this).after('<select class="benef-busy-percentage ant-form-item-control has-success">\
-                              <option name="percentage" value="50000">50/50</option>\
+                              <option name="percentage" value="5000">50/50</option>\
                               <option name="percentage" value="10000">100% Steem Power</option>\
                             </select>');
                 $(this).hide();
@@ -245,7 +244,8 @@ function postBeneficiaries()
     .replace(/[^\w-]+/g,'');
     title=$('.vframe input').eq(0).val();
     body=$('.vframe textarea').eq(0).val();
-    sbd_percent=$(".vframe select").eq(1).find(':selected').index()==0?0:10000;
+    sbd_percent=$('.benef-steemit-percentage').eq(0).val();
+    console.log(sbd_percent);
   } 
   else if(isBusy)
   {
@@ -257,7 +257,7 @@ function postBeneficiaries()
     .replace(/ /g,'-')
     .replace(/[^\w-]+/g,'');
     body=$('textarea.ant-input').eq(0).val();
-    sbd_percent=$(".vframe select").eq(1).find(':selected').index()==0?0:10000;
+    sbd_percent=$('.benef-busy-percentage').eq(0).val();
   }
 
   
@@ -294,7 +294,7 @@ function postBeneficiaries()
     author: author,
     permlink: permlink,
     max_accepted_payout: '100000.000 SBD',
-    percent_steem_dollars: sbd_percent,
+    percent_steem_dollars: parseInt(sbd_percent),
     allow_votes: true,
     allow_curation_rewards: true,
     extensions: [
@@ -313,7 +313,7 @@ function postBeneficiaries()
     {
       if (e) 
       {
-        console.log(e.error,r);
+        console.log(e);
         if(e.error!==undefined)
         {
           // If there is an error, we check usernames to make sure all of them are correct
@@ -339,7 +339,10 @@ function postBeneficiaries()
         }
       } 
       else {
-        window.location.replace('https://steemit.com');
+        if(isSteemit)
+          window.location.replace('https://steemit.com');
+        if(isBusy)
+          window.location.replace('https://busy.org');
       }
     });
 }

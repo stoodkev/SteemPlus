@@ -61,7 +61,11 @@ function addBeneficiariesButton(){
       $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
       $('.benef').click(function(){
 
-          $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+          $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+          
+          $('.message-beneficiaries').remove()
+          $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
+          
           if($('.close').length===1) {
               var buttonPost = $('.vframe__section--shrink button')[2];
               $(buttonPost).hide();
@@ -84,13 +88,33 @@ function addBeneficiariesButton(){
       var benef_button = document.createElement('input');
       benef_button.value = 'Add beneficiaries';
       benef_button.type='button';
-      benef_button.className = 'Action benef Action--primary';
+      benef_button.className = 'Action benef Action--primary benef-busy';
 
       benef_div.appendChild(benef_button);
       $('.Editor__bottom').after(benef_div);
       $('.benef').click(function(){
+          
+          if($('.benef-busy-percentage').length===0)
+          {
+            $('.ant-form-item-control').each(function(){
+              if($(this).children().find('.ant-select-selection-selected-value').length > 0)
+              {
+                console.log($(this));
+                $(this).after('<select class="benef-busy-percentage ant-form-item-control has-success">\
+                              <option name="percentage" value="50000">50/50</option>\
+                              <option name="percentage" value="10000">100% Steem Power</option>\
+                            </select>');
+                $(this).hide();
+              }
 
-          $('.benef').parent().after('<li class="beneficiaries"><p>By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+            });
+          }
+
+          $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt benef_elt_busy"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt benef_elt_busy" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
+          
+          $('.message-beneficiaries').remove()
+          $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
+          
           if($('.close').length===1) {
               var buttonPost = $('.Editor__bottom__submit')[0];
               $(buttonPost).hide();
@@ -118,11 +142,18 @@ function setCloseListener(){
         {
           $('.vframe__section--shrink button').show();
           $('h5,.post').hide();
+          $('.message-beneficiaries').remove();
         }
         else if(isBusy)
         {
           $('.Editor__bottom__submit').show();
           $('h5,.post').hide();
+          $('.message-beneficiaries').remove();
+          $('.ant-form-item-control').each(function(){
+            if($(this).children().find('.ant-select-selection-selected-value').length > 0)
+              $(this).show();
+            $('.benef-busy-percentage').remove();
+          });
         }
       }
       setCloseListener();

@@ -40,3 +40,17 @@
 .UserWallet__buysp button hollow
 
 }
+
+.benef-busy
+{
+    margin-bottom: 1em;
+}
+
+.benef_elt_busy > input
+{
+    padding: 0.25em;
+    border-radius: 3px;
+    border: 1px solid #2088ff;
+    height: 2em;
+    color: black;
+}

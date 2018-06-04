@@ -76,6 +76,15 @@ function addBeneficiariesButton(){
                   else
                    $('h5,.post').show();
           }
+
+          if($('.benef-steemit-percentage').length===0)
+          {
+            $('.benef').parent().before('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
+                          <option name="percentage" value="50000">50/50</option>\
+                          <option name="percentage" value="10000">100% Steem Power</option>\
+                        </select></div>');
+          }
+
           setCloseListener();
       });
       created_benef=true;
@@ -143,6 +152,7 @@ function setCloseListener(){
           $('.vframe__section--shrink button').show();
           $('h5,.post').hide();
           $('.message-beneficiaries').remove();
+          $('.div-benef-steemit-percentage').remove();
         }
         else if(isBusy)
         {

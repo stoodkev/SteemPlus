@@ -36,7 +36,7 @@ function startAuthorPopupInfo()
 		else
 		{
 			// Start feature
-			$('.ptc').unbind('click').click(function(){
+			$('.ptc').click(function(){
 				var userAuthorPopupInfo = $(this)[0].pathname.replace('/@', '');
 				$('.Author__dropdown').append('<hr><div class="author-popup-message"></div>');
 
@@ -91,7 +91,6 @@ function startAuthorPopupInfo()
 							// Else check is user is a witness
 							steem.api.getWitnessByAccount(myUsernameAuthorPopupInfo, function(err, res){
 								// if he is display a message saying that author didn't voted for him
-								console.log(res);
 								if(res!=='')
 								{
 									$('.author-popup-message').append('<span class="author-popup-witness">Didn\'t vote for you as a witness</span><br>');

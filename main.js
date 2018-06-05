@@ -280,8 +280,8 @@ function startOfflineFeatures(items, user, account)
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
   if(witnesses_tab&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user, account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
-  if(article_count&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'start',data:{}});
+  if(article_count&&(steemit||busy))
+      chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'start',data:{steemit:steemit, busy:busy}});
   if(wallet_history&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
   if(rewards_tab&&steemit)
@@ -364,8 +364,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
         if(witnesses_tab&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user,account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
-        if(article_count&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'click',data:{}});
+        if(article_count&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'click',data:{steemit:steemit,busy:busy}});
         if(wallet_history&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
         if(rewards_tab&&steemit)

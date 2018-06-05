@@ -54,3 +54,8 @@
     height: 2em;
     color: black;
 }
+
+.postbutton-busy 
+{
+    width: 100%;
+}

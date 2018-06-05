@@ -586,7 +586,6 @@ function addPostBoostButton()
 {
   if(isSteemit)
   {
-    console.log('steemit');
     if(regexPostSteemit.test(window.location.href)&&retryCountBoostButton<20)
     {
       var promoteButton = $('.Promote__button');

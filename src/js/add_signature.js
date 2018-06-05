@@ -288,27 +288,30 @@ function displayCreateSignature()
 // A click on add will add the post signature to the post
 function setupAddPostSignature(textarea)
 {
-  // Get signature from local storage
-  // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
-  chrome.storage.local.get(['user_signature_posts'], function(item){
-    if(item.user_signature_posts!==undefined&&item.user_signature_posts!=='')
-    {
-      $(textarea).after('<a class="add-signature-post">Add Signature</a>');
-      $('.add-signature-post').on('click', function(){
-          $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
-          
-          // Fire event to refresh the preview
-          // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
-          var event = new Event('input', { bubbles: true });
-          $(textarea)[0].dispatchEvent(event);
-          event = new Event('keyup', { bubbles: true });
-          $(textarea)[0].dispatchEvent(event);
-          $(textarea).focus();
-      });
-    }  
-    // Add edit button. Open page in another tab
-    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
-  });
+  if($(textarea).parent().find('.edit-signature-post').length === 0)
+  {
+    // Get signature from local storage
+    // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
+    chrome.storage.local.get(['user_signature_posts'], function(item){
+      if(item.user_signature_posts!==undefined&&item.user_signature_posts!=='')
+      {
+        $(textarea).after('<a class="add-signature-post">Add Signature</a>');
+        $('.add-signature-post').on('click', function(){
+            $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
+            
+            // Fire event to refresh the preview
+            // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
+            var event = new Event('input', { bubbles: true });
+            $(textarea)[0].dispatchEvent(event);
+            event = new Event('keyup', { bubbles: true });
+            $(textarea)[0].dispatchEvent(event);
+            $(textarea).focus();
+        });
+      }  
+      // Add edit button. Open page in another tab
+      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
+    });
+  }
 }
 
 // Function used to setup the comment signature's add button

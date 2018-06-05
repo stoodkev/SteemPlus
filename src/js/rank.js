@@ -4,21 +4,32 @@ var token_rank=null;
 var totalVestsRank = null;
 var totalSteemRank = null;
 
+var isSteemit = null;
+var isBusy = null;
+
+
+// Medal packs available with different level (gold, silver and bronze)
 var medal_level_folders = ['3','2'];
 
 var retryCountRank=0;
 
+// Listener on messages coming from main.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
       token_rank=request.token;
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      isSteemit = request.data.steemit;
+      isBusy = request.data.busy;
+
       retryCountRank=0;
       displayBadges(request.badge);
     }
     else if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      isSteemit = request.data.steemit;
+      isBusy = request.data.busy;
       retryCountRank=0;
       displayBadges(request.badge);
     }
@@ -27,7 +38,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function displayBadges(badge)
 {
-  if(regexBlogSteemit.test(window.location.href)&&retryCountRank<20)
+
+  if(isSteemit&&regexBlogSteemit.test(window.location.href)&&retryCountRank<20)
   {
     if($('.UserProfile__banner ').length!==0)
     {
@@ -63,6 +75,47 @@ function displayBadges(badge)
             $('.wrapper ').first().children().first().insertBefore($('.wrapper'));
           }
           $('.UserProfile__banner ')[0].childNodes[0].prepend(div);
+        }
+
+      });
+    }
+    else
+    {
+      retryCountRank++;
+      setTimeout(function(){
+        displayBadges(badge);
+      }, 1000);
+    }
+  }
+  else if(isBusy&&regexBlogBusy.test(window.location.href)&&retryCountRank<20)
+  {
+    if($('.UserHeader__container').length!==0)
+    {
+      getAccountData(window.location.href.match(regexBlogBusy)[1]).then(function (result){
+        if (result.length > 0)
+        {
+          const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
+          const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
+
+          var rank = null;
+          if(medal_level_folders.includes(badge_serie))
+            rank = getUserRankLevel(vesting_shares);
+          else
+            rank = getUserRank(vesting_shares);
+
+          const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
+          var titleBadge = getUserRankLevel(vesting_shares);
+          var div= document.createElement('div');
+          div.className="ranker";
+          var img=document.createElement('img');
+          img.src=chrome.extension.getURL(medal_url);
+          img.className='img-medal-busy';
+          img.title=getTitleString(titleBadge, vesting_shares);
+          div.appendChild(img);
+
+          $('.UserHeader__container').append(img);
+          $('.UserHeader__rank').remove();
+          $('.UserHeader__user').css('width', '100%');
         }
 
       });

@@ -80,7 +80,7 @@ function addBeneficiariesButton(){
           if($('.benef-steemit-percentage').length===0)
           {
             $('.benef').parent().before('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
-                          <option name="percentage" value="5000">50/50</option>\
+                          <option name="percentage" value="5000">50% SBD and 50% SP</option>\
                           <option name="percentage" value="10000">100% Steem Power</option>\
                         </select></div>');
           }
@@ -109,7 +109,7 @@ function addBeneficiariesButton(){
               if($(this).children().find('.ant-select-selection-selected-value').length > 0)
               {
                 $(this).after('<select class="benef-busy-percentage ant-form-item-control has-success">\
-                              <option name="percentage" value="5000">50/50</option>\
+                              <option name="percentage" value="5000">50% SBD and 50% SP</option>\
                               <option name="percentage" value="10000">100% Steem Power</option>\
                             </select>');
                 $(this).hide();

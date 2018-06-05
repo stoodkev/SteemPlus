@@ -89,7 +89,7 @@ function addBeneficiariesButton(){
       });
       created_benef=true;
   }
-  else if(isBusy)
+  else if(isBusy&&$('.benef').length===0)
   {
       var benef_div = document.createElement('div');
       benef_div.style.width = '100%';

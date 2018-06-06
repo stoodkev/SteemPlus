@@ -4,49 +4,66 @@ var token_rank=null;
 var totalVestsRank = null;
 var totalSteemRank = null;
 
+var isSteemit = null;
+var isBusy = null;
+
+
+// Medal packs available with different level (gold, silver and bronze)
 var medal_level_folders = ['3','2'];
 
 var retryCountRank=0;
 
+// Listener on messages coming from main.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='rank'&&request.order==='start'&&token_rank==null){
       token_rank=request.token;
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      isSteemit = request.data.steemit;
+      isBusy = request.data.busy;
+
       retryCountRank=0;
       displayBadges(request.badge);
     }
     else if(request.to==='rank'&&request.order==='click'&&token_rank==request.token){
       totalVestsRank = request.data.totalVests;
       totalSteemRank = request.data.totalSteem;
+      isSteemit = request.data.steemit;
+      isBusy = request.data.busy;
       retryCountRank=0;
       displayBadges(request.badge);
     }
 });
 
-
+// Function used to display the badges depending on the vesting shares
+// @parameter badge : id of the set of badges
 function displayBadges(badge)
 {
-  if(regexBlogSteemit.test(window.location.href)&&retryCountRank<20)
+  // Check if user is using steemit or busy
+
+
+  if(isSteemit&&regexBlogSteemit.test(window.location.href)&&retryCountRank<20)
   {
+    // If Steemit
+
+    // Checking the header is available
     if($('.UserProfile__banner ').length!==0)
     {
+      // Get the vesting shares to determine which badge has to be displayed
       getAccountData(getUsernameFromProfile()).then(function (result){
         if (result.length > 0)
         {
+          // Get the vesting shares to determine which badge has to be displayed
           const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
           const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
 
           var rank = null;
           if(medal_level_folders.includes(badge_serie))
-          {
             rank = getUserRankLevel(vesting_shares);
-          }
           else
-          {
             rank = getUserRank(vesting_shares);
-          }
 
+          // Create the div for the image
           const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
           var titleBadge = getUserRankLevel(vesting_shares);
           var div= document.createElement('div');
@@ -69,6 +86,61 @@ function displayBadges(badge)
     }
     else
     {
+      // If header not available yet, wait, add one to the count and retry in one second
+      retryCountRank++;
+      setTimeout(function(){
+        displayBadges(badge);
+      }, 1000);
+    }
+  }
+  else if(isBusy&&regexBlogBusy.test(window.location.href)&&retryCountRank<20)
+  {
+    // If Busy
+
+    // Checking the header is available
+    if($('.UserHeader__container').length!==0)
+    {
+      // Check if badge has been created already
+      if($('.img-medal-busy').length===0)
+      {
+        // Get user account
+        getAccountData(window.location.href.match(regexBlogBusy)[1]).then(function (result){
+          if (result.length > 0)
+          {
+
+            // Get the vesting shares to determine which badge has to be displayed
+            const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
+            const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
+
+            var rank = null;
+            if(medal_level_folders.includes(badge_serie))
+              rank = getUserRankLevel(vesting_shares);
+            else
+              rank = getUserRank(vesting_shares);
+
+            // Create the div for the image
+            const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
+            var titleBadge = getUserRankLevel(vesting_shares);
+            var div= document.createElement('div');
+            div.className="ranker";
+            var img=document.createElement('img');
+            img.src=chrome.extension.getURL(medal_url);
+            img.className='img-medal-busy';
+            img.title=getTitleString(titleBadge, vesting_shares);
+            div.appendChild(img);
+
+            
+            $('.UserHeader__container').append(img);
+            $('.UserHeader__rank').remove();
+            $('.UserHeader__user').css('width', '100%');
+          }
+
+        });
+      }
+    }
+    else
+    {
+      // If header not available yet, wait, add one to the count and retry in one second
       retryCountRank++;
       setTimeout(function(){
         displayBadges(badge);
@@ -77,6 +149,10 @@ function displayBadges(badge)
   }
 }
 
+
+// Function used to get the title of the image. We decide to add subcategories!
+// @parameter titleBadge : original title of the badge
+// @parameter vests : vests of the user. Gonna be used to determine the rank
 function getTitleString(titleBadge, vests)
 {
   var title = '';
@@ -117,6 +193,8 @@ function getTitleString(titleBadge, vests)
   return title;
 }
 
+// Function used to get user rank
+// @paramater vests : used to determine the rank
 function getUserRank(vests) {
     var rank = 'Plankton';
     if (vests >= 1000000000) {
@@ -131,6 +209,9 @@ function getUserRank(vests) {
     return rank;
 };
 
+// Get user rank level (1, 2 or 3)
+// Used to get the right image if the selected set has subcategories
+// @paramater vests : used to determine the rank
 function getUserRankLevel(vests)
 {
   var rank = '';
@@ -168,11 +249,14 @@ function getUserRankLevel(vests)
   return rank;
 }
 
+// Used to get username
+// Warning, only works on Steemit
 function getUsernameFromProfile()
 {
     return window.location.href.split('@')[1].split('/')[0];
 }
 
+// Function calling steem api to get user account
 function getAccountData(username)
 {
    return new Promise (function(resolve,reject){
@@ -182,6 +266,7 @@ function getAccountData(username)
   });
 }
 
+// Function used to format the numbers
 var numberWithCommas = (x) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

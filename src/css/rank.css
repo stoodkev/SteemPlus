@@ -22,3 +22,9 @@
   display: inline-block;
   margin-right: 120px;
 }
+
+.img-medal-busy
+{
+    height: 100px !important;
+    width: auto !important;
+}

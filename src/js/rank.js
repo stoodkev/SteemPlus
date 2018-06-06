@@ -100,38 +100,43 @@ function displayBadges(badge)
     // Checking the header is available
     if($('.UserHeader__container').length!==0)
     {
-      // Get user account
-      getAccountData(window.location.href.match(regexBlogBusy)[1]).then(function (result){
-        if (result.length > 0)
-        {
+      // Check if badge has been created already
+      if($('.img-medal-busy').length===0)
+      {
+        // Get user account
+        getAccountData(window.location.href.match(regexBlogBusy)[1]).then(function (result){
+          if (result.length > 0)
+          {
 
-          // Get the vesting shares to determine which badge has to be displayed
-          const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
-          const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
+            // Get the vesting shares to determine which badge has to be displayed
+            const vesting_shares=parseFloat(result["0"].vesting_shares.split(' '));
+            const badge_serie=badge==undefined?'2':(badge=='show'?'2':badge);
 
-          var rank = null;
-          if(medal_level_folders.includes(badge_serie))
-            rank = getUserRankLevel(vesting_shares);
-          else
-            rank = getUserRank(vesting_shares);
+            var rank = null;
+            if(medal_level_folders.includes(badge_serie))
+              rank = getUserRankLevel(vesting_shares);
+            else
+              rank = getUserRank(vesting_shares);
 
-          // Create the div for the image
-          const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
-          var titleBadge = getUserRankLevel(vesting_shares);
-          var div= document.createElement('div');
-          div.className="ranker";
-          var img=document.createElement('img');
-          img.src=chrome.extension.getURL(medal_url);
-          img.className='img-medal-busy';
-          img.title=getTitleString(titleBadge, vesting_shares);
-          div.appendChild(img);
+            // Create the div for the image
+            const medal_url='src/img/medals/'+badge_serie+'/'+rank.toLowerCase()+'.png';
+            var titleBadge = getUserRankLevel(vesting_shares);
+            var div= document.createElement('div');
+            div.className="ranker";
+            var img=document.createElement('img');
+            img.src=chrome.extension.getURL(medal_url);
+            img.className='img-medal-busy';
+            img.title=getTitleString(titleBadge, vesting_shares);
+            div.appendChild(img);
 
-          $('.UserHeader__container').append(img);
-          $('.UserHeader__rank').remove();
-          $('.UserHeader__user').css('width', '100%');
-        }
+            
+            $('.UserHeader__container').append(img);
+            $('.UserHeader__rank').remove();
+            $('.UserHeader__user').css('width', '100%');
+          }
 
-      });
+        });
+      }
     }
     else
     {

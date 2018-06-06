@@ -12,6 +12,7 @@ const regexCreatePostBusy = /^https:\/\/busy\.org\/editor.*$/;
 
 // Warning! To use this one you'll have to test the wallet too cause the format is the same
 const regexPostBusy = /^https:\/\/busy\.org\/@[a-zA-Z0-9\.\-]*\/.*$/;
+const regexBusy = /^https:\/\/busy\.org\/*$/;
 
 const regexClassificationUserBlogSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\.\-]*(\/comments#*|\/recent-replies#*|.*#mentions|.*#votes)*\/*$/;
 const regexVoteWeightSliderBlogSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\.\-]*(\/comments#*|\/recent-replies#*)*\/*$/;

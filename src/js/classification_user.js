@@ -8,11 +8,16 @@ var nbElementPageAuthor=0;
 
 var retryCountClassificationUser=0;
 
+var isSteemit = null;
+var isBusy = null;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
   {
     token_classification_user=request.token;
     myUsernameCU = request.data.user;
+    isSteemit=request.data.steemit;
+    isBusy=request.data.busy;
     nbElementPageAuthor=0;
     retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
@@ -22,6 +27,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   else if(request.to==='classification_user'&&request.order==='click'&&token_classification_user==request.token)
   {
     myUsernameCU = request.data.user;
+    isSteemit=request.data.steemit;
+    isBusy=request.data.busy;
     nbElementPageAuthor=0;
     retryCountClassificationUser=0;
     $('.has-classification').removeClass('has-classification');
@@ -57,6 +64,7 @@ function canStartClassificationUser()
       if(nbElementPageAuthor===$('.author').length)
       {
         setTimeout(function(){
+          retryCountClassificationUser++;
           canStartClassificationUser();
         }, 1000);
       }
@@ -66,17 +74,48 @@ function canStartClassificationUser()
       }
     }
   }
+  else if(regexBusy.test(window.location.href))
+  {
+    if(nbElementPageAuthor===$('.Story__header__flex > a > h4 > .username').length)
+    {
+      setTimeout(function(){
+        retryCountClassificationUser++;
+        canStartClassificationUser();
+      }, 1000);
+    }
+    else
+    {
+      startClassificationUser();
+    }
+  }
 }
 
 function startClassificationUser(){
-  var elementUserListCU = $('.ptc');
-  var elementUserListCU2 = $('.author > strong > a');
+
+  var elementUserListCU = null;
+  var elementUserListCU2 = null;
+
+  if(isBusy)
+  {
+    elementUserListCU = $('.Story__header__flex > a');
+    elementUserListCU2 = $('.User__links a.User__name');
+  }
+  else if(isSteemit)
+  {
+    elementUserListCU = $('.ptc');
+    elementUserListCU2 = $('.author > strong > a');
+  }
+  
   var userListCU = [];
 
   elementUserListCU.each(function(indexItem, item){
     if(!$(item).hasClass('has-classification'))
     {
-      var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      if(isSteemit)
+        var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      else if(isBusy)
+        var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
+
       if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
         userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
       else{
@@ -84,11 +123,14 @@ function startClassificationUser(){
       }
     }
   });
-
   elementUserListCU2.each(function(indexItem, item){
     if(!$(item).hasClass('has-classification'))
     {
-      var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      if(isSteemit)
+        var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+      else if(isBusy)
+        var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
+
       if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
         userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
       else{
@@ -96,7 +138,6 @@ function startClassificationUser(){
       }
     }
   });
-
 
   if(userListCU.length>0)
   {
@@ -164,11 +205,7 @@ function addButtonsCU(userListCU)
   userListCU.forEach(function(userListItem){
     userListItem.arrayElement.forEach(function(elementListItem){
       $(elementListItem).addClass('has-classification');
-      if(userListItem.userScoreList.length===0)
-      {
-        // initClassificationLabel(elementListItem, userListItem.username);
-      }
-      else
+      if(userListItem.userScoreList.length!==0)
         createClassificationLabel(elementListItem, userListItem.userScoreList, userListItem.username);
     });
   });
@@ -177,30 +214,40 @@ function addButtonsCU(userListCU)
 function getPermlink(element)
 {
   var permlinkParam = null;
-  if($(element).hasClass('ptc'))
+  if(isSteemit)
   {
-    // Post
-    permlinkParam = $(element).parent().parent().parent().parent().parent().find('.PlainLink').attr('href');
-  }
-  else if(window.location.href.includes('#plus'))
-  {
-    // Feed +
-    permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
-  }
-  else if(window.location.href.includes('#mentions'))
-  {
-    // Mention tab
-    permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
-  }
-  else
-  {
-    // Blog
-    permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
-  }
+    if($(element).hasClass('ptc'))
+    {
+      // Post
+      permlinkParam = $(element).parent().parent().parent().parent().parent().find('.PlainLink').attr('href');
+    }
+    else if(window.location.href.includes('#plus'))
+    {
+      // Feed +
+      permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
+    }
+    else if(window.location.href.includes('#mentions'))
+    {
+      // Mention tab
+      permlinkParam = $(element).parent().parent().parent().find('a').attr('href');
+    }
+    else
+    {
+      // Blog
+      permlinkParam = $(element).parent().parent().parent().parent().find('.timestamp__link').attr('href');
+    }
 
-  if(permlinkParam===undefined||permlinkParam===null||permlinkParam==='')
-    permlinkParam = window.location.href.replace('https://steemit.com', '');
-
+    if(permlinkParam===undefined||permlinkParam===null||permlinkParam==='')
+      permlinkParam = window.location.href.replace('https://steemit.com', '');
+  }
+  else if(isBusy)
+  {
+    // Welcome page busy
+    if(regexBusy.test(window.location.href))
+      permlinkParam = $(element).parent().parent().parent().parent().find('.Story__content > a').eq(0).attr('href');
+    else
+      permlinkParam = 'https://busy.org';
+  }
   return permlinkParam;
 }
 
@@ -215,10 +262,12 @@ function createClassificationLabel(element, userScoreList, usernameCU)
   else
     classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
   
+
+
   $(classificationSection).attr('data-toggle','popover');
-  $(classificationSection).attr('data-content','<span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
+  $(classificationSection).attr('data-content','<div '+ (isBusy ? 'class="busy-container"' : '""') + '><span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
       <span name="' + usernameCU + '" class="' + userScoreList[1].cssClass + ' feedback-button">' + userScoreList[1].name + '</span><span class="value_of popover_classification_value">' + userScoreList[1].value + '%</span><hr/>\
-      <span name="' + usernameCU + '" class="' + userScoreList[2].cssClass + ' feedback-button">' + userScoreList[2].name + '</span><span class="value_of popover_classification_value">' + userScoreList[2].value + '%</span>');
+      <span name="' + usernameCU + '" class="' + userScoreList[2].cssClass + ' feedback-button">' + userScoreList[2].name + '</span><span class="value_of popover_classification_value">' + userScoreList[2].value + '%</span></div>');
   $(classificationSection).attr('data-placement','right');
   $(classificationSection).attr('title', 'Classification');
   $(classificationSection).attr('data-html','true');
@@ -256,11 +305,21 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     }
   });
 
-  $(element).parent().parent().parent().parent().find('.classification-section').remove();
-  $(element).parent().parent().parent().after(classificationSection);
+  if(isSteemit)
+  {
+    $(element).parent().parent().parent().parent().find('.classification-section').remove();
+    $(element).parent().parent().parent().after(classificationSection);
 
-  if($('.PostFull__footer .classification-section').length > 0)
-    $('.PostFull__footer .classification-section')[0].innerHTML = $('.PostFull__footer .classification-section')[0].innerHTML.substring(0,1);
+    if($('.PostFull__footer .classification-section').length > 0)
+      $('.PostFull__footer .classification-section')[0].innerHTML = $('.PostFull__footer .classification-section')[0].innerHTML.substring(0,1);
+  }
+  else if(isBusy)
+  {
+    $(element).after(classificationSection);
+    $('.User__links .classification-section').each(function(){
+      $(this)[0].innerHTML = $(this)[0].innerHTML.substring(0,1);
+    });
+  }
 }
 
 // function initClassificationLabel(element, usernameCU)

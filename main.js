@@ -276,8 +276,8 @@ function startOfflineFeatures(items, user, account)
     chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
   if(favorite_section&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
-  if(classification_user&&steemit)
-    chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user}});
+  if(classification_user&&(steemit||busy))
+    chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
   if(witnesses_tab&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user, account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
   if(article_count&&(steemit||busy))
@@ -360,8 +360,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
         if(post_votes_list&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-        if(classification_user&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user}});
+        if(classification_user&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
         if(witnesses_tab&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user,account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
         if(article_count&&(steemit||busy))

@@ -22,3 +22,8 @@
 {
 	font-weight: normal;
 }
+
+.Buttons__number_resteem
+{
+	cursor: pointer;
+}

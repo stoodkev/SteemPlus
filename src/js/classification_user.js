@@ -6,10 +6,15 @@ var myUsernameCU=null;
 var scrollBottomReachedCU = false;
 var nbElementPageAuthor=0;
 
+// retry count. If this count reach 20, feature stop
 var retryCountClassificationUser=0;
+// retry count for scroll event
+var retryCountScrollUpdate=0;
 
 var isSteemit = null;
 var isBusy = null;
+
+var heightBusyScrollPage = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='classification_user'&&request.order==='start'&&token_classification_user==null)
@@ -36,6 +41,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
+// Function used to start the classification user feature
+// This function will check depending on the url if the feature needs to be started
+// Feature available on Busy and Steemit
+// This function will start again until the needed element is not loaded
 function canStartClassificationUser()
 {
   if( (regexClassificationUserBlogSteemit.test(window.location.href)
@@ -90,6 +99,8 @@ function canStartClassificationUser()
   }
 }
 
+// Function used to start the classification
+// This function will get all the usernames on the page and then call the Steem Sincerity api
 function startClassificationUser(){
 
   var elementUserListCU = null;
@@ -107,8 +118,9 @@ function startClassificationUser(){
   }
   
   var userListCU = [];
-
+  // Get username and elements (html objects)
   elementUserListCU.each(function(indexItem, item){
+    console.log(item);
     if(!$(item).hasClass('has-classification'))
     {
       if(isSteemit)
@@ -139,19 +151,42 @@ function startClassificationUser(){
     }
   });
 
+  // Only get data if there is entries
   if(userListCU.length>0)
   {
     var arrayUsernames = userListCU.map(function(e){return e.username;});
 
     getDataFromAPICU(userListCU, arrayUsernames, 0, arrayUsernames.length/100)
 
+    // show all the classification sections
     $('.classification-section').show();
-    nbElementPageAuthor = $('.author').length;
-    nbElementComment = $('.Comment__body').length;
+    
+    // Update reference values
+    if(isSteemit) 
+    {
+      nbElementPageAuthor = $('.author').length;
+      nbElementComment = $('.Comment__body').length;
+    }
+    else if(isBusy)
+    {
+      heightBusyScrollPage = $('.redux-infinite-scroll').height();
+      nbElementPageAuthor = $('.Story__header__flex > a').length;
+    } 
   }
 
-  $(window).scroll(function() {
-    if($(window).scrollTop() + $(window).height() >= $('.articles').height()) {
+  // On scroll listener
+  // We need this listener on the list when new posts are display when user reach the end of the page
+  $(window).unbind('scroll').scroll(function() {
+    // Need two different cases
+    // Steemit
+    if(isSteemit&&$(window).scrollTop() + $(window).height() >= $('.articles').height()) {
+      if(!scrollBottomReachedCU){
+        scrollBottomReachedCU=true;
+        onScrollUpdateCU();
+      }
+    }
+    // Busy
+    else if(isBusy && heightBusyScrollPage !== $('.redux-infinite-scroll').height()) {
       if(!scrollBottomReachedCU){
         scrollBottomReachedCU=true;
         onScrollUpdateCU();
@@ -159,14 +194,22 @@ function startClassificationUser(){
     }
   });
 
+  // Feed+ listener
   $('#validate_settings').on('click', function(){
     setTimeout(startClassificationUser, 1000);
   });
 }
 
+// Function used to get the data from the API.
+// @parameter userListCU : all the user. This list will be use to create the buttons later
+// @parameter arrayUsernames : list of all the names without duplicates. Use to send the request
+// @parameter i : current index
+// @paramter max : maximum index
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
+  // This request need to have all the parameters in the url. You can only pass 100 usernames at a time
   var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
+  // We use a timeout because SteemSincerity doesn't allow too many request. One query every 2 seconds
   setTimeout(function(){
     $.ajax({
       type: "GET",
@@ -176,30 +219,37 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
       },
       url: url,
       success: function(result) {
+        
+        // For each line of the result set we created a hashmap with username and the score for each category
         Object.keys(result.data).map(function(objectKey, index) {
           var userScoreList = [];
           userScoreList.push({name:'Human', cssClass:'human-item', value:(parseFloat(result.data[objectKey].classification_human_score)*100).toFixed(2)});
           userScoreList.push({name:'Bot',cssClass:'bot-item', value:(parseFloat(result.data[objectKey].classification_bot_score)*100).toFixed(2)});
           userScoreList.push({name:'Spammer',cssClass:'spammer-item', value:(parseFloat(result.data[objectKey].classification_spammer_score)*100).toFixed(2)});
 
+          // Sorting user score list. Highest value first
           userScoreList.sort(function (a, b) {
             return b.value - a.value;
           });
           userListCU.find(function(e){return e.username===objectKey}).userScoreList = userScoreList.slice();
 
         });
+
+        // If index is not the maximum, call the function again
         if(i+1 < max)
           getDataFromAPICU(userListCU, arrayUsernames, i+1, max);
         else
-          addButtonsCU(userListCU);
+          addButtonsCU(userListCU); // If not start adding buttons
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
         console.log("Status: " + textStatus + "      Error: " + errorThrown);
       }
     });
-  },2000)
+  },2000);
 }
 
+// Function used to created all the buttons
+// @parameter userListCU : list of all the users, there scores and the graphical element linked to it.
 function addButtonsCU(userListCU)
 {
   userListCU.forEach(function(userListItem){
@@ -211,6 +261,10 @@ function addButtonsCU(userListCU)
   });
 }
 
+// Function used to get the permlink of a post
+// The way to get the permlink depend on which element it is.
+// @parameter element : select graphical element (post)
+// RETURN permlink
 function getPermlink(element)
 {
   var permlinkParam = null;
@@ -246,24 +300,36 @@ function getPermlink(element)
     if(regexBusy.test(window.location.href))
       permlinkParam = $(element).parent().parent().parent().parent().find('.Story__content > a').eq(0).attr('href');
     else
-      permlinkParam = 'https://busy.org';
+      permlinkParam = 'https://busy.org'; //If there is no permlink found, get busy adress
   }
   return permlinkParam;
 }
 
+// Function used to create classification label. This is the label which is displayed on the page
+// @parameter element : graphical element linked to an element
+// @parameter userScoreList : scores returned by Steem Sincerity API
+// @parameter usernameCU : username for the give element
 function createClassificationLabel(element, userScoreList, usernameCU)
 {
+  // Get the permlink for this element
   var permlinkParam = getPermlink(element);
 
+  // If unknow item present, delete it
   $(element).parent().parent().parent().parent().find('.unknown-item').remove();
+  
+  // Create classification section
   var classificationSection;
+
+  // We decided to add threshold. For bots and Spammers percentage need to be 80 to be considered as a spammer or a bot
+  // If not we classified them as pending
+  // if user maximum score is not spammer or bot, display informations
   if((userScoreList[0].name==="Bot"||userScoreList[0].name==="Spammer")&&userScoreList[0].value<80)
     classificationSection = $('<span class="unknown-item classification-section">Pending</span>');
   else
     classificationSection = $('<span class="' + userScoreList[0].cssClass + ' classification-section">' + userScoreList[0].name + '</span>');
   
 
-
+  // Creation of the popover
   $(classificationSection).attr('data-toggle','popover');
   $(classificationSection).attr('data-content','<div '+ (isBusy ? 'class="busy-container"' : '""') + '><span name="' + usernameCU + '" class="' + userScoreList[0].cssClass + ' feedback-button">' + userScoreList[0].name + '</span> <span class="value_of popover_classification_value">' + userScoreList[0].value + '%</span><hr/>\
       <span name="' + usernameCU + '" class="' + userScoreList[1].cssClass + ' feedback-button">' + userScoreList[1].name + '</span><span class="value_of popover_classification_value">' + userScoreList[1].value + '%</span><hr/>\
@@ -274,6 +340,7 @@ function createClassificationLabel(element, userScoreList, usernameCU)
   $(classificationSection).attr('animation','false');
 
 
+  // Trigger the click on the label to open the popover
   $(classificationSection).click(function(){
     if($(this).hasClass('popover-cu-open'))
     {
@@ -287,6 +354,8 @@ function createClassificationLabel(element, userScoreList, usernameCU)
       $('.popover').remove();
       $(this).popover('show');
       $(this).addClass('popover-cu-open');
+      // Trigger the click on one of the feedback buttons
+      // A click will send a request to Steem Sincerity API (see function sendRequestAPICU)
       $('.feedback-button').unbind('click').click(function()
       {
         if($(classificationSection).hasClass('human-item'))
@@ -305,6 +374,7 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     }
   });
 
+  // Add the label to the page depends if user is using steemit or busy (components are differents)
   if(isSteemit)
   {
     $(element).parent().parent().parent().parent().find('.classification-section').remove();
@@ -372,11 +442,16 @@ function createClassificationLabel(element, userScoreList, usernameCU)
 //   $(element).parent().parent().parent().after(classificationSection);
 // }
 
+
+// Function used to send a request to the api
+// This request is used to give a feed back to the SteemSincerity API
+// @parameter classificationParam  : chosen 'classification' by user (bot, human or spam)
+// @parameter usernameParam : name of the chosen user
+// @parameter permlink : permlink from where the button has been clicked on
 function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
 {
 
-  console.log(JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}));
-
+  // Send an AJAX request to SteemSincerity and wait for the result
   $.ajax({
     type: "POST",
     beforeSend: function(xhttp) {
@@ -387,6 +462,9 @@ function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
     url: 'https://multi.tube/s/api/classification-report/post',
     data: JSON.stringify({"classified_account": usernameParam, "classification": classificationParam, "reporting_account": myUsernameCU, "permlink":permlinkParam}),
     success: function(result) {
+      // if request succeed 
+
+      // Init toastr (popup)
       toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -405,37 +483,59 @@ function sendRequestAPICU(classificationParam, usernameParam, permlinkParam)
         "hideMethod": "fadeOut"
       };
       var titleToastr = "Steemit Sincerity";
+      
+      // Need to check the status of the result. Request can succeed (No http error but wrong status)
       if(result.status==='ok')
       {
+        // display succes message and hide popup classification
         toastr.success(result.messages.join(' '), titleToastr);
         $('.classification-section').popover('hide');
         $('.classification-section').removeClass('popover-cu-open');
-
       }
       else
       {
+        // display error message
         toastr.error(result.messages.join(' ') + '<br>' + result.error, titleToastr);
       }
     },
     error: function(XMLHttpRequest, textStatus, errorThrown) {
+      // Request failed : problem with the request
       console.log("Status: " + textStatus + "      Error: " + errorThrown);
     }
   });
 }
 
+// Function called when onScroll event is triggered
+// This function will wait until the new components (posts) are displayed on the screen and then launch the action
 function onScrollUpdateCU()
 {
-  if($('.author').length===nbElementPageAuthor)
+  // Trying for maximum 20 seconds
+  if(retryCountScrollUpdate > 20)
   {
+    // Reset scroll retry count to be able to try again later and return
+    retryCountScrollUpdate = 0;
+    return;
+  } 
+
+  // Initializing component 
+  if(isSteemit) var elementTempLength = $('.author').length;
+  else if(isBusy) var elementTempLength = $('.Story').length;
+
+  // If number of element still the same as before onScroll is triggered it mean component are not ready
+  if(elementTempLength===nbElementPageAuthor)
+  {
+    // try again later and add 1 to the count
     setTimeout(function() {
+      retryCountScrollUpdate++;
       onScrollUpdateCU();
     }, 1000);
   }
   else
   {
-    // $('.classification-section').remove();
+    // Components ready for update
+    // Reset retry count and start classification for new users
+    retryCountScrollUpdate=0;
     startClassificationUser();
     scrollBottomReachedCU=false;
   }
-
 }

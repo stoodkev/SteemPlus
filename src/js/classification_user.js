@@ -83,7 +83,7 @@ function canStartClassificationUser()
       }
     }
   }
-  else if(regexBusy.test(window.location.href))
+  else if(regexBusy.test(window.location.href)||regexFeedBusy.test(window.location.href))
   {
     if(nbElementPageAuthor===$('.Story__header__flex > a > h4 > .username').length)
     {

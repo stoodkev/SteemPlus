@@ -408,7 +408,7 @@ function createClassificationLabel(element, userScoreList, usernameCU)
     if($('.PostFull__footer .classification-section').length > 0)
       $('.PostFull__footer .classification-section')[0].innerHTML = $('.PostFull__footer .classification-section')[0].innerHTML.substring(0,1);
   }
-  else if(isBusy)
+  else if(isBusy&&$(element).parent().find('.classification-section').length===0)
   {
     $(element).after(classificationSection);
     $('.User__links .classification-section').each(function(){

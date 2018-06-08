@@ -92,14 +92,10 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
       }
       else if(isBusy)
       {
-        if($('.Buttons__share').length === 0)
-          $('.Buttons__post-menu').before('<a role="presentation" style="color:#c2ccd3;"><i class="iconfont icon-share1 Buttons__share"></i></a>');
+        if($('.StoryFull').find('.Buttons__share').length === 0)
+          $('.StoryFull').find('.Buttons__post-menu').before('<a role="presentation" style="color:#c2ccd3;"><i class="iconfont icon-share1 Buttons__share"></i></a>');
         
-        $('.Buttons__share').each(function(){
-          console.log($(this).parent().parent().parent().parent().parent());
-          if($(this).parent().parent().parent().parent().parent().hasClass('StoryFull'))
-            $(this).parent().after('<span class="Buttons__number Buttons__number_resteem"><span>'+ result.length +'</span></span>');
-        });
+        $('.StoryFull').find('.Buttons__share').parent().after('<span class="Buttons__number Buttons__number_resteem"><span>'+ result.length +'</span></span>');
 
         if(result.length > 0)
         {

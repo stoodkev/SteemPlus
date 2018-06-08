@@ -102,7 +102,14 @@
 	font-size: 14px;
 }
 
-.PostFull__footer .classification-section {
+.PostFull__footer .classification-section, .User__links .classification-section {
 	width: 1.5rem !important;
     min-width: 1px !important;
+    margin-left: 0.5em !important;
+}
+
+.busy-container > span
+{
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
 }

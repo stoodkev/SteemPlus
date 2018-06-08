@@ -97,6 +97,20 @@ function canStartClassificationUser()
       startClassificationUser();
     }
   }
+  else if(regexPostBusy.test(window.location.href)&&!window.location.href.includes('/transfers'))
+  {
+    if(nbElementPageAuthor===$('.Comment__text').length)
+    {
+      setTimeout(function(){
+        retryCountClassificationUser++;
+        canStartClassificationUser();
+      }, 1000);
+    }
+    else
+    {
+      startClassificationUser();
+    }
+  }
 }
 
 // Function used to start the classification
@@ -106,13 +120,25 @@ function startClassificationUser(){
   var elementUserListCU = null;
   var elementUserListCU2 = null;
 
+  // Get elements. The css class we need to get depends on the current page
   if(isBusy)
   {
-    elementUserListCU = $('.Story__header__flex > a');
-    elementUserListCU2 = $('.User__links a.User__name');
+    // If post page
+    if(isBusy&&regexPostBusy.test(window.location.href)&&!window.location.href.includes('/transfers'))
+    {
+      elementUserListCU = $('.StoryFull__header__text > a');
+      elementUserListCU2 = $('.Comment__text > a');
+    }
+    else
+    {
+      // Other pages for busy
+      elementUserListCU = $('.Story__header__flex > a');
+      elementUserListCU2 = $('.User__links a.User__name');
+    }
   }
   else if(isSteemit)
   {
+    // Steemit only has one kind of class
     elementUserListCU = $('.ptc');
     elementUserListCU2 = $('.author > strong > a');
   }
@@ -120,7 +146,6 @@ function startClassificationUser(){
   var userListCU = [];
   // Get username and elements (html objects)
   elementUserListCU.each(function(indexItem, item){
-    console.log(item);
     if(!$(item).hasClass('has-classification'))
     {
       if(isSteemit)

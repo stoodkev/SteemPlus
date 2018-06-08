@@ -92,20 +92,27 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
       }
       else if(isBusy)
       {
-        $('.Buttons__share').parent().after('<span class="Buttons__number Buttons__number_resteem"><span>'+ result.length +'</span></span>');
+        if($('.StoryFull').find('.Buttons__share').length === 0)
+          $('.StoryFull').find('.Buttons__post-menu').before('<a role="presentation" style="color:#c2ccd3;"><i class="iconfont icon-share1 Buttons__share"></i></a>');
         
-        var contentResteem = '';
-        result.forEach(function(item){
-          contentResteem += '<h5><a href="/@'+ item.account +'">+ '+ item.account +'</a></h5>';
-        });
-        $('.Buttons__number_resteem').attr('data-toggle','popover');
-        $('.Buttons__number_resteem').attr('data-content','<h5>' + contentResteem + '</h5>');
-        $('.Buttons__number_resteem').attr('data-placement','bottom');
-        $('.Buttons__number_resteem').attr('data-html','true');
-        $('.Buttons__number_resteem').attr('animation','false');
-        $('.Buttons__number_resteem').attr('container','popover-resteem');
-        $('.Buttons__number_resteem').attr('data-trigger','hover');
-        $('.Buttons__number_resteem').popover();
+        $('.StoryFull').find('.Buttons__share').parent().after('<span class="Buttons__number Buttons__number_resteem"><span>'+ result.length +'</span></span>');
+
+        if(result.length > 0)
+        {
+          var contentResteem = '';
+          result.forEach(function(item){
+            contentResteem += '<h5><a href="/@'+ item.account +'">+ '+ item.account +'</a></h5>';
+          });
+          $('.Buttons__number_resteem').attr('data-toggle','popover');
+          $('.Buttons__number_resteem').attr('data-content','<h5>' + contentResteem + '</h5>');
+          $('.Buttons__number_resteem').attr('data-placement','bottom');
+          $('.Buttons__number_resteem').attr('data-html','true');
+          $('.Buttons__number_resteem').attr('animation','false');
+          $('.Buttons__number_resteem').attr('container','popover-resteem');
+          $('.Buttons__number_resteem').attr('data-trigger','hover');
+          $('.Buttons__number_resteem').popover();
+        }
+        
       }
       else
         return;

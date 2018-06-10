@@ -11,6 +11,7 @@ var token_tr=null;
 var indexT=0;
 var currency='STEEM';
 var max=0;
+var myUsernameTransferTo=null;
 
 var retryCountTransferTo = 0;
 
@@ -18,13 +19,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to==='transfers'&&request.order==='start'&&token_tr==null)
   {
     token_tr=request.token;
-    startTransfer(request.data.steemit,request.data.busy,request.data.user,request.data.balance);
+    myUsernameTransferTo = request.data.user;
     retryCountTransferTo = 0;
     max=request.data.balance.steem;
+    startTransfer(request.data.steemit,request.data.busy,request.data.user,request.data.balance);
   }
 
   if(request.to==='transfers'&&request.order==='click'&&token_tr===request.token)
   {
+    myUsernameTransferTo = request.data.user;
     retryCountTransferTo = 0;
     onClickTr(request.data.steemit,request.data.busy,request.data.user,request.data.balance);
   }
@@ -60,7 +63,7 @@ function onClickTr(isSteemit,busy,account,balance){
 }
 
 function checkLoadTr(isSteemit,busy,account,balance){
-
+  if(window.location.href.split('@')[1].split('/')[0]===myUsernameTransferTo) return;
   if((regexWalletSteemit.test(window.location.href)||regexWalletBusy.test(window.location.href))&&retryCountTransferTo<20)
   {
     if($(wallet_elt_t).length===0){

@@ -1,19 +1,27 @@
 var uri_login,classbutton;
 var token_log=null;
+
+var isSteemit = null;
+var isBusy = null;
+var isUtopian = null;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       if(request.to==='steemConnect'&&request.order==='start'&&token_log==null)
       {
+        isSteemit = request.data.steemit;
+        isBusy = request.data.busy;
+        isUtopian = request.data.utopian;
         token_log=request.token;
-        if(request.data.steemit)
+        if(isSteemit)
         {
           uri_login='https://steemit.com/@steem-plus';
           classbutton='loginIcon';
         }
-        else if (request.data.busy){
+        else if (isBusy){
           uri_login='https://busy.org/@steem-plus';
           classbutton='loginIconBusy';
         }
-        else if (request.data.utopian){
+        else if (isUtopian){
           uri_login='https://utopian.io/@steem-plus';
           classbutton='loginIconBusy';
         }
@@ -56,20 +64,33 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
           });
         }
-      if(request.data.steemit)
-        showButtonOnSteemit(loginIcon);
-      else if(request.data.busy)
-        $('.Topnav__item-user').prepend(loginIcon);
-      else if(request.data.utopian)
-        $('.Topnav__version').eq(0).after(loginIcon);
+      showButton(loginIcon);
+        
     }
   });
 
-  function showButtonOnSteemit(loginIcon)
+  function showButton(loginIcon)
   {
     console.log('try to show',$('.Header__userpic').length!==0);
-    if($('.Header__userpic').length!==0)
-      $('.Header__userpic').before(loginIcon);
-    else
-      setTimeout(function(){showButtonOnSteemit(loginIcon);},500);
+    if(isSteemit)
+    {
+      if($('.Header__userpic').length!==0)
+        $('.Header__usermenu').before(loginIcon);
+      else
+        setTimeout(function(){showButton(loginIcon);},500);
+    }
+    else if(isBusy)
+    {
+      if($('.Topnav__menu-container').length!==0)
+        $('.Topnav__menu-container').append(loginIcon);
+      else
+        setTimeout(function(){showButton(loginIcon);},500);
+    }
+    else if(isUtopian)
+    {
+      if($('.Topnav__version').length!==0)
+        $('.Topnav__version').eq(0).after(loginIcon);
+      else
+        setTimeout(function(){showButton(loginIcon);},500);
+    }
   }

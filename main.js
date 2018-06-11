@@ -269,7 +269,7 @@ function startOfflineFeatures(items, user, account)
   if(transfers&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
   if(account_value&&(steemit||busy))
-    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
+    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{user:user,steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
   if(rank&&(steemit||busy))
     chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start',data:{steemit:steemit,busy:busy,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
   if(board_reward&&steemit)
@@ -337,7 +337,7 @@ function startOfflineFeatures(items, user, account)
         if(transfers&&(steemit||busy))
           chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
         if(account_value&&(steemit||busy))
-          chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });
+          chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{user:user,steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });
         if(rank&&(steemit||busy))
           chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'click',data:{steemit:steemit,busy:busy,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
         if((steemit||busy)&&boost_button&&steemit_more_info)
@@ -487,7 +487,7 @@ function getSteemPrice()
     chrome.storage.local.set({
       market:market
     });
-    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'notif',market:market});
+    chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'notif',market:market, data:{user:user}});
     console.log(market);
   });
 }

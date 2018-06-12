@@ -71,10 +71,8 @@ function startAddSignature()
 
       $('.PostFull__reply > a').click(function(){
         setTimeout(function(){
-          console.log('PostFull__reply');
           $('.ReplyEditor__body textarea').each(function() {
             var textarea = $(this);
-            console.log(textarea);
             setupAddCommentSignature(textarea);
           });
         },1000);
@@ -112,12 +110,9 @@ function startAddSignature()
     }
     else if(regexPostBusy.test(window.location.href))
     {
-      console.log('post busy');
       
       setTimeout(function(){
-        console.log($('textarea.ant-input'));
         $('textarea.ant-input').each(function() {
-          console.log($(this));
           var textarea = $(this);
           setupAddCommentSignature(textarea);
         });
@@ -125,7 +120,6 @@ function startAddSignature()
       
 
       $('a.CommentFooter__link').click(function(){
-        console.log('click');
         setTimeout(function(){
           $('textarea.ant-input').each(function() {
             var textarea = $(this);
@@ -324,7 +318,6 @@ function setupAddCommentSignature(textarea)
     // Get signature from local storage
     // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
-      console.log(item.user_signature_comments);
       if(item.user_signature_comments!==undefined&&item.user_signature_comments!=='')
       {
         $(textarea).after('<a class="add-signature-comment">Add Signature</a>');

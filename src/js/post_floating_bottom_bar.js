@@ -3,10 +3,15 @@
 var token_post_floating_bottom_bar=null;
 var style='large';
 
+var isSteemit=null;
+var isBusy=null;
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='post_floating_bottom_bar'&&request.order==='start'&&token_post_floating_bottom_bar==null)
     {
       token_post_floating_bottom_bar=request.token;
+      isSteemit=request.data.steemit;
+      isBusy=request.data.busy;
       $(window).on('resize', function() {
         update();
       });
@@ -20,6 +25,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
     if(request.to==='post_floating_bottom_bar'&&request.order==='click'&&token_post_floating_bottom_bar==request.token)
     {
+      isSteemit=request.data.steemit;
+      isBusy=request.data.busy;
       makePostBottomBarFloating();
     }
 
@@ -29,49 +36,93 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
   function makePostBottomBarFloating() {
 
-    if(regexPostSteemit.test(window.location.href))
+    if(regexPostSteemit.test(window.location.href)||regexPostBusy.test(window.location.href))
     {
-      var tags = $('.TagList__horizontal');
-      var postFooter = $('.PostFull__footer');
-      var promoteButton = $('.Promote__button');
-      var boostButton = $('.smi-boost-button');
-
-      if(tags.length && postFooter.length && promoteButton.length && boostButton.length) {
-
-        if(tags.closest('.smi-post-footer-wrapper-2').length){
-          return;
-        }
-
-        $('#post_overlay').on('scroll', function() {
-          update();
-        });
-
-        var footer = $('<div class="smi-post-footer">\
-          <div class="smi-post-footer-wrapper-1">\
-            <div class="smi-post-footer-wrapper-2">\
-            </div>\
-          </div>\
-        </div>');
-        var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
-
-        tags.replaceWith(footer);
-        footerWrapper.append(boostButton);
-        footerWrapper.append(promoteButton);
-        footerWrapper.append(tags);
-        footerWrapper.append(postFooter);
-
-        if(style === 'small'){
-          footerWrapper.addClass('smi-post-footer-small');
-        }
-
-        update();
-
-      }
-      else
+      if(isSteemit)
       {
-        setTimeout(function(){
-          makePostBottomBarFloating();
-        },1000);
+
+        var tags = $('.TagList__horizontal');
+        var postFooter = $('.PostFull__footer');
+        var promoteButton = $('.Promote__button');
+        var boostButton = $('.smi-boost-button');
+
+        if(tags.length && postFooter.length && promoteButton.length && boostButton.length) {
+
+          if(tags.closest('.smi-post-footer-wrapper-2').length){
+            return;
+          }
+
+          $('#post_overlay').on('scroll', function() {
+            update();
+          });
+
+          var footer = $('<div class="smi-post-footer">\
+            <div class="smi-post-footer-wrapper-1">\
+              <div class="smi-post-footer-wrapper-2">\
+              </div>\
+            </div>\
+          </div>');
+          var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
+
+          tags.replaceWith(footer);
+          footerWrapper.append(boostButton);
+          footerWrapper.append(promoteButton);
+          footerWrapper.append(tags);
+          footerWrapper.append(postFooter);
+
+          if(style === 'small'){
+            footerWrapper.addClass('smi-post-footer-small');
+          }
+
+          update();
+
+        }
+        else
+        {
+          setTimeout(function(){
+            makePostBottomBarFloating();
+          },1000);
+        }
+      }
+      else if(isBusy)
+      {
+        var tags = $('.StoryFull__topics__content');
+        var postFooter = $('.StoryFooter');
+        if(tags.length && postFooter.length) {
+
+          if(tags.closest('.smi-post-footer-wrapper-2').length){
+            return;
+          }
+
+          $('#post_overlay').on('scroll', function() {
+            update();
+          });
+
+          var footer = $('<div class="smi-post-footer">\
+            <div class="smi-post-footer-wrapper-1">\
+              <div class="smi-post-footer-wrapper-2">\
+              </div>\
+            </div>\
+          </div>');
+          var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
+
+          tags.replaceWith(footer);
+          footerWrapper.append(tags);
+          footerWrapper.append(postFooter);
+
+          if(style === 'small'){
+            footerWrapper.addClass('smi-post-footer-small');
+          }
+
+          update();
+          console.log('ici');
+        }
+        else
+        {
+          setTimeout(function(){
+            makePostBottomBarFloating();
+          },1000);
+        }
       }
     }
   };

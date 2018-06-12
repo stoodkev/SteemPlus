@@ -319,8 +319,8 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'start',data:{rewardBalance: rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
     if(steemit&&md_editor_beautifier)
       chrome.runtime.sendMessage({ token:token, to: 'md_editor_beautifier', order: 'start',data:{}});
-    if(steemit&&post_floating_bottom_bar)
-      chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{}});
+    if((steemit||busy)&&post_floating_bottom_bar)
+      chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'start',data:{steemit:steemit, busy:busy}});
   }
 
 
@@ -348,8 +348,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}});
         if(steemit&&blog_histogram&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'blog_histogram', order: 'click',data:{}});
-        if(post_floating_bottom_bar&&steemit&&steemit_more_info)
-          chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{}});
+        if(post_floating_bottom_bar&&(steemit||busy)&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{steemit:steemit, busy:busy}});
         if(external_link_tab&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'click',data:{}});
         if(mentions_tab&&steemit&&steemit_more_info)

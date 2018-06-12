@@ -2,3 +2,7 @@
 	font-weight: normal;
 	font-size: 0.95em;
 }
+
+.author-popup-busy{
+	cursor: pointer;
+}

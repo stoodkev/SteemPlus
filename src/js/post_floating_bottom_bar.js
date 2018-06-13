@@ -6,12 +6,15 @@ var style='large';
 var isSteemit=null;
 var isBusy=null;
 
+// Receiving messages from main.js
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to==='post_floating_bottom_bar'&&request.order==='start'&&token_post_floating_bottom_bar==null)
     {
       token_post_floating_bottom_bar=request.token;
       isSteemit=request.data.steemit;
       isBusy=request.data.busy;
+
+      // setup on scroll and resize listener
       $(window).on('resize', function() {
         update();
       });
@@ -33,11 +36,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 });
 
-
+  // Function used to create the floating bar
   function makePostBottomBarFloating() {
 
+    // Check is the page is the post page
     if(regexPostSteemit.test(window.location.href)||regexPostBusy.test(window.location.href))
     {
+      // If steemit 
       if(isSteemit)
       {
 
@@ -84,10 +89,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           },1000);
         }
       }
+      // If busy
       else if(isBusy)
       {
-        var tags = $('.StoryFull__topics__content');
-        var postFooter = $('.StoryFooter');
+        var tags = $('.StoryFull').find('.StoryFull__topics__content');
+        var postFooter = $('.StoryFull').find('.StoryFooter');
         if(tags.length && postFooter.length) {
 
           if(tags.closest('.smi-post-footer-wrapper-2').length){
@@ -100,13 +106,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
           var footer = $('<div class="smi-post-footer">\
             <div class="smi-post-footer-wrapper-1">\
-              <div class="smi-post-footer-wrapper-2">\
+              <div class="smi-post-footer-wrapper-2"  style="width:44em;">\
               </div>\
             </div>\
           </div>');
           var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
 
-          tags.replaceWith(footer);
+          postFooter.replaceWith(footer);
           footerWrapper.append(tags);
           footerWrapper.append(postFooter);
 
@@ -126,6 +132,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
   };
 
+  // Function used to refresh the footer
   function update() {
     var footer = $('.smi-post-footer');
     var footerWrapper = $('.smi-post-footer-wrapper-2');

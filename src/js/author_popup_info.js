@@ -58,7 +58,7 @@ function startAuthorPopupInfo()
 		else
 		{
 			// Start feature
-			$('span.username').parent().before('<i class="iconfont icon-mine author-popup-busy"></i>');
+			$('.StoryFull').find('span.username').parent().before('<i class="iconfont icon-mine author-popup-busy"></i>');
 			$('.author-popup-busy').click(function(){
 				$('.author-popup-busy').popover('hide');
 				openAuthorPopupInfo($(this));
@@ -66,6 +66,7 @@ function startAuthorPopupInfo()
 		}
 	}
 }
+
 
 function openAuthorPopupInfo(element)
 {

@@ -14,6 +14,8 @@
   var isSteemit=null;
   var isBusy=null;
 
+  var postFloatingBarEnabled=null;
+
   var retryCountBoostButton=0;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -23,6 +25,7 @@
       retryCountBoostButton=0;
       isSteemit=request.data.steemit;
       isBusy=request.data.busy;
+      postFloatingBarEnabled=request.data.post_floating_bar;
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
@@ -32,6 +35,7 @@
       if(request.order==='click')
       {
         token_boost_button=request.token;
+        postFloatingBarEnabled=request.data.post_floating_bar;
         addPostBoostButton();
       }
     }
@@ -622,6 +626,9 @@ function addPostBoostButton()
   {
     if(regexPostBusy.test(window.location.href)&&retryCountBoostButton<20)
     {
+      if(postFloatingBarEnabled)
+        if($('.smi-post-footer').length===0) setTimeout(addPostBoostButton, 1000);
+
       var boostButton = $('.boost-link');
       if(!boostButton.length) {
 

@@ -115,7 +115,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           }
 
           update();
-          console.log('ici');
         }
         else
         {

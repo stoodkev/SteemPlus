@@ -137,7 +137,7 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
         chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
         chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
-      if(steemit&&feedp)
+      if((steemit||busy)&&feedp)
         chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts, classif:classif}}});
       if(oneup&&utopian)
         chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});

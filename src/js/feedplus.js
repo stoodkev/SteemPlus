@@ -53,16 +53,18 @@ function FeedPlus(isSteemit, isBusy, feedp) {
     check();
 
     function check() {
-      if ($('.Topnav__menu-container__menu')[0] !== undefined && $('.Topnav__menu-container__menu')[0].childNodes.length === 3 && $('.Topnav__item-user a')[0] !== undefined) {
+      if($('.Sidenav').length > 0) { 
         createBusyFeedPlusButton();
-      } else {
-        if ($('.Topnav__menu-container__menu')[0] !== undefined)
-          setTimeout(check, 1000);
+      } 
+      else {
+        setTimeout(check, 1000);
       }
     }
 
     function createBusyFeedPlusButton() {
+      console.log('createBusyFeedPlusButton');
       feed_url = $('.Topnav__item-user a')[0].href + '/feed';
+      console.log(feed_url);
       app_content = $('.content').eq(0);
       post_div = app_content;
       feedplus_url = feed_url + "#plus";
@@ -72,13 +74,16 @@ function FeedPlus(isSteemit, isBusy, feedp) {
       feedplus.className = "";
       feedplus.id = 'FeedPlus';
       a = document.createElement('a');
+      span = document.createElement('span');
+      span.innerHTML = " Feed +";
       img = document.createElement('img');
       img.src = chrome.extension.getURL("src/img/logo.png");
       img.style.height = '24px';
       img.style.width = '24px';
       a.appendChild(img);
+      a.appendChild(span);
       feedplus.appendChild(a);
-      menu_list.insertBefore(feedplus, menu_list.firstChild);
+      $('.Sidenav').append(feedplus);
       SetFeedPlus(isSteemit, isBusy, feedp);
       if (window.location.href.match(/#plus/) && !terminate) {
         StartFeedPlus(isSteemit, isBusy, feedp);

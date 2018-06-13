@@ -103,7 +103,7 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
           });
           $('.Buttons__number_resteem').attr('data-toggle','popover');
           $('.Buttons__number_resteem').attr('data-content','<h5>' + contentResteem + '</h5>');
-          $('.Buttons__number_resteem').attr('data-placement','bottom');
+          $('.Buttons__number_resteem').attr('data-placement','top');
           $('.Buttons__number_resteem').attr('data-html','true');
           $('.Buttons__number_resteem').attr('animation','false');
           $('.Buttons__number_resteem').attr('container','popover-resteem');

@@ -47,8 +47,6 @@ function startResteemIndicator()
 		}
     else if(isBusy&&regexPostBusy.test(window.location.href))
     {
-      console.log('Resteem indicator busy');
-      console.log(window.location.pathname.split('/'));
       var usernameResteemIndicator = window.location.pathname.split('/')[1].replace('@', '');
       var permlinkResteemIndicator = window.location.pathname.split('/')[2];
       if($('.resteem-list').length===0)

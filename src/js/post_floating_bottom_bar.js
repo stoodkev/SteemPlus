@@ -100,13 +100,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
           var footer = $('<div class="smi-post-footer">\
             <div class="smi-post-footer-wrapper-1">\
-              <div class="smi-post-footer-wrapper-2" style="width: 44em;">\
+              <div class="smi-post-footer-wrapper-2"  style="width:44em;">\
               </div>\
             </div>\
           </div>');
           var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
 
-          tags.replaceWith(footer);
+          postFooter.replaceWith(footer);
           footerWrapper.append(tags);
           footerWrapper.append(postFooter);
 

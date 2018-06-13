@@ -86,8 +86,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       }
       else if(isBusy)
       {
-        var tags = $('.StoryFull__topics__content');
-        var postFooter = $('.StoryFooter');
+        var tags = $('.StoryFull').find('.StoryFull__topics__content');
+        var postFooter = $('.StoryFull').find('.StoryFooter');
         if(tags.length && postFooter.length) {
 
           if(tags.closest('.smi-post-footer-wrapper-2').length){
@@ -100,7 +100,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
           var footer = $('<div class="smi-post-footer">\
             <div class="smi-post-footer-wrapper-1">\
-              <div class="smi-post-footer-wrapper-2">\
+              <div class="smi-post-footer-wrapper-2" style="width: 44em;">\
               </div>\
             </div>\
           </div>');
@@ -115,7 +115,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
           }
 
           update();
-          console.log('ici');
         }
         else
         {

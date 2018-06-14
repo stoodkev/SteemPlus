@@ -252,4 +252,27 @@ li.big-view .PostSummary__footer{
   color:#a8b2c1;
 }
 
+.validate-fd-busy
+{
+  padding: 0 !important;
+}
 
+.input-settings-fp
+{
+  padding: 0.25em;
+  border-radius: 3px;
+  border: 1px solid #2088ff;
+  height: 2em;
+  color: black;
+}
+
+.filters-busy
+{
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.select-busy-fd
+{
+  margin-top: 0.5em;
+}

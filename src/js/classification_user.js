@@ -97,6 +97,20 @@ function canStartClassificationUser()
       startClassificationUser();
     }
   }
+  else if(regexFeedPlusBusy.test(window.location.href))
+  {
+    if(nbElementPageAuthor===$('.Story__header__flex > a > h4 > .username').length)
+    {
+      setTimeout(function(){
+        retryCountClassificationUser++;
+        canStartClassificationUser();
+      }, 1000);
+    }
+    else
+    {
+      startClassificationUser();
+    }
+  }
   else if(regexPostBusy.test(window.location.href)&&!window.location.href.includes('/transfers'))
   {
     if(nbElementPageAuthor===$('.Comment__text').length)

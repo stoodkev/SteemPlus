@@ -37,14 +37,5 @@ function startDropdown(market_d){
           $('.my-slider').show();
         });   
       }
-      else
-      {
-        console.log('no2');
-      }
-    }
-    else
-      {
-        console.log('no2');
-      }
   },200);
 }

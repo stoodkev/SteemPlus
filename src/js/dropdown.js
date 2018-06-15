@@ -20,7 +20,6 @@ function startDropdown(market_d){
       
       if($('span.DropdownMenu > ul.VerticalMenu > .title').length!==0)
       {
-        console.log('menu');
         var divSlider = $('<div class="my-slider" style="display:none;">\
                             <ul>\
                               <li class="price-item"><a href="/market">1 STEEM = '+Math.round(market_d.SBDperSteem*1000)/1000+' SBD</a></li>\
@@ -37,5 +36,6 @@ function startDropdown(market_d){
           $('.my-slider').show();
         });   
       }
+    }
   },200);
 }

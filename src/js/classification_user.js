@@ -99,7 +99,8 @@ function canStartClassificationUser()
   }
   else if(regexFeedPlusBusy.test(window.location.href))
   {
-    if(nbElementPageAuthor===$('.Story__header__flex > a > h4 > .username').length)
+    console.log('ici');
+    if(nbElementPageAuthor===$('.Story__header__text > a').length)
     {
       setTimeout(function(){
         retryCountClassificationUser++;
@@ -143,6 +144,12 @@ function startClassificationUser(){
       elementUserListCU = $('.StoryFull__header__text > a');
       elementUserListCU2 = $('.Comment__text > a');
     }
+    // If page is feed+ for busy
+    else if(regexFeedPlusBusy.test(window.location.href))
+    {
+      console.log('regexFeedPlusBusy')
+      elementUserListCU = $('.Story__header__text > a');
+    }
     else
     {
       // Other pages for busy
@@ -159,36 +166,38 @@ function startClassificationUser(){
   
   var userListCU = [];
   // Get username and elements (html objects)
-  elementUserListCU.each(function(indexItem, item){
-    if(!$(item).hasClass('has-classification'))
-    {
-      if(isSteemit)
-        var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
-      else if(isBusy)
-        var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
+  if(elementUserListCU!==null)
+    elementUserListCU.each(function(indexItem, item){
+      if(!$(item).hasClass('has-classification'))
+      {
+        if(isSteemit)
+          var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+        else if(isBusy)
+          var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
 
-      if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
-        userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
-      else{
-        userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+        if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
+          userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
+        else{
+          userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+        }
       }
-    }
-  });
-  elementUserListCU2.each(function(indexItem, item){
-    if(!$(item).hasClass('has-classification'))
-    {
-      if(isSteemit)
-        var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
-      else if(isBusy)
-        var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
+    });
+  if(elementUserListCU2!==null)
+    elementUserListCU2.each(function(indexItem, item){
+      if(!$(item).hasClass('has-classification'))
+      {
+        if(isSteemit)
+          var usernameCurrentItem = item.href.replace(/^https:\/\/steemit.com\/@/gi, "");
+        else if(isBusy)
+          var usernameCurrentItem = item.href.replace(/^https:\/\/busy.org\/@/gi, "");
 
-      if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
-        userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
-      else{
-        userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+        if(userListCU.find(function(e){return e.username===usernameCurrentItem})===undefined)
+          userListCU.push({username:usernameCurrentItem, arrayElement:[item], userScoreList:[]});
+        else{
+          userListCU.find(function(e){return e.username===usernameCurrentItem}).arrayElement.push(item);
+        }
       }
-    }
-  });
+    });
 
   // Only get data if there is entries
   if(userListCU.length>0)
@@ -248,6 +257,7 @@ function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
   // This request need to have all the parameters in the url. You can only pass 100 usernames at a time
   var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
+  console.log(url);
   // We use a timeout because SteemSincerity doesn't allow too many request. One query every 2 seconds
   setTimeout(function(){
     $.ajax({

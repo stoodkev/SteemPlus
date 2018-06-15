@@ -99,6 +99,7 @@ function canStartClassificationUser()
   }
   else if(regexFeedPlusBusy.test(window.location.href))
   {
+    if(nbElementPageAuthor===$('.Story__header__text > a').length)
     {
       setTimeout(function(){
         retryCountClassificationUser++;
@@ -145,7 +146,6 @@ function startClassificationUser(){
     // If page is feed+ for busy
     else if(regexFeedPlusBusy.test(window.location.href))
     {
-      console.log('regexFeedPlusBusy')
       elementUserListCU = $('.Story__header__text > a');
     }
     else

@@ -59,9 +59,24 @@ function startAuthorPopupInfo()
 		{
 			// Start feature
 			$('.StoryFull').find('span.username').parent().before('<i class="iconfont icon-mine author-popup-busy"></i>');
+			$('.Comments').find('span.username').parent().before('<i class="iconfont icon-mine author-popup-busy"></i>');
 			$('.author-popup-busy').click(function(){
 				$('.author-popup-busy').popover('hide');
 				openAuthorPopupInfo($(this));
+			});
+
+			// When comment section appears add icon
+			$('.Comments').on('DOMNodeInserted', function(evt){
+				var target = $(evt.target);
+				// Only if the new node is a comment
+				if(target.hasClass('Comment')&&target.find('.author-popup-busy').length===0)
+				{
+					target.find('span.username').parent().before('<i class="iconfont icon-mine author-popup-busy"></i>');
+				}
+				target.find('.author-popup-busy').unbind('click').click(function(){
+					$('.author-popup-busy').popover('hide');
+					openAuthorPopupInfo($(this));
+				});
 			});
 		}
 	}

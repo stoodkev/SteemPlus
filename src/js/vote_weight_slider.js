@@ -64,16 +64,15 @@
     ||regexFeedSteemit.test(window.location.href)
     ||regexPostSteemit.test(window.location.href))
     {
-      $('.Voting__button > a').click(function(){
-        console.log('test');
-        var votingButton = $(this);
+      $('.Voting__button').click(function(){
+        var weightDisplay = $(this).find('.weight-display');
         setTimeout(function() {
-          tryUpdateVotingSlider();
+          tryUpdateVotingSlider(weightDisplay);
         }, 500);
       });
 
-      $("body").on('DOMSubtreeModified', ".weight-display", function() {
-        tryUpdateVotingSlider();
+      $("body").on('DOMSubtreeModified', ".weight-display", function(e) {
+        tryUpdateVotingSlider($(e.target));
       });
     }
   }
@@ -90,8 +89,7 @@
       weightDisplay.after(weightDollars);
     }
 
-    console.log(account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
-    var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
+    var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
     
     console.log(dollars);   
     if((typeof dollars === 'undefined'||dollars===undefined)&&retryCountVoteWeightSlider<20){
@@ -129,7 +127,7 @@
       if(!voteTotal.length){
         voteTotal = $('<p class="smi-vote-total"></p>');
         flagInfo.prepend(voteTotal);
-        var html = 'After your downvote the total reward for <br> this ' + (isComment ? 'comment' : 'post') + ' will be: <span class="after-downvote-total-dollar">' + window.SteemMoreInfo.Utils.getLoadingHtml({
+        var html = 'After your downvote the total reward for <br> this ' + (isComment ? 'comment' : 'post') + ' will be: <span class="after-downvote-total-dollar">' + window.SteemPlus.Utils.getLoadingHtml({
           text: true,
           backgroundColor: '#8a8a8a'
         }) + '</span>';
@@ -147,8 +145,9 @@
 
   };
 
-  function tryUpdateVotingSlider() {
-    var weightDisplay = $('span.Voting__button .weight-display');
+  function tryUpdateVotingSlider(weightDisplay) {
+    //var weightDisplay = $('span.Voting__button .weight-display');
+    console.log(weightDisplay);
     if(weightDisplay.length){
       updateVotingSlider(weightDisplay);
     }

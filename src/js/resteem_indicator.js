@@ -47,8 +47,6 @@ function startResteemIndicator()
 		}
     else if(isBusy&&regexPostBusy.test(window.location.href))
     {
-      console.log('Resteem indicator busy');
-      console.log(window.location.pathname.split('/'));
       var usernameResteemIndicator = window.location.pathname.split('/')[1].replace('@', '');
       var permlinkResteemIndicator = window.location.pathname.split('/')[2];
       if($('.resteem-list').length===0)
@@ -105,7 +103,7 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
           });
           $('.Buttons__number_resteem').attr('data-toggle','popover');
           $('.Buttons__number_resteem').attr('data-content','<h5>' + contentResteem + '</h5>');
-          $('.Buttons__number_resteem').attr('data-placement','bottom');
+          $('.Buttons__number_resteem').attr('data-placement','top');
           $('.Buttons__number_resteem').attr('data-html','true');
           $('.Buttons__number_resteem').attr('animation','false');
           $('.Buttons__number_resteem').attr('container','popover-resteem');

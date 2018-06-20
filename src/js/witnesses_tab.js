@@ -171,6 +171,7 @@ function managedTabWitness(usernameTabWitnesses, isMyPageWitnesses)
 function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
 {
   steem.api.getAccounts([usernameTabWitnesses], function(err, result) {
+    if(!$('#witness-out').prop('checked')) return;
     if(err) console.log(err);
     else
     {
@@ -260,6 +261,7 @@ function getWitnessRank(username, list)
 
 function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
 {
+  if(!$('#witness-out').prop('checked')) return;
   var witnessesOutTab = $('\
     <h5 style="margin-bottom:20px">\
       <span class="span-nb-witnesses"></span>\
@@ -332,6 +334,7 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
 
 function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 {
+  if(!$('#my-witness').prop('checked')) return;
   var witnessesMyTab = $('\
     <div class="bootstrap-wrapper">\
       <div class="container">\
@@ -358,7 +361,8 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
       url: 'http://steemplus-api.herokuapp.com/api/get-witness/' + usernameTabWitnesses,
       success: function(result) {
         witnessInfoLocal = result;
-        displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
+        if($('#my-witness').prop('checked'))
+          displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
       },
       error: function(msg) {
         alert(msg.responseJSON.error);
@@ -373,7 +377,7 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 
 function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
 {
-
+  if(!$('#my-witness').prop('checked')) return;
   var lineNumberWitness = 0;
   var classOddEven = '';
   if(lineNumberWitness%2===0) classOddEven = 'evenLine';
@@ -505,7 +509,7 @@ var numberWithCommas = (x) => {
 
 function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
 {
-
+  if(!$('#witness-in').prop('checked')) return;
   if(witnessVoteReceivedLocal===null)
   {
     $.ajax({
@@ -517,8 +521,8 @@ function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
       url: 'http://steemplus-api.herokuapp.com/api/get-received-witness-votes/'+usernameTabWitnesses,
       success: function(result) {
         witnessVoteReceivedLocal = result;
-        displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
-
+        if($('#witness-in').prop('checked'))
+          displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
       },
       error: function(msg) {
         alert(msg.responseJSON.error);
@@ -533,6 +537,7 @@ function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
 
 function displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal)
 {
+  if(!$('#witness-in').prop('checked')) return;
   var witnessesInTab = $('\
     <table id="witness-received-votes-table" class="table table-striped table-bordered dataTable" style="width:100%">\
     <table');

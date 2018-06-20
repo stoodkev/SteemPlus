@@ -57,8 +57,6 @@ function checkFavoriteSection()
 function startFavoriteSection()
 {
   chrome.storage.local.get(['favorite_list'], function(items){
-    console.log(items.favorite_list);
-    return;
     favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
     // Display favorites
     favorite_list.forEach(function(favorite, indexFavList, fav_list)

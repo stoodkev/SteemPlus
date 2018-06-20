@@ -184,9 +184,14 @@ function initOfflineFeatures(isConnected, items, user, account)
   {
     if(!isConnected)
     {
-      if($('.Header__userpic > a').length > 0)
+      var elementUsername = null;
+      if(steemit) elementUsername = '.Header__userpic > span';
+      else if(busy) elementUsername = '.Topnav__user';
+
+      if($(elementUsername).length > 0)
       {
-        user = $('.Header__userpic > a')[0].title; //Get username in offline mode
+        if(steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+        else if(busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
         steem.api.getAccounts([user], function(err, result) {
           if(err) console.log(err);
           else

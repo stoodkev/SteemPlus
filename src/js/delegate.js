@@ -95,7 +95,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
   {
     if ($('.delegate').length === 0) {
 
-      if ($('.transfer_to').length !== 0) $('.transfer_to').remove();
+      //if ($('.transfer_to').length !== 0) $('.transfer_to').remove();
       var delegate_div = document.createElement('div');
       delegate_div.style.width = '100%';
       delegate_div.style.textAlign = 'right';

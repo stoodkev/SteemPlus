@@ -274,8 +274,8 @@ function startOfflineFeatures(items, user, account)
     chrome.runtime.sendMessage({ badge:items.badge,token:token, to: 'rank', order: 'start',data:{steemit:steemit,busy:busy,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
   if(board_reward&&steemit)
     chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'start',data:{}});
-  if(favorite_section&&steemit)
-    chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user}});
+  if(favorite_section&&(steemit||busy))
+    chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
   if(classification_user&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
   if(witnesses_tab&&steemit)
@@ -356,8 +356,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
         if(vote_weight_slider&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
-        if(favorite_section&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user}});
+        if(favorite_section&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
         if(post_votes_list&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
         if(classification_user&&(steemit||busy))

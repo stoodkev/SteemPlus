@@ -8,6 +8,9 @@ var indexFav=null;
 var nameFav=null;
 var myUsername=null;
 
+var isSteemit = null;
+var isBusy = null;
+
 var retryCountFavoriteSection = 0;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -15,65 +18,90 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   {
     token_favorite_section=request.token;
     myUsername=request.data.user;
+    isSteemit=request.data.steemit;
+    isBusy=request.data.busy;
     retryCountFavoriteSection=0;
-    startFavoriteSection();
+    console.log('favorite busy');
+    checkFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
   {
     myUsername=request.data.user;
+    isSteemit=request.data.steemit;
+    isBusy=request.data.busy;
     retryCountFavoriteSection=0;
-    startFavoriteSection();
+    console.log('favorite busy');
+    checkFavoriteSection();
   }
 });
 
+// Function used to check the favorite feature
+function checkFavoriteSection()
+{
+  if(isSteemit)
+  {
+    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+    {
+      startFavoriteSection();
+    }
+  }
+  else if(isBusy)
+  {
+    if(retryCountFavoriteSection<20&&(regexFeedBusy.test(window.location.href)||regexBlogBusy.test(window.location.href)))
+    {
+      startFavoriteSection();
+    }
+  }
+}
+
 function startFavoriteSection()
 {
-  if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
-  {
-    chrome.storage.local.get(['favorite_list'], function(items){
-      favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
-      // Display favorites
-      favorite_list.forEach(function(favorite, indexFavList, fav_list)
+  chrome.storage.local.get(['favorite_list'], function(items){
+    console.log(items.favorite_list);
+    return;
+    favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
+    // Display favorites
+    favorite_list.forEach(function(favorite, indexFavList, fav_list)
+    {
+      steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
       {
-        steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
+        if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
         {
-          if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
-          {
-            fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
-            fav_list[indexFavList].read = false;
-          }
+          fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
+          fav_list[indexFavList].read = false;
+        }
 
-          if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
-          {
-            fav_list[indexFavList].read = true;
-          }
-          chrome.storage.local.set({
-            favorite_list:fav_list
-          });
+        if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
+        {
+          fav_list[indexFavList].read = true;
+        }
+        chrome.storage.local.set({
+          favorite_list:fav_list
         });
       });
-      if($('.c-sidebar--right').length > 0){
-        if(favorite_list.length>0)
-          displayFavoriteSection();
-      }
-      
-      // Display add to / remove from favorites
-      if(window.location.href.match(userPageRegex)!==null){
-        var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
-        if(userNameCurrentPage!==myUsername)
-        {
-          isFavorite=favoriteListContains(userNameCurrentPage);
-          displayButtonAddRemoveFavorites(userNameCurrentPage);
-        }
-        else
-        {
-          if($('.favorite-star').length > 0){
-            $('.favorite-star').remove();
-          }
-        }
-      }
     });
-  }
+
+    if($('.c-sidebar--right').length > 0){
+      if(favorite_list.length>0)
+        displayFavoriteSection();
+    }
+    
+    // Display add to / remove from favorites
+    if(window.location.href.match(userPageRegex)!==null){
+      var userNameCurrentPage = window.location.href.match(userPageRegex)[1];
+      if(userNameCurrentPage!==myUsername)
+      {
+        isFavorite=favoriteListContains(userNameCurrentPage);
+        displayButtonAddRemoveFavorites(userNameCurrentPage);
+      }
+      else
+      {
+        if($('.favorite-star').length > 0){
+          $('.favorite-star').remove();
+        }
+      }
+    }
+  });
 }
 
 function displayFavoriteSection()

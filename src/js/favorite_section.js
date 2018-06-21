@@ -21,7 +21,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     isSteemit=request.data.steemit;
     isBusy=request.data.busy;
     retryCountFavoriteSection=0;
-    console.log('favorite busy');
     checkFavoriteSection();
   }
   else if(request.to==='favorite_section'&&request.order==='click'&&token_favorite_section==request.token)
@@ -30,7 +29,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     isSteemit=request.data.steemit;
     isBusy=request.data.busy;
     retryCountFavoriteSection=0;
-    console.log('favorite busy');
     checkFavoriteSection();
   }
 });
@@ -47,9 +45,18 @@ function checkFavoriteSection()
   }
   else if(isBusy)
   {
-    if(retryCountFavoriteSection<20&&(regexFeedBusy.test(window.location.href)||regexBlogBusy.test(window.location.href)))
+    if(retryCountFavoriteSection<20&&(regexFeedBusy.test(window.location.href)||regexBlogBusy.test(window.location.href)||regexBusy.test(window.location.href)))
     {
-      startFavoriteSection();
+      if($('.InterestingPeople').length > 0){
+        startFavoriteSection();
+      }
+      else
+      {
+        retryCountFavoriteSection++;
+        setTimeout(function(){
+          checkFavoriteSection()
+        }, 1000);
+      }
     }
   }
 }
@@ -58,20 +65,37 @@ function startFavoriteSection()
 {
   chrome.storage.local.get(['favorite_list'], function(items){
     favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
+    console.log(favorite_list);
     // Display favorites
     favorite_list.forEach(function(favorite, indexFavList, fav_list)
     {
       steem.api.getDiscussionsByAuthorBeforeDate(favorite.username,null, new Date().toISOString().split('.')[0],1 , function(err, result)
       {
-        if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
+        if(isSteemit)
         {
-          fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
-          fav_list[indexFavList].read = false;
-        }
+          if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
+          {
+            fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
+            fav_list[indexFavList].read = false;
+          }
 
-        if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
+          if(window.location.href === fav_list[indexFavList].url || window.location.href === fav_list[indexFavList].page)
+          {
+            fav_list[indexFavList].read = true;
+          }
+        }
+        else if(isBusy)
         {
-          fav_list[indexFavList].read = true;
+          if(favorite.url !== "https://steemit.com"+(result[0] === undefined ? '' : result[0].url))
+          {
+            fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
+            fav_list[indexFavList].read = false;
+          }
+
+          if(window.location.href === fav_list[indexFavList].url || window.location.href === 'https://busy.org/@' + fav_list[indexFavList].username)
+          {
+            fav_list[indexFavList].read = true;
+          }
         }
         chrome.storage.local.set({
           favorite_list:fav_list
@@ -79,9 +103,19 @@ function startFavoriteSection()
       });
     });
 
-    if($('.c-sidebar--right').length > 0){
-      if(favorite_list.length>0)
-        displayFavoriteSection();
+    if(isSteemit)
+    {
+      if($('.c-sidebar--right').length > 0){
+        if(favorite_list.length>0)
+          displayFavoriteSection();
+      }
+    }
+    else if(isBusy)
+    {
+      if($('.InterestingPeople').length > 0){
+        if(favorite_list.length > 0)
+          displayFavoriteSection();
+      }
     }
     
     // Display add to / remove from favorites
@@ -106,77 +140,127 @@ function displayFavoriteSection()
 {
   $('.favorite-section').remove();
 
-  var div = document.createElement('div');
-  $(div).addClass('favorite-section');
-  var divSideBarModule = document.createElement('div');
-  $(divSideBarModule).addClass('c-sidebar__module');
+  if(isSteemit)
+  {
+    var div = document.createElement('div');
+    $(div).addClass('favorite-section');
+    var divSideBarModule = document.createElement('div');
+    $(divSideBarModule).addClass('c-sidebar__module');
 
-  var divSideBarHeader = document.createElement('div');
-  $(divSideBarHeader).addClass('c-sidebar__header');
+    var divSideBarHeader = document.createElement('div');
+    $(divSideBarHeader).addClass('c-sidebar__header');
 
-  var h3SideBarH3 = document.createElement('h3');
-  $(h3SideBarH3).addClass('c-sidebar__h3');
+    var h3SideBarH3 = document.createElement('h3');
+    $(h3SideBarH3).addClass('c-sidebar__h3');
 
-  var divSideBarContent = document.createElement('div');
-  $(divSideBarContent).addClass('c-sidebar__content');
+    var divSideBarContent = document.createElement('div');
+    $(divSideBarContent).addClass('c-sidebar__content');
 
-  var ulSideBarList = document.createElement('ul');
-  $(ulSideBarList).addClass('c-sidebar__list');
+    var ulSideBarList = document.createElement('ul');
+    $(ulSideBarList).addClass('c-sidebar__list');
+  }
+  else if(isBusy)
+  {
+    var div = $('<div class="favorite-section SidebarContentBlock">\
+       <h4 class="SidebarContentBlock__title"><i class="iconfont icon-group SidebarContentBlock__icon"></i> <span>Favorites</span></h4>\
+       <div class="SidebarContentBlock__content">\
+       </div>\
+    </div>');
+
+    $('.InterestingPeople').eq(0).after(div);
+  }
 
 
   favorite_list.forEach(function(favorite, indexFavList, fav_list)
   {
-    var liSideBarListItem = document.createElement('li');
-    $(liSideBarListItem).addClass('c-sidebar__list-item');
-    $(liSideBarListItem).addClass('favorite-item');
-
-    var aSideBarLink = document.createElement('a');
-    $(aSideBarLink).addClass('c-sidebar__link');
-    $(aSideBarLink).click(function(){
-      window.location.href = favorite.page;
-    });
-
-
-
-    var spanDeleteFavorite = document.createElement('span');
-    $(spanDeleteFavorite).addClass('span-delete-favorite');
-    $(spanDeleteFavorite).attr('name', favorite.username);
-    $(spanDeleteFavorite).attr('title', "Remove from the followers");
-    $(spanDeleteFavorite).append('  x');
-    $(spanDeleteFavorite).click(function(){
-      indexFav=indexFavList;
-      nameFav=favorite.username;
-
-      deleteFromFavorites(favorite.username);
-      $(div).remove();
-      startFavoriteSection();
-    });
-
-
-    if(!favorite.read)
+    if(isSteemit)
     {
-      var labelNew = $('<div class="new-indicator"><span>New Post</span></div>');
-      $(aSideBarLink).append(labelNew);
+      var liSideBarListItem = document.createElement('li');
+      $(liSideBarListItem).addClass('c-sidebar__list-item');
+      $(liSideBarListItem).addClass('favorite-item');
+
+      var aSideBarLink = document.createElement('a');
+      $(aSideBarLink).addClass('c-sidebar__link');
+      $(aSideBarLink).click(function(){
+        window.location.href = favorite.page;
+      });
+
+      var spanDeleteFavorite = document.createElement('span');
+      $(spanDeleteFavorite).addClass('span-delete-favorite');
+      $(spanDeleteFavorite).attr('name', favorite.username);
+      $(spanDeleteFavorite).attr('title', "Remove from the followers");
+      $(spanDeleteFavorite).append('  x');
+      $(spanDeleteFavorite).click(function(){
+        indexFav=indexFavList;
+        nameFav=favorite.username;
+
+        deleteFromFavorites(favorite.username);
+        $(div).remove();
+        startFavoriteSection();
+      });
+
+
+      if(!favorite.read)
+      {
+        var labelNew = $('<div class="new-indicator"><span>New Post</span></div>');
+        $(aSideBarLink).append(labelNew);
+      }
+
+      $(aSideBarLink).after(spanDeleteFavorite);
+      $(aSideBarLink).prepend(favorite.username);
+
+      $(liSideBarListItem).append(aSideBarLink);
+      $(liSideBarListItem).append(spanDeleteFavorite);
+
+      $(ulSideBarList).append(liSideBarListItem);
     }
+    else if(isBusy)
+    {
+      console.log(favorite);
+      var userLinkElement = $('<div class="User">\
+        <div class="User__top">\
+          <div class="User__links">\
+             <a href="/@' + favorite.username + '">\
+             </a>\
+             <a title="' + favorite.username + '" class="User__name" href="/@' + favorite.username + '">\
+             <span class="username">' + favorite.username + '</span></a>\
+          </div>\
+          <div class="User__follow"><button class="Follow Follow--secondary removeBtn" title="Remove as favorite">X</button></div>\
+        </div>\
+        <div class="User__divider"></div>\
+      </div>');
 
-    $(aSideBarLink).after(spanDeleteFavorite);
-    $(aSideBarLink).prepend(favorite.username);
+      $(userLinkElement).find('.removeBtn').click(function(){
+        indexFav=indexFavList;
+        nameFav=favorite.username;
 
-    $(liSideBarListItem).append(aSideBarLink);
-    $(liSideBarListItem).append(spanDeleteFavorite);
+        deleteFromFavorites(favorite.username);
+        $(userLinkElement).remove();
+        startFavoriteSection();
+      });
 
-    $(ulSideBarList).append(liSideBarListItem);
+      if(!favorite.read)
+      {
+        var labelNew = $('<div class="new-indicator"><span>New Post</span></div>');
+        $(userLinkElement).find('.User__links').append(labelNew);
+      }
+
+      $('.favorite-section').find('.SidebarContentBlock__content').append(userLinkElement);
+    }
   });
 
-  $(divSideBarContent).append(ulSideBarList);
+  if(isSteemit)
+  {
+    $(divSideBarContent).append(ulSideBarList);
 
-  $(h3SideBarH3).append('My Favorites');
-  $(divSideBarHeader).append(h3SideBarH3);
-  $(divSideBarModule).append(divSideBarHeader);
-  $(divSideBarModule).append(divSideBarContent);
-  $(div).append(divSideBarModule);
+    $(h3SideBarH3).append('My Favorites');
+    $(divSideBarHeader).append(h3SideBarH3);
+    $(divSideBarModule).append(divSideBarHeader);
+    $(divSideBarModule).append(divSideBarContent);
+    $(div).append(divSideBarModule);
 
-  $('aside.c-sidebar--right').append(div);
+    $('aside.c-sidebar--right').append(div);
+  }
 }
 
 function displayButtonAddRemoveFavorites(userNameCurrentPage)
@@ -221,8 +305,7 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
         deleteFromFavorites(userNameCurrentPage);
       }
       $('.favorite-star').prop('disabled', false);
-  });
-
+    });
   }
   
 }

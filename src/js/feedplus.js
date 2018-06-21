@@ -411,14 +411,27 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             bd = bd.replace(/\*+/g, '');
             bd = bd.replace(/\#+/g, '');
             var upvoted = 'no_upvoted';
-            if (isBusy) {
+            if (isBusy) 
+            {
+                var imgUrlFeedPlus = null;
+                console.log(elt);
+                if (elt.img !== undefined && elt.img.includes('imgur')) {
+                    imgUrlFeedPlus = 'https://steemitimages.com/0x0/' + elt.img;
+                } else if (elt.img !== undefined && (elt.img.includes('https') || elt.img.includes('http'))) {
+                    imgUrlFeedPlus = elt.img;
+                } else if (elt.img === '') {
+                    imgUrlFeedPlus = chrome.extension.getURL(noImageAvailable);
+                } else {
+                    imgUrlFeedPlus = 'https://steemitimages.com/256x512/' + elt.img;
+                }
+
                 var active = "";
                 if (elt.voted) active = "active";
                 posts += '<div class="Story story_busy">';
                 if (elt.resteem !== '')
                     posts += '<div class="Story__reblog"><i class="iconfont icon-share1"></i><span><a target="_blank" href="/@' + elt.resteem + '">' + elt.resteem + '</a><!-- react-text: 1904 --> reblogged<!-- /react-text --></span></div>';
                 posts += '<div class="Story__content"><div class="Story__header"><a target="_blank" href="/@' + elt.username + '"><img class="Avatar" alt="' + elt.username + '" src="https://img.busy.org/@' + elt.username + '" style="min-width: 40px; width: 40px; height: 40px;"></a><div class="Story__header__text"><a target="_blank" href="/@' + elt.username + '"><h4><!-- react-text: 1913 -->@' + elt.username + '<!-- /react-text --><div data-show="true" class="ant-tag"><span class="ant-tag-text">53</span><!-- react-text: 1916 --><!-- /react-text --></div></h4></a><span class="Story__date"><span>' + timeago().format(Date.parse(elt.date) - offset * 60 * 1000) + '</span></span></div><div class="Story__topics"><a target="_blank" class="Topic" href="/trending/' + elt.tags[0] +
-                    '"><!-- react-text: 1921 -->' + elt.tags[0] + '<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="' + elt.url + '"><h2>' + elt.title + '</h2></a><a target="_blank" class="Story__content__preview" href="' + elt.url + '"><div><div class="Story__content__img-container"><img alt="post" src="' + elt.img + '"></div><div class="Story__content__body">' +
+                    '"><!-- react-text: 1921 -->' + elt.tags[0] + '<!-- /react-text --></a></div></div><div class="Story__content"><a target="_blank" class="Story__content__title" href="' + elt.url + '"><h2>' + elt.title + '</h2></a><a target="_blank" class="Story__content__preview" href="' + elt.url + '"><div><div class="Story__content__img-container"><img alt="post" src="' + imgUrlFeedPlus + '"></div><div class="Story__content__body">' +
                     bd.substring(0, 138) + '...</div></div></a></div><div class="Story__footer"><div class="StoryFooter"><div class="StoryFooter__actions"><span class="Payout"><span class=""><span><!-- react-text: 1936 -->$<!-- /react-text --><span>' + elt.payout.split(' ')[0] + '</span></span></span></span><div class="Buttons"><a target="_blank" role="presentation" class="Buttons__link ' + active + '"><i class="iconfont icon-praise_fill "></i></a><span class="Buttons__number Buttons__reactions-count" role="presentation"><span><span>' + elt.votes + '</span><span></span></span></span></span></div></div></div></div></div></div>'
             } else if (isSteemit) {
                 var imgUrlFeedPlus = null;
@@ -590,6 +603,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
         $(".category_filter").each(function(i) {
             $(this).unbind('click').on("click", function() {
                 if ($(".filter_content")[i].style.display === "none" || $(".filter_content")[i].style.display === "") {
+                    $(".filter_content").hide();
                     $(".filter_content")[i].style.display = "block";
                 } else {
                     $(".filter_content")[i].style.display = "none";

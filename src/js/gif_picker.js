@@ -269,7 +269,9 @@
     var pickerButtonContainer = $('<div class="smi-gif-picker-button-container">\
       <button class="button">GIF</button>\
     </div>');
-    textarea.after(pickerButtonContainer);
+    if($('.edit-signature-post').length > 0) textarea.parent().find('.edit-signature-post').after(pickerButtonContainer);
+    else if($('.edit-signature-comment').length > 0) textarea.parent().find('.edit-signature-comment').after(pickerButtonContainer);
+    else textarea.after(pickerButtonContainer);
 
     var button = pickerButtonContainer.find('button');
     button.on('click', function() {

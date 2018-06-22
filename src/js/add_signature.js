@@ -302,9 +302,9 @@ function setupAddPostSignature(textarea)
             $(textarea).focus();
         });
       }  
-      // Add edit button. Open page in another tab
-      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
     });
+    // Add edit button. Open page in another tab
+    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
   }
 }
 
@@ -315,6 +315,9 @@ function setupAddCommentSignature(textarea)
 {
   if($(textarea).parent().find('.edit-signature-comment').length === 0)
   {
+    // Add edit button. Open page in another tab
+    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
+    
     // Get signature from local storage
     // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
@@ -333,8 +336,6 @@ function setupAddCommentSignature(textarea)
             },1000);
         });
       }  
-      // Add edit button. Open page in another tab
-      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
     });
   }
 }

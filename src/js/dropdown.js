@@ -17,7 +17,7 @@ function startDropdown(market_d){
       var xhttp = new XMLHttpRequest();
 
       li.innerHTML='<a class="market-item" href="/market"><span class="Icon " style="display: inline-block; width: 1.12rem; height: 1.12rem;"><img src="'+chrome.extension.getURL("src/img/steemblack.svg")+'"/></span>Market</a>';
-      
+
       if($('span.DropdownMenu > ul.VerticalMenu > .title').length!==0)
       {
         var divSlider = $('<div class="my-slider" style="display:none;">\
@@ -32,9 +32,10 @@ function startDropdown(market_d){
         $(li2).append(divSlider);
         $('span.DropdownMenu > ul.VerticalMenu').append(li2);
         $(function(){
-          $('.my-slider').unslider({ keys: false, autoplay: true, nav: false, arrows: false});
+          $('.my-slider').unslider({ keys: true, autoplay: true, nav: false, arrows: false});
           $('.my-slider').show();
-        });   
+        });
+        $(li).parent().css('width', '15rem');
       }
     }
   },200);

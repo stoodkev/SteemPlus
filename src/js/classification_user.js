@@ -254,7 +254,7 @@ function startClassificationUser(){
 function getDataFromAPICU(userListCU, arrayUsernames, i, max)
 {
   // This request need to have all the parameters in the url. You can only pass 100 usernames at a time
-  var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
+  var url = 'https://steem-sincerity.dapptools.info/s/api/accounts-info/' + arrayUsernames.slice(0+i*100, 100+i*100).join(',');
   // We use a timeout because SteemSincerity doesn't allow too many request. One query every 2 seconds
   setTimeout(function(){
     $.ajax({

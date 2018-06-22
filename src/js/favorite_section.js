@@ -38,18 +38,17 @@ function checkFavoriteSection()
 {
   if(isSteemit)
   {
-    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)||regexPostSteemit.test(window.location.href)))
     {
       startFavoriteSection();
     }
   }
   else if(isBusy)
   {
-    if(retryCountFavoriteSection<20&&(regexFeedBusy.test(window.location.href)||regexBlogBusy.test(window.location.href)||regexBusy.test(window.location.href)))
+    if(retryCountFavoriteSection<20&&(regexFeedBusy.test(window.location.href)||regexBusy.test(window.location.href)))
     {
-      if($('.InterestingPeople').length > 0){
+      if($('.InterestingPeople').length > 0)
         startFavoriteSection();
-      }
       else
       {
         retryCountFavoriteSection++;
@@ -58,6 +57,11 @@ function checkFavoriteSection()
         }, 1000);
       }
     }
+    else if(regexBlogBusy.test(window.location.href)||regexPostBusy.test(window.location.href))
+    {
+      startFavoriteSection();
+    }
+
   }
 }
 
@@ -91,8 +95,8 @@ function startFavoriteSection()
             fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
             fav_list[indexFavList].read = false;
           }
-
-          if(window.location.href === fav_list[indexFavList].url || window.location.href === 'https://busy.org/@' + fav_list[indexFavList].username)
+          console.log('https://busy.org/@' + fav_list[indexFavList].username + '/' + fav_list[indexFavList].url.split('/').slice(-1)[0]);
+          if(window.location.href === ('https://busy.org/@' + fav_list[indexFavList].username + '/' + fav_list[indexFavList].url.split('/').slice(-1)[0]) || window.location.href === 'https://busy.org/@' + fav_list[indexFavList].username)
           {
             fav_list[indexFavList].read = true;
           }
@@ -368,7 +372,7 @@ function deleteFromFavorites(userNameCurrentPage)
       });
     }
   });
-  console.log(favorite_list);
+  if(isBusy && favorite_list.length===0) $('.favorite-section').remove();
 }
 
 function favoriteListContains(userName)

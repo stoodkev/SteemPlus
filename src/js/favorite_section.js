@@ -269,14 +269,29 @@ function displayFavoriteSection()
 
 function displayButtonAddRemoveFavorites(userNameCurrentPage)
 {
-  if($('.articles__header-col').length===0)
+  var headerClassFavoriteSection = null;
+  if(isSteemit) headerClassFavoriteSection = '.articles__header-col';
+  else if(isBusy) headerClassFavoriteSection = '.UserHeader__user__username';
+
+  if($(headerClassFavoriteSection).length===0)
   {
-    if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+    if(isSteemit)
+      if(retryCountFavoriteSection<20&&!window.location.href.includes('#')&&(regexBlogSteemit.test(window.location.href)||regexFeedSteemit.test(window.location.href)))
+      {
+        retryCountFavoriteSection++;
+        setTimeout(function(){
+          displayButtonAddRemoveFavorites(userNameCurrentPage);
+        },1000);
+      }
+    else if(isBusy)
     {
-      retryCountFavoriteSection++;
-      setTimeout(function(){
-        displayButtonAddRemoveFavorites(userNameCurrentPage);
-      },1000);
+      if(retryCountFavoriteSection<20&&regexBlogBusy.test(window.location.href))
+      {
+        retryCountFavoriteSection++;
+        setTimeout(function(){
+          displayButtonAddRemoveFavorites(userNameCurrentPage);
+        },1000);
+      }
     }
   }
   else
@@ -286,9 +301,10 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
     }
     var star = document.createElement('div');
     $(star).addClass('favorite-star');
+    if(isBusy) $(star).addClass('favorite-star-busy');
     $(star).attr('title', 'Add ' + userNameCurrentPage + ' to your favorites');
     (isFavorite ? $(star).addClass('is-favorite') : $(star).addClass('add-as-favorite'));
-    $('.articles__header-col')[0].after(star);
+    $(headerClassFavoriteSection)[0].after(star);
 
     $('.favorite-star').click(function(){
       $('.favorite-star').prop('disabled', true);
@@ -298,6 +314,7 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
         if(addToFavorites(userNameCurrentPage)){
           $('.favorite-star').addClass('is-favorite');
           $('.favorite-star').removeClass('add-as-favorite');
+          $(star).attr('title', 'Remove ' + userNameCurrentPage + ' from your favorites');
           isFavorite=true;
         }
       }
@@ -306,6 +323,7 @@ function displayButtonAddRemoveFavorites(userNameCurrentPage)
         isFavorite=false;
         $('.favorite-star').removeClass('is-favorite');
         $('.favorite-star').addClass('add-as-favorite');
+        $(star).attr('title', 'Add ' + userNameCurrentPage + ' to your favorites');
         deleteFromFavorites(userNameCurrentPage);
       }
       $('.favorite-star').prop('disabled', false);

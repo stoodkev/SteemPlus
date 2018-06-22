@@ -131,7 +131,7 @@
   };
 
   function addExternalLinksMenu() {
-
+    console.log('externalLinks');
     if(regexBlogSteemit.test(window.location.href)&&retryCountExternalLink<20)
     {
 
@@ -142,7 +142,7 @@
       console.log('Adding external links menu: ' + name);
 
       window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus){
-        var menu = menus.eq(1); // second menu
+        var menu = menus.eq(2); // third menu
         var el = menu.find('li.' + menuClass);
         if(el.length){
           el.remove();

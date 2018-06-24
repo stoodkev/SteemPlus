@@ -290,11 +290,15 @@ li.big-view .PostSummary__footer{
 	margin-top: 25px;
 }
 
+/* Main container which holds the feedplus filters on busy */
+
 .busy-filters-container {
 	background: white;
 	border: 1px solid #e9e7e7;
 	border-radius: 4px;
 }
+
+/* Label styling in line with busy labels for filter options on busy */
 
 .busy-filters-container label {
 	font-size: 16px;
@@ -308,6 +312,8 @@ li.big-view .PostSummary__footer{
 	margin-top: 0.5rem;
 }
 
+/* Override default horizonal rule styling */
+
 .busy-rule {
 	border-width: 0.5px !important;
     border-style: solid !important;
@@ -315,9 +321,13 @@ li.big-view .PostSummary__footer{
     border-image: initial !important;
 }
 
+/* Busy filters styling */
+
 .busy-filters-header {
 	border-bottom: 0.5px solid #e9e7e7;
 }
+
+/* Header text for busy filters */
 
 .busy-filters-header span {
 	display: inline-block;
@@ -328,14 +338,20 @@ li.big-view .PostSummary__footer{
 
 }
 
+/* Log within busy filters header */
+
 .busy-filters-header img {
     height: 1.25rem;
     margin: 0.5rem 0.5rem 0.5rem 1.25rem;
 }
 
+/* Container which holds the filters inside the main filter container */
+
 .busy-filter-list {
 	padding: 1rem;
 }
+
+/* Busy specific text area styling */ 
 
 .busy-list-tags {
 	padding: 0.5rem;

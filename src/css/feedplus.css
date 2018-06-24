@@ -43,7 +43,7 @@ cursor:pointer; display:inline-block;
     100% { transform: rotate(360deg); }
 }
 .PostsIndex__topics{width:12em;}
-.filter_content{display:none; max-width: inherit;margin-top: 1em;}
+.filter_content{display:none; max-width: inherit;margin-top: 0.5em; margin-bottom: 0.5em;}
 .PostSummary__image{margin-right: 1em;}
 .PostsIndex__left li{margin-bottom: 1em;}
 .PostSummary__reblogged_by{margin-left: 1em;}
@@ -69,7 +69,7 @@ input::-webkit-inner-spin-button {
 .sidebar-content select{}
 .sidebar-content option{color: #3756a0;background-color: white; }
 .sidebar-content .category_filter{font-size: 1.2em; margin-left: 1em;}
-.sidebar-content .filter_content, .sidebar-content .parameters{font-size: 1.1em; margin-left: 1em;}
+.sidebar-content .filter_content, .sidebar-content .parameters{font-size: 1.1em; margin-left: 1em; margin-top: 0.5em;}
 
 .sidebar-content #nb_posts, .filter_content input,.sidebar-content .filter_content textarea{background-color: hsla(0,0%,100%,.05);font-size: 1em; }
 .sidebar-content .filter_content label{margin-left: 0.5em; font-size: 1.1em;}
@@ -105,7 +105,7 @@ input::-webkit-inner-spin-button {
 
 }
 #validate_settings{
-    margin-top: 3em;
+    margin-top: 1em;
     /*border: solid #3498db 3px;*/
     cursor: pointer;
     display: inline-block;
@@ -266,13 +266,81 @@ li.big-view .PostSummary__footer{
   color: black;
 }
 
-.filters-busy
-{
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+.filters-busy {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	color: #8798a4;
+	font-size: 16px;
+	font-weight: 500;
 }
 
-.select-busy-fd
-{
-  margin-top: 0.5em;
+.select-busy-fd {
+	margin-top: 0.5em;
 }
+
+.title-busy {
+	font-size: 16px;
+	color: #000;
+	cursor: pointer;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+}
+
+.story_busy {
+	margin-top: 25px;
+}
+
+.busy-filters-container {
+	background: white;
+	border: 1px solid #e9e7e7;
+	border-radius: 4px;
+}
+
+.busy-filters-container label {
+	font-size: 16px;
+	line-height: 1.5;
+	color: rgba(0, 0, 0, .65);
+	margin-left: 10px;
+	font-weight: normal;
+}
+
+.busy-filter-list .parameters {
+	margin-top: 0.5rem;
+}
+
+.busy-rule {
+	border-width: 0.5px !important;
+    border-style: solid !important;
+    border-color: rgb(233, 231, 231) !important;
+    border-image: initial !important;
+}
+
+.busy-filters-header {
+	border-bottom: 0.5px solid #e9e7e7;
+}
+
+.busy-filters-header span {
+	display: inline-block;
+	color: #8798a4;
+	font-size: 16px;
+	font-weight: 500;
+	margin: 0.5rem 0;
+
+}
+
+.busy-filters-header img {
+    height: 1.25rem;
+    margin: 0.5rem 0.5rem 0.5rem 1.25rem;
+}
+
+.busy-filter-list {
+	padding: 1rem;
+}
+
+.busy-list-tags {
+	padding: 0.5rem;
+    border: 1px solid #e9e7e7;
+    border-radius: 4px;
+}
+
+

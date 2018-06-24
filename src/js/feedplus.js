@@ -333,6 +333,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             }
 
             var more = chrome.extension.getURL("src/img/more.png");
+			var logoGrayscale = chrome.extension.getURL("/src/img/grayscale_logo.png");
             var gridfeedimg = chrome.extension.getURL('src/img/view-grid.png');
             var listfeedimg = chrome.extension.getURL('src/img/view-list.png');
             var bigfeedimg = chrome.extension.getURL('src/img/view-big.png');
@@ -365,7 +366,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr><div class="parameters">Posts: <input id="nb_posts" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
                     '<button class="button" id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
             else if (isBusy)
-                var filters = '<ul class="Topics"><li  class="Topics__title" >Sort By</li><hr><div class="select_box select-busy-fd"><select class="input-settings-fp" id="sort" >' +
+                var filters = '<div class="busy-filters-container"><div class="busy-filters-header"><img src="' + logoGrayscale + '"><span>Feed+</span></div><div class="busy-filter-list"><ul class="Topics"><li class="Topics__title title-busy">Sort By</li><hr class="busy-rule"><div class="select_box select-busy-fd"><select class="input-settings-fp" id="sort" >' +
                     '<option value="recent">Recent</option>' +
                     '<option value="old">Old</option>' +
                     '<option value="payout">Payout</option>' +
@@ -375,26 +376,26 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     //'<option value="idol">Idol</option>'+
                     '</select>\
                     </div>\
-                    <li class="Topics__title" style="margin-top: 1.5em;">Filters</li><hr>' +
+                    <li class="Topics__title title-busy" style="margin-top: 0.5em;">Filters</li><hr class="busy-rule">' +
                     '<div class="filters filters-busy"><div class="category_filter" id="tag_block"><img src="' + more + '"/> Tags </div></div><div class="filter_content">' +
                     '<input type="radio" name="tag" value="show" id="all_tag"><label for="all_tag">Show all tags</label> <br>' +
-                    '<input type="radio" name="tag" value="list" id="show_tag"><label for="show_tag">Show only</label><textarea rows="4" id="list_tags" placeholder="steem life" style="width: 100%"></textarea><br>' +
-                    '</div><hr>' +
+                    '<input type="radio" name="tag" value="list" id="show_tag"><label for="show_tag">Show only</label><textarea rows="4" class="busy-list-tags" id="list_tags" placeholder="steem life" style="width: 100%"></textarea><br>' +
+                    '</div><hr class="busy-rule">' +
                     '<div class="filters filters-busy"><div class="category_filter" id="classification_block"><img src="' + more + '"/> Classification </div></div><div class="filter_content">' +
                     '<input type="checkbox" name="classif" value="human" id="show_human_classif"><label for="human_classif" class="human_classif">Human</label> <br>' +
                     '<input type="checkbox" name="classif" value="bot" id="show_bot_classif"><label for="bot_classif" class="bot_classif">Bot</label><br>' +
                     '<input type="checkbox" name="classif" value="spammer" id="show_spammer_classif"><label for="spammer_classif" class="spammer_classif">Spammer</label><br>' +
                     '<input type="checkbox" name="classif" value="pending" id="show_pending_classif"><label for="pending_classif" class="pending_classif">Pending</label><br>' +
-                    '</div><hr>' +
+                    '</div><hr class="busy-rule">' +
                     '<div class="filters filters-busy"><div class="category_filter" id="resteem_block"><img src="' + more + '"/> Resteems </div></div><div class="filter_content"> <input type="radio" name="resteem" value="show" id="show"><label for="show">Show all</label> <br>' +
                     '<input type="radio" name="resteem" value="hide" id="hide"><label for="hide">Hide all</label> <br>' +
                     '<input type="radio" name="resteem" value="blacklist_radio" id="blacklist_radio"><label for="blacklist_radio"> Blacklist</label><textarea rows="4" id="blacklist" style="width: 100%"></textarea><br>' +
-                    '<input type="radio" name="resteem"  value="whitelist_radio" id="whitelist_radio"><label for="whitelist_radio"> Whitelist</label><textarea rows="4" id="whitelist" style="width: 100%"></textarea><br><br>' +
-                    '</div><hr>' +
+                    '<input type="radio" name="resteem"  value="whitelist_radio" id="whitelist_radio"><label for="whitelist_radio"> Whitelist</label><textarea rows="4" id="whitelist" style="width: 100%"></textarea><br>' +
+                    '</div><hr class="busy-rule">' +
                     '<div class="filters filters-busy"><div class="category_filter" id="other_block"><img src="' + more + '"/> Others </div><div class="filter_content"><input type="checkbox" id="rep_feed_check" ><label for="rep_feed_check">Reputation: </label> <input type="number" class="input-settings-fp" id="rep_feed"><br>' +
                     '<input type="checkbox" id="voted_check" ><label for="voted_check">Hide upvoted </label></div></div>' +
-                    '<li class="Topics__title" style="list-style-type: none; margin-top: 1.5em;">Parameters</li><hr><div class="parameters">Posts: <input id="nb_posts" class="input-settings-fp" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
-                    '<button class="Action Action--primary validate-fd-busy" id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul>';
+                    '<li class="Topics__title title-busy" style="list-style-type: none; margin-bottom: 0.5rem; margin-top: 0.5em;">Parameters</li><hr class="busy-rule"><div class="parameters">Posts: <input id="nb_posts" class="input-settings-fp" type="number" style=" margin-left:0.5em;display:inline-block; text-align: right;width:3em;">00</div>' +
+                    '<button class="Action Action--primary validate-fd-busy" id="validate_settings">Apply</button><div class="loader_2"><div></div></div></ul></div></div>';
 
             $(menu_feedplus).html(filters);
             $('.feedstyle').hide();

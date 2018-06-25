@@ -43,6 +43,15 @@
     }
   };
 
+  var getUserTopMenusBusy = function(cb) {
+    var menus = $('.UserMenu__menu');
+    if(menus.length > 0)
+      cb(menus);
+    else
+      setTimeout(function(){
+        getUserTopMenusBusy(cb);
+      },domCheckTimeout);
+  }
 
   var getUserTopMenusForAccountName = function(accountName, cb) {
     var name = getPageAccountName();
@@ -672,7 +681,8 @@
     addSettings: addSettings,
     getSettingsValue: getSettingsValue,
     setSettingsValue: setSettingsValue,
-    getReputation: getReputation
+    getReputation: getReputation,
+    getUserTopMenusBusy, getUserTopMenusBusy
   };
 
 

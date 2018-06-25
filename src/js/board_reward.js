@@ -1,4 +1,4 @@
-token_board_reward=null;
+var token_board_reward=null;
 
 var retryCountBoardReward=0;
 
@@ -49,9 +49,30 @@ function startBoardReward()
 
 function createBoardRewardTab()
 {
-	if(regexBlogSteemit.test(window.location.href)&&retryCountBoardReward<5)
+	if(regexBlogSteemit.test(window.location.href)&&retryCountBoardReward<20)
 	{
 		if($('.menu').length===0)
+		{
+			retryCountBoardReward++;
+			setTimeout(function(){
+				createBoardRewardTab();
+			}, 1000);
+		}
+		else
+		{
+			window.SteemPlus.Tabs.createTab({
+		      id: 'board-reward',
+		      title: 'Awards',
+		      enabled: true,
+		      createTab: createBoardRewardPage
+		    });
+		    if(window.location.href.includes('#board-reward'))
+				window.SteemPlus.Tabs.showTab('board-reward');
+		}
+	}
+	else if(regexBlogBusy.test(window.location.href)&&retryCountBoardReward<20)
+	{
+		if($('.UserMenu__menu').length===0)
 		{
 			retryCountBoardReward++;
 			setTimeout(function(){

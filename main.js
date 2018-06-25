@@ -385,7 +385,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'resteem_indicator', order: 'click',data:{steemit:steemit, busy:busy}});
         if(tip_user&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'tip_user', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
-    
+        if(board_reward&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'click',data:{}});
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

@@ -33,6 +33,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		retryCountBoardReward=0;
 		if(request.order==='start'&&token_board_reward==null)
 		{
+			token_board_reward=request.token;
+			startBoardReward();
+		}
+		else if(request.order==='click'&&token_board_reward==request.token)
+		{
 			startBoardReward();
 		}
 	}
@@ -41,6 +46,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
+	console.log($('.board-reward-tab'));
 	if(!$('.board-reward-tab').length > 0)
 	{
 		createBoardRewardTab();
@@ -125,7 +131,7 @@ function createBoardRewardPage(boardRewardTab)
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       },
-      url: 'http://steemitboard.com/get-awards-user.php?name=' + usernameBoardReward,
+      url: 'https://steemitboard.com/get-awards-user.php?name=' + usernameBoardReward,
       success: function(result) {
 
       	var divBoostrapWrapper = document.createElement('div');

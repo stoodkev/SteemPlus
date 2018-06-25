@@ -69,7 +69,6 @@ function startFavoriteSection()
 {
   chrome.storage.local.get(['favorite_list'], function(items){
     favorite_list = (items.favorite_list==undefined ? [] : items.favorite_list);
-    console.log(favorite_list);
     // Display favorites
     favorite_list.forEach(function(favorite, indexFavList, fav_list)
     {
@@ -95,7 +94,6 @@ function startFavoriteSection()
             fav_list[indexFavList].url = "https://steemit.com"+(result[0] === undefined ? '' : result[0].url);
             fav_list[indexFavList].read = false;
           }
-          console.log('https://busy.org/@' + fav_list[indexFavList].username + '/' + fav_list[indexFavList].url.split('/').slice(-1)[0]);
           if(window.location.href === ('https://busy.org/@' + fav_list[indexFavList].username + '/' + fav_list[indexFavList].url.split('/').slice(-1)[0]) || window.location.href === 'https://busy.org/@' + fav_list[indexFavList].username)
           {
             fav_list[indexFavList].read = true;
@@ -220,7 +218,6 @@ function displayFavoriteSection()
     }
     else if(isBusy)
     {
-      console.log(favorite);
       var userLinkElement = $('<div class="User">\
         <div class="User__top">\
           <div class="User__links">\

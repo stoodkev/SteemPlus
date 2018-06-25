@@ -181,60 +181,59 @@
               <i class="iconfont icon-caretbottom" style="color: #99aab5!important;font-weight: 600!important;font-size: 12px;"></i>\
             </a>\
           </li>');
-
-          var popupSteemplusMenu = $('<div style="position: absolute; top: 0px; left: 0px; width: 100%;">\
-            <div>\
-              <div class="ant-popover ant-popover-busy ant-popover-placement-bottom ant-popover-hidden" style="position: fixed; left: '+ ($('.menu-steemplus-busy')[0].clientWidth*1.5 + $('.menu-steemplus-busy')[0].offsetLeft + $('.menu-steemplus-busy')[0].offsetWidth) +'px; top: '+ ($('.menu-steemplus-busy')[0].offsetParent.offsetParent.offsetParent.offsetTop + $('.menu-steemplus-busy')[0].offsetHeight) +'px; transform-origin: 50% -4px 0px;">\
-                <div class="ant-popover-content"><div class="ant-popover-arrow"></div>\
-                <div class="ant-popover-inner">\
-                  <div>\
-                    <div class="ant-popover-inner-content">\
-                      <div>\
-                        <div role="presentation" class="Popover__overlay"></div>\
-                          <ul class="PopoverMenu">\
-                          </ul>\
-                        </div>\
+        }
+        var popupSteemplusMenu = $('<div style="position: absolute; top: 0px; left: 0px; width: 100%;">\
+          <div>\
+            <div class="ant-popover ant-popover-busy ant-popover-placement-bottom ant-popover-hidden" style="position: fixed; left: '+ ($('.menu-steemplus-busy')[0].clientWidth*1.5 + $('.menu-steemplus-busy')[0].offsetLeft + $('.menu-steemplus-busy')[0].offsetWidth) +'px; top: '+ ($('.menu-steemplus-busy')[0].offsetParent.offsetParent.offsetParent.offsetTop + $('.menu-steemplus-busy')[0].offsetHeight) +'px; transform-origin: 50% -4px 0px;">\
+              <div class="ant-popover-content"><div class="ant-popover-arrow"></div>\
+              <div class="ant-popover-inner">\
+                <div>\
+                  <div class="ant-popover-inner-content">\
+                    <div>\
+                      <div role="presentation" class="Popover__overlay"></div>\
+                        <ul class="PopoverMenu">\
+                        </ul>\
                       </div>\
                     </div>\
                   </div>\
                 </div>\
               </div>\
             </div>\
-          </div>');
+          </div>\
+        </div>');
 
-          $('body').append(popupSteemplusMenu);
-          $('.menu-steemplus-busy').unbind('click').click(function(e){
-            e.preventDefault();
-            $('.UserMenu__item--active').removeClass('UserMenu__item--active');
-            $(this).addClass('UserMenu__item--active');
-            $(popupSteemplusMenu).find('.ant-popover-hidden').removeClass('ant-popover-hidden');
-          });
+        $('body').append(popupSteemplusMenu);
+        $('.menu-steemplus-busy').unbind('click').click(function(e){
+          e.preventDefault();
+          $('.UserMenu__item--active').removeClass('UserMenu__item--active');
+          $(this).addClass('UserMenu__item--active');
+          $(popupSteemplusMenu).find('.ant-popover-hidden').removeClass('ant-popover-hidden');
+        });
 
-          $('body').on('click', function(e) {
-            var t = $(e.target);
-            if(!t.closest('.UserMenu__item--active').length){
-              $(popupSteemplusMenu).find('.ant-popover-busy').addClass('ant-popover-hidden');
-            }
-          });
+        $('body').on('click', function(e) {
+          var t = $(e.target);
+          if(!t.closest('.UserMenu__item--active').length){
+            $(popupSteemplusMenu).find('.ant-popover-busy').addClass('ant-popover-hidden');
+          }
+        });
 
-          tabs.forEach(function(tab) {
-            if(!tab.enabled){
-              return;
-            }
-            
-            var menuLi = popupSteemplusMenu.find(tab._menuSelector);
-            if(!menuLi.length){
-              menuLi = $('<li class="PopoverMenuItem PopoverMenuItem--bold ' + tab._menuClass + '">\
-                          <a role="presentation"><span>' + tab.title + '</span></a>\
-                        </li>');
-              menuLi.find('a').unbind('click').on('click', function(e) {
-                e.preventDefault();
-                showTab(tab.id);
-              });
-              $(popupSteemplusMenu).find('.PopoverMenu').append(menuLi);
-            }
-          });
-        }
+        tabs.forEach(function(tab) {
+          if(!tab.enabled){
+            return;
+          }
+          
+          var menuLi = popupSteemplusMenu.find(tab._menuSelector);
+          if(!menuLi.length){
+            menuLi = $('<li class="PopoverMenuItem PopoverMenuItem--bold ' + tab._menuClass + '">\
+                        <a role="presentation"><span>' + tab.title + '</span></a>\
+                      </li>');
+            menuLi.find('a').unbind('click').on('click', function(e) {
+              e.preventDefault();
+              showTab(tab.id);
+            });
+            $(popupSteemplusMenu).find('.PopoverMenu').append(menuLi);
+          }
+        });
       });
     }
   };

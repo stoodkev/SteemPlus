@@ -283,8 +283,8 @@ function startOfflineFeatures(items, user, account)
     chrome.runtime.sendMessage({ token:token, to: 'favorite_section', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
   if(classification_user&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
-  if(witnesses_tab&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user, account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
+  if(witnesses_tab&&(steemit||busy))
+      chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'start',data:{user:user, account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS, steemit:steemit, busy:busy}});
   if(article_count&&(steemit||busy))
       chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'start',data:{steemit:steemit, busy:busy}});
   if(wallet_history&&steemit)
@@ -367,8 +367,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
         if(classification_user&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'classification_user', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
-        if(witnesses_tab&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user,account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS}});
+        if(witnesses_tab&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'witnesses_tab', order: 'click',data:{user:user,account:account,totalSteem:totalSteemLS,totalVests:totalVestsLS, steemit:steemit, busy:busy}});
         if(article_count&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'click',data:{steemit:steemit,busy:busy}});
         if(wallet_history&&steemit)

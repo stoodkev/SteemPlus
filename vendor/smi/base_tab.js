@@ -11,29 +11,57 @@
   var showTab = function(tabId){
     console.log('showtab');
     var tab = tabsById[tabId];
-    var container = $('.UserProfile');
-    var divs = container.children();
+    var container = null;
     var otherTabs = [];
     var realSelectedTab;
     var tabDiv;
-    for (var i = divs.length - 1; i >= 0; i--) {
-      var div = $(divs[i]);
-      if(div.is('.UserProfile__top-nav + div')){
-        break
-      }else if(!div.hasClass('smi-tabs-div')){
-        realSelectedTab = div;
-        break;
-      }else if(div.hasClass(tab._tabClass)){
-        tabDiv = div;
-      }else{
-        otherTabs.push(div);
+    if(isSteemit) container = $('.UserProfile');
+    else if(isBusy) container = $('.feed-layout');
+    
+    var divs = container.children();
+
+    if(isSteemit)
+    {
+      for (var i = divs.length - 1; i >= 0; i--) {
+        var div = $(divs[i]);
+        if(!div.hasClass('smi-tabs-div')){
+          realSelectedTab = div;
+          break;
+        }else if(div.hasClass(tab._tabClass)){
+          tabDiv = div;
+        }else{
+          otherTabs.push(div);
+        }
+      }
+      if(tabDiv){
+        tabDiv.remove();
       }
     }
-    if(tabDiv){
-      tabDiv.remove();
-    }
+    else if(isBusy)
+    {
+      for (var i = divs.length - 1; i >= 0; i--) {
+        var div = $(divs[i]);
+        if(div.is('.UserProfile__top-nav + div')){
+          break
+        }else if(!div.hasClass('smi-tabs-div')){
+          realSelectedTab = div;
+          break;
+        }else if(div.hasClass(tab._tabClass)){
+          tabDiv = div;
+        }else{
+          otherTabs.push(div);
+        }
+      }
+      if(tabDiv){
+        tabDiv.remove();
+      }
+      container.children().hide();
+    } 
+    
     tabDiv = $('<div class="smi-tabs-div ' + tab._tabClass + '"></div>');
-    container.append(tabDiv);
+    
+    if(isSteemit) container.append(tabDiv);
+    else if(isBusy) container.after(tabDiv);
 
 
     tab.createTab(tabDiv);
@@ -46,8 +74,18 @@
       realSelectedTab.hide();
     }
 
-    $('.UserProfile__top-menu ul.menu li a').removeClass('active');
-    $(tab._menuSelector + ' a').addClass('active');
+    if(isSteemit)
+    {
+      $('.UserProfile__top-menu ul.menu li a').removeClass('active');
+      $(tab._menuSelector + ' a').addClass('active');
+    }
+    else if(isBusy)
+    {
+      $('.UserMenu__item--active').removeClass('UserMenu__item--active');
+      $('.menu-steemplus-busy').addClass('UserMenu__item--active');
+    }
+
+    
     tabDiv.show();
     window.location.hash = '#' + tab.id;
 
@@ -130,7 +168,7 @@
     else if(isBusy)
     {
       window.SteemPlus.Utils.getUserTopMenusBusy(function(menus){
-        console.log(menus);
+        console.log($('.menu-steemplus-busy'));
         if($('.menu-steemplus-busy').length > 0)
         {
           var menuSteemplus = $('.menu-steemplus-busy');
@@ -146,7 +184,7 @@
 
           var popupSteemplusMenu = $('<div style="position: absolute; top: 0px; left: 0px; width: 100%;">\
             <div>\
-              <div class="ant-popover ant-popover-busy ant-popover-placement-bottom ant-popover-hidden" style="position: fixed; left: '+ ($('.menu-steemplus-busy')[0].clientWidth + $('.menu-steemplus-busy')[0].offsetLeft + $('.menu-steemplus-busy')[0].offsetWidth) +'px; top: '+ ($('.menu-steemplus-busy')[0].offsetParent.offsetParent.offsetParent.offsetTop + $('.menu-steemplus-busy')[0].offsetHeight) +'px; transform-origin: 50% -4px 0px;">\
+              <div class="ant-popover ant-popover-busy ant-popover-placement-bottom ant-popover-hidden" style="position: fixed; left: '+ ($('.menu-steemplus-busy')[0].clientWidth*1.5 + $('.menu-steemplus-busy')[0].offsetLeft + $('.menu-steemplus-busy')[0].offsetWidth) +'px; top: '+ ($('.menu-steemplus-busy')[0].offsetParent.offsetParent.offsetParent.offsetTop + $('.menu-steemplus-busy')[0].offsetHeight) +'px; transform-origin: 50% -4px 0px;">\
                 <div class="ant-popover-content"><div class="ant-popover-arrow"></div>\
                 <div class="ant-popover-inner">\
                   <div>\
@@ -165,7 +203,8 @@
           </div>');
 
           $('body').append(popupSteemplusMenu);
-          $('.menu-steemplus-busy').unbind('click').click(function(){
+          $('.menu-steemplus-busy').unbind('click').click(function(e){
+            e.preventDefault();
             $('.UserMenu__item--active').removeClass('UserMenu__item--active');
             $(this).addClass('UserMenu__item--active');
             $(popupSteemplusMenu).find('.ant-popover-hidden').removeClass('ant-popover-hidden');
@@ -182,10 +221,10 @@
             if(!tab.enabled){
               return;
             }
-
+            
             var menuLi = popupSteemplusMenu.find(tab._menuSelector);
             if(!menuLi.length){
-              menuLi = $('<li class="PopoverMenuItem PopoverMenuItem--bold">\
+              menuLi = $('<li class="PopoverMenuItem PopoverMenuItem--bold ' + tab._menuClass + '">\
                           <a role="presentation"><span>' + tab.title + '</span></a>\
                         </li>');
               menuLi.find('a').unbind('click').on('click', function(e) {
@@ -245,27 +284,38 @@
 
 
   var removeSMITabs = function(){
-    var container = $('.UserProfile');
-    var divs = container.children();
-    var realSelectedTab;
-    for (var i = divs.length - 1; i >= 0; i--) {
-      var div = $(divs[i]);
-      if(div.is('.UserProfile__top-nav + div')){
-        break
-      }else if(!div.hasClass('smi-tabs-div')){
-        realSelectedTab = div;
-        break;
+    var container = null;
+    if(isSteemit) container = $('.UserProfile');
+    if(isBusy) container = $('.feed-layout');
+
+    if(isSteemit)
+    {
+      var divs = container.children();
+      var realSelectedTab;
+      for (var i = divs.length - 1; i >= 0; i--) {
+        var div = $(divs[i]);
+        if(!div.hasClass('smi-tabs-div')){
+          realSelectedTab = div;
+          break;
+        }
       }
+      $('.smi-tabs-div').remove();
+      if(realSelectedTab){
+        realSelectedTab.show();
+      }
+      $('.UserProfile__top-menu ul.menu li a').removeClass('active');
     }
-    $('.smi-tabs-div').remove();
-    if(realSelectedTab){
-      realSelectedTab.show();
+    else if(isBusy)
+    {
+      $('.smi-tabs-div').remove();
+      container.children().show();
+      $('.menu-steemplus-busy').removeClass('UserMenu__item--active');
     }
-    $('.UserProfile__top-menu ul.menu li a').removeClass('active');
   };
 
 
   var onMenuItemClick = function() {
+    if(isBusy&&$(this).hasClass('menu-steemplus-busy')) return;
     var li = $(this).parent();
     if(!li.hasClass('smi-menu-li')){
       if(li.is('li') && li.find('a').attr('aria-haspopup') == 'true'){
@@ -277,9 +327,17 @@
       }
     }
   };
-  $('body').on('click', '.UserProfile__top-menu ul.menu li a', onMenuItemClick);
-  $('body').on('click', '.dropdown-pane.is-open .VerticalMenu.menu.vertical li a', onMenuItemClick);
-  $('body').on('click', '.UserProfile__stats span a', onMenuItemClick);
+  if(isSteemit)
+  {
+    $('body').on('click', '.UserProfile__top-menu ul.menu li a', onMenuItemClick);
+    $('body').on('click', '.dropdown-pane.is-open .VerticalMenu.menu.vertical li a', onMenuItemClick);
+    $('body').on('click', '.UserProfile__stats span a', onMenuItemClick);
+  }
+  else if(isBusy)
+  {
+    $('body').on('click', '.UserMenu__item', onMenuItemClick);
+    $('body').on('click', '.UserHeader__container > div > a', onMenuItemClick);
+  }
 
 
 

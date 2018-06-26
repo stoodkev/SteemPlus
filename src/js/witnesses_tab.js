@@ -223,8 +223,10 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
           if(isMyPageWitnesses)
           {
             var divButtonRemoveWitness = $('<div class="col-4 witness-cells ' + classOddEven + '"></div>');
-            var buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</label>');
-
+            var buttonRemoveWitness = null;
+            if(isSteemit) buttonRemoveWitness = $('<label class="button slim hollow primary removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</label>');
+            else if(isBusy) buttonRemoveWitness = $('<button class="Follow removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</button>');
+            
             $(buttonRemoveWitness).click(function(){
               var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
               if (win) {
@@ -284,7 +286,7 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses)
       </h1>\
       <div class="inputAddNewWitness" style="margin-bottom: 5px;">\
         <input type="text" id="addWitnessName" name="witnessName" placeholder="Witness Name">\
-        <input type="submit" id="addWitnessButton" value="Add">\
+        '+ (isBusy ? '<button class="Follow" id="addWitnessButton">Add</button>' : '<input type="submit" id="addWitnessButton" value="Add">') +'\
       </div>\
     </div>');
 
@@ -395,7 +397,8 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList)
   $('.rank-witness').append((myWitnessRank===null ? '@' + usernameTabWitnesses + ' is inactive' : "#" + myWitnessRank + ' - @' + usernameTabWitnesses));
   if(myWitnessRank===null) $('.rank-witness').css('color', 'red');
 
-  $('.rank-witness').parent().parent().after('<div class="col-9"><label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label></div>');
+  if(isSteemit) $('.rank-witness').parent().parent().after('<div class="col-9"><label class="button slim hollow primary removeAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Unvote</label><label class="button slim hollow primary addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</label></div>');
+  if(isBusy) $('.rank-witness').parent().parent().after('<div class="col-9"><button class="Follow removeWitnessesLink witness-items" id="' + usernameTabWitnesses + '">Unvote</button><button class="Follow addAsWitnessLink witness-items" id="' + usernameTabWitnesses + '">Vote</button></div>');
 
   if(userAccountWitnessTab.witness_votes.includes(usernameTabWitnesses))
   {
@@ -527,7 +530,7 @@ function startTabIn(usernameTabWitnesses, isMyPageWitnesses)
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
       },
-      url: 'http://steemplus-api.herokuapp.com/api/get-received-witness-votes/'+usernameTabWitnesses,
+      url: 'https://steemplus-api.herokuapp.com/api/get-received-witness-votes/'+usernameTabWitnesses,
       success: function(result) {
         witnessVoteReceivedLocal = result;
         if($('#witness-in').prop('checked'))

@@ -127,3 +127,9 @@
 .theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .ellipsis{
   color: white !important;
 }
+
+button#addWitnessButton
+{
+    line-height: 1;
+    color: white;
+}

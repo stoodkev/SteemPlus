@@ -2,6 +2,8 @@ var token_board_reward=null;
 
 var retryCountBoardReward=0;
 
+var dataBoardReward = null;
+
 var badgesList = [
 	{ name:"firstpost", title:"First Post", description:'Write your first post and you will get this award.'},
 	{ name:"firstcomment", title:"First Comment", description:'Write your first comment on someone else post or comment and you will get this award.'},
@@ -34,10 +36,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		if(request.order==='start'&&token_board_reward==null)
 		{
 			token_board_reward=request.token;
+			dataBoardReward = null;
 			startBoardReward();
 		}
 		else if(request.order==='click'&&token_board_reward==request.token)
 		{
+			dataBoardReward = null;
 			startBoardReward();
 		}
 	}
@@ -135,6 +139,9 @@ function createBoardRewardPage(boardRewardTab)
       },
       url: 'https://steemitboard.com/get-awards-user.php?name=' + usernameBoardReward,
       success: function(result) {
+		if(dataBoardReward===null)
+			dataBoardReward = result;
+		else return;
 
       	var divBoostrapWrapper = document.createElement('div');
       	$(divBoostrapWrapper).addClass('bootstrap-wrapper');

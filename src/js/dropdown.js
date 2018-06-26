@@ -35,7 +35,7 @@ function startDropdown(market_d){
           $('.my-slider').unslider({ keys: true, autoplay: true, nav: false, arrows: false});
           $('.my-slider').show();
         });
-        $(li).parent().css('width', '15rem');
+        $(li).parent().css('width', '15rem');   
       }
     }
   },200);

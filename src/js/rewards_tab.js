@@ -3,6 +3,10 @@ var totalVestsRewardsTab=null
 var totalSteemRewardsTab=null;
 var base=null;
 var downloadingDataRewardTab=false;
+var retryCountRewardTab = 0;
+
+var isSteemit=null;
+var isBusy=null;
 
 var rewardsListLocal=null;
 
@@ -14,7 +18,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			token_rewards_tab=request.token;
 			totalVestsRewardsTab = request.data.totalVests;
 			totalSteemRewardsTab = request.data.totalSteem;
+			isSteemit = request.data.steemit;
+			isBusy = request.data.busy
 			base=request.data.base;
+			retryCountRewardTab = 0;
 			startTabReward();
 		}
 
@@ -22,7 +29,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		{
 			totalVestsRewardsTab = request.data.totalVests;
 			totalSteemRewardsTab = request.data.totalSteem;
+			isSteemit = request.data.steemit;
+			isBusy = request.data.busy;
 			base=request.data.base;
+			retryCountRewardTab = 0;
 			startTabReward();
 		}
 	}
@@ -31,17 +41,42 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Start Tab Reward if it can
 function startTabReward()
 {
+	if(retryCountRewardTab >= 20) return;
+
 	if(regexBlogSteemit.test(window.location.href))
 	{
 		// Wait for the nav bar to be ready
 		if($('.UserProfile__top-nav').length === 0)
 			setTimeout(function(){
+				retryCountRewardTab++;
 				startTabReward();
-			}, 250);
+			}, 1000);
 		else
 		{
 			// Create the new tab
 			$('.UserProfile__top-nav > div > div > ul > li').eq(3).hide();
+			window.SteemPlus.Tabs.createTab({
+				id: 'rewards',
+				title: 'Rewards',
+				enabled: true,
+				createTab: createRewardsTab
+			});
+
+			// Display the tab if #rewards in url
+			if(window.location.href.includes('#rewards'))
+				window.SteemPlus.Tabs.showTab('rewards');
+		}
+	}
+	else if(regexBlogBusy.test(window.location.href))
+	{
+		if($('.UserMenu__menu').length === 0)
+			setTimeout(function(){
+				retryCountRewardTab++;
+				startTabReward();
+			},1000);
+		else
+		{
+			// Create the new tab
 			window.SteemPlus.Tabs.createTab({
 				id: 'rewards',
 				title: 'Rewards',

@@ -14,8 +14,6 @@ var offlineModeRetryCount=0;
 
 steem.api.setOptions({ url: 'https://api.steemit.com' });
 const token=makeToken();
-logInfo('test');
-logDebug('testDebug');
 Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMedianHistoryPriceAsync(), steem.api.getRewardFundAsync("post")])
 .then(function(values) {
 
@@ -289,8 +287,8 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'start',data:{steemit:steemit, busy:busy}});
   if(wallet_history&&steemit)
       chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
-  if(rewards_tab&&steemit)
-      chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
+  if(rewards_tab&&(steemit||busy))
+      chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'start',data:{steemit:steemit,busy:busy,totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
   if(author_popup_info&&(steemit||busy))
       chrome.runtime.sendMessage({ token:token, to: 'author_popup_info', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
   if(add_signature&&(steemit||busy))
@@ -373,8 +371,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'article_count', order: 'click',data:{steemit:steemit,busy:busy}});
         if(wallet_history&&steemit)
           chrome.runtime.sendMessage({ token:token, to: 'wallet_history', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,walletHistoryMemoKey:wallet_history_memo_key,account:account}});
-        if(rewards_tab&&steemit)
-          chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
+        if(rewards_tab&&(steemit||busy))
+          chrome.runtime.sendMessage({ token:token, to: 'rewards_tab', order: 'click',data:{steemit:steemit,busy:busy,totalSteem:totalSteemLS,totalVests:totalVestsLS,base:steemPriceLS}});
         if(gif_picker&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'click',data:{}});
         if(author_popup_info&&(steemit||busy))

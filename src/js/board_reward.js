@@ -1,6 +1,8 @@
-token_board_reward=null;
+var token_board_reward=null;
 
 var retryCountBoardReward=0;
+
+var dataBoardReward = null;
 
 var badgesList = [
 	{ name:"firstpost", title:"First Post", description:'Write your first post and you will get this award.'},
@@ -33,6 +35,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		retryCountBoardReward=0;
 		if(request.order==='start'&&token_board_reward==null)
 		{
+			token_board_reward=request.token;
+			dataBoardReward = null;
+			startBoardReward();
+		}
+		else if(request.order==='click'&&token_board_reward==request.token)
+		{
+			dataBoardReward = null;
 			startBoardReward();
 		}
 	}
@@ -41,6 +50,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
+	console.log($('.board-reward-tab'));
 	if(!$('.board-reward-tab').length > 0)
 	{
 		createBoardRewardTab();
@@ -49,9 +59,30 @@ function startBoardReward()
 
 function createBoardRewardTab()
 {
-	if(regexBlogSteemit.test(window.location.href)&&retryCountBoardReward<5)
+	if(regexBlogSteemit.test(window.location.href)&&retryCountBoardReward<20)
 	{
 		if($('.menu').length===0)
+		{
+			retryCountBoardReward++;
+			setTimeout(function(){
+				createBoardRewardTab();
+			}, 1000);
+		}
+		else
+		{
+			window.SteemPlus.Tabs.createTab({
+		      id: 'board-reward',
+		      title: 'Awards',
+		      enabled: true,
+		      createTab: createBoardRewardPage
+		    });
+		    if(window.location.href.includes('#board-reward'))
+				window.SteemPlus.Tabs.showTab('board-reward');
+		}
+	}
+	else if(regexBlogBusy.test(window.location.href)&&retryCountBoardReward<20)
+	{
+		if($('.UserMenu__menu').length===0)
 		{
 			retryCountBoardReward++;
 			setTimeout(function(){
@@ -74,25 +105,27 @@ function createBoardRewardTab()
 
 function createBoardRewardPage(boardRewardTab)
 {
-	boardRewardTab.html('<div class="row">\
-       <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_BoardRewardTab column layout-list">\
-          <article class="articles">\
-          <div class="BoardRewardTab" style="display: none;">\
-            <h1 class="articles__h1" style="margin-bottom:20px">\
-              Awards\
-          		<div class="thanks-board-rewards">\
-       	  			Thanks Project Designer: <a href="/@arcange" class="smi-navigate">@arcange</a> - Web Designer: <a href="/@techybear" class="smi-navigate">@techybear</a> - Graphic Designer: <a href="/@captaink" class="smi-navigate">@captaink</a>\
-        		</div>\
-            </h1>\
-            <hr class="articles__hr"/>\
-            <div class="row boardRewardPage"></div>\
-          </div>\
-          <center class="BoardRewardTabLoading">\
-             <div class="LoadingIndicator circle">\
-                <div></div>\
-             </div>\
-          </center>\
-       </div>\
+	boardRewardTab.html('<div class="feed-layout container">\
+		<div class="row">\
+	        <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_BoardRewardTab column layout-list">\
+	          <article class="articles">\
+	          <div class="BoardRewardTab" style="display: none;">\
+	            <h1 class="articles__h1" style="margin-bottom:20px">\
+	              Awards\
+	          		<div class="thanks-board-rewards">\
+	       	  			Thanks Project Designer: <a href="/@arcange" class="smi-navigate">@arcange</a> - Web Designer: <a href="/@techybear" class="smi-navigate">@techybear</a> - Graphic Designer: <a href="/@captaink" class="smi-navigate">@captaink</a>\
+	        		</div>\
+	            </h1>\
+	            <hr class="articles__hr"/>\
+	            <div class="row boardRewardPage"></div>\
+	          </div>\
+	          <center class="BoardRewardTabLoading">\
+	             <div class="LoadingIndicator circle">\
+	                <div></div>\
+	             </div>\
+	          </center>\
+	       </div>\
+	    </div>\
     </div>');
 
 
@@ -104,8 +137,11 @@ function createBoardRewardPage(boardRewardTab)
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       },
-      url: 'http://steemitboard.com/get-awards-user.php?name=' + usernameBoardReward,
+      url: 'https://steemitboard.com/get-awards-user.php?name=' + usernameBoardReward,
       success: function(result) {
+		if(dataBoardReward===null)
+			dataBoardReward = result;
+		else return;
 
       	var divBoostrapWrapper = document.createElement('div');
       	$(divBoostrapWrapper).addClass('bootstrap-wrapper');

@@ -104,7 +104,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             update();
           });
 
-			$('.ant-modal-body').css('margin-top', '7.5rem');
+			$('.ant-modal-body').css('margin-bottom', '7.5rem');
 			
           var footer = $('<div class="smi-post-footer">\
             <div class="smi-post-footer-wrapper-1">\

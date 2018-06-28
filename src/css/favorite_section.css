@@ -1,3 +1,9 @@
+.add-as-favorite {
+  width: 70px;
+  height: 50px;
+  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+}
+
 .theme-light .add-as-favorite {
   width: 70px;
   height: 50px;
@@ -57,4 +63,10 @@
     border-radius: 5px;
     font-weight: bold;
     margin-left: 5px;
+}
+
+.favorite-star-busy
+{
+  margin-left: 0.5rem;
+  margin-top: 0.7rem;
 }

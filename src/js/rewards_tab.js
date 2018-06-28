@@ -97,7 +97,20 @@ function startTabReward()
 // @parameter rewardTab : graphical element tab
 function createRewardsTab(rewardsTab)
 {
-	rewardsTab.html('<div class="row">\
+	var classSubMenu = null;
+	var activeClass = null;
+	if(isSteemit)
+	{
+		classSubMenu = 'WalletSubMenu menu RewardsTabSubMenu';
+		activeClass = 'active';
+	} 
+	else if(isBusy) 
+	{
+		classSubMenu = 'UserMenu__menu RewardsTabSubMenu';
+		activeClass = 'UserMenu__item--active';
+	}
+
+	rewardsTab.html('<div class="feed-layout container"><div class="row">\
 		<div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_RewardsTab column layout-list">\
 			<article class="articles">\
 				<div class="Rewards" style="display: none;">\
@@ -115,9 +128,9 @@ function createRewardsTab(rewardsTab)
 					</div>\
 					<div class="row">\
 						<div class="columns small-10 medium-12 medium-expand" style="padding:0px;">\
-							<ul class="WalletSubMenu menu RewardsTabSubMenu">\
-								<li><a name="pending" class="subtypeItem active">Pending</a></li>\
-								<li><a name="paid" class="subtypeItem">Paid</a></li>\
+							<ul class="'+ classSubMenu +'">\
+								<li class="UserMenu__item"><a name="pending" class="UserMenu__item subtypeItem ' + activeClass + '">Pending</a></li>\
+								<li class="UserMenu__item"><a name="paid" class="UserMenu__item subtypeItem">Paid</a></li>\
 							</ul>\
 						</div>\
 					</div>\
@@ -140,7 +153,7 @@ function createRewardsTab(rewardsTab)
 				</center>\
 			</article>\
 		</div>\
-	</div>');
+	</div></div>');
 
 	// On change type
 	// Display pending rewards for chosen type
@@ -148,18 +161,37 @@ function createRewardsTab(rewardsTab)
 	    // Change display
 	    var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
 	    var subtypeRewardDefault;
+		rewardsTab.find('.rewards-type:checked').prop('checked', false);
+		$(this).prop('checked', true);
+
 	    if(typeReward === 'author')
 	    {
-	    	$('.subtypeItem').eq(0).show();
-	    	$('.subtypeItem').removeClass('active');
-			$('.subtypeItem').eq(0).addClass('active');
+	    	$('.subtypeItem').eq(0).parent().show();
+	    	if(isSteemit)
+	    	{
+	    		$('.subtypeItem').removeClass('active');
+				$('.subtypeItem').eq(0).addClass('active');
+	    	}
+	    	else if(isBusy)
+	    	{
+	    		$('.subtypeItem').removeClass('UserMenu__item--active');
+				$('.subtypeItem').eq(0).addClass('UserMenu__item--active');
+	    	}
 			subtypeRewardDefault = 'pending';
 	    }
 	    else
 	    {
-			$('.subtypeItem').removeClass('active');
-			$('.subtypeItem').eq(1).addClass('active');
-			$('.subtypeItem').eq(0).hide();
+			$('.subtypeItem').eq(0).parent().hide();
+	    	if(isSteemit)
+	    	{
+	    		$('.subtypeItem').removeClass('active');
+				$('.subtypeItem').eq(1).addClass('active');
+	    	}
+	    	else if(isBusy)
+	    	{
+	    		$('.subtypeItem').removeClass('UserMenu__item--active');
+				$('.subtypeItem').eq(1).addClass('UserMenu__item--active');
+	    	}
 			subtypeRewardDefault = 'paid';
 	    }
 
@@ -168,11 +200,20 @@ function createRewardsTab(rewardsTab)
 
 	// Change subtype
 	// Display chosen subtype for selected type
-	rewardsTab.find('.subtypeItem').click(function(){
+	rewardsTab.find('.subtypeItem').click(function(e){
+		e.preventDefault();
 		var typeReward = (rewardsTab.find('.rewards-type:checked')[0].value);
 		var subTypeReward = $(this).attr('name');
-		$('.subtypeItem').removeClass('active');
-		$(this).addClass('active');
+		if(isSteemit)
+		{
+			$('.subtypeItem').removeClass('active');
+			$(this).addClass('active');
+		}
+		else if(isBusy)
+		{
+			$('.subtypeItem').removeClass('UserMenu__item--active');
+			$(this).addClass('UserMenu__item--active');
+		}
 		displayRewards(rewardsTab, typeReward ,subTypeReward, window.SteemPlus.Utils.getPageAccountName());
 	});
 
@@ -221,7 +262,7 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward)
 				xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
   		},
 
-      url: 'http://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
+      url: 'https://steemplus-api.herokuapp.com/api/get-rewards/'+ usernamePageReward,
       success: function(result) {
       	downloadingDataRewardTab = false;
 		initListReward(result, rewardsTab, type, subtype);

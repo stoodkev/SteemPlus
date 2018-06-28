@@ -9,7 +9,6 @@
 
 
   var showTab = function(tabId){
-    console.log('showtab');
     var tab = tabsById[tabId];
     var container = null;
     var otherTabs = [];
@@ -81,7 +80,7 @@
     }
     else if(isBusy)
     {
-      $('.UserMenu__item--active').removeClass('UserMenu__item--active');
+      $('.UserMenu__menu.UserMenu__item--active > span').parent().removeClass('UserMenu__item--active');
       $('.menu-steemplus-busy').addClass('UserMenu__item--active');
     }
 
@@ -151,7 +150,6 @@
           if(!menuLi.length){
             menuLi = $('<li class="smi-menu-li ' + tab._menuClass + '"><a href="#">' + tab.title + '</a></li>');
             menuLi.find('a').unbind('click').on('click', function(e) {
-              console.log('onclick menu item');
               e.preventDefault();
               hideOrShowDropdownPanel();
               showTab(tab.id);
@@ -168,7 +166,6 @@
     else if(isBusy)
     {
       window.SteemPlus.Utils.getUserTopMenusBusy(function(menus){
-        console.log($('.menu-steemplus-busy'));
         if($('.menu-steemplus-busy').length > 0)
         {
           var menuSteemplus = $('.menu-steemplus-busy');
@@ -334,7 +331,7 @@
   }
   else if(isBusy)
   {
-    $('body').on('click', '.UserMenu__item', onMenuItemClick);
+    $('body').on('click', '.UserMenu__item > span', onMenuItemClick);
     $('body').on('click', '.UserHeader__container > div > a', onMenuItemClick);
   }
 

@@ -82,6 +82,7 @@ function startAuthorPopupInfo()
 	}
 }
 
+let currentRequest = null;
 
 function openAuthorPopupInfo(element)
 {
@@ -111,11 +112,14 @@ function openAuthorPopupInfo(element)
 	}
 
 	// Get followers from steemSQL
-	$.ajax({
+	currentRequest = $.ajax({
 	  type: "GET",
 	  beforeSend: function(xhttp) {
 	    xhttp.setRequestHeader("Content-type", "application/json");
 	    xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+		  	if (currentRequest != null) {
+    				currentRequest.abort();
+    			}
 	  },
 	  // URL of steemplus-api
 	  url: 'https://steemplus-api.herokuapp.com/api/get-followers-followee/'+myUsernameAuthorPopupInfo,

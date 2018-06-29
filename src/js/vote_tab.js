@@ -18,6 +18,8 @@
         rewardBalanceVoteTab=request.data.rewardBalance;
         recentClaimsVoteTab=request.data.recentClaims;
         steemPriceVoteTab=request.data.steemPrice;
+        isSteemit=request.data.steemit;
+        isBusy=request.data.busy;
         startVotesTab();
         voteTabStarted=true;
       }
@@ -26,6 +28,8 @@
         rewardBalanceVoteTab=request.data.rewardBalance;
         recentClaimsVoteTab=request.data.recentClaims;
         steemPriceVoteTab=request.data.steemPrice;
+        isSteemit=request.data.steemit;
+        isBusy=request.data.busy;
         startVotesTab();
       }
       else if(request.order==='notif'&&token_vote_tab==request.token)
@@ -33,6 +37,8 @@
         rewardBalanceVoteTab=request.data.rewardBalance;
         recentClaimsVoteTab=request.data.recentClaims;
         steemPriceVoteTab=request.data.steemPrice;
+        isSteemit=request.data.steemit;
+        isBusy=request.data.busy;
         
         if(voteTabStarted)
         {

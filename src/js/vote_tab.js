@@ -6,6 +6,9 @@
   var steemPriceVoteTab=null;
   var voteTabStarted=false;
 
+  var isSteemit=null;
+  var isBusy=null;
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='vote_tab'){
       aut=request.data.user;
@@ -51,12 +54,23 @@
       if(window.location.href.includes('#votes'))
         window.SteemPlus.Tabs.showTab('votes');
     }
+    else if(regexBlogBusy.test(window.location.href))
+    {
+      window.SteemPlus.Tabs.createTab({
+        id: 'votes',
+        title: 'Votes',
+        enabled: true,
+        createTab: createVotesTab
+      });
+      if(window.location.href.includes('#votes'))
+        window.SteemPlus.Tabs.showTab('votes');
+    }
     
   }
 
 
   function createVotesTab(votesTab) {
-    votesTab.html('<div class="row">\
+    votesTab.html('<div class="row"><div class="feed-layout container">\
        <div class="UserProfile__tab_content UserProfile__tab_content_smi layout-list UserProfile__tab_content_VotesTab column">\
           <article class="articles">\
           <div class="VotesTab" style="display: none;">\
@@ -91,7 +105,7 @@
           </center>\
           <article/>\
        </div>\
-    </div>');
+    </div></div>');
 
     votesTab.find('.VotesTabLoadMore button').on('click', function(){
       var loadMore = $(this).parent();
@@ -102,6 +116,11 @@
     });
 
     votesTab.find('.votes-history-type').on('change', function(e) {
+      if(isBusy)
+      {
+        votesTab.find('.votes-history-type:checked').prop('checked', false);
+        $(this).prop('checked', true);
+      }
       var v = $(e.target).val();
       var container = votesTab.find('.votes-container');
       if(v == 1){

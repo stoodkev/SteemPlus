@@ -46,8 +46,8 @@ function startTipUser()
       else
       {
         // Start feature
-        $('.ptc').click(function(){
-           createTipButton($(this), element[0].pathname.replace('/@', ''));
+        $('.ptc').click(function(e){
+          createTipButton($(this), $(this).eq(0).prop('href').split('/@')[1]);
         });
       }
     }
@@ -95,7 +95,7 @@ function startTipUser()
 // Function used to create the tip button
 function createTipButton(element, username)
 {
-  
+  console.log(element, username);
   // Create div 
   var tipDiv = $('<div class="input-group div-hidden div-tip" style="margin-bottom: 5px;">\
       <input type="button" value="0.5$" name="0.5" class="btn btn-primary btn-sm tip-button">\
@@ -110,7 +110,7 @@ function createTipButton(element, username)
   {
     $('.Author__bio').before(tipDiv);
     $(tipDiv).hide();
-    $('label.button.slim.hollow.secondary').parent().append('<label id="hide-show-tip-btn" class="Topic" title="Send a tip">Tip</label>');
+    $('label.button.slim.hollow.secondary').parent().append('<label id="hide-show-tip-btn" class="button slim hollow secondary " title="Send a tip">Tip</label>');
   
     // Click listener on tip button
     $('#hide-show-tip-btn').click(function(){
@@ -140,6 +140,7 @@ function createTipButton(element, username)
 
     // Click listener on tip button
     $('.tip-btn-busy').unbind('click').click(function(){
+      console.log($(this).parent().find('.div-tip'));
       if($(this).parent().find('.div-tip').hasClass('div-hidden'))
       {
         $(this).parent().find('.div-tip').addClass('div-shown');

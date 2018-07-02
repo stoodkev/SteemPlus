@@ -80,8 +80,9 @@ function addBeneficiariesButton(){
           if($('.benef-steemit-percentage').length===0)
           {
             $('.benef').parent().before('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
-                          <option name="percentage" value="5000">50% SBD and 50% SP</option>\
-                          <option name="percentage" value="10000">100% Steem Power</option>\
+                          <option name="percentage" value="10000">50% SBD and 50% SP</option>\
+                          <option name="percentage" value="5000">100% Steem Power</option>\
+                          <option name="percentage" value="-1">Decline Payout</option>\
                         </select></div>');
           }
 
@@ -109,8 +110,9 @@ function addBeneficiariesButton(){
               if($(this).children().find('.ant-select-selection-selected-value').length > 0)
               {
                 $(this).after('<select class="benef-busy-percentage ant-form-item-control has-success">\
-                              <option name="percentage" value="5000">50% SBD and 50% SP</option>\
-                              <option name="percentage" value="10000">100% Steem Power</option>\
+                              <option name="percentage" value="10000">50% SBD and 50% SP</option>\
+                              <option name="percentage" value="5000">100% Steem Power</option>\
+                              <option name="percentage" value="-1">Decline Payout</option>\
                             </select>');
                 $(this).hide();
               }
@@ -275,6 +277,13 @@ function postBeneficiaries()
     alert("You have set up too many beneficiaries (max number=5, 6 for registered communities)");
   }
 
+  var maximumAcceptedPayout = '100000.000 SBD';
+  if(parseInt(sbd_percent)===-1)
+  {
+    maximumAcceptedPayout = '0.000 SBD';
+    sbd_percent = 10000;
+  }
+
   var operations = [
   ['comment',
   {
@@ -293,7 +302,7 @@ function postBeneficiaries()
   ['comment_options', {
     author: author,
     permlink: permlink,
-    max_accepted_payout: '100000.000 SBD',
+    max_accepted_payout: maximumAcceptedPayout,
     percent_steem_dollars: parseInt(sbd_percent),
     allow_votes: true,
     allow_curation_rewards: true,

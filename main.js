@@ -84,7 +84,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   });
 });
 
-chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'classif','whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
+chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator','add_signature','author_popup_info','rewards_tab','wallet_history','wallet_history_memo_key','article_count','witnesses_tab','classification_user','board_reward','favorite_section','votePowerReserveRateLS','totalSteemLS','totalVestsLS','rewardBalanceLS','recentClaimsLS','steemPriceLS','post_floating_bottom_bar','post_floating_bottom_bar_size','last_post_url','smi_installed_remind_me', 'smi_installed_remind_me_time','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list', 'oneup','weight','del','transfers','acc_v','ben','drop','badge','username', 'nb_posts','resteem','sort','tag','list_tags','voted_check', 'rep_feed', 'rep_feed_check', 'classif','whitelist', 'blacklist','feedp','sessionToken','tokenExpire','market'], function (items) {
   var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
   chrome.runtime.sendMessage({ token:token, to: 'steemConnect', order: 'start',data:{steemConnect:steemConnect,steemit:steemit,busy:busy,utopian:utopian}} );
   market=items.market==undefined?{SBDperSteem:0,priceSteem:0,priceSBD:0}:items.market;
@@ -116,6 +116,7 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
 
       const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
       const followers_table=(items.followers_table == undefined || items.followers_table=='show');
+      const select_reward_dropdown=(items.select_reward_dropdown == undefined || items.select_reward_dropdown=='show');
 
       // Feed+ const
       var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
@@ -129,7 +130,6 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
       var nb_posts=(items.nb_posts!==undefined&&items.nb_posts<10&&items.nb_posts!=='')?items.nb_posts:DEFAULT_FEED_SIZE;
       var classif=(items.classif!==undefined)?items.classif:{bot: true, human: true, pending: true, spammer: true};
 
-
       console.log('Starting features online...',user);
       if(beneficiaries&&(steemit||busy))
         chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
@@ -139,6 +139,8 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
         chrome.runtime.sendMessage({ token:token, to: 'feedp', order: 'start',data:{steemit:steemit,busy:busy,feedp:{weight:weight,user:user,resteem:resteem,whitelist:whitelist,blacklist:blacklist,rep_feed:rep_feed,rep_feed_check:rep_feed_check,tag:tag,list_tags:list_tags,voted_check:voted_check,sort:sort,nb_posts:nb_posts, classif:classif}}});
       if(oneup&&utopian)
         chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
+      if(select_reward_dropdown&&(steemit||busy))
+        chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'start',data:{steemit:steemit, busy:busy}});
 
       if (steemit&&steemit_more_info) {
         if(followers_table)
@@ -153,6 +155,9 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
               chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
             if(steemit&&followers_table&&steemit_more_info)
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
+            if(select_reward_dropdown&&(steemit||busy))
+              chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'click',data:{steemit:steemit, busy:busy}});
+
 
             urlOnline=window.location.href;
           }

@@ -124,7 +124,8 @@
         "src/css/author_popup_info.css",
         "src/css/add_signature.css",
         "src/css/resteem_indicator.css",
-        "src/css/tip_user.css"],
+        "src/css/tip_user.css",
+        "src/css/select_reward_dropdown.css"],
       "run_at": "document_idle"
     }
   ]

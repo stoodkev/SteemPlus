@@ -133,3 +133,8 @@ button#addWitnessButton
     line-height: 1;
     color: white;
 }
+
+.UserProfile__tab_content_Witnesses  
+{
+    margin-bottom: 25px;
+}

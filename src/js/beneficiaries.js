@@ -81,7 +81,7 @@ function addBeneficiariesButton(){
           {
             $('.benef').parent().before('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
                           <option name="percentage" value="10000">50% SBD and 50% SP</option>\
-                          <option name="percentage" value="5000">100% Steem Power</option>\
+                          <option name="percentage" value="0">100% Steem Power</option>\
                           <option name="percentage" value="-1">Decline Payout</option>\
                         </select></div>');
           }
@@ -111,7 +111,7 @@ function addBeneficiariesButton(){
               {
                 $(this).after('<select class="benef-busy-percentage ant-form-item-control has-success">\
                               <option name="percentage" value="10000">50% SBD and 50% SP</option>\
-                              <option name="percentage" value="5000">100% Steem Power</option>\
+                              <option name="percentage" value="0">100% Steem Power</option>\
                               <option name="percentage" value="-1">Decline Payout</option>\
                             </select>');
                 $(this).hide();

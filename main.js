@@ -72,8 +72,8 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.runtime.sendMessage({ token:token, to: 'post_votes_list', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
       if((steemit||busy)&&vote_tab)
         chrome.runtime.sendMessage({ token:token, to: 'vote_tab', order: 'notif',data:{steemit:steemit, busy:busy, rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
-      if(steemit&&mentions_tab)
-        chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
+      if((steemit||busy)&&mentions_tab)
+        chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'notif',data:{steemit:steemit, busy:busy,rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice}});
       if(steemit&&vote_weight_slider)
         chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
       if(steemit&&followers_table&&steemConnect.connect)
@@ -308,7 +308,7 @@ function startOfflineFeatures(items, user, account)
       chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'start',data:{steemit:steemit, busy:busy}});
     if(steemit&&search_bar)
       chrome.runtime.sendMessage({ token:token, to: 'search_bar', order: 'start',data:{}});
-    if(steemit&&mentions_tab)
+    if((steemit||busy)&&mentions_tab)
       chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
     if(steemit&&vote_weight_slider)
       chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
@@ -355,8 +355,8 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'post_floating_bottom_bar', order: 'click',data:{steemit:steemit, busy:busy}});
         if(external_link_tab&&(steemit||busy)&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'external_link_tab', order: 'click',data:{steemit:steemit, busy:busy}});
-        if(mentions_tab&&steemit&&steemit_more_info)
-          chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
+        if(mentions_tab&&(steemit||busy)&&steemit_more_info)
+          chrome.runtime.sendMessage({ token:token, to: 'mentions_tab', order: 'click',data:{steemit:steemit, busy:busy,rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
         if(vote_weight_slider&&steemit&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'click',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
         if(favorite_section&&(steemit||busy))

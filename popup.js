@@ -99,6 +99,7 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
     add_signature=items.add_signature==undefined?'show':items.add_signature;
     resteem_indicator=items.resteem_indicator==undefined?'show':items.resteem_indicator;
     tip_user=items.tip_user==undefined?'show':items.tip_user;
+    select_reward_dropdown=items.select_reward_dropdown==undefined?'show':items.select_reward_dropdown;
 
     // Steemit more info
     steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
@@ -128,6 +129,7 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
         $('input[name=ben]').prop('checked',ben=='show');
         $('input[name=oneup]').prop('checked',oneup=='show');
         $('input[name=feedp]').prop('checked',feedp=='show');
+        $('input[name=select_reward_dropdown]').prop('checked',select_reward_dropdown=='show');
     }
     
     
@@ -476,6 +478,12 @@ $(document).on("change","input[name=resteem_indicator]",function(){
 $(document).on("change","input[name=tip_user]",function(){
     chrome.storage.local.set({
         tip_user:$("input[name=tip_user]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=select_reward_dropdown]",function(){
+    chrome.storage.local.set({
+        select_reward_dropdown:$("input[name=select_reward_dropdown]").prop('checked')?'show':'hide'
     });
 });
 

@@ -63,11 +63,22 @@ function createTab()
       if(window.location.href.includes('#mentions'))
       window.SteemPlus.Tabs.showTab('mentions');
   }
+  else if(regexBlogBusy.test(window.location.href))
+  {
+      window.SteemPlus.Tabs.createTab({
+        id: 'mentions',
+        title: 'Mentions',
+        enabled: true,
+        createTab: createMentionsTab
+      });
+      if(window.location.href.includes('#mentions'))
+      window.SteemPlus.Tabs.showTab('mentions');
+  }
 }
 
 function createMentionsTab(mentionsTab) {
 
-  mentionsTab.html('<div class="row">\
+  mentionsTab.html('<div class="row"><div class="feed-layout container">\
      <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
         <article class="articles">\
         <div class="MentionsTab" style="display: none;">\
@@ -103,7 +114,7 @@ function createMentionsTab(mentionsTab) {
         </center>\
         </article>\
      </div>\
-  </div>');
+  </div></div>');
 
   mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
     // Load more
@@ -112,6 +123,12 @@ function createMentionsTab(mentionsTab) {
     displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
   });
   mentionsTab.find('.mentions-type').on('change', function() {
+    if(isBusy)
+    {
+      mentionsTab.find('.mentions-type:checked').prop('checked', false);
+      $(this).prop('checked', true);
+    }
+
     // Change display
     indexLastItemDisplayed = 0;
     var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
@@ -137,7 +154,7 @@ function displayMentions(mentionsTab, type, usernamePageMentions,reset)
         xhttp.setRequestHeader("Content-type", "application/json");
         xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
       },
-      url: 'http://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
+      url: 'https://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
       success: function(result) {
         if($('.error-mentions-label').length===0) $('.error-mentions-label').remove();
         mentionsTabPostsComments = result;
@@ -246,57 +263,119 @@ function createSummaryMention(mentionItem)
   var bodyMentionItem = stripHTML(mentionItem.body.replace(/!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/, ''));
   bodyMentionItem = bodyMentionItem.replace(/\bhttps?:[^)''"]+\.(?:jpg|jpeg|gif|png)/, '');
 
-
-  var summaryMention = $('<li>\
-    <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
-        <div class="PostSummary__header show-for-small-only">\
-            <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3>\
-        </div>\
-        <div class="PostSummary__time_author_category_small show-for-small-only">\
-          <span class="vcard">\
-            <a href="' + urlMentionItem + '">\
-              <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
-            </a> by \
-            <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">\
+  if(isSteemit)
+    var summaryMention = $('<li>\
+      <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
+          <div class="PostSummary__header show-for-small-only">\
+              <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3>\
+          </div>\
+          <div class="PostSummary__time_author_category_small show-for-small-only">\
+            <span class="vcard">\
+              <a href="' + urlMentionItem + '">\
+                <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
+              </a> by \
+              <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">\
+                <strong>\
+                  <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a>\
+                </strong>\
+              </span> in \
               <strong>\
-                <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a>\
+                <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a>\
               </strong>\
-            </span> in \
-            <strong>\
-              <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a>\
-            </strong>\
-          </span>\
-        </div>\
-        <span name="imgUrl" class="PostSummary__image" style="background-image: url('+ urlImgMentionDisplayed + ');"></span>\
-        <div class="PostSummary__content">\
-            <div class="PostSummary__header show-for-medium">\
-                <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
-            <div class="PostSummary__body entry-content">\
-              <a href="' + urlMentionItem + '">' + bodyMentionItem + '…</a>\
+            </span>\
+          </div>\
+          <span name="imgUrl" class="PostSummary__image" style="background-image: url('+ urlImgMentionDisplayed + ');"></span>\
+          <div class="PostSummary__content">\
+              <div class="PostSummary__header show-for-medium">\
+                  <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
+              <div class="PostSummary__body entry-content">\
+                <a href="' + urlMentionItem + '">' + bodyMentionItem + '…</a>\
+              </div>\
+              <div class="PostSummary__footer"> <span class="Voting">\
+                <span class="Voting__inner">\
+                <div class="DropdownMenu">\
+                  <a><span><span class="FormattedAsset "><span class="prefix">$</span><span class="integer">' + payoutValueMentionTab + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg> </span> </span></a>\
+                  <ul class="VerticalMenu menu vertical VerticalMenu">\
+                      <li> <span> ' + payoutTextMentionTab + ' $' + payoutValueMentionTab + ' </span> </li>\
+                      <li> <span> <span title="' + new Date(mentionItem.created) + '"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span></span></li>\
+                  </ul>\
+              </div>\
+              </span>\
+              </span> <span class="VotesAndComments"> <span class="VotesAndComments__votes" title="' + mentionItem.net_votes + ' votes"> <span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg> </span>' + mentionItem.net_votes + '</span></a>\
+              </span>\
+              </span> <span class="PostSummary__time_author_category"><span class="show-for-medium"> <span class="vcard"> <a href="' + urlMentionItem + '"> <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
+              </a> by <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <strong> <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a> </strong></span> in <strong> <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a> </strong> </span>\
+              </span>\
+              </span>\
+          </div>\
+          </div>\
+      </article>\
+    </li>');
+  else if(isBusy)
+    var summaryMention = $('<div class="Story" id="stoodkev-steemplus-2-17-2-resteem-indicator-and-ranks-badges-on-busy">\
+      <div class="Story__content">\
+        <div class="Story__header">\
+          <a href="/@'+ mentionItem.author +'">\
+            <div class="Avatar" style="min-width: 40px; width: 40px; height: 40px; background-image: url('+encodeURI('https://steemitimages.com/u/'+ mentionItem.author +'/avatar')+');">\
             </div>\
-            <div class="PostSummary__footer"> <span class="Voting">\
-              <span class="Voting__inner">\
-              <div class="DropdownMenu">\
-                <a><span><span class="FormattedAsset "><span class="prefix">$</span><span class="integer">' + payoutValueMentionTab + '</span><span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg> </span> </span></a>\
-                <ul class="VerticalMenu menu vertical VerticalMenu">\
-                    <li> <span> ' + payoutTextMentionTab + ' $' + payoutValueMentionTab + ' </span> </li>\
-                    <li> <span> <span title="' + new Date(mentionItem.created) + '"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span></span></li>\
-                </ul>\
+          </a>\
+          <div class="Story__header__text">\
+            <span class="Story__header__flex">\
+              <a href="/@'+ mentionItem.author +'">\
+                <h4>\
+                  <span class="username">'+ mentionItem.author +'</span>\
+                </h4>\
+              </a>\
+              <span class="Story__topics">\
+                <a class="Topic" href="/trending/'+ mentionItem.category +'">'+ mentionItem.category +'</a>\
+              </span>\
+            </span>\
+            <span>\
+              <span class="Story__date">\
+                <span title="' + new Date(mentionItem.created) + '">' + moment(new Date(mentionItem.created)).fromNow() + '</span>\
+              </span>\
+            </span>\
+          </div>\
+        </div>\
+        <div class="Story__content">\
+          <a href="' + urlMentionItem + '" target="_blank" class="Story__content__title">\
+            <h2>' + mentionTitle + '</h2>\
+          </a>\
+          <a href="' + urlMentionItem + '" target="_blank" class="Story__content__preview">\
+            <div>\
+              <div class="Story__content__img-container">\
+              </div>\
+              <div class="Story__content__body">' + bodyMentionItem + '</div>\
             </div>\
-            </span>\
-            </span> <span class="VotesAndComments"> <span class="VotesAndComments__votes" title="' + mentionItem.net_votes + ' votes"> <span class="Icon chevron-up-circle Icon_1x" style="display: inline-block; width: 1.12rem; height: 1.12rem;"> <svg enable-background="new 0 0 33 33" version="1.1" viewBox="0 0 33 33" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g id="Chevron_Up_Circle"><circle cx="16" cy="16" r="15" stroke="#121313" fill="none"></circle><path d="M16.699,11.293c-0.384-0.38-1.044-0.381-1.429,0l-6.999,6.899c-0.394,0.391-0.394,1.024,0,1.414 c0.395,0.391,1.034,0.391,1.429,0l6.285-6.195l6.285,6.196c0.394,0.391,1.034,0.391,1.429,0c0.394-0.391,0.394-1.024,0-1.414 L16.699,11.293z" fill="#121313"></path></g></svg> </span>' + mentionItem.net_votes + '</span></a>\
-            </span>\
-            </span> <span class="PostSummary__time_author_category"><span class="show-for-medium"> <span class="vcard"> <a href="' + urlMentionItem + '"> <span title="' + new Date(mentionItem.created) + '" class="updated"><span>' + moment(new Date(mentionItem.created)).fromNow() + '</span></span>\
-            </a> by <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <strong> <a href="/@' + mentionItem.author + '">' + mentionItem.author + '</a> </strong></span> in <strong> <a href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a> </strong> </span>\
-            </span>\
-            </span>\
+          </a>\
         </div>\
+        <div class="Story__footer">\
+          <div class="StoryFooter">\
+            <div class="StoryFooter__actions">\
+              <span class="Payout">\
+                <span class="">\
+                  <span>$<span>' + payoutValueMentionTab + '</span></span>\
+                </span>\
+              </span>\
+              <div class="Buttons">\
+                <a role="presentation" class="active Buttons__link"><i class="iconfont icon-praise_fill"></i></a>\
+                <span class="Buttons__number Buttons__reactions-count" role="presentation">\
+                  <span>\
+                    <span>' + mentionItem.net_votes + '</span>\
+                    <span></span>\
+                  </span>\
+                </span>\
+              </div>\
+            </div>\
+          </div>\
         </div>\
-    </article>\
-  </li>');
+      </div>\
+    </div>');
 
   return summaryMention;
 }
+
+// <img alt="" src="' + urlImgMentionDisplayed + '">\
 
 function openPost(url) {
   var postWindow = window.open();

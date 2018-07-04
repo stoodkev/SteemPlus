@@ -132,7 +132,7 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
 
       console.log('Starting features online...',user);
       if(beneficiaries&&(steemit||busy))
-        chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy}});
+        chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
         chrome.runtime.sendMessage({ token:token, to: 'resteem', order: 'start',data:{steemit:steemit,busy:busy,resteem:{resteem:resteem,whitelist:whitelist,blacklist:blacklist}}});
       if((steemit||busy)&&feedp)
@@ -140,7 +140,7 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
       if(oneup&&utopian)
         chrome.runtime.sendMessage({ token:token, to: 'oneup', order: 'start',data:{sessionToken:steemConnect.sessionToken,account:account}});
       if(select_reward_dropdown&&(steemit||busy))
-        chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'start',data:{steemit:steemit, busy:busy}});
+        chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'start',data:{user:user}});
 
       if (steemit&&steemit_more_info) {
         if(followers_table)
@@ -152,11 +152,11 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
           if(urlOnline!==window.location.href)
           {
             if(beneficiaries&&(steemit||busy))
-              chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user, steemit:steemit, busy:busy}});
+              chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
             if(steemit&&followers_table&&steemit_more_info)
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
             if(select_reward_dropdown&&(steemit||busy))
-              chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'click',data:{steemit:steemit, busy:busy}});
+              chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'click',data:{user:user}});
 
 
             urlOnline=window.location.href;

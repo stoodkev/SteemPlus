@@ -14,6 +14,7 @@ var communities=['minnowsupport',
 
 var isSteemit=null;
 var isBusy=null;
+var isSelectRewardDropdownEnabled=null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if(request.to=='ben'){
@@ -24,10 +25,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.order==='start'&&token_benef==null)
     {
       token_benef=request.token;
+      isSelectRewardDropdownEnabled=request.data.select_reward_dropdown_enabled;
       startBeneficiaries();
     }
     if(request.order==='click'&&token_benef==request.token)
+    {
+      isSelectRewardDropdownEnabled=request.data.select_reward_dropdown_enabled;
       onClickB();
+    }
   }
 });
 
@@ -52,29 +57,50 @@ function addBeneficiariesButton(){
       var benef_div = document.createElement('div');
       benef_div.style.width = '100%';
       benef_div.style.marginBottom = '2em;';
-      var benef_button = document.createElement('input');
-      benef_button.value = 'Add beneficiaries';
+      var benef_button = document.createElement('button');
+      benef_button.innerHTML = 'Add beneficiaries';
       benef_button.type='button';
-      benef_button.className = 'UserWallet__buysp button benef';
+      benef_button.className = 'button-steemit benef';
 
       benef_div.appendChild(benef_button);
       $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
       $('.benef').click(function(){
+        
+          if(isSelectRewardDropdownEnabled)
+          {
+            $('.btn-post-steemit').hide();
+          }
 
           $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
           
-          $('.message-beneficiaries').remove()
+          $('.message-beneficiaries').remove();
           $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
           
           if($('.close').length===1) {
-              var buttonPost = $('.vframe__section--shrink button')[2];
-              $(buttonPost).hide();
+            var buttonPost = $('.vframe__section--shrink button')[2];
+            $(buttonPost).hide();
+            if(isSelectRewardDropdownEnabled)
+            {
+              if($('.postbutton').length===0) {
+                $('.clean-button-steemit').before('<button class="postbutton">Post</button>');
+                $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
+              }
+              else
+              {
+                $('.postbutton').show();
+              }
+            }
+            else
+            {
               if($('.post').length===0) {
-                  $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
-                  $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
-                  }
-                  else
-                   $('h5,.post').show();
+                $('.beneficiaries').after('<li class="post"><div class="inline_button"><input type="button" class="UserWallet__buysp button postbutton" value="Post"/></div></li>');
+                $('.postbutton').click(function (){if(isEverythingFilled()) postBeneficiaries();});
+              }
+              else
+              {
+                $('h5,.post').show();
+              }
+            }
           }
 
           if($('.benef-steemit-percentage').length===0)
@@ -150,10 +176,13 @@ function setCloseListener(){
       if($('.close').length===0) {
         if(isSteemit)
         {
+          console.log($('.postbutton'));
           $('.vframe__section--shrink button').show();
-          $('h5,.post').hide();
+          if(isSelectRewardDropdownEnabled)
+            $('.postbutton').hide();
+          else
+            $('h5,.post').hide();
           $('.message-beneficiaries').remove();
-          $('.div-benef-steemit-percentage').remove();
         }
         else if(isBusy)
         {

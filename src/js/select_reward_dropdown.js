@@ -1,3 +1,5 @@
+/* This new feature user need to be connected to steemConnect to be used */
+
 var token_select_reward_dropdown = null;
 var retryCountSelectRewardDropdown = 0;
 
@@ -23,22 +25,28 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+// Function used to start reward dropdown feature
 function startRewardDropdown()
 {
+  // if on steemit create post page and retry count OK,
   if(regexCreatePostSteemit.test(window.location.href)&&retryCountSelectRewardDropdown<20)
   {
+    // Check if element is present
     if($('.vframe__section--shrink').length > 0)
       createDropdownList();
     else
     {
+      // Else retry one second later
       retryCountSelectRewardDropdown++;
       setTimeout(startRewardDropdown, 1000);
     }
   }
 }
 
+// Function used to create the reward dropdown list
 function createDropdownList()
 {
+  // Create list
   var indexElement = $('.vframe__section--shrink').length-2;
   $('.vframe__section--shrink').eq(indexElement).before($('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
                           <option name="percentage" value="10000">50% SBD and 50% SP</option>\
@@ -46,12 +54,15 @@ function createDropdownList()
                           <option name="percentage" value="-1">Decline Payout</option>\
                         </select></div>'));
 
+  // Remove steemit post button
   var buttonPostSteemit = $('.vframe__section--shrink > button > span').eq(0).parent().parent();
   buttonPostSteemit.remove();
 
+  // Create new div for post and clear button
   var postClearDiv = $('<div class="vframe__section--shrink post-clear-div"><button class="UserWallet__buysp btn-post-steemit"><span>Post</span></button><button class="UserWallet__buysp hollow no-border clean-button-steemit">Clear</button></div>');
   $('.vframe__section--shrink').eq($('.vframe__section--shrink').length-1).parent().parent().after(postClearDiv);
 
+  // On click listener for clear button
   $('.clean-button-steemit').unbind('click').click(function(){
     $('.ReplyEditor__title').value = '';
     $('.vframe input').val('');
@@ -59,7 +70,10 @@ function createDropdownList()
     $('.vframe textarea').eq(0).html(' ');
   });
 
+  // On click listener for post button
   $('.btn-post-steemit').unbind('click').click(function(){
+    
+    // Init post attribute
     var tags=[];
     var title=null;
     var permlink=null;
@@ -105,6 +119,7 @@ function createDropdownList()
         allow_curation_rewards: true
       }]
     ];
+    // Create post using steem connect
     sc2.broadcast(
     operations,
     function(e, r) 

@@ -49,7 +49,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
   chrome.storage.local.set({
     steemPriceLS:steemPrice
   });
-  chrome.storage.local.get(['user_info_popover','followers_table','vote_weight_slider','mentions_tab','vote_tab','steemit_more_info','post_votes_list','acc_v','del', 'tokenExpire', 'sessionToken'], function (items) {
+  chrome.storage.local.get(['vote_weight_slider_busy','user_info_popover','followers_table','vote_weight_slider','mentions_tab','vote_tab','steemit_more_info','post_votes_list','acc_v','del', 'tokenExpire', 'sessionToken'], function (items) {
 
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined)?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
 
@@ -63,6 +63,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
     const vote_weight_slider=(items.vote_weight_slider == undefined || items.vote_weight_slider=='show');
     const followers_table=(items.followers_table == undefined || items.followers_table=='show');
     const user_info_popover=(items.user_info_popover == undefined || items.user_info_popover=='show');
+    const vote_weight_slider_busy=(items.vote_weight_slider_busy == undefined || items.vote_weight_slider_busy=='show');
 
 
     if(delegation&&(steemit||busy))
@@ -81,6 +82,8 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
       if(user_info_popover)
         chrome.runtime.sendMessage({ token:token, to: 'user_info_popover', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
     }
+    if(vote_weight_slider_busy&&steemConnect.connect&&busy&&steemit_more_info)
+        chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider_busy', order: 'notif',data:{rewardBalance:rewardBalance, recentClaims:recentClaims, steemPrice:steemPrice, votePowerReserveRate:votePowerReserveRate}});
   });
 });
 
@@ -117,6 +120,9 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
       const steemit_more_info=(items.steemit_more_info == undefined || items.steemit_more_info=='show');
       const followers_table=(items.followers_table == undefined || items.followers_table=='show');
       const select_reward_dropdown=(items.select_reward_dropdown == undefined || items.select_reward_dropdown=='show');
+      const vote_weight_slider_busy=(items.vote_weight_slider_busy == undefined || items.vote_weight_slider_busy=='show');
+        const isPostFloatingBottomBarEnabled=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
+
 
       // Feed+ const
       var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
@@ -146,6 +152,11 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
         if(followers_table)
           chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account, totalVestingFund:totalSteemLS, totalVestingShares:totalVestsLS}});
       }
+
+      if (busy&&steemit_more_info) {
+        if(vote_weight_slider_busy)
+          chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider_busy', order: 'start',data:{isPostFloatingBottomBarEnabled:isPostFloatingBottomBarEnabled,rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
+      }
       console.log('Online Features started...');
       $(document).click(function(){
         setTimeout(function(){
@@ -157,7 +168,10 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
               chrome.runtime.sendMessage({ token:token, to: 'followers_table', order: 'click', data:{user:user}});
             if(select_reward_dropdown&&(steemit||busy))
               chrome.runtime.sendMessage({ token:token, to: 'select_reward_dropdown', order: 'click',data:{user:user}});
-
+            if (busy&&steemit_more_info) {
+              if(vote_weight_slider_busy)
+                chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider_busy', order: 'click',data:{isPostFloatingBottomBarEnabled:isPostFloatingBottomBarEnabled,rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
+              }
 
             urlOnline=window.location.href;
           }

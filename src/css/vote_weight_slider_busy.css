@@ -1,0 +1,30 @@
+.popup-slider-container
+{
+	width: 100%;
+}
+
+.popup-slider-container > .slider
+{
+	width: 100% !important;
+}
+
+.slider-selection {
+	background: #2088ff;
+}
+
+.upvote-slider-btn-busy
+{
+    background: white;
+    width: 100%;
+    color: #2088ff;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    border: 1px solid #2088ff;
+}
+
+.upvote-slider-btn-busy:hover
+{
+    background: #2088ff;
+    color: white !important;
+}

@@ -99,6 +99,7 @@ function startTipUser()
 // Function used to create the tip button
 function createTipButton(element, username)
 {
+  if(username===myUsernameTip) return;
   // Create div 
   var tipDiv = $('<div class="input-group div-hidden div-tip" style="margin-bottom: 5px;" id="'+ username +'">\
       <input type="button" value="0.5$" name="0.5" class="btn btn-primary btn-sm tip-button">\

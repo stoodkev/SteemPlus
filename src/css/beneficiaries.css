@@ -59,3 +59,24 @@
 {
     width: 100% !important;
 }
+
+.button-steemit
+{
+    background: white;
+    color: #1FBF8F;
+    padding: 1em;
+    margin-top: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+
+.button-steemit:hover
+{
+    background: #1FBF8F;
+    color: white !important;
+    padding: 1em;
+    margin-top: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+

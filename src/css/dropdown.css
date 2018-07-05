@@ -19,3 +19,12 @@
 	background-color: #f6f6f6 !important;
     color: #049173 !important;
 }
+
+.theme-dark .price-item > a:hover{
+	background-color: #2C3A45 !important;
+    color: #049173 !important;
+}
+
+.theme-dark .DropdownMenu.show > .VerticalMenu a {
+   color: #fcfcfc !important;
+}

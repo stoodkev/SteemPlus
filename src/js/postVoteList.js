@@ -52,10 +52,11 @@ function startPostVoteList(){
   if(regexPostSteemit.test(window.location.href))
   {
     // Bind every html element to a click
-    $('div.Voting__voters_list > a').click(function(){
+    $('div.Voting__voters_list').click(function(){
+      console.log('open list vote');
       var votersButton = $(this);
       setTimeout(function() {
-        if(votersButton.parent().hasClass('show')){
+        if(votersButton.hasClass('show')){
           var ul = votersButton.parent().find('ul.VerticalMenu');
           addPostVoteList(ul);
         }

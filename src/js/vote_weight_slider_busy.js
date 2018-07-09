@@ -130,7 +130,7 @@ function setupLikeButton(btnBusy)
     $(btnBusy).parent().find('.btnLikeSP').show();
   else
   {
-    var buttonLikeBusySP = $('<a role="presentation" class="Buttons__link btnLikeSP btnLikeUnlike"><i class="iconfont icon-message"></i></a>');
+    var buttonLikeBusySP = $('<a role="presentation" class="Buttons__link btnLikeSP btnLikeUnlike"><i class="iconfont icon-praise_fill"></i></a>');
     $(btnBusy).before(buttonLikeBusySP);
     buttonLikeBusySP.unbind('click').click(function(){
       createPopupVoteSlider($(this));
@@ -146,7 +146,7 @@ function setupUnlikeButton(btnBusy)
     $(btnBusy).parent().find('.btnUnlikeSP').show();
   else
   {
-    var buttonUnlikeBusySP = $('<a role="presentation" class="active Buttons__link btnUnlikeSP btnLikeUnlike"><i class="iconfont icon-message"></i></a>');
+    var buttonUnlikeBusySP = $('<a role="presentation" class="active Buttons__link btnUnlikeSP btnLikeUnlike"><i class="iconfont icon-praise_fill"></i></a>');
     $(btnBusy).before(buttonUnlikeBusySP);
     buttonUnlikeBusySP.unbind('click').click(function(){
       unlikePost($(this));

@@ -91,7 +91,7 @@ function canstartVoteWeightSliderBusy()
       }
     }
   }
-  else if(regexFeedBusy.test(window.location.href)||regexBusy.test(window.location.href))
+  else if(regexFeedBusy.test(window.location.href)||regexBusy.test(window.location.href)||regexBlogBusy.test(window.location.href))
   {
     if($('.Buttons__link:has(.icon-praise_fill)').length > 0)
     {

@@ -11,7 +11,7 @@ var isConnectedToSteemConnect=null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author_popup_info','rewards_tab','wallet_history','article_count','witnesses_tab','classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
+chrome.storage.local.get(['vote_weight_slider_busy','select_reward_dropdown','tip_user','resteem_indicator','add_signature','author_popup_info','rewards_tab','wallet_history','article_count','witnesses_tab','classification_user','board_reward','favorite_section','post_floating_bottom_bar','md_editor_beautifier','blog_histogram','user_info_popover','gif_picker','boost_button','followers_table','vote_weight_slider','mentions_tab','search_bar','external_link_tab','vote_tab','steemit_more_info','post_votes_list','onboarding','oneup','sessionToken','tokenExpire','weight','resteem','blacklist','whitelist','reputation','rep','badge','del','ben','feedp','drop','acc_v','transfers'], function (items) {
     var steemConnect=(items.sessionToken===undefined||items.tokenExpire===undefined||items.tokenExpire<Date.now())?{connect:false}:{connect:true,sessionToken:items.sessionToken,tokenExpire:items.tokenExpire};
     isConnectedToSteemConnect = steemConnect.connect;
     // Connected
@@ -99,6 +99,8 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
     add_signature=items.add_signature==undefined?'show':items.add_signature;
     resteem_indicator=items.resteem_indicator==undefined?'show':items.resteem_indicator;
     tip_user=items.tip_user==undefined?'show':items.tip_user;
+    select_reward_dropdown=items.select_reward_dropdown==undefined?'show':items.select_reward_dropdown;
+    vote_weight_slider_busy=items.vote_weight_slider_busy==undefined?'show':items.vote_weight_slider_busy;
 
     // Steemit more info
     steemit_more_info=items.steemit_more_info==undefined?'show':items.steemit_more_info;
@@ -128,6 +130,8 @@ chrome.storage.local.get(['tip_user','resteem_indicator','add_signature','author
         $('input[name=ben]').prop('checked',ben=='show');
         $('input[name=oneup]').prop('checked',oneup=='show');
         $('input[name=feedp]').prop('checked',feedp=='show');
+        $('input[name=select_reward_dropdown]').prop('checked',select_reward_dropdown=='show');
+        $('input[name=vote_weight_slider_busy]').prop('checked',vote_weight_slider_busy=='show');
     }
     
     
@@ -476,6 +480,18 @@ $(document).on("change","input[name=resteem_indicator]",function(){
 $(document).on("change","input[name=tip_user]",function(){
     chrome.storage.local.set({
         tip_user:$("input[name=tip_user]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=select_reward_dropdown]",function(){
+    chrome.storage.local.set({
+        select_reward_dropdown:$("input[name=select_reward_dropdown]").prop('checked')?'show':'hide'
+    });
+});
+
+$(document).on("change","input[name=vote_weight_slider_busy]",function(){
+    chrome.storage.local.set({
+        vote_weight_slider_busy:$("input[name=vote_weight_slider_busy]").prop('checked')?'show':'hide'
     });
 });
 

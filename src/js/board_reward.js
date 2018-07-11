@@ -50,7 +50,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 function startBoardReward()
 {
-	console.log($('.board-reward-tab'));
 	if(!$('.board-reward-tab').length > 0)
 	{
 		createBoardRewardTab();

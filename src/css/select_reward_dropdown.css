@@ -1,0 +1,28 @@
+.post-clear-div
+{
+	width:50%;
+    margin-bottom:2em;
+    margin-top: 1em;
+    float: left;
+}
+
+.post-clear-div > button
+{
+    background: white;
+    color: #1FBF8F;
+    padding: 1em;
+    margin: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+
+.post-clear-div > button:hover
+{
+    background: #1FBF8F;
+    color: white !important;
+    padding: 1em;
+    margin: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+

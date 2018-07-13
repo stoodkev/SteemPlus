@@ -73,13 +73,15 @@ function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteem
 		
       if(isSteemit)
       {
-        $('.Reblog__button').before('<div class="DropdownMenu resteem-list">\
+        $('.Reblog__button').after('<div class="DropdownMenu resteem-list">\
           <a class="resteem-list-link">\
             <span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span></span>\
             <span class="count-resteem-label">'+ result.length +'\
           </a>\
           <ul class="VerticalMenu menu vertical VerticalMenu ul-resteem-list"></ul>\
         </div>');
+        
+        $('span.Reblog__button').eq(0).addClass('Reblog__button_SP');
 
         result.forEach(function(item){
           $('.ul-resteem-list').append('<li class="resteem-item"><a href="/@'+ item.account +'">+ '+ item.account +'</a></li>');

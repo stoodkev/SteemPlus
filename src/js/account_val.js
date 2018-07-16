@@ -28,11 +28,15 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       retryAccountVal = 0;
       acc_global=request.data.global;
       acc_market=request.data.market;
+      acc_steemit=request.data.steemit;
+      acc_busy=request.data.busy;
       myUsernameAccountValue = request.data.user;
       onClickA();}
     else if(request.to==='acc_v'&&request.order==='notif'&&token_a===request.token)
     {
       myUsernameAccountValue = request.data.user;
+      acc_steemit=request.data.steemit;
+      acc_busy=request.data.busy;
       retryAccountVal = 0;
       if(accountValStarted)
       {
@@ -79,7 +83,7 @@ function startAccountValue()
         {
           if(window.location.href.includes('@')){
             account_v=acc_steemit?window.location.href.split('@')[1].split('/')[0]:(window.location.href.match(load_check_a))?$('.Topnav__user__username').html():window.location.href.split('@')[1].split('/')[0];
-            wallet_elt_a=acc_steemit?$('.medium-4')[4]:".UserWalletSummary__item ";
+            wallet_elt_a=acc_steemit?$('.medium-4')[4]:$('.UserWalletSummary__value')[4];
           }
         }
         if ((window.location.href.match(load_check_a)||window.location.href.match(load_check2_a)) ) {

@@ -131,7 +131,6 @@ function setupHistogram(name, container) {
 
     var histogram = container.find('.smi-posts-histogram');
     var ctx = histogram[0].getContext("2d");
-    var axis = container.find('.smi-posts-histogram-axis');
     container.append(ctx);
 
     var chartAreaWrapper = container.find('.chartAreaWrapper');
@@ -176,10 +175,6 @@ function setupHistogram(name, container) {
                 var sourceCanvas = chart.chart.canvas;
                 var copyWidth = chart.scales['y-axis-0'].width + chart.scales['y-axis-0'].left + 2;
                 var copyHeight = chart.scales['y-axis-0'].height + chart.scales['y-axis-0'].top + 5;
-                var targetCtx = axis[0].getContext("2d");
-                targetCtx.canvas.width = copyWidth;
-                targetCtx.canvas.height = copyHeight;
-                targetCtx.drawImage(sourceCanvas, 0, 0, copyWidth, copyHeight, 0, 0, copyWidth, copyHeight);
               }
             }
         }
@@ -244,7 +239,6 @@ function createHistogram(name) {
           <canvas class="smi-posts-histogram"></canvas>\
         </div>\
       </div>\
-      <canvas class="smi-posts-histogram-axis" width="0"></canvas>\
     </div>\
   </div>');
 

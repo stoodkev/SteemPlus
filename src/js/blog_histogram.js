@@ -48,7 +48,7 @@ function getShowHistogram() {
   return 'show';
 };
 
-function setupHistogram(name, container) {
+function setupHistogram(name, container) {
 
   window.SteemPlus.Utils.getBlog(name, 0, 500, function(err, data){
     if(err){
@@ -103,11 +103,6 @@ function setupHistogram(name, container) {
     var today = moment().endOf('day');
     while(d <= today){
       var dataString = d.format(format);
-      labels.push(dataString);
-      datasets[0].backgroundColor.push(defaultBarBackgroundColor);
-      datasets[0].borderColor.push(defaultBarBorderColor);
-      datasets[1].backgroundColor.push(resteemBarBackgroundColor);
-      datasets[1].borderColor.push(resteemBarBorderColor);
       var p = 0;
       var r = 0;
       _.each(dataMap[dataString], function(post){
@@ -119,10 +114,20 @@ function setupHistogram(name, container) {
           p++;
         }
       });
-      datasets[0].data.push(p);
-      datasets[1].data.push(r);
+      if((r > 0 || p > 0) && dataString !== '01/01/70') 
+      {
+        labels.push(dataString);
+        datasets[0].backgroundColor.push(defaultBarBackgroundColor);
+        datasets[0].borderColor.push(defaultBarBorderColor);
+        datasets[1].backgroundColor.push(resteemBarBackgroundColor);
+        datasets[1].borderColor.push(resteemBarBorderColor);
+        
+        datasets[0].data.push(p);
+        datasets[1].data.push(r);
+      }
       d.add(1, 'd');
     }
+    console.log(datasets);
 
     var histogram = container.find('.smi-posts-histogram');
     var ctx = histogram[0].getContext("2d");
@@ -360,7 +365,7 @@ $('body').on('click', function(e) {
 });
 
 
-function checkHistogram(postsList, name) {
+function checkHistogram(postsList, name) {
 
 
 

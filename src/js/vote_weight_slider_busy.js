@@ -62,7 +62,6 @@ function canstartVoteWeightSliderBusy()
   if(retryCountVoteWeightSliderBusy > 20) return;
   if(regexPostBusy.test(window.location.href))
   {
-    console.log('ici');
     if(isFloatingFooterEnabled)
     {
       if($('.smi-post-floating-footer').length > 0 && $('.Buttons__link:has(.icon-praise_fill)').length > 0)

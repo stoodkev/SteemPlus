@@ -40,10 +40,18 @@ function startTransfer(isSteemit,busy,account,balance)
     load_checkt=/transfers/;
     wallet_elt_t=".FoundationDropdownMenu__label";
     classButtonT="'UserWallet__buysp button hollow transfer_to";
+
+    if(window.location.href.match(load_checkt))
+      checkLoadTr(isSteemit,busy,account,balance);
+  }
+  else if(busy)
+  {
+    if(regexWalletBusy.test(window.location.href))
+      checkLoadTr(isSteemit, busy, account, balance);
+
   }
 
-  if(window.location.href.match(load_checkt))
-    checkLoadTr(isSteemit,busy,account,balance);
+  
 
 }
 

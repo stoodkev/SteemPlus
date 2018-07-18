@@ -660,7 +660,7 @@ h1 .value_of
   left: 0;
   top: 0;
   pointer-events:none;
-  background: white;
+  background: transparent;
 }
 .chartAreaWrapper {
   overflow-x: scroll;
@@ -687,7 +687,7 @@ h1 .value_of
   padding: 20px;
   margin: 0 auto;
 }
-.smi-posts-histogram-posts-container2 h5 {
+.smi-posts-histogram-posts-container h5 {
   margin-bottom: 22px;
 }
 .smi-posts-histogram-posts-container .close-button {

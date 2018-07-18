@@ -288,7 +288,7 @@ function startOfflineFeatures(items, user, account)
   console.log('Starting features...',user);
   if(delegation&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'delegation', order: 'start',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},account:account} });
-  if(transfers&&(steemit||busy))
+  if(transfers&&(steemit))
     chrome.runtime.sendMessage({ token:token, to: 'transfers', order: 'start',data:{steemit:steemit,busy:busy,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}} });
   if(account_value&&(steemit||busy))
     chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'start',data:{user:user,steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market}});
@@ -356,7 +356,7 @@ function startOfflineFeatures(items, user, account)
           location.reload();
         if(delegation&&(steemit||busy))
           chrome.runtime.sendMessage({token:token, to: 'delegation', order: 'click',data:{steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},account:account} });
-        if(transfers&&(steemit||busy))
+        if(transfers&&(steemit))
           chrome.runtime.sendMessage({token:token, to: 'transfers', order: 'click',data:{steemit:steemit,user:user,balance:{steem:account.balance.split(' ')[0],sbd:account.sbd_balance.split(' ')[0]}}} );
         if(account_value&&(steemit||busy))
           chrome.runtime.sendMessage({ token:token, to: 'acc_v', order: 'click',data:{user:user,steemit:steemit,busy:busy,global:{totalSteem:totalSteemLS,totalVests:totalVestsLS},market:market} });

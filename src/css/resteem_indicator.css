@@ -21,9 +21,20 @@
 .count-resteem-label
 {
 	font-weight: normal;
+	border-right: 1px solid #eee;
+	padding-right: .4rem;
 }
 
 .Buttons__number_resteem
 {
 	cursor: pointer;
+}
+
+.Reblog__button_SP
+{
+	border-right: none !important;
+    border-left: 1px solid #eee;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0.4rem;
 }

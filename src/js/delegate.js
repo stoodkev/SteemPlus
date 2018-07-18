@@ -12,6 +12,7 @@ var timeoutD = 2000;
 var myAccountDelegation=null;
 var totalOutgoingDelegation=-1;
 var totalIncomingDelegation=-1;
+var myTotalOutgoingDelegation=-1;
 
 var retryCountDelegate=0;
 
@@ -54,6 +55,7 @@ function startDelegation(isSteemit, isBusy, globalP)
       usernamePageDelegation = window.SteemPlus.Utils.getPageAccountName();
       getDelegationInformation(isSteemit, isBusy, globalP);
       createButtonDelegation(isSteemit, isBusy, globalP);
+      getMyTotalOutgoingDelegation(globalP);
 
     } 
     else if (isBusy) 
@@ -68,24 +70,39 @@ function startDelegation(isSteemit, isBusy, globalP)
         usernamePageDelegation = myAccountDelegation.name;
         getDelegationInformation(isSteemit, isBusy, globalP);
         createButtonDelegation(isSteemit, isBusy, globalP);
+        getMyTotalOutgoingDelegation(globalP);
       }
       else if(window.location.href.match(load_check2)) // Not my wallet
       {
         usernamePageDelegation = window.location.href.match(/https:\/\/busy.org\/@(.*)\/.*/)[1];
         getDelegationInformation(isSteemit, isBusy, globalP);
         createButtonDelegation(isSteemit, isBusy, globalP);
+        getMyTotalOutgoingDelegation(globalP);
       }
     }
   }
-  
 }
+  
+function getMyTotalOutgoingDelegation(globalP)
+{
+  var tmp = 0;
+  steem.api.getVestingDelegations(myAccountDelegation.name, null, 10, function(err, myOutgoingDelegations) {
+    for (myOutgoingDelegation of myOutgoingDelegations) {
+      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
+      if(valueDelegation>0)
+        tmp += valueDelegation;
+    }
+    myTotalOutgoingDelegation = tmp;
+  });
+}
+
 
 // createButtonDelegation creates delegation button and delegation modal.
 // @parameter isSteemit : boolean, true if used website is steemit
 // @parameter isBusy : boolean, true if used website is busy
 // @parameter globalP : contains total steem and total vests
 function createButtonDelegation(isSteemit, busy, globalP) {
-  if(totalOutgoingDelegation===-1&&(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))&&retryCountDelegate<20) 
+  if(totalOutgoingDelegation===-1&&myTotalOutgoingDelegation===-1&&(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))&&retryCountDelegate<20) 
   {
     setTimeout(function(){
       createButtonDelegation(isSteemit, busy, globalP)
@@ -132,13 +149,13 @@ function createButtonDelegation(isSteemit, busy, globalP) {
       {
         $('.CryptoTrendingCharts').parent().prepend(delegate_div);
         $('.delegate').css('margin-bottom', '10px');
+        $('.delegate').css('width', '100%');
       }
 
       // Function used to get the maximum SP user can delegate
       function getMaxSP(){
         var myVests = parseFloat(steem.formatter.vestToSteem(myAccountDelegation.vesting_shares.replace(' VESTS',''), globalP.totalVests, globalP.totalSteem) * 100) / 100;
-        var maxSP = myVests - totalOutgoingDelegation - 5.000;
-
+        var maxSP = myVests - myTotalOutgoingDelegation - 5.000;
         return (maxSP > 0 ? maxSP.toFixed(3) : 0);
       }
 
@@ -219,6 +236,8 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
   });
   
 }
+
+
 
 
 // createPopoverDelegation creates popover displaying delegations

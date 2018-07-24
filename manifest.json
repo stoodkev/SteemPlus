@@ -100,7 +100,8 @@
         "src/js/resteem_indicator.js",
         "src/js/tip_user.js",
         "src/js/select_reward_dropdown.js",
-        "src/js/vote_weight_slider_busy.js"],
+        "src/js/vote_weight_slider_busy.js",
+        "src/js/beneficiary_donation.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css",
         "src/css/delegate.css",

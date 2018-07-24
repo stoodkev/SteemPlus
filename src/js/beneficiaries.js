@@ -7,10 +7,7 @@ var beneficiaries;
 const STEEM_PLUS_FEED=5;
 var autb=null;
 var token_benef=null;
-var communities=['minnowsupport',
-                'utopian-io',
-                'adsactly'
-              ];
+var communities=['minnowsupport'];
 
 var isSteemit=null;
 var isBusy=null;
@@ -71,26 +68,27 @@ function addBeneficiariesButton(){
 
       benef_div.appendChild(benef_button);
       $('.vframe__section--shrink')[$('.vframe__section--shrink').length-1].after(benef_div);
-       
-      // On click listener for add beneficiaries  
+
+      // On click listener for add beneficiaries
       $('.benef').click(function(){
-          
+
           // the process will be different if the select reward feature is enabled.
-          
+
           // If that feature is enabled, hide existing post button
           if(isSelectRewardDropdownEnabled)
           {
             $('.btn-post-steemit').hide();
           }
-          
+
+          $('.benefDonation').hide();
           // Add new beneficiaries line
           $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
-          
+
           // Remove message...
           $('.message-beneficiaries').remove();
           // ... and create a new one
           $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
-          
+
           // If one line 'new beneficiaries' exist
           if($('.close').length===1) {
             // ... create new post button
@@ -119,7 +117,7 @@ function addBeneficiariesButton(){
               }
             }
           }
-          
+
           // if there is no select reward dropdown, create it
           if($('.benef-steemit-percentage').length===0)
           {
@@ -128,6 +126,9 @@ function addBeneficiariesButton(){
                           <option name="percentage" value="0">100% Steem Power</option>\
                           <option name="percentage" value="-1">Decline Payout</option>\
                         </select></div>');
+          }
+          else {
+            $('.div-benef-steemit-percentage').show();
           }
           setCloseListener();
       });
@@ -150,7 +151,8 @@ function addBeneficiariesButton(){
       $('.Editor__bottom').after(benef_div);
       // On click on add button
       $('.benef').click(function(){
-          
+
+          $('.benefDonation-busy').hide();
           // If select reward dropdown not existing...
           if($('.benef-busy-percentage').length===0)
           {
@@ -170,10 +172,10 @@ function addBeneficiariesButton(){
           }
 
           $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt benef_elt_busy"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt benef_elt_busy" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
-          
+
           $('.message-beneficiaries').remove()
           $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
-          
+
           if($('.close').length===1) {
               var buttonPost = $('.Editor__bottom__submit')[0];
               $(buttonPost).hide();
@@ -188,7 +190,7 @@ function addBeneficiariesButton(){
       });
       created_benef=true;
   }
-    
+
 }
 
 // Set listener on every close button
@@ -208,8 +210,11 @@ function setCloseListener(){
           $('.vframe__section--shrink button').show();
           if(isSelectRewardDropdownEnabled)
             $('.postbutton').hide();
-          else
+          else{
             $('h5,.post').hide();
+            $('.div-benef-steemit-percentage').hide();
+          }
+          $('.benefDonation').show();
           // remove beneficiaries message
           $('.message-beneficiaries').remove();
         }
@@ -218,6 +223,7 @@ function setCloseListener(){
           // if is busy
           // display initial elements and hide or remove beneficiaries elements
           $('.Editor__bottom__submit').show();
+          $('.benefDonation-busy').show();
           $('h5,.post').hide();
           $('.message-beneficiaries').remove();
           $('.ant-form-item-control').each(function(){
@@ -308,7 +314,7 @@ function postBeneficiaries()
     title=$('.vframe input').eq(0).val();
     body=$('.vframe textarea').eq(0).val();
     sbd_percent=$('.benef-steemit-percentage').eq(0).val();
-  } 
+  }
   else if(isBusy)
   {
     $('.ant-select-selection__choice').each(function(){
@@ -321,12 +327,12 @@ function postBeneficiaries()
     body=$('textarea.ant-input').eq(0).val();
     sbd_percent=$('.benef-busy-percentage').eq(0).val();
   }
-  
+
   if(communities.includes(autb))
     console.log('no fee');
   else
     beneficiaries.push({
-      account: 'steem-plus',
+      account: 'steemplus-pay',
       weight: 100*STEEM_PLUS_FEED
     });
   if(beneficiaries.length>6)
@@ -375,9 +381,9 @@ function postBeneficiaries()
 
   sc2.broadcast(
     operations,
-    function(e, r) 
+    function(e, r)
     {
-      if (e) 
+      if (e)
       {
         console.log(e);
         if(e.error!==undefined)
@@ -403,7 +409,7 @@ function postBeneficiaries()
               alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
           });
         }
-      } 
+      }
       else {
         if(isSteemit)
           window.location.replace('https://steemit.com');

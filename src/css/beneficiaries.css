@@ -55,7 +55,7 @@
     color: black;
 }
 
-.postbutton-busy 
+.postbutton-busy
 {
     width: 100% !important;
 }
@@ -80,3 +80,15 @@
     border: 1px solid #1FBF8F;
 }
 
+#benefDonation-div{
+  display: inline-block;
+  margin-left:1em;
+  margin-right: 0;
+}
+
+#busy_div_benefd{
+  width: auto;
+  display: inline-block;
+  float:left;
+  margin-right: 10px;
+}

@@ -157,6 +157,7 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
         if(vote_weight_slider_busy)
           chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider_busy', order: 'start',data:{isPostFloatingBottomBarEnabled:isPostFloatingBottomBarEnabled,rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
       }
+      chrome.runtime.sendMessage({ token:token, to: 'ben_d', order: 'start',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
       console.log('Online Features started...');
       $(document).click(function(){
         setTimeout(function(){
@@ -172,7 +173,7 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
               if(vote_weight_slider_busy)
                 chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider_busy', order: 'click',data:{isPostFloatingBottomBarEnabled:isPostFloatingBottomBarEnabled,rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
               }
-
+            chrome.runtime.sendMessage({ token:token, to: 'ben_d', order: 'click',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
             urlOnline=window.location.href;
           }
           if(oneup&&utopian)
@@ -406,7 +407,7 @@ function startOfflineFeatures(items, user, account)
           chrome.runtime.sendMessage({ token:token, to: 'board_reward', order: 'click',data:{}});
         if((steemit||busy)&&vote_tab&&steemit_more_info)
           chrome.runtime.sendMessage({ token:token, to: 'vote_tab', order: 'click',data:{steemit:steemit, busy:busy, rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS}});
-    
+
 
         if($('.favorite-star').length > 0){
           $('.favorite-star').remove();

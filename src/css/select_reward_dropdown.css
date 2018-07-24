@@ -1,6 +1,6 @@
 .post-clear-div
 {
-	width:50%;
+	width:100%;
     margin-bottom:2em;
     margin-top: 1em;
     float: left;
@@ -25,4 +25,3 @@
     font-weight: bold;
     border: 1px solid #1FBF8F;
 }
-

@@ -308,7 +308,8 @@ function setupAddPostSignature(textarea)
       }
     });
     // Add edit button. Open page in another tab
-    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
+    if($(".edit-signature-post").length==0)
+      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
   }
 }
 
@@ -320,12 +321,13 @@ function setupAddCommentSignature(textarea)
   if($(textarea).parent().find('.edit-signature-comment').length === 0)
   {
     // Add edit button. Open page in another tab
-    $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
+    if($(".edit-signature-post").length==0)
+      $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
 
     // Get signature from local storage
     // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
-      if(item.user_signature_comments!==undefined&&item.user_signature_comments!=='')
+      if(item.user_signature_comments!==undefined&&item.user_signature_comments!==''&&$(".edit-signature-post").length==0)
       {
         $(textarea).after('<a class="add-signature-comment">Add Signature</a>');
         $('.add-signature-comment').on('click', function(){

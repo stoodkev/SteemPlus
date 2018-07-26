@@ -535,8 +535,7 @@
     </li>');
 
     var openPost = (options && options.openPost) || function(url) {
-      var PostList = window.SteemPlus.Utils.findReact($('#posts_list')[0]);
-      PostList.onPostClick(author + '/' + permlink, url);
+      window.location.href=url;
     };
 
     el.find('a').on('click', function(e){

@@ -358,7 +358,7 @@ function createSummaryMention(mentionItem)
                 </span>\
               </span>\
               <div class="Buttons">\
-                <a role="presentation" class="active Buttons__link"><i class="iconfont icon-praise_fill"></i></a>\
+                <a role="presentation" class="active Buttons__link"><i class="iconfont icon-praise"></i></a>\
                 <span class="Buttons__number Buttons__reactions-count" role="presentation">\
                   <span>\
                     <span>' + mentionItem.net_votes + '</span>\

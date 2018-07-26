@@ -495,7 +495,7 @@
           </div>\
         </div>'));
       }
-      
+
 
       $('#selectBooster').unbind('change').on('change', function(){
         changeUIBooster(this.value);
@@ -586,7 +586,7 @@
 
 
 
-function addPostBoostButton() 
+function addPostBoostButton()
 {
   if(isSteemit)
   {
@@ -624,7 +624,7 @@ function addPostBoostButton()
   }
   else if(isBusy)
   {
-    if(regexPostBusy.test(window.location.href)&&retryCountBoostButton<20)
+    if(regexPostBusy.test(window.location.href)&&!window.location.href.includes("#")&&retryCountBoostButton<20)
     {
       if(postFloatingBarEnabled)
         if($('.smi-post-footer').length===0) setTimeout(addPostBoostButton, 1000);
@@ -666,7 +666,7 @@ function addPostBoostButton()
             });
           },500);
         });
-        
+
 
       }
       else
@@ -678,7 +678,7 @@ function addPostBoostButton()
       }
     }
   }
-  
+
 }
 
 function changeUIBooster(value){
@@ -692,7 +692,7 @@ function createSmartSteemTransferUI(){
   loading = $(window.SteemPlus.Utils.getLoadingHtml({
     center: true
   }));
-  
+
   var classModalLocation = '';
   if(isSteemit) classModalLocation = '.reveal';
   else if(isBusy) classModalLocation = '.modal-content-busy';
@@ -789,7 +789,7 @@ function createSmartSteemTransferUI(){
       $('#smartSteemInformation').append('<div class="col-5">1 star vote value :</div><div class="col-7">' + parseInt(result.total_one).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">2 stars vote value :</div><div class="col-7">' + parseInt(result.total_two).toFixed(2) + ' $</div>');
       $('#smartSteemInformation').append('<div class="col-5">3 stars vote value :</div><div class="col-7">' + parseInt(result.total_three).toFixed(2) + ' $</div>');
-      
+
       if(isBusy)
       {
         $('input').each(function(){
@@ -800,7 +800,7 @@ function createSmartSteemTransferUI(){
           $(this).eq(0).addClass('select-busy');
         });
       }
-      
+
     },
     error: function(msg) {
       $('#smartSteemInformation').append('<small style="color:red;">' + msg.responseJSON.error + '</small>');

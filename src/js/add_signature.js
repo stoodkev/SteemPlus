@@ -20,6 +20,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     isUtopian = request.data.utopian;
     retryCountAddSignature = 0;
     startAddSignature();
+    console.log(myUsernameSignature);
   }
   else if(request.to==='add_signature'&&request.order==='click'&&token_add_signature==request.token)
   {
@@ -29,6 +30,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     isUtopian = request.data.utopian;
     retryCountAddSignature = 0;
     startAddSignature();
+
+    console.log(myUsernameSignature);
   }
 });
 
@@ -66,7 +69,7 @@ function startAddSignature()
             var textarea = $(this);
             setupAddCommentSignature(textarea);
           });
-        },1000);  
+        },1000);
       });
 
       $('.PostFull__reply > a').click(function(){
@@ -77,7 +80,7 @@ function startAddSignature()
           });
         },1000);
       });
-    } 
+    }
     else if(regexCreatePostSteemit.test(window.location.href))
     {
       $('.ReplyEditor__body textarea').each(function() {
@@ -110,14 +113,15 @@ function startAddSignature()
     }
     else if(regexPostBusy.test(window.location.href))
     {
-      
+
       setTimeout(function(){
         $('textarea.ant-input').each(function() {
           var textarea = $(this);
+          console.log("d",myUsernameSignature);
           setupAddCommentSignature(textarea);
         });
-      },2000);
-      
+      },200);
+
 
       $('a.CommentFooter__link').click(function(){
         setTimeout(function(){
@@ -125,7 +129,7 @@ function startAddSignature()
             var textarea = $(this);
             setupAddCommentSignature(textarea);
           });
-        },1000);  
+        },1000);
       });
     }
   }
@@ -199,7 +203,7 @@ function displayCreateSignature()
           </div>\
       </div>\
     </div>');
-    
+
     // Add panel to setting page
     if(isSteemit)
       $('.Settings').append(divSignature);
@@ -272,7 +276,7 @@ function displayCreateSignature()
           user_signature_comments:userSignatureComments.trim()
         });
       }
-      
+
     });
   });
 }
@@ -292,7 +296,7 @@ function setupAddPostSignature(textarea)
         $(textarea).after('<a class="add-signature-post">Add Signature</a>');
         $('.add-signature-post').on('click', function(){
             $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_posts);
-            
+
             // Fire event to refresh the preview
             // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
             var event = new Event('input', { bubbles: true });
@@ -301,7 +305,7 @@ function setupAddPostSignature(textarea)
             $(textarea)[0].dispatchEvent(event);
             $(textarea).focus();
         });
-      }  
+      }
     });
     // Add edit button. Open page in another tab
     $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-post">Edit Signature</a>');
@@ -317,7 +321,7 @@ function setupAddCommentSignature(textarea)
   {
     // Add edit button. Open page in another tab
     $(textarea).after('<a target="_blank" href="/@' + myUsernameSignature + '/settings" class="edit-signature-comment">Edit Signature</a>');
-    
+
     // Get signature from local storage
     // We use local storage again and not parameter cause if user updated his signature in another tab, we still use the newest one
     chrome.storage.local.get(['user_signature_comments'], function(item){
@@ -326,7 +330,7 @@ function setupAddCommentSignature(textarea)
         $(textarea).after('<a class="add-signature-comment">Add Signature</a>');
         $('.add-signature-comment').on('click', function(){
             $(textarea)[0].value = $(textarea).val() + '\n' + (item.user_signature_comments);
-            
+
             // Fire event to refresh the preview
             // We need to fire this event cause $(textarea)[0].value = ... doesn't fire any event and the preview won't be refresh
             setTimeout(function(){
@@ -335,7 +339,7 @@ function setupAddCommentSignature(textarea)
               $(textarea).focus();
             },1000);
         });
-      }  
+      }
     });
   }
 }
@@ -348,9 +352,6 @@ function updatePreview(textarea){
       preview = $();
 
   if ($preview.length >0){
-      $preview.html(markdown_html);    
+      $preview.html(markdown_html);
   }
 }
-
-
-

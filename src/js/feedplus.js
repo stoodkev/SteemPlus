@@ -412,7 +412,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             bd = bd.replace(/\*+/g, '');
             bd = bd.replace(/\#+/g, '');
             var upvoted = 'no_upvoted';
-            if (isBusy) 
+            if (isBusy)
             {
                 var imgUrlFeedPlus = null;
                 console.log(elt);
@@ -811,7 +811,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 // @parameter classifList : list of allowed classification used to create allowed user list
 function getDataFromAPIClassif(arrayUsernames, i, classifList) {
     var tmp = [];
-    var url = 'https://multi.tube/s/api/accounts-info/' + arrayUsernames.slice(0 + i * 100, 100 + i * 100).join(',');
+    var url = 'https://steem-sincerity.dapptools.info/s/api/accounts-info/' + arrayUsernames.slice(0 + i * 100, 100 + i * 100).join(',');
     $.ajax({
         type: "GET",
         async: false,

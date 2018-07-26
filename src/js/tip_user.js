@@ -79,7 +79,7 @@ function startTipUser()
         $('.Comments').on('DOMNodeInserted', function(evt){
           var target = $(evt.target);
           // Only if the new node is a comment
-          
+
           if(target.hasClass('Comment'))
           {
             target.find('.Comment__date').each(function()
@@ -100,7 +100,7 @@ function startTipUser()
 function createTipButton(element, username)
 {
   if(username===myUsernameTip) return;
-  // Create div 
+  // Create div
   var tipDiv = $('<div class="input-group div-hidden div-tip" style="margin-bottom: 5px;" id="'+ username +'">\
       <input type="button" value="0.5$" name="0.5" class="btn btn-primary btn-sm tip-button">\
       <input type="button" value="1$" name="1" class="btn btn-primary btn-sm tip-button">\
@@ -115,7 +115,7 @@ function createTipButton(element, username)
     $('.Author__bio').before(tipDiv);
     $(tipDiv).hide();
     $('label.button.slim.hollow.secondary').parent().append('<label id="hide-show-tip-btn" class="button slim hollow secondary " title="Send a tip">Tip</label>');
-  
+
     // Click listener on tip button
     $('#hide-show-tip-btn').click(function(){
       if($(tipDiv).hasClass('div-hidden'))
@@ -142,8 +142,8 @@ function createTipButton(element, username)
       $(element).parent().parent().after(tipDiv);
 
     $(tipDiv).hide();
-    $(element).before('<label id="hide-show-tip-btn" class="Topic tip-btn-busy" title="Send a tip">Tip</label>');
-
+    if($("#hide-show-tip-btn").length==0)
+      $(element).before('<label id="hide-show-tip-btn" class="Topic tip-btn-busy" title="Send a tip">Tip</label>');
     // Click listener on tip button
     $('.tip-btn-busy').unbind('click').click(function(){
       if($(this).parent().hasClass('StoryFull__header__text'))
@@ -178,11 +178,11 @@ function createTipButton(element, username)
       }
     });
   }
-  
-  
+
+
   // Listener on tip buttons
   $('.tip-button').unbind('click').click(function(){
-    sendTip($(this), $(this).parent().attr('id'));      
+    sendTip($(this), $(this).parent().attr('id'));
   });
 }
 

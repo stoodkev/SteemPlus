@@ -191,7 +191,7 @@ var validate_account_name = function(value, memo) {
 
 
 
-/*global $STM_Config:false*/
+var STM_Config=false;
 /**
  * this regular expression should capture all possible proxy domains
  * Possible URL schemes are:
@@ -220,13 +220,13 @@ const NATURAL_SIZE = '0x0/';
         const lastProxy = proxyList[proxyList.length - 1];
         respUrl = url.substring(url.lastIndexOf(lastProxy) + lastProxy.length);
     }
-    if (dimensions && $STM_Config && $STM_Config.img_proxy_prefix) {
+    if (dimensions && STM_Config && STM_Config.img_proxy_prefix) {
         let dims = dimensions + '/';
         if (typeof dimensions !== 'string') {
             dims = (proxyList) ? proxyList.shift().match(/([0-9]+x[0-9]+)\//g)[0] : NATURAL_SIZE;
         }
         if (NATURAL_SIZE !== dims || !rProxyDomain.test(respUrl)) {
-            return $STM_Config.img_proxy_prefix + dims + respUrl;
+            return STM_Config.img_proxy_prefix + dims + respUrl;
         }
     }
     return respUrl;
@@ -530,12 +530,12 @@ function embedVimeoNode(child, links, /*images*/) {try{
 } catch(error) {console.log(error); return false}}
 
 function ipfsPrefix(url) {
-    if($STM_Config.ipfs_prefix) {
+    if(STM_Config.ipfs_prefix) {
         // Convert //ipfs/xxx  or /ipfs/xxx  into  https://steemit.com/ipfs/xxxxx
         if(/^\/?\/ipfs\//.test(url)) {
             const slash = url.charAt(1) === '/' ? 1 : 0
             url = url.substring(slash + '/ipfs/'.length) // start with only 1 /
-            return $STM_Config.ipfs_prefix + '/' + url
+            return STM_Config.ipfs_prefix + '/' + url
         }
     }
     return url

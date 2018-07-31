@@ -90,28 +90,7 @@ function displayPopoverUserInfo(userName){
   			var title='<h5>User Information</h5>';
   			var votingPower = values[0]/100;
   			var votingDollars = parseFloat(values[1]);
-  			var fullInString = null;
-  			var remainingPowerToGet = 100.0 - votingPower;
-  			// 1% every 72minutes
-  			var minutesNeeded = remainingPowerToGet * 72;
-  			if (minutesNeeded === 0)
-  			{
-  				fullInString = "Already full!";
-  			}
-  			else
-  			{
-  				var fullInDays = parseInt(minutesNeeded/1440);
-  				var fullInHours = parseInt((minutesNeeded - fullInDays*1440)/60);
-  				var fullInMinutes = parseInt((minutesNeeded - fullInDays*1440 - fullInHours*60));
-
-  				fullInString =  (fullInDays===0 ? '' : fullInDays + (fullInDays>1 ? ' days ' : 'day ')) +
-  				 				(fullInHours===0 ? '' : fullInHours + (fullInHours>1 ? ' hours ' : 'hour ')) +
-  				 				(fullInMinutes===0 ? '' : fullInMinutes + (fullInMinutes>1 ? ' minutes ' : 'minute'));
-  			}
-
-
-
-
+  			var fullInString = window.SteemPlus.Utils.getTimeBeforeFull(votingPower);
 
   		$('#popover').attr('data-toggle','popover');
   	    $('#popover').attr('data-content','<h5>Voting Power:  <span class="value_of">' + votingPower + '%</span>'

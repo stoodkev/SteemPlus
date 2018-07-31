@@ -3,14 +3,16 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.18.2",
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "version": "2.18.2.1",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://widget.blocktrades.us/ ; object-src 'self'; child-src 'unsafe-eval' 'self' https://widget.blocktrades.us/",
   "browser_action": {
     "default_icon": "src/img/logo.png",
     "default_popup": "popup.html"
   }  ,
   "background": {
-    "scripts": ["background.js"]},
+    "scripts": ["background.js"],
+    "persistent": true
+  },
   "permissions": [
     "activeTab",
     "storage",
@@ -128,7 +130,8 @@
         "src/css/resteem_indicator.css",
         "src/css/tip_user.css",
         "src/css/select_reward_dropdown.css",
-        "src/css/vote_weight_slider_busy.css"],
+        "src/css/vote_weight_slider_busy.css",
+        "src/css/misc.css"],
       "run_at": "document_idle"
     }
   ]

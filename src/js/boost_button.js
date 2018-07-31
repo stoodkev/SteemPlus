@@ -13,7 +13,7 @@
 
   var isSteemit=null;
   var isBusy=null;
-
+  var globalVar=null;
   var postFloatingBarEnabled=null;
 
   var retryCountBoostButton=0;
@@ -26,6 +26,7 @@
       isSteemit=request.data.steemit;
       isBusy=request.data.busy;
       postFloatingBarEnabled=request.data.post_floating_bar;
+      globalVar=request.data.global;
       if(request.order==='start'&&token_boost_button==null)
       {
         token_boost_button=request.token;
@@ -110,7 +111,7 @@
         parseFloat(globalInfo.weekly_limit) - parseFloat(accountInfo.user_weekly_usage)
       );
 
-      var multiplier = parseFloat(globalInfo.full_strength) * window.SteemPlus.Utils.getVotingPowerPerAccount(minnowboosterAccount) / 10000;
+      var multiplier = parseFloat(globalInfo.full_strength) ;
 
       var transferUI;
 
@@ -218,6 +219,8 @@
                 with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
                 We don\'t have access to your private key, and the payment is made through SteemConnect.\
                 <br>\
+                <br>\
+                Earn passive income from MinnowBooster by <a target="_blank" href="https://www.minnowbooster.com/vote-selling/?ref=1082760">selling your votes.</a>\
                 </div>\
               </div>\
               <br>\
@@ -449,7 +452,7 @@
           var to = transferUI.find('input[name="to"]').val();
           var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
           var memo = transferUI.find('input[name="memo"]').val();
-          var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent(memo);
+          var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus "+memo);
 
           var transferWindow = window.open();
           transferWindow.opener = null;
@@ -471,7 +474,7 @@
               <span class="input-group-label">@</span>\
               <select id="selectBooster" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus>\
                 <option value="MinnowBooster" selected>MinnowBooster</option>\
-                <option value="SmartSteem">SmartMarket (SmartSteem instant vote)</option>\
+                <option value="PostPromoter">PostPromoter</option>\
               </select>\
             </div>\
             <p></p>\
@@ -684,10 +687,123 @@ function addPostBoostButton()
 function changeUIBooster(value){
   $('#modalContent').remove();
   if(value==='MinnowBooster') createMinnowBoosterTransferUI();
-  else if(value==='SmartSteem') createSmartSteemTransferUI();
+  else if(value==='PostPromoter') createPostPromoterTransferUI();
 }
 
-function createSmartSteemTransferUI(){
+function createPostPromoterTransferUI(){
+
+  loading = $(window.SteemPlus.Utils.getLoadingHtml({
+    center: true
+  }));
+
+  var classModalLocation = '';
+  if(isSteemit) classModalLocation = '.reveal';
+  else if(isBusy) classModalLocation = '.modal-content-busy';
+
+  var transferUI = $('\
+    <div id="modalContent">\
+      <div id="modalTitle" class="row">\
+        <h3 class="column">Boost with <a href="/@postpromoter" target="_blank" rel="noopener">@postpromoter</a></h3>\
+      </div>\
+    </div>');
+    modal.find(classModalLocation).append(transferUI);
+
+      $('#modalTitle').after($('\
+        <div class="row">\
+          <div class="column small-2" style="padding-top: 5px;">To</div>\
+            <div class="column small-10">\
+              <div class="input-group" style="margin-bottom: 1.25rem;">\
+                <span class="input-group-label">@</span>\
+                <select id="selectBooster" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+                  <option value="MinnowBooster">MinnowBooster</option>\
+                  <option value="PostPromoter" selected>PostPromoter</option>\
+                </select>\
+              </div>\
+              <p></p>\
+            </div>\
+          </div>\
+        </div>\
+        <div class="bootstrap-wrapper">\
+          <div class="container">\
+          <h3>PostPromoter information</h3><br>\
+            <div id="postPromoterInformation" class="row">\
+            </div>\
+          </div>\
+        </div>\
+        <br>\
+        <br>\
+        <div class="row">\
+          <div class="input-group" style="margin-bottom: 5px;">\
+            <input id="amountPostPromoter" type="number" placeholder="Amount" name="amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="">\
+            <span class="input-group-label" style="padding-left: 0px; padding-right: 0px; min-width: 5rem; height: inherit; border: none; text-align:center;" >\
+              <select id="currency" name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">\
+                <option value="SBD" selected>SBD</option>\
+                <option value="STEEM" selected>STEEM</option>\
+              </select>\
+            </span>\
+          </div>\
+          <button id="submitPostPromoter" type="submit" disabled="" class="Action button">Submit</button>\
+        </div>'));
+      var account=null;
+      window.SteemPlus.Utils.getAccounts(['postpromoter'], function(err, result){
+        var vp=window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]);
+        var timeBeforeVote=window.SteemPlus.Utils.getTimeBeforeFull(vp);
+        account=result[0];
+        console.log(vp,timeBeforeVote);
+        $('#postPromoterInformation').html("<div><strong>Time before vote: </strong>"+timeBeforeVote+"</div><br><div><strong>Expected upvote</strong> (+/- 10%): <span id='expected_vote'></span></div>");
+        $('#expected_vote').html("$0");
+      });
+
+      $('#selectBooster').unbind('change').on('change', function(){
+        changeUIBooster(this.value);
+      });
+
+      $('#submitPostPromoter').unbind('click').click(function(){
+        var amountPP = null;
+        if(!$('#amountSmartSteem')[0].value.includes('.'))
+          amountPP = $('#amountSmartSteem')[0].value + '.000';
+        else
+          amountPP = $('#amountSmartSteem')[0].value;
+
+        var requestSmartSteem = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency')[0].value) + '&memo=' + encodeURIComponent("steemplus "+window.location.href);
+        var win = window.open(requestSmartSteem, '_blank');
+          if (win) {
+              //Browser has allowed it to be opened
+              win.focus();
+          } else {
+              //Browser has blocked it
+              alert('Please allow popups for this website');
+          }
+      });
+
+      $('#amountPostPromoter').on('input',function(e){
+        if($('#amountPostPromoter')[0].value.length > 0){
+          $('#submitPostPromoter').attr('disabled', false);
+          var value=$('#amountPostPromoter')[0].value*1.16;
+          var sbd_value=window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate)*1.16;
+          var percent=value*100/sbd_value;
+          var share=window.SteemPlus.Utils.getVotingDollarsPerAccount(percent, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate)*1.16;
+          $('#expected_vote').html("$"+share);
+          console.log(share);
+        }
+        else
+          $('#submitPostPromoter').attr('disabled', true);
+      });
+
+      if(isBusy)
+      {
+        $('input').each(function(){
+          $(this).eq(0).addClass('input-busy');
+        });
+
+        $('#selectBooster').each(function(){
+          $(this).eq(0).addClass('select-busy');
+        });
+      }
+    }
+
+
+/*function createSmartSteemTransferUI(){
 
   loading = $(window.SteemPlus.Utils.getLoadingHtml({
     center: true
@@ -808,4 +924,4 @@ function createSmartSteemTransferUI(){
     }
   });
 
-}
+}*/

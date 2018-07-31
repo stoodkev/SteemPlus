@@ -12,7 +12,7 @@
     trending: "/trending",
     random: "/random"
   };
-  
+
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.to=='gif_picker'){
       aut=request.data.user;
@@ -71,7 +71,7 @@
 
     }
   }
-    
+
 
   function addGifToTextArea(textarea, gif) {
     var t = textarea[0];
@@ -91,7 +91,7 @@
       t.selectionStart = startPos + text.length;
       t.selectionEnd = startPos + text.length;
     } else {
-      t.value += text;      
+      t.value += text;
     }
 
     var event = new Event('input', { bubbles: true });
@@ -165,7 +165,7 @@
 
         // resultsEl.append('<a class="still"><img src="'+img.url+'" alt="'+ alt +'" data-state="still" data-still="'+ img.url +'" data-gif="'+ gif.url +'"></a>');
         resultsEl.append('<a class=""><img src="'+gif.url+'" alt="'+ alt +'"></a>');
-        
+
       }
       resultsEl.justifiedGallery({
         rowHeight : 150,
@@ -179,7 +179,7 @@
       pickerContainer.find('.results a').click(function(e){
         e.preventDefault();
         e.stopPropagation();
-        
+
         var that = $(this).children('img');
         var gif = that.attr('src');
 
@@ -192,11 +192,11 @@
     //   pickerContainer.find('.results a').click(function(e){
     //     e.preventDefault();
     //     e.stopPropagation();
-        
+
     //     var that = $(this).children('img');
     //     var state = that.attr('data-state');
     //     $(this).toggleClass('still');
-        
+
     //     if ( state == 'still'){
     //         that.attr('src', that.data('gif'));
     //         that.attr('data-state', 'animate');
@@ -212,24 +212,28 @@
 
     pickerContainer.find('.query').keyup(function(e){
       e.preventDefault();
-      if(timeout){
-        clearTimeout(timeout);
-        timeout = null;
-      }
-      
-      timeout = setTimeout(function(){
-        var params = pickerContainer.find('.gif-form input').serialize();
-        if(pickerContainer.find('.rating').val()){
-          params += '&' + pickerContainer.find('.rating').serialize();
+      if(evt.keyCode != 13){
+        if(timeout){
+          clearTimeout(timeout);
+          timeout = null;
         }
-        
-        var ajax = {
-          url: giphy.baseUrl + giphy.search + giphy.key + '&' + params,
-          method: "GET"
-        };        
-        pickerContainer.find('.title').html('Results for: <span>'+pickerContainer.find('.query').val()+'</span>');
-        ajaxQuery(ajax);
-      }, 500);
+
+        timeout = setTimeout(function(){
+          var params = pickerContainer.find('.gif-form input').serialize();
+          if(pickerContainer.find('.rating').val()){
+            params += '&' + pickerContainer.find('.rating').serialize();
+          }
+
+          var ajax = {
+            url: giphy.baseUrl + giphy.search + giphy.key + '&' + params,
+            method: "GET"
+          };
+          pickerContainer.find('.title').html('Results for: <span>'+pickerContainer.find('.query').val()+'</span>');
+          ajaxQuery(ajax);
+        }, 500);
+      }
+      else
+        e.stopPropagation();
     });
 
     pickerContainer.find('.trending').click(function(e){
@@ -239,7 +243,7 @@
         clearTimeout(timeout);
         timeout = null;
       }
-      
+
       var selection = "trending";
 
       var ajax = {
@@ -267,13 +271,13 @@
 
     textarea.addClass('smi-gif-picker-textarea');
     var pickerButtonContainer = $('<div class="smi-gif-picker-button-container">\
-      <button class="button">GIF</button>\
+      <div class="button button_gif">GIF</div>\
     </div>');
     if($('.edit-signature-post').length > 0) textarea.parent().find('.edit-signature-post').after(pickerButtonContainer);
     else if($('.edit-signature-comment').length > 0) textarea.parent().find('.edit-signature-comment').after(pickerButtonContainer);
     else textarea.after(pickerButtonContainer);
 
-    var button = pickerButtonContainer.find('button');
+    var button = pickerButtonContainer.find('.button');
     button.on('click', function() {
       toggleGifPicker(textarea);
     });
@@ -315,4 +319,3 @@
   function closeGifPicker(textarea) {
     textarea.parent().removeClass('smi-gif-picker-opened');
   };
-

@@ -3,8 +3,9 @@
   cursor: pointer;
   right:0;
   background: transparent;
-  border: none; 
+  border: none;
 }
+
 
 .del_busy button {
 
@@ -25,7 +26,7 @@
   border-color: white;
 }
 
-.UserWallet__buysp2 
+.UserWallet__buysp2
 {
   width: 30%;
   float: right !important;
@@ -72,7 +73,7 @@
 #list_delegators, #list_delegee
 {
   font-size: 1em;
-  font-weight: normal; 
+  font-weight: normal;
   overflow-y: auto;
   overflow-x: visible;
   max-height: 13em;

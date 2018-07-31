@@ -43,3 +43,7 @@
     border-radius: 3px !important;
     padding-left: 0.50em !important;
 }
+
+#modalContent h3{
+  margin-bottom: 10px;
+}

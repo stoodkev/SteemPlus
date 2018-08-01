@@ -121,8 +121,8 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
       const followers_table=(items.followers_table == undefined || items.followers_table=='show');
       const select_reward_dropdown=(items.select_reward_dropdown == undefined || items.select_reward_dropdown=='show');
       const vote_weight_slider_busy=(items.vote_weight_slider_busy == undefined || items.vote_weight_slider_busy=='show');
-        const isPostFloatingBottomBarEnabled=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
-
+      const isPostFloatingBottomBarEnabled=(items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar=='show');
+      const utopian=(items.utopian == undefined || items.utopian=='show');
 
       // Feed+ const
       var whitelist=(items.whitelist !== undefined)?items.whitelist:"";
@@ -137,6 +137,8 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
       var classif=(items.classif!==undefined)?items.classif:{bot: true, human: true, pending: true, spammer: true};
 
       console.log('Starting features online...',user);
+      if(utopian&&(steemit))
+        chrome.runtime.sendMessage({ token:token, to: 'utopian', order: 'start',data:{user:user}});
       if(beneficiaries&&(steemit||busy))
         chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'start',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
       if(steemit&&feedp&&resteem==='whitelist_radio'||resteem==='blacklist_radio')
@@ -163,6 +165,8 @@ chrome.storage.local.get(['select_reward_dropdown','tip_user','resteem_indicator
         setTimeout(function(){
           if(urlOnline!==window.location.href)
           {
+            if(utopian&&(steemit))
+              chrome.runtime.sendMessage({ token:token, to: 'utopian', order: 'click',data:{user:user}});
             if(beneficiaries&&(steemit||busy))
               chrome.runtime.sendMessage({ token:token, to: 'ben', order: 'click',data:{user:user, steemit:steemit, busy:busy, select_reward_dropdown_enabled:select_reward_dropdown}});
             if(steemit&&followers_table&&steemit_more_info)

@@ -65,7 +65,7 @@
     {
       "matches": ["https://steemit.com/*","https://busy.org/*","https://mspsteem.com/*","https://utopian.io/*"],
       "js": ["vendor/global_const.js","vendor/jquery.js","vendor/logger.js","vendor/jquery.livequery.min.js","vendor/sc2.min.js","vendor/jquery.justifiedGallery.min.js","vendor/timeago.js","vendor/steemjs.js","vendor/decode.min.js","vendor/bootstrap.js","vendor/datatables.min.js", "vendor/lodash.min.js", "vendor/remarkable.min.js", "vendor/sanitize-html.min.js", "vendor/moment.min.js",  "vendor/Chart.min.js", "vendor/toastr.min.js",
-        "vendor/smi/HtmlReady.js","vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js","vendor/unslider/unslider-min.js","vendor/jquery.markdown-live.js","vendor/js-markdown-extra.js","vendor/bootstrap-slider/bootstrap-slider.min.js",
+        "vendor/smi/HtmlReady.js","vendor/smi/base_tab.js","vendor/smi/sanitize.js","vendor/smi/utils.js","vendor/unslider/unslider-min.js","vendor/jquery.markdown-live.js","vendor/js-markdown-extra.js","vendor/bootstrap-slider/bootstrap-slider.min.js","vendor/jquery.easy-autocomplete.min.js",
         "main.js",
         "src/js/loginSteemPlus.js",
         "src/js/delegate.js",
@@ -106,12 +106,11 @@
         "src/js/vote_weight_slider_busy.js",
         "src/js/beneficiary_donation.js"],
 
-      "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css",
+      "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css","vendor/easy-autocomplete.min.css","vendor/easy-autocomplete.themes.min.css",
         "src/css/delegate.css",
         "src/css/mentions.css",
         "src/css/account_val.css",
         "src/css/beneficiaries.css",
-        "src/css/utopian_post.css",
         "src/css/rank.css",
         "src/css/resteem.css",
         "src/css/feedplus.css",
@@ -133,6 +132,7 @@
         "src/css/tip_user.css",
         "src/css/select_reward_dropdown.css",
         "src/css/vote_weight_slider_busy.css",
+        "src/css/utopian_post.css",
         "src/css/misc.css"],
       "run_at": "document_idle"
     }

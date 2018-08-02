@@ -17,6 +17,7 @@
   var postFloatingBarEnabled=null;
 
   var retryCountBoostButton=0;
+  var market=null;
 
   chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
@@ -31,6 +32,7 @@
       {
         token_boost_button=request.token;
         addPostBoostButton();
+        market=request.data.market;
       }
 
       if(request.order==='click')
@@ -750,7 +752,7 @@ function createPostPromoterTransferUI(){
         var timeBeforeVote=window.SteemPlus.Utils.getTimeBeforeFull(vp);
         account=result[0];
         console.log(vp,timeBeforeVote);
-        $('#postPromoterInformation').html("<div><strong>Time before vote: </strong>"+timeBeforeVote+"</div><br><div><strong>Expected upvote</strong> (+/- 10%): <span id='expected_vote'></span></div>");
+        $('#postPromoterInformation').html("<div><strong>Min / Max Post age:</strong> 20 mins / 3.5 days</div><div><strong>Time before vote: </strong>"+timeBeforeVote+"</div><br><div><strong>Expected upvote</strong> (+/- 10%): <span id='expected_vote'></span></div>");
         $('#expected_vote').html("$0");
       });
 
@@ -776,15 +778,14 @@ function createPostPromoterTransferUI(){
           }
       });
 
+      $("#currency").on('change',function(){
+        estimateVote();
+      });
+
       $('#amountPostPromoter').on('input',function(e){
         if($('#amountPostPromoter')[0].value.length > 0){
           $('#submitPostPromoter').attr('disabled', false);
-          var value=$('#amountPostPromoter')[0].value*1.16;
-          var sbd_value=window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate)*1.16;
-          var percent=value*100/sbd_value;
-          var share=window.SteemPlus.Utils.getVotingDollarsPerAccount(percent, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate)*1.16;
-          $('#expected_vote').html("$"+share);
-          console.log(share);
+          estimateVote();
         }
         else
           $('#submitPostPromoter').attr('disabled', true);
@@ -802,7 +803,15 @@ function createPostPromoterTransferUI(){
       }
     }
 
-
+function estimateVote(){
+  var bid_amount=$('#amountPostPromoter')[0].value;
+  var vote_value=window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate,true);
+  var vote_value_usd=vote_value*market.priceSBD/2+vote_value/2;
+  var bid_value= bid_amount * ($("#currency option:selected").val()=="STEEM"?market.priceSteem:market.priceSBD) / (vote_value_usd*0.75) * vote_value;
+  console.log(vote_value,vote_value_usd,bid_value);
+  $('#expected_vote').html("$"+(bid_value*0.9).toFixed(3)+" ~ $"+(bid_value*1.1).toFixed(3));
+  console.log(share);
+}
 /*function createSmartSteemTransferUI(){
 
   loading = $(window.SteemPlus.Utils.getLoadingHtml({

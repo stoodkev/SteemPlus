@@ -18,7 +18,7 @@
       if(request.order==='start'&&token_vote_weight_slider==null)
       {
         token_vote_weight_slider=request.token;
-        
+
         rewardBalance=request.data.rewardBalance;
         recentClaims=request.data.recentClaims;
         steemPrice=request.data.steemPrice;
@@ -28,7 +28,7 @@
 
         startVoteWeightSlider();
         voteWeightSliderStarted=true;
-  		  
+
       }
       else if(request.order==="click"&&token_vote_weight_slider==request.token)
       {
@@ -38,7 +38,7 @@
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
         account=request.data.account;
-        
+
         if(voteWeightSliderStarted)
           startVoteWeightSlider();
       }
@@ -50,7 +50,7 @@
         steemPrice=request.data.steemPrice;
         votePowerReserveRate=request.data.votePowerReserveRate;
         account=request.data.account;
-        
+
         if(voteWeightSliderStarted)
           startVoteWeightSlider();
       }
@@ -89,9 +89,9 @@
       weightDisplay.after(weightDollars);
     }
 
-    var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
-    
-    console.log(dollars);   
+    var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /,''), 10),account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate,false);
+
+    console.log(dollars);
     if((typeof dollars === 'undefined'||dollars===undefined)&&retryCountVoteWeightSlider<20){
       retryCountVoteWeightSlider++;
       setTimeout(function() {

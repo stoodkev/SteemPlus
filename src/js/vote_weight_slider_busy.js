@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       isPostPage = false;
 
       canstartVoteWeightSliderBusy();
-		  
+
     }
     else if(request.order==="click"&&token_vote_weight_slider_busy==request.token)
     {
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
       account=request.data.account;
       isFloatingFooterEnabled=request.data.isPostFloatingBottomBarEnabled;
       isPostPage = false;
-      
+
       canstartVoteWeightSliderBusy();
     }
     else if(request.order==="notif"&&token_vote_weight_slider_busy==request.token)
@@ -166,13 +166,13 @@ function createPopupVoteSlider(element)
   $(element).attr('data-html','true');
   $(element).attr('data-trigger','click');
   $(element).popover('show');
-  dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
+  dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate,false);
   $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
-  
+
   $(element).parent().find('#vote-weight-slider-busy').slider({tooltip: 'hide'});
   $(element).parent().find('#vote-weight-slider-busy').on('change', function(slideEvt){
     currentWeight = slideEvt.value.newValue;
-    dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
+    dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate,false);
     $(element).parent().find('.percentage-vote-slider-busy').html(currentWeight);
     $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
   });

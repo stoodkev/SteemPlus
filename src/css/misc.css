@@ -1,0 +1,8 @@
+iframe, iframe div{
+  overflow-y: hidden !important;
+}
+
+.button_gif{
+  margin-bottom: 3em !important;
+  padding: 10px 18px 10px 18px !important;
+}

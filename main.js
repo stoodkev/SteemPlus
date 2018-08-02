@@ -333,7 +333,7 @@ function startOfflineFeatures(items, user, account)
     if(steemit&&vote_weight_slider)
       chrome.runtime.sendMessage({ token:token, to: 'vote_weight_slider', order: 'start',data:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS, account:account}});
     if((steemit||busy)&&boost_button)
-      chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'start',data:{user:user, steemit:steemit, busy:busy, post_floating_bar:post_floating_bottom_bar,global:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}}});
+      chrome.runtime.sendMessage({ token:token, to: 'boost_button', order: 'start',data:{market:market,user:user, steemit:steemit, busy:busy, post_floating_bar:post_floating_bottom_bar,global:{rewardBalance:rewardBalanceLS, recentClaims:recentClaimsLS, steemPrice:steemPriceLS, votePowerReserveRate:votePowerReserveRateLS}}});
     if(steemit&&gif_picker)
       chrome.runtime.sendMessage({ token:token, to: 'gif_picker', order: 'start',data:{}});
     if(steemit&&user_info_popover)

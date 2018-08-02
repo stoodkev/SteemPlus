@@ -47,3 +47,7 @@
 #modalContent h3{
   margin-bottom: 10px;
 }
+
+#postPromoterInformation div, #postPromoterInformation strong{
+  width:100%;
+}

@@ -69,7 +69,7 @@ function displayPopoverUserInfo(userName){
 	window.SteemPlus.Utils.getAccounts([userName], function(err, result){
 		if(!$('.UserProfile__banner').hasClass('smi-profile-banner-1'))
 		  $('.UserProfile__banner').addClass('smi-profile-banner-1');
-		Promise.all([window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]), window.SteemPlus.Utils.getVotingDollarsPerAccount(100, result[0], rewardBalanceUIP, recentClaimsUIP, steemPriceUIP, votePowerReserveRateUIP)])
+		Promise.all([window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]), window.SteemPlus.Utils.getVotingDollarsPerAccount(100, result[0], rewardBalanceUIP, recentClaimsUIP, steemPriceUIP, votePowerReserveRateUIP,false)])
 		.then(function(values) {
       $("#popover").remove();
  			var pop=document.createElement('a');

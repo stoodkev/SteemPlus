@@ -234,7 +234,7 @@
           if(!account.loaded){
             return 'Loading...';
           }
-          var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate);
+          var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate,false);
           if(typeof dollars !== 'number'){
             return 'Loading...';
           }
@@ -374,11 +374,11 @@
 
 
   function checkFollowersTable(followList, name, isFollowers, userList) {
-        
+
     if(!userList.length){
       setTimeout(function(){
         checkFollowersTable(followList, name, isFollowers, userList);
-      }, 200);  
+      }, 200);
     }
     if($('.smi-followers-table-added').length>0)
       return false;
@@ -386,7 +386,7 @@
     userList.addClass('smi-followers-table-added');
     var result = createFollowersTable(name, isFollowers, followList);
     userList.prepend(result);
-    
+
     userList.children('.row').css('display', 'none');
     return true;
   };
@@ -409,7 +409,7 @@
           checkForFollowerPage();
         }, 1000);
       }
-      
+
       if(isFollowers)
       {
         getFollowersList(name, 0, [], userList);

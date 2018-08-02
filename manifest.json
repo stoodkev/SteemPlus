@@ -21,7 +21,8 @@
     "https://*/*",
     "webNavigation",
     "webRequest",
-    "webRequestBlocking"
+    "webRequestBlocking",
+    "clipboardRead"
   ],
   "commands": {
     "busyfy": {

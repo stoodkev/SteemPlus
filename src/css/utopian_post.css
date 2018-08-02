@@ -33,7 +33,37 @@
 #disclaimer_utopian{
   font-size: 1em;
 }
-
+#autocomplete-git{
+  padding-top: 8px;
+  line-height: normal;
+  padding-bottom: 8px;
+}
 #ok_utopian{
   position: absolute; right: 20px; bottom: 20px;
+}
+
+#ok_utopian:disabled{
+  border-color: grey;
+  color:grey;
+  cursor: not-allowed;
+}
+
+#ok_utopian:disabled:hover{
+  border-color: grey;
+  background-color: grey;
+  color:white;
+  cursor: not-allowed;
+}
+
+#post-utopian, #cancel-utopian,#edit-utopian{
+    font-weight: bold;
+    background: white;
+    padding: 1em;
+    cursor: pointer;
+    margin: 1em;
+    display: inline-block;
+}
+
+#post-utopian{
+    margin-left: 0px !important;
 }

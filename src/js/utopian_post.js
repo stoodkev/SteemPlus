@@ -67,7 +67,7 @@ function openUtopianDialog(){
     '<option name="c_type" value="tutorials">Tutorials</option>'+
     '<option name="c_type" value="video-tutorials">Video Tutorials</option>'+
     '</select>'+
-    '<input type="checkbox" id="override_text" checked/><label for="override_text">Override post body with Utopian template</label>'+
+    '<input type="checkbox" id="override_text" /><label for="override_text">Override post body with Utopian template</label>'+
     '<h4>Github Repository</h4>'+
     '<input id="autocomplete-git"/>'+
     '<button class="button-steemit" id="ok_utopian">OK</button>'+

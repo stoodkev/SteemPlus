@@ -24,14 +24,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     retryCountDelegate = 0;
     startDelegation(request.data.steemit, request.data.busy, request.data.global);
     delegationStarted = true;
-  } 
+  }
   else if (request.to === 'delegation' && request.order === 'click' && token_del === request.token)
   {
     myAccountDelegation=request.data.account;
     retryCountDelegate = 0;
     startDelegation(request.data.steemit, request.data.busy, request.data.global);
   }
-  else if (request.to === 'delegation' && request.order === 'notif' && token_del == request.token) 
+  else if (request.to === 'delegation' && request.order === 'notif' && token_del == request.token)
   {
     retryCountDelegate = 0;
     if (!$('.delegate'))
@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // @parameter globalP : contains total steem and total vests
 function startDelegation(isSteemit, isBusy, globalP)
 {
-  if(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href)) 
+  if(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))
   {
     if (isSteemit)
     {
@@ -57,8 +57,8 @@ function startDelegation(isSteemit, isBusy, globalP)
       createButtonDelegation(isSteemit, isBusy, globalP);
       getMyTotalOutgoingDelegation(globalP);
 
-    } 
-    else if (isBusy) 
+    }
+    else if (isBusy)
     {
       load_check = /wallet/;
       load_check2 = /transfers/;
@@ -82,7 +82,7 @@ function startDelegation(isSteemit, isBusy, globalP)
     }
   }
 }
-  
+
 function getMyTotalOutgoingDelegation(globalP)
 {
   var tmp = 0;
@@ -102,7 +102,7 @@ function getMyTotalOutgoingDelegation(globalP)
 // @parameter isBusy : boolean, true if used website is busy
 // @parameter globalP : contains total steem and total vests
 function createButtonDelegation(isSteemit, busy, globalP) {
-  if(totalOutgoingDelegation===-1&&myTotalOutgoingDelegation===-1&&(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))&&retryCountDelegate<20) 
+  if(totalOutgoingDelegation===-1&&myTotalOutgoingDelegation===-1&&(regexWalletBusy.test(window.location.href)||regexWalletSteemit.test(window.location.href))&&retryCountDelegate<20)
   {
     setTimeout(function(){
       createButtonDelegation(isSteemit, busy, globalP)
@@ -123,7 +123,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
       delegate_button.style.marginTop = '15px';
       delegate_button.style.display = 'block';
       delegate_button.style.float = 'right';
-      
+
       if (busy) delegate_button.style.marginTop = '10px';
       delegate_div.appendChild(delegate_button);
 
@@ -174,7 +174,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
           '<span  style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">SP</span></span></div><div style="margin-bottom: 0.6rem;"><a id="max_sp" style="border-bottom: 1px dotted rgb(160, 159, 159); cursor: pointer;">' +
           'Max*: ' + (getMaxSP() > 0 ? getMaxSP() : 0) + ' SP</a><p>* Maximum delegation available if no SP is currently delegated.</p></div></div></div><div class="row"><div class="column"><span><input type="button"   disabled="" class="UserWallet__buysp2 delegate" id="bd" value="Submit"/></span></div></div></form></div></div></div>';
           div.innerHTML = inner;
-        } 
+        }
         else if(busy) {
           inner = '<div><div><div class="ant-modal-mask"></div><div tabindex="-1" class="ant-modal-wrap " role="dialog" aria-labelledby="rcDialogTitle0"><div role="document" class="ant-modal" style="width: 520px; transform-origin: 620.8px 9px 0px;"><div class="ant-modal-content"><button aria-label="Close" class="ant-modal-close"><span class="ant-modal-close-x close-button"></span></button>' +
           '<div class="ant-modal-header"><div class="ant-modal-title" id="rcDialogTitle0">Delegate SP to another account</div></div><div class="ant-modal-body"><form class="ant-form ant-form-horizontal ant-form-hide-required-mark Transfer container"><div class="ant-row ant-form-item"><div class="ant-form-item-label"><label for="from" class="ant-form-item-required" title=""><span>From</span></label></div><div class="ant-form-item-control-wrapper"><div class="ant-form-item-control "><input type="text" placeholder="Your account" value="'+ myAccountDelegation.name + '" id="from" data-__meta="[object Object]" class="ant-input ant-input-lg" disabled></div></div>' +
@@ -212,12 +212,11 @@ function createButtonDelegation(isSteemit, busy, globalP) {
 // @parameter isSteemit : boolean, true if used website is steemit
 // @parameter isBusy : boolean, true if used website is busy
 // @parameter globalP : contains total steem and total vests
-// @parameter account : account of user 
+// @parameter account : account of user
 function getDelegationInformation(isSteemit, isBusy, globalP, account)
 {
   // get outgoing delegation from the blockchain using steemjs
   steem.api.getVestingDelegations(usernamePageDelegation, null, 10, function(err, outgoingDelegations) {
-    
     // get incoming delegation from steemSQL
     $.ajax({
       type: "GET",
@@ -234,7 +233,7 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
       }
     });
   });
-  
+
 }
 
 
@@ -246,11 +245,11 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
 // @parameter incomingDelegations : list of all incoming delegations
 // @parameter outgoingDelegations : list of all outgoing delegations
 // @parameter globalP : contains total steem and total vests
-// @parameter account : account of user 
+// @parameter account : account of user
 function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP, account)
 {
   var divDelegation = $('<div class="delegation column"></div>');
-  if (incomingDelegations.length > 0) 
+  if (incomingDelegations.length > 0)
   {
     $(divDelegation).append('<h5 class="incoming-delegation">Incoming - </h5><div id="list_delegators"></div>');
     totalIncomingDelegation = 0;
@@ -296,15 +295,17 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   {
     if(isSteemit)
     {
-      if($('.delegate').length > 0)
+      console.log("b");
+      if($('.UserWallet__balance').length > 0)
       {
+        console.log("a");
         if(myAccountDelegation.name === usernamePageDelegation)
         {
           $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
         }
         else
         {
-          $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
+          $('span [title="STEEM POWER delegated to/from this account"]').attr('id', 'popoverDelegation');
         }
         $('#popoverDelegation').css('float', 'right');
       }
@@ -335,9 +336,9 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     });
 
     $('body').on('click', function(e) {
-      if ($(e.target).data('toggle') === undefined && $(e.target).parents('.popover.in').length === 0) 
+      if ($(e.target).data('toggle') === undefined && $(e.target).parents('.popover.in').length === 0)
         $('#popoverDelegation').popover('hide');
     });
   }
-  
+
 }

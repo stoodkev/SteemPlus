@@ -195,8 +195,8 @@ $("#autocomplete-git").easyAutocomplete(options);
           account: 'steemplus-pay',
           weight: 100*1
         },{
-          account: 'utopian-io',
-          weight: 100*4
+          account: 'utopian.pay',
+          weight: 100*5
         });
 
       var maximumAcceptedPayout = '100000.000 SBD';

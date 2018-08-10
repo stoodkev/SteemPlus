@@ -1,22 +1,38 @@
+.beneficiaries,
+.post {
+    list-style-type: none;
+    margin-bottom: 1em;
+    margin-left: 0;
+    text-align: left;
+    display: block;
+    width: 100%;
+}
 
+.beneficiaries:first-of-type {
+    margin-top: 2em;
+}
 
-.beneficiaries, .post {  list-style-type: none;  margin-bottom: 1em; margin-left: 0; text-align: left; display: block; width: 100%;}
-.beneficiaries:first-of-type{margin-top: 2em;}
-.benef_elt{display: inline-block; width: 40%;
-    }
+.benef_elt {
+    display: inline-block;
+    width: 40%;
+}
 
-.sign{
+.sign {
 
 
     width: 10%;
     text-align: center;
 }
 
-.beneficiaries input, .post input {width: 90%; display: inline-block;
-    padding-bottom: 1em;}
+.beneficiaries input,
+.post input {
+    width: 90%;
+    display: inline-block;
+    padding-bottom: 1em;
+}
 
 
-.close{
+.close {
     color: #A52A2A;
     display: inline-block;
     height: 100%;
@@ -27,27 +43,26 @@
     margin-left: 5%;
     text-shadow: 0 1px 0 #fff;
 }
+
 .close:after {
-    content: '✖'; /* UTF-8 symbol */
+    content: '✖';
+    /* UTF-8 symbol */
 }
 
-.inline_button{
+.inline_button {
 
     display: inline-block;
 }
 
-.inline_button button{
-.UserWallet__buysp button hollow
-
+.inline_button button {
+    .UserWallet__buysp button hollow
 }
 
-.benef-busy
-{
+.benef-busy {
     margin-bottom: 1em;
 }
 
-.benef_elt_busy > input
-{
+.benef_elt_busy>input {
     padding: 0.25em;
     border-radius: 3px;
     border: 1px solid #2088ff;
@@ -55,13 +70,11 @@
     color: black;
 }
 
-.postbutton-busy
-{
+.postbutton-busy {
     width: 100% !important;
 }
 
-.button-steemit
-{
+.button-steemit {
     background: white;
     color: #1FBF8F;
     padding: 1em;
@@ -70,8 +83,7 @@
     border: 1px solid #1FBF8F;
 }
 
-.button-steemit:hover
-{
+.button-steemit:hover {
     background: #1FBF8F;
     color: white !important;
     padding: 1em;
@@ -80,15 +92,15 @@
     border: 1px solid #1FBF8F;
 }
 
-#benefDonation-div{
-  display: inline-block;
-  margin-left:1em;
-  margin-right: 0;
+#benefDonation-div {
+    display: inline-block;
+    margin-left: 1em;
+    margin-right: 0;
 }
 
-#busy_div_benefd{
-  width: auto;
-  display: inline-block;
-  float:left;
-  margin-right: 10px;
+#busy_div_benefd {
+    width: auto;
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
 }

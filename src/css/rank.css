@@ -1,5 +1,5 @@
-.ranker{
-    height:100%;
+.ranker {
+    height: 100%;
     display: flex;
     flex-direction: column;
     display: -webkit-box;
@@ -8,23 +8,21 @@
     display: -webkit-flex;
     display: flex;
     justify-content: center;
-    float:left;
+    float: left;
     margin-left: 30px;
 }
 
-.ranker img{
+.ranker img {
     width: auto;
-    height:128px;
+    height: 128px;
 }
 
-.wrapper
-{
-  display: inline-block;
-  margin-right: 120px;
+.wrapper {
+    display: inline-block;
+    margin-right: 120px;
 }
 
-.img-medal-busy
-{
+.img-medal-busy {
     height: 100px !important;
     width: auto !important;
 }

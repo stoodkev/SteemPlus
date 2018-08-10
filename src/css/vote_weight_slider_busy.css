@@ -1,19 +1,16 @@
-.popup-slider-container
-{
-	width: 100%;
+.popup-slider-container {
+    width: 100%;
 }
 
-.popup-slider-container > .slider
-{
-	width: 100% !important;
+.popup-slider-container>.slider {
+    width: 100% !important;
 }
 
 .slider-selection {
-	background: #2088ff;
+    background: #2088ff;
 }
 
-.upvote-slider-btn-busy
-{
+.upvote-slider-btn-busy {
     background: white;
     width: 100%;
     color: #2088ff;
@@ -23,8 +20,7 @@
     border: 1px solid #2088ff;
 }
 
-.upvote-slider-btn-busy:hover
-{
+.upvote-slider-btn-busy:hover {
     background: #2088ff;
     color: white !important;
 }

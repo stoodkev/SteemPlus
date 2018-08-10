@@ -1,19 +1,19 @@
-.witness-cells{
-	display: table !important;
+.witness-cells {
+    display: table !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
     min-height: 50px !important;
     line-height: 2.0 !important;
 }
 
-.witness-items{
+.witness-items {
     /*display: table-cell !important;*/
-	vertical-align: middle !important;
+    vertical-align: middle !important;
 
 }
 
-.evenLine{
-	background-color: #f6f6f6;
+.evenLine {
+    background-color: #f6f6f6;
 }
 
 #addWitnessName {
@@ -42,13 +42,15 @@
     font-size: 12px !important;
 }
 
-.removeWitnessesLink:hover, .removeAsWitnessLink:hover, .addAsWitnessLink:hover
-{
+.removeWitnessesLink:hover,
+.removeAsWitnessLink:hover,
+.addAsWitnessLink:hover {
     background-color: #1A5099 !important;
-    color: #fcfcfc !important; 
+    color: #fcfcfc !important;
 }
 
-.removeAsWitnessLink, .addAsWitnessLink{
+.removeAsWitnessLink,
+.addAsWitnessLink {
     margin-left: 0px !important;
 }
 
@@ -63,78 +65,82 @@
     margin-left: 0px !important;
 }
 
-.witness-not-active{
-    color:red !important;
-    text-decoration: line-through;  
-}   
+.witness-not-active {
+    color: red !important;
+    text-decoration: line-through;
+}
 
-.capitalize-label > label{
+.capitalize-label>label {
     text-transform: capitalize;
 }
 
-.rank-witness{
-    height: 100%;
-}
-.rank-witness-h5{
+.rank-witness {
     height: 100%;
 }
 
-.witness-title{
+.rank-witness-h5 {
+    height: 100%;
+}
+
+.witness-title {
     font-weight: bold;
 }
 
-.theme-dark .removeAsWitnessLink, .theme-dark .addAsWitnessLink{
+.theme-dark .removeAsWitnessLink,
+.theme-dark .addAsWitnessLink {
     margin-left: 0px;
 }
 
-.theme-dark .evenLine, .theme-dark .odd {
+.theme-dark .evenLine,
+.theme-dark .odd {
     color: black;
 }
 
 
 
-.theme-dark .removeWitnessesLink:hover, .theme-dark .removeAsWitnessLink:hover, .theme-dark .addAsWitnessLink:hover
-{
+.theme-dark .removeWitnessesLink:hover,
+.theme-dark .removeAsWitnessLink:hover,
+.theme-dark .addAsWitnessLink:hover {
     background-color: #fcfcfc !important;
-    color: #1A5099 !important; 
+    color: #1A5099 !important;
 }
 
 .theme-dark .evenLine .removeWitnessesLink {
     background-color: #fcfcfc !important;
     color: #1A5099 !important;
     border-color: #1A5099 !important;
-} 
+}
 
 .theme-dark .evenLine .removeWitnessesLink:hover {
     background-color: #1A5099 !important;
     color: #fcfcfc !important;
     border-color: #1A5099 !important;
-} 
+}
 
-.theme-dark .removeAsWitnessLink, .theme-dark .addAsWitnessLink, .theme-dark .removeWitnessesLink{
+.theme-dark .removeAsWitnessLink,
+.theme-dark .addAsWitnessLink,
+.theme-dark .removeWitnessesLink {
     color: #fcfcfc !important;
     border-color: #fcfcfc !important;
 }
 
-.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button{
-  color: white !important;
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
 }
 
-.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button.current{
-  color: #1C252B !important;
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .paginate_button.current {
+    color: #1C252B !important;
 }
 
-.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .ellipsis{
-  color: white !important;
+.theme-dark #witness-received-votes-table_wrapper .dataTables_paginate .ellipsis {
+    color: white !important;
 }
 
-button#addWitnessButton
-{
+button#addWitnessButton {
     line-height: 1;
     color: white;
 }
 
-.UserProfile__tab_content_Witnesses  
-{
+.UserProfile__tab_content_Witnesses {
     margin-bottom: 25px;
 }

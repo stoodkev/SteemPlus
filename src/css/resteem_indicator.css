@@ -1,38 +1,33 @@
-.resteem-list
-{
-	margin-right: 0.25rem;
+.resteem-list {
+    margin-right: 0.25rem;
 }
 
-.resteem-item > a
-{
-	line-height: 1 !important;
+.resteem-item>a {
+    line-height: 1 !important;
     margin: 0 !important;
     padding: 0 !important;
     margin-bottom: 0.25rem !important;
 
 }
-.ul-resteem-list
-{
-	padding-left: 0.25rem !important;
-	overflow-y: scroll;
-	max-height: 200px;
+
+.ul-resteem-list {
+    padding-left: 0.25rem !important;
+    overflow-y: scroll;
+    max-height: 200px;
 }
 
-.count-resteem-label
-{
-	font-weight: normal;
-	border-right: 1px solid #eee;
-	padding-right: .4rem;
+.count-resteem-label {
+    font-weight: normal;
+    border-right: 1px solid #eee;
+    padding-right: .4rem;
 }
 
-.Buttons__number_resteem
-{
-	cursor: pointer;
+.Buttons__number_resteem {
+    cursor: pointer;
 }
 
-.Reblog__button_SP
-{
-	border-right: none !important;
+.Reblog__button_SP {
+    border-right: none !important;
     border-left: 1px solid #eee;
     padding-right: 0 !important;
     margin-right: 0 !important;

@@ -1,30 +1,28 @@
-.AddBlackList
-{
+.AddBlackList {
     color: black;
     font-size: 90%;
     margin-left: 2em;
     display: inline;
     font-weight: 700;
-    border:solid 1px #1a5099;
+    border: solid 1px #1a5099;
     padding: 0.1em 0.5em;
     padding-left: 25px;
-    background: url("chrome-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat ;
+    background: url("chrome-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat;
     background-size: 20px 20px;
     cursor: pointer;
 }
 
 @-moz-document url-prefix() {
-    .AddBlackList
-    {
+    .AddBlackList {
         color: black;
         font-size: 90%;
         margin-left: 2em;
         display: inline;
         font-weight: 700;
-        border:solid 1px #1a5099;
+        border: solid 1px #1a5099;
         padding: 0.1em 0.5em;
         padding-left: 25px;
-        background: url("moz-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat ;
+        background: url("moz-extension://__MSG_@@extension_id__/src/img/logo.png") no-repeat;
         background-size: 20px 20px;
         cursor: pointer;
     }

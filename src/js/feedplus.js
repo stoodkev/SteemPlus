@@ -333,7 +333,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             }
 
             var more = chrome.extension.getURL("src/img/more.png");
-			var logoGrayscale = chrome.extension.getURL("/src/img/grayscale_logo.png");
+            var logoGrayscale = chrome.extension.getURL("/src/img/grayscale_logo.png");
             var gridfeedimg = chrome.extension.getURL('src/img/view-grid.png');
             var listfeedimg = chrome.extension.getURL('src/img/view-list.png');
             var bigfeedimg = chrome.extension.getURL('src/img/view-big.png');
@@ -412,8 +412,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             bd = bd.replace(/\*+/g, '');
             bd = bd.replace(/\#+/g, '');
             var upvoted = 'no_upvoted';
-            if (isBusy)
-            {
+            if (isBusy) {
                 var imgUrlFeedPlus = null;
                 console.log(elt);
                 if (elt.img !== undefined && elt.img.includes('imgur')) {

@@ -1,84 +1,74 @@
+var token_mention_tab = null;
+var aut = null;
+var rewardBalanceMentionsTab = null;
+var recentClaimsMentionsTab = null;
+var steemPriceMentionsTab = null;
+var mentionTabStarted = false;
+var mentionsTabPostsComments = null;
+var downloadingDataMentionTab = false;
 
-var token_mention_tab=null;
-var aut=null;
-var rewardBalanceMentionsTab=null;
-var recentClaimsMentionsTab=null;
-var steemPriceMentionsTab=null;
-var mentionTabStarted=false;
-var mentionsTabPostsComments=null;
-var downloadingDataMentionTab=false;
-
-var indexLastItemDisplayed=0;
+var indexLastItemDisplayed = 0;
 
 var currentAction = '';
 
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if(request.to=='mentions_tab'){
-    aut=request.data.user;
-    if(request.order==='start'&&token_mention_tab==null)
-    {
-      token_mention_tab=request.token;
-      rewardBalanceMentionsTab=request.data.rewardBalance;
-      recentClaimsMentionsTab=request.data.recentClaims;
-      steemPriceMentionsTab=request.data.steemPrice;
-      indexLastItemDisplayed=0;
-      currentAction = 'start';
-      createTab();
+    if (request.to == 'mentions_tab') {
+        aut = request.data.user;
+        if (request.order === 'start' && token_mention_tab == null) {
+            token_mention_tab = request.token;
+            rewardBalanceMentionsTab = request.data.rewardBalance;
+            recentClaimsMentionsTab = request.data.recentClaims;
+            steemPriceMentionsTab = request.data.steemPrice;
+            indexLastItemDisplayed = 0;
+            currentAction = 'start';
+            createTab();
 
-      mentionTabStarted=true;
+            mentionTabStarted = true;
+        } else if (request.order === 'click' && token_mention_tab == request.token) {
+            rewardBalanceMentionsTab = request.data.rewardBalance;
+            recentClaimsMentionsTab = request.data.recentClaims;
+            steemPriceMentionsTab = request.data.steemPrice;
+            indexLastItemDisplayed = 0;
+            currentAction = 'click';
+            createTab();
+        } else if (request.order === 'notif' && token_mention_tab == request.token) {
+            rewardBalanceMentionsTab = request.data.rewardBalance;
+            recentClaimsMentionsTab = request.data.recentClaims;
+            steemPriceMentionsTab = request.data.steemPrice;
+            indexLastItemDisplayed = 0;
+            currentAction = 'notif';
+            if (mentionTabStarted)
+                createTab();
+        }
     }
-    else if(request.order==='click'&&token_mention_tab==request.token)
-    {
-      rewardBalanceMentionsTab=request.data.rewardBalance;
-      recentClaimsMentionsTab=request.data.recentClaims;
-      steemPriceMentionsTab=request.data.steemPrice;
-      indexLastItemDisplayed=0;
-      currentAction = 'click';
-      createTab();
-    }
-    else if(request.order==='notif'&&token_mention_tab==request.token)
-    {
-      rewardBalanceMentionsTab=request.data.rewardBalance;
-      recentClaimsMentionsTab=request.data.recentClaims;
-      steemPriceMentionsTab=request.data.steemPrice;
-      indexLastItemDisplayed=0;
-      currentAction = 'notif';
-      if(mentionTabStarted)
-        createTab();
-    }
-  }
 });
 
-function createTab()
-{
-  if(regexBlogSteemit.test(window.location.href))
-  {
-      window.SteemPlus.Tabs.createTab({
-        id: 'mentions',
-        title: 'Mentions',
-        enabled: true,
-        createTab: createMentionsTab
-      });
-      if(window.location.href.includes('#mentions'))
-      window.SteemPlus.Tabs.showTab('mentions');
-  }
-  else if(regexBlogBusy.test(window.location.href))
-  {
-      window.SteemPlus.Tabs.createTab({
-        id: 'mentions',
-        title: 'Mentions',
-        enabled: true,
-        createTab: createMentionsTab
-      });
-      if(window.location.href.includes('#mentions'))
-      window.SteemPlus.Tabs.showTab('mentions');
-  }
+function createTab() {
+    if (regexBlogSteemit.test(window.location.href)) {
+        window.SteemPlus.Tabs.createTab({
+            id: 'mentions',
+            title: 'Mentions',
+            enabled: true,
+            createTab: createMentionsTab
+        });
+        if (window.location.href.includes('#mentions'))
+            window.SteemPlus.Tabs.showTab('mentions');
+    } else if (regexBlogBusy.test(window.location.href)) {
+        window.SteemPlus.Tabs.createTab({
+            id: 'mentions',
+            title: 'Mentions',
+            enabled: true,
+            createTab: createMentionsTab
+        });
+        if (window.location.href.includes('#mentions'))
+            window.SteemPlus.Tabs.showTab('mentions');
+    }
 }
 
 function createMentionsTab(mentionsTab) {
 
-  mentionsTab.html('<div class="row"><div class="feed-layout container">\
+    mentionsTab.html('<div class="row"><div class="feed-layout container">\
      <div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_MentionsTab column layout-list">\
         <article class="articles">\
         <div class="MentionsTab" style="display: none;">\
@@ -116,26 +106,25 @@ function createMentionsTab(mentionsTab) {
      </div>\
   </div></div>');
 
-  mentionsTab.find('.MentionsTabLoadMore button').on('click', function(){
-    // Load more
-    currentAction === 'load-more'
-    var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
-    displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
-  });
-  mentionsTab.find('.mentions-type').on('change', function() {
-    if(isBusy)
-    {
-      mentionsTab.find('.mentions-type:checked').prop('checked', false);
-      $(this).prop('checked', true);
-    }
+    mentionsTab.find('.MentionsTabLoadMore button').on('click', function() {
+        // Load more
+        currentAction === 'load-more'
+        var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
+        displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), false);
+    });
+    mentionsTab.find('.mentions-type').on('change', function() {
+        if (isBusy) {
+            mentionsTab.find('.mentions-type:checked').prop('checked', false);
+            $(this).prop('checked', true);
+        }
 
-    // Change display
-    indexLastItemDisplayed = 0;
-    var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
-    displayMentions(mentionsTab, typeMention ,window.SteemPlus.Utils.getPageAccountName(), true);
-  });
-  // Display mentions in post
-  displayMentions(mentionsTab,'posts', window.SteemPlus.Utils.getPageAccountName(),true);
+        // Change display
+        indexLastItemDisplayed = 0;
+        var typeMention = (mentionsTab.find('.mentions-type:checked')[0].value);
+        displayMentions(mentionsTab, typeMention, window.SteemPlus.Utils.getPageAccountName(), true);
+    });
+    // Display mentions in post
+    displayMentions(mentionsTab, 'posts', window.SteemPlus.Utils.getPageAccountName(), true);
 };
 
 // Display posts or comments or boths
@@ -143,128 +132,112 @@ function createMentionsTab(mentionsTab) {
 // @parameter type : represent the selected element (Posts, Comments or Both)
 // @parameter usernamePageMentions : selected user
 // @parameter reset : need to reset UI or not
-function displayMentions(mentionsTab, type, usernamePageMentions,reset)
-{
-  if(mentionsTabPostsComments===null&&!downloadingDataMentionTab)
-  {
-    $.ajax({
-      type: "GET",
-      beforeSend: function(xhttp) {
-        downloadingDataMentionTab=true;
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-      },
-      url: 'https://steemplus-api.herokuapp.com/api/get-mentions/'+ usernamePageMentions,
-      success: function(result) {
-        if($('.error-mentions-label').length===0) $('.error-mentions-label').remove();
-        mentionsTabPostsComments = result;
-        createRowsMentionTab(mentionsTab, type, reset);
-        downloadingDataMentionTab = false;
-      },
-      error: function(msg) {
-        downloadingDataMentionTab = false;
-        if($('.error-mentions-label').length===0){
-          var errorLabel = document.createElement('h2');
-          $(errorLabel).addClass('articles__h1');
-          $(errorLabel).addClass('error-mentions-label');
-          $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
-          $('.MentionsTabLoading').hide();
-          $('.articles').prepend(errorLabel);
+function displayMentions(mentionsTab, type, usernamePageMentions, reset) {
+    if (mentionsTabPostsComments === null && !downloadingDataMentionTab) {
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                downloadingDataMentionTab = true;
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: 'https://steemplus-api.herokuapp.com/api/get-mentions/' + usernamePageMentions,
+            success: function(result) {
+                if ($('.error-mentions-label').length === 0) $('.error-mentions-label').remove();
+                mentionsTabPostsComments = result;
+                createRowsMentionTab(mentionsTab, type, reset);
+                downloadingDataMentionTab = false;
+            },
+            error: function(msg) {
+                downloadingDataMentionTab = false;
+                if ($('.error-mentions-label').length === 0) {
+                    var errorLabel = document.createElement('h2');
+                    $(errorLabel).addClass('articles__h1');
+                    $(errorLabel).addClass('error-mentions-label');
+                    $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
+                    $('.MentionsTabLoading').hide();
+                    $('.articles').prepend(errorLabel);
+                }
+            }
+        });
+    } else {
+        if (downloadingDataMentionTab) {
+            // wait because data already downloading
+            if (currentAction === 'notif')
+                setTimeout(function() {
+                    displayMentions(mentionsTab, type, usernamePageMentions, reset);
+                }, 1000);
+        } else {
+            // display with local data
+            createRowsMentionTab(mentionsTab, type, reset);
         }
-      }
-    });
-  }
-  else
-  {
-    if(downloadingDataMentionTab)
-    {
-      // wait because data already downloading
-      if(currentAction==='notif')
-        setTimeout(function(){
-          displayMentions(mentionsTab, type, usernamePageMentions,reset);
-        },1000);
     }
-    else
-    {
-      // display with local data
-      createRowsMentionTab(mentionsTab, type, reset);
-    }
-  }
 
 }
 
-function createRowsMentionTab(mentionsTab, type, reset)
-{
-  if(reset)
-  {
-    //delete everything
-    mentionsTab.find('.PostsList__summaries').empty();
-  }
-
-  var listMentions = mentionsTab.find('.PostsList__summaries');
-
-  if(currentAction === 'notif')
-    indexLastItemDisplayed = 0;
-
-  var nbItemAdded = 0;
-  while(nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length)
-  {
-    var mentionTabElement = mentionsTabPostsComments[indexLastItemDisplayed];
-    if(type==='posts'&&mentionTabElement.parent_author==='')
-    {
-      // Create row posts
-      var el = createSummaryMention(mentionTabElement);
-      listMentions.append(el);
-      nbItemAdded++;
+function createRowsMentionTab(mentionsTab, type, reset) {
+    if (reset) {
+        //delete everything
+        mentionsTab.find('.PostsList__summaries').empty();
     }
-    else if(type==='comments'&&mentionTabElement.parent_author!=='')
-    {
-      // Create comments
-      var el = createSummaryMention(mentionTabElement);
-      listMentions.append(el);
-      nbItemAdded++;
-    }
-    else if(type==='both')
-    {
-      // Create both
-      var el = createSummaryMention(mentionTabElement);
-      listMentions.append(el);
-      nbItemAdded++;
-    }
-    indexLastItemDisplayed++;
-  }
-//  console.log(mentionsTabPostsComments.length + "= length");
-//  console.log(indexLastItemDisplayed + "= index");
-  if(indexLastItemDisplayed < mentionsTabPostsComments.length-1)
-    mentionsTab.find('.MentionsTabLoadMore').show();
-  else
-    mentionsTab.find('.MentionsTabLoadMore').hide();
 
-  mentionsTab.find('.MentionsTabLoading').hide();
-  mentionsTab.find('.MentionsTab').show();
+    var listMentions = mentionsTab.find('.PostsList__summaries');
+
+    if (currentAction === 'notif')
+        indexLastItemDisplayed = 0;
+
+    var nbItemAdded = 0;
+    while (nbItemAdded < 20 && indexLastItemDisplayed < mentionsTabPostsComments.length) {
+        var mentionTabElement = mentionsTabPostsComments[indexLastItemDisplayed];
+        if (type === 'posts' && mentionTabElement.parent_author === '') {
+            // Create row posts
+            var el = createSummaryMention(mentionTabElement);
+            listMentions.append(el);
+            nbItemAdded++;
+        } else if (type === 'comments' && mentionTabElement.parent_author !== '') {
+            // Create comments
+            var el = createSummaryMention(mentionTabElement);
+            listMentions.append(el);
+            nbItemAdded++;
+        } else if (type === 'both') {
+            // Create both
+            var el = createSummaryMention(mentionTabElement);
+            listMentions.append(el);
+            nbItemAdded++;
+        }
+        indexLastItemDisplayed++;
+    }
+    //  console.log(mentionsTabPostsComments.length + "= length");
+    //  console.log(indexLastItemDisplayed + "= index");
+    if (indexLastItemDisplayed < mentionsTabPostsComments.length - 1)
+        mentionsTab.find('.MentionsTabLoadMore').show();
+    else
+        mentionsTab.find('.MentionsTabLoadMore').hide();
+
+    mentionsTab.find('.MentionsTabLoading').hide();
+    mentionsTab.find('.MentionsTab').show();
 }
 
 
 
 
 // Create one summary
-function createSummaryMention(mentionItem)
-{
-  var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
-  var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
-  var mentionTitle = mentionItem.root_title;
+function createSummaryMention(mentionItem) {
+    var payoutValueMentionTab = (mentionItem.total_payout_value === 0 ? mentionItem.pending_payout_value : mentionItem.total_payout_value);
+    var payoutTextMentionTab = (mentionItem.total_payout_value === 0 ? "Potential Payout " : "Total Payout ");
+    var mentionTitle = mentionItem.root_title;
 
 
-  var urlMentionItem = mentionItem.url;
+    var urlMentionItem = mentionItem.url;
 
-  var urlImgMentionDisplayed = getImagePostSummary(mentionItem);
+    var urlImgMentionDisplayed = getImagePostSummary(mentionItem);
 
-  // Delete all images links or MD images links from body
-  var bodyMentionItem = stripHTML(mentionItem.body.replace(/!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/, ''));
-  bodyMentionItem = bodyMentionItem.replace(/\bhttps?:[^)''"]+\.(?:jpg|jpeg|gif|png)/, '');
+    // Delete all images links or MD images links from body
+    var bodyMentionItem = stripHTML(mentionItem.body.replace(/!\[[^\]]*\]\((.*?)\s*("(?:.*[^"])")?\s*\)/, ''));
+    bodyMentionItem = bodyMentionItem.replace(/\bhttps?:[^)''"]+\.(?:jpg|jpeg|gif|png)/, '');
 
-  if(isSteemit)
-    var summaryMention = $('<li>\
+    if (isSteemit)
+        var summaryMention = $('<li>\
       <article class="PostSummary hentry with-image" itemscope="" itemtype="http://schema.org/blogPost">\
           <div class="PostSummary__header show-for-small-only">\
               <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3>\
@@ -284,7 +257,7 @@ function createSummaryMention(mentionItem)
               </strong>\
             </span>\
           </div>\
-          <span name="imgUrl" class="PostSummary__image" style="background-image: url('+ urlImgMentionDisplayed + ');"></span>\
+          <span name="imgUrl" class="PostSummary__image" style="background-image: url(' + urlImgMentionDisplayed + ');"></span>\
           <div class="PostSummary__content">\
               <div class="PostSummary__header show-for-medium">\
                   <h3 class="entry-title"> <a href="' + urlMentionItem + '">' + mentionTitle + '</a> </h3> </div>\
@@ -311,23 +284,23 @@ function createSummaryMention(mentionItem)
           </div>\
       </article>\
     </li>');
-  else if(isBusy)
-    var summaryMention = $('<div class="Story" id="stoodkev-steemplus-2-17-2-resteem-indicator-and-ranks-badges-on-busy">\
+    else if (isBusy)
+        var summaryMention = $('<div class="Story" id="stoodkev-steemplus-2-17-2-resteem-indicator-and-ranks-badges-on-busy">\
       <div class="Story__content">\
         <div class="Story__header">\
-          <a href="/@'+ mentionItem.author +'">\
-            <div class="Avatar" style="min-width: 40px; width: 40px; height: 40px; background-image: url('+encodeURI('https://steemitimages.com/u/'+ mentionItem.author +'/avatar')+');">\
+          <a href="/@' + mentionItem.author + '">\
+            <div class="Avatar" style="min-width: 40px; width: 40px; height: 40px; background-image: url(' + encodeURI('https://steemitimages.com/u/' + mentionItem.author + '/avatar') + ');">\
             </div>\
           </a>\
           <div class="Story__header__text">\
             <span class="Story__header__flex">\
-              <a href="/@'+ mentionItem.author +'">\
+              <a href="/@' + mentionItem.author + '">\
                 <h4>\
-                  <span class="username">'+ mentionItem.author +'</span>\
+                  <span class="username">' + mentionItem.author + '</span>\
                 </h4>\
               </a>\
               <span class="Story__topics">\
-                <a class="Topic" href="/trending/'+ mentionItem.category +'">'+ mentionItem.category +'</a>\
+                <a class="Topic" href="/trending/' + mentionItem.category + '">' + mentionItem.category + '</a>\
               </span>\
             </span>\
             <span>\
@@ -372,82 +345,77 @@ function createSummaryMention(mentionItem)
       </div>\
     </div>');
 
-  return summaryMention;
+    return summaryMention;
 }
 
 // <img alt="" src="' + urlImgMentionDisplayed + '">\
 
 function openPost(url) {
-  var postWindow = window.open();
-  postWindow.opener = null;
-  postWindow.location = url;
+    var postWindow = window.open();
+    postWindow.opener = null;
+    postWindow.location = url;
 }
 
 // Remove HTML from text
 // @parameter text : text to remove html from
-function stripHTML(text)
-{
-  var tmp = document.createElement("DIV");
-  tmp.innerHTML = text;
-  return tmp.textContent || tmp.innerText || "";
+function stripHTML(text) {
+    var tmp = document.createElement("DIV");
+    tmp.innerHTML = text;
+    return tmp.textContent || tmp.innerText || "";
 }
 
-var createMentionItemSummary_remarkable = new Remarkable({ html: true, linkify: false })
+var createMentionItemSummary_remarkable = new Remarkable({
+    html: true,
+    linkify: false
+})
 
 // Get image link from post
 // @parameter item : post
-function getImagePostSummary(item)
-{
-  var imgUrl = null;
-  var imgUrl2 = null;
-  var displayedImageUrl = null;
+function getImagePostSummary(item) {
+    var imgUrl = null;
+    var imgUrl2 = null;
+    var displayedImageUrl = null;
 
-  try{
-    var json_metadata = (typeof item.json_metadata === 'object' ? item.json_metadata : JSON.parse(item.json_metadata));
-    if(typeof json_metadata == 'string') {
-        // At least one case where jsonMetadata was double-encoded: #895
-        json_metadata = JSON.parse(json_metadata)
-    }
-    if(json_metadata && json_metadata.image && Array.isArray(json_metadata.image)){
-      imgUrl = json_metadata.image[0] || null;
-    }
-  }catch(err){
-    console.log(err);
-  }
-
-  // If nothing found in json metadata, parse body and check images/links
-  if(!imgUrl) {
-      var isHtml = /^<html>([\S\s]*)<\/html>$/.test(item.body)
-      var htmlText = isHtml ? post.body : createMentionItemSummary_remarkable.render(item.body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)'))
-      var rtags = HtmlReady(htmlText, {mutate: false})
-      if(rtags.images == undefined || rtags.images === undefined )
-      {
-        var imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
-        var match = imgRegex.exec(item.body);
-
-        if(match !== null)
-        {
-          imgUrl2 = match[1];
+    try {
+        var json_metadata = (typeof item.json_metadata === 'object' ? item.json_metadata : JSON.parse(item.json_metadata));
+        if (typeof json_metadata == 'string') {
+            // At least one case where jsonMetadata was double-encoded: #895
+            json_metadata = JSON.parse(json_metadata)
         }
-        else
-        {
-          var mdRegex = /!\[.*\]\((.*)\)/g;
-          match = mdRegex.exec(item.body);
-          if(match!=null)
-            imgUrl2 = match[1];
+        if (json_metadata && json_metadata.image && Array.isArray(json_metadata.image)) {
+            imgUrl = json_metadata.image[0] || null;
         }
-      }
-      else
-        imgUrl2 = Array.from(rtags.images)[0];
-  }
+    } catch (err) {
+        console.log(err);
+    }
 
-  if( (imgUrl === null || imgUrl === undefined ) && (imgUrl2 === null || imgUrl2 === undefined ) )
-  {
-    displayedImageUrl = chrome.extension.getURL(noImageAvailable);
-  }
-  else
-  {
-    displayedImageUrl = ( imgUrl !== null && imgUrl !== undefined ) ? '\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\'' : '\'https://steemitimages.com/256x512/' + imgUrl2 + '\'';
-  }
-  return displayedImageUrl;
+    // If nothing found in json metadata, parse body and check images/links
+    if (!imgUrl) {
+        var isHtml = /^<html>([\S\s]*)<\/html>$/.test(item.body)
+        var htmlText = isHtml ? post.body : createMentionItemSummary_remarkable.render(item.body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)'))
+        var rtags = HtmlReady(htmlText, {
+            mutate: false
+        })
+        if (rtags.images == undefined || rtags.images === undefined) {
+            var imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
+            var match = imgRegex.exec(item.body);
+
+            if (match !== null) {
+                imgUrl2 = match[1];
+            } else {
+                var mdRegex = /!\[.*\]\((.*)\)/g;
+                match = mdRegex.exec(item.body);
+                if (match != null)
+                    imgUrl2 = match[1];
+            }
+        } else
+            imgUrl2 = Array.from(rtags.images)[0];
+    }
+
+    if ((imgUrl === null || imgUrl === undefined) && (imgUrl2 === null || imgUrl2 === undefined)) {
+        displayedImageUrl = chrome.extension.getURL(noImageAvailable);
+    } else {
+        displayedImageUrl = (imgUrl !== null && imgUrl !== undefined) ? '\'https://steemitimages.com/256x512/' + encodeURI(imgUrl) + '\'' : '\'https://steemitimages.com/256x512/' + imgUrl2 + '\'';
+    }
+    return displayedImageUrl;
 }

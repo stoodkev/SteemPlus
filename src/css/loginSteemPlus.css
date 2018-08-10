@@ -1,14 +1,13 @@
-.loginIcon
-{
-  width:36px;
-  height:36px;
-  display: inline-block;
+.loginIcon {
+    width: 36px;
+    height: 36px;
+    display: inline-block;
 }
-.loginIconBusy
-{
-  width:36px;
-  height:36px;
-  display: inline-block;
-  margin-right: 0.4em;
-  vertical-align: middle;
+
+.loginIconBusy {
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    margin-right: 0.4em;
+    vertical-align: middle;
 }

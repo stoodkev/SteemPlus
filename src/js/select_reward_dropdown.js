@@ -46,6 +46,7 @@ function startRewardDropdown()
 // Function used to create the reward dropdown list
 function createDropdownList()
 {
+  $('.ReplyEditor__options').remove();
   // Create list
   var indexElement = $('.vframe__section--shrink').length-2;
   $('.vframe__section--shrink').eq(indexElement).before($('<div class="div-benef-steemit-percentage"><label>Reward</label><select class="benef-steemit-percentage ant-form-item-control has-success">\
@@ -72,7 +73,7 @@ function createDropdownList()
 
   // On click listener for post button
   $('.btn-post-steemit').unbind('click').click(function(){
-    
+
     // Init post attribute
     var tags=[];
     var title=null;
@@ -122,15 +123,15 @@ function createDropdownList()
     // Create post using steem connect
     sc2.broadcast(
     operations,
-    function(e, r) 
+    function(e, r)
     {
-      if (e) 
+      if (e)
       {
         console.log(e);
         if(e.error!==undefined)
           alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:'+e.error);
-      } 
-      else 
+      }
+      else
         window.location.replace('https://steemit.com/'+tags[0]+'/@'+usernameRewardDropdown+'/'+title);
     });
   });

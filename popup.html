@@ -1,12 +1,14 @@
 <!doctype html>
 <html>
-  <head>
+
+<head>
     <title>Welcome to SteemPlus</title>
 
     <link id="themecss" rel="stylesheet" type="text/css" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link  rel="stylesheet" type="text/css" href="src/css/popup.css">
-  </head>
-  <body>
+    <link rel="stylesheet" type="text/css" href="src/css/popup.css">
+</head>
+
+<body>
     <div>
         <div id="before_connect">
             <div class="loader"></div>
@@ -15,10 +17,17 @@
             <img src="src/img/steemplus.png" class="onboard-logo">
             <img class="onboard-image" src="src/img/onboarding/welcome.png">
             <span class="onboard-title">Welcome to SteemPlus</span>
-            <p class="onboard-text">SteemPlus lets you take control of your feed, choose your voting weight as minnow and much much more, let's take a tour of the features!</p>
+            <p class="onboard-text">SteemPlus lets you take control of your feed, choose your voting weight
+                as minnow and much much more, let's take a tour of the features!</p>
 
             <div class="onboarding-controls"><span id="onboard-restart" class="onboard-directon">Restart</span>
-                <div class="onboarding-indicator>"><span id="dot-1" class="progress-dot progress-dot-active"></span><span id="dot-2" class="progress-dot"></span><span id="dot-3" class="progress-dot"></span><span id="dot-4" class="progress-dot"></span><span id="dot-5" class="progress-dot"></span><span id="dot-6" class="progress-dot"></span></div> <span id="onboard-forward" class="onboard-directon">Next</span>
+                <div class="onboarding-indicator>"><span id="dot-1" class="progress-dot progress-dot-active"></span>
+                    <span
+                        id="dot-2" class="progress-dot"></span><span id="dot-3" class="progress-dot"></span><span id="dot-4"
+                            class="progress-dot"></span><span id="dot-5" class="progress-dot"></span>
+                        <span
+                            id="dot-6" class="progress-dot"></span>
+                </div> <span id="onboard-forward" class="onboard-directon">Next</span>
             </div>
         </div>
         <!-- <div id='disconnected'>
@@ -30,9 +39,10 @@
 
         <div id='connected'>
             <img id="logo" src="src/img/steemplus.png" width="200px">
-            <div id="loginButton" >
+            <div id="loginButton">
                 <h3>Login</h3>
-                <p>You are in offline mode. To enjoy more features (Feed+, beneficiaries, Follower table), please login using SteemConnect.</p>
+                <p>You are in offline mode. To enjoy more features (Feed+, beneficiaries,
+                    Follower table), please login using SteemConnect.</p>
                 <a target="_blank" href="https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=https://steemit.com/@steem-plus&scope=vote,comment,comment_options,custom_json&state=https://steemit.com/@steem-plus"><input type="button" class="blue-button" value="Sign in via SteemConnect"></a>
             </div>
 
@@ -45,7 +55,9 @@
                         <div class="w3-light-grey w3-round">
                             <div id="bar" class="w3-container w3-round w3-blue" style="width:0%"></div>
                         </div><span id="vote-power-stat">0%</span></div>
-                    <p id="main-description">You can use our upvote option to quickly vote for a post, or click on Features to find out more about what SteemPlus has to offer.</p>
+                    <p id="main-description">You can use our upvote option to quickly vote for a post, or
+                        click on Features to find out more about what SteemPlus has
+                        to offer.</p>
                 </div>
             </div>
 
@@ -56,10 +68,10 @@
 
                 <div class="back_menu">Back to Main Menu</div>
                 <hr/>
-               <p class="option-title">Vote Weight</p>
+                <p class="option-title">Vote Weight</p>
                 <p class="option-description">Use the slider below to set your vote weight per post:</p>
                 <div id="slidecontainer">
-                    <input type="range" min="0" max="100" value="0" class="slider" id="myRange"> <input id="weight" type="number" placeholder="%">
+                    <input type="range" min="0" max="100" value="0" class="slider" id="myRange">                    <input id="weight" type="number" placeholder="%">
                 </div>
                 <div id="vote">Upvote</div>
             </div>
@@ -72,15 +84,15 @@
 
                 <hr/>
                 <div class="options-content">
-                  <div class="sp_option  need-online">
-                      <label class="switch">
+                    <div class="sp_option  need-online">
+                        <label class="switch">
                           <input type="checkbox" name="utopian"  id="utopian">
                           <span class="slider2 round"></span>
                       </label>
-                      <p class="option-title">Utopian Post</p>
-                      <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                      <p class="option-description">Post your Utopian contributions directly from Steemit.</p>
-                  </div>
+                        <p class="option-title">Utopian Post</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
+                        <p class="option-description">Post your Utopian contributions directly from Steemit.</p>
+                    </div>
                     <div class="sp_option  need-online">
                         <label class="switch">
                             <input type="checkbox" name="oneup"  id="oneup">
@@ -88,7 +100,8 @@
                         </label>
                         <p class="option-title">Utopian 1UP</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/utopian.png"></div>
-                        <p class="option-description">Vote for the best Utopian contributions and give them a chance to be upvoted by the trail.</p>
+                        <p class="option-description">Vote for the best Utopian contributions and give them a chance
+                            to be upvoted by the trail.</p>
                     </div>
 
                     <div class="sp_option need-online">
@@ -108,13 +121,18 @@
                         </label>
                         <p class="option-title">Beneficiaries</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Share the love with other users when you post. Give your friends part of your rewards. </p>
+                        <p class="option-description">Share the love with other users when you post. Give your
+                            friends part of your rewards. </p>
                     </div>
 
                     <div class="sp_option">
                         <p class="option-title">Badges</p>
-                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
-                        <p class="option-description">Add badges to user profiles. The badges have been created by the Steem community and show the rank, from Plankton to Whale.</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png">
+                            <img
+                                class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Add badges to user profiles. The badges have been created
+                            by the Steem community and show the rank, from Plankton
+                            to Whale.</p>
                         <div class="custom-select" style="width:100%;">
                             <select id="badges">
                               <option name="badges" value="2" id="q">Show badges?</option>
@@ -133,7 +151,8 @@
                         </label>
                         <p class="option-title">Dropdown</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">See current STEEM and SBD prices and get direct link to market from your user menu.</p>
+                        <p class="option-description">See current STEEM and SBD prices and get direct link to market
+                            from your user menu.</p>
                     </div>
 
                     <div class="sp_option">
@@ -142,8 +161,11 @@
                             <span class="slider2 round"></span>
                         </label>
                         <p class="option-title">Delegation</p>
-                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
-                        <p class="option-description">Delegate your Steem power at the click of a button without leaving your favourite Steem sites.</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png">
+                            <img
+                                class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Delegate your Steem power at the click of a button without
+                            leaving your favourite Steem sites.</p>
                     </div>
 
                     <div class="sp_option">
@@ -152,8 +174,11 @@
                             <span class="slider2 round"></span>
                         </label>
                         <p class="option-title">Transfers</p>
-                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
-                        <p class="option-description">Access transfers quickly from a user's profile, no more going back to your wallet.</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png">
+                            <img
+                                class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Access transfers quickly from a user's profile, no more going
+                            back to your wallet.</p>
                     </div>
 
                     <div class="sp_option">
@@ -162,8 +187,11 @@
                             <span class="slider2 round"></span>
                         </label>
                         <p class="option-title">Account Value</p>
-                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"><img class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
-                        <p class="option-description">Get the real value of your account with real-time price data for your STEEM and SBD holdings.</p>
+                        <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png">
+                            <img
+                                class="platform-indicator-logo" src="src/img/platform-logos/busy.png"></div>
+                        <p class="option-description">Get the real value of your account with real-time price data
+                            for your STEEM and SBD holdings.</p>
                     </div>
 
                     <div class="sp_option">
@@ -173,7 +201,8 @@
                         </label>
                         <p class="option-title">Favorite Section</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Add 10 users to your favorites followees. This section will appear in your feed.</p>
+                        <p class="option-description">Add 10 users to your favorites followees. This section will
+                            appear in your feed.</p>
                     </div>
 
                     <div class="sp_option">
@@ -193,7 +222,8 @@
                         </label>
                         <p class="option-title">User Classification</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Classify users between Spammers, Humans and Bots. Api courtesy of <a class="smi-navigate" href="/@andybets">@andybets</a></p>
+                        <p class="option-description">Classify users between Spammers, Humans and Bots. Api courtesy
+                            of <a class="smi-navigate" href="/@andybets">@andybets</a></p>
                     </div>
 
                     <div class="sp_option">
@@ -203,7 +233,9 @@
                         </label>
                         <p class="option-title">Witnesses Tab</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Display witnesses an user has voted for. You can also managed your votes.</a></p>
+                        <p class="option-description">Display witnesses an user has voted for. You can also managed
+                            your votes.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -213,7 +245,8 @@
                         </label>
                         <p class="option-title">Number of articles and comments</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Change the display of the number of article in the banner.</a></p>
+                        <p class="option-description">Change the display of the number of article in the banner.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -223,7 +256,8 @@
                         </label>
                         <p class="option-title">Wallet History</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">This feature will allow you to filter your wallet history.</a></p>
+                        <p class="option-description">This feature will allow you to filter your wallet history.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -233,7 +267,9 @@
                         </label>
                         <p class="option-title">Reward Tab</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Get all your rewards! Author rewards, Benefactor Rewards and Curation Rewards.</a></p>
+                        <p class="option-description">Get all your rewards! Author rewards, Benefactor Rewards
+                            and Curation Rewards.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -244,7 +280,8 @@
                         <p class="option-title">Author Popup Information</p>
                         <div class="new-indicator"><span>New</span></div>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Display information about an author</a></p>
+                        <p class="option-description">Display information about an author</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -254,7 +291,9 @@
                         </label>
                         <p class="option-title">Add Signature</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Add a signature to your account. Now you can easily add this signature to any comment or post.</a></p>
+                        <p class="option-description">Add a signature to your account. Now you can easily add this
+                            signature to any comment or post.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -264,7 +303,8 @@
                         </label>
                         <p class="option-title">Resteem Indicator</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Display who resteemed a post></a></p>
+                        <p class="option-description">Display who resteemed a post></a>
+                        </p>
                     </div>
 
                     <div class="sp_option">
@@ -274,7 +314,8 @@
                         </label>
                         <p class="option-title">Tips</p>
                         <div class="platform-indicators"><img class="platform-indicator-logo" src="src/img/platform-logos/steemit.png"></div>
-                        <p class="option-description">Send a tip to any user from the user popup.</a></p>
+                        <p class="option-description">Send a tip to any user from the user popup.</a>
+                        </p>
                     </div>
 
                     <div class="sp_option_list_title">
@@ -291,7 +332,9 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Votes value</p>
-                            <p class="option-description">Adds the amount in dollars of the votes a post has received, so that you can see how much each account's vote affected the rewards</p>
+                            <p class="option-description">Adds the amount in dollars of the votes a post has received,
+                                so that you can see how much each account's vote
+                                affected the rewards</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -300,7 +343,8 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Vote Tab</p>
-                            <p class="option-description">Adds a tab where you can see the incoming and outgoing votes of an account</p>
+                            <p class="option-description">Adds a tab where you can see the incoming and outgoing
+                                votes of an account</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -309,7 +353,8 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">External Links Tab</p>
-                            <p class="option-description">Adds a tab where you can find external links related to Steemit</p>
+                            <p class="option-description">Adds a tab where you can find external links related
+                                to Steemit</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -327,7 +372,8 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Mentions Tab</p>
-                            <p class="option-description">Adds a tab where you can see all the posts in which an user has been mentionned</p>
+                            <p class="option-description">Adds a tab where you can see all the posts in which an
+                                user has been mentionned</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -336,7 +382,9 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Vote Slider Value</p>
-                            <p class="option-description">Adds the amount in dollars your vote is worth to the voting/downvoting slider (Only for account with enough SP)</p>
+                            <p class="option-description">Adds the amount in dollars your vote is worth to the
+                                voting/downvoting slider (Only for account with enough
+                                SP)</p>
                         </div>
 
                         <div class="sp_option_list need-online">
@@ -345,7 +393,11 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Vote Slider Value (for busy)</p>
-                            <p class="option-description">Adds the amount in dollars your vote is worth to the voting/downvoting slider (Only for account with enough SP). This feature will only be used on Busy. Unlike classic vote slider value, this feature for Busy need connection to SteemConnect</p>
+                            <p class="option-description">Adds the amount in dollars your vote is worth to the
+                                voting/downvoting slider (Only for account with enough
+                                SP). This feature will only be used on Busy. Unlike
+                                classic vote slider value, this feature for Busy
+                                need connection to SteemConnect</p>
                         </div>
 
                         <div class="sp_option_list need-online">
@@ -354,7 +406,10 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Followers Table</p>
-                            <p class="option-description">Replace the followers and following page with a table based list of followers/following accounts, showing more information, making the list sortable and with a quick way to follow/unfollow</p>
+                            <p class="option-description">Replace the followers and following page with a table
+                                based list of followers/following accounts, showing
+                                more information, making the list sortable and with
+                                a quick way to follow/unfollow</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -363,7 +418,10 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Boost Button</p>
-                            <p class="option-description">Add a Boost button next to the Promote button to the posts to easily send SBD to <a class="smi-navigate" href="/@minnowbooster">@minnowbooster</a> for boosting upvotes</p>
+                            <p class="option-description">Add a Boost button next to the Promote button to the
+                                posts to easily send SBD to <a class="smi-navigate"
+                                    href="/@minnowbooster">@minnowbooster</a> for boosting
+                                upvotes</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -372,7 +430,9 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Gif Picker</p>
-                            <p class="option-description">Tool to easily add GIF from <a href="https://giphy.com/" target="_blank" rel="noopener">giphy.com</a> to posts and comments <img src="https://i.imgsafe.org/e6/e67c07abe2.png"></p>
+                            <p class="option-description">Tool to easily add GIF from <a href="https://giphy.com/"
+                                    target="_blank" rel="noopener">giphy.com</a> to posts
+                                and comments <img src="https://i.imgsafe.org/e6/e67c07abe2.png"></p>
                         </div>
 
                         <div class="sp_option_list">
@@ -381,7 +441,9 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">User Information Popover</p>
-                            <p class="option-description">Add a popover to the banner to display information about your account (Voting Power, max vote value, full in ... hours)</p>
+                            <p class="option-description">Add a popover to the banner to display information about
+                                your account (Voting Power, max vote value, full
+                                in ... hours)</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -390,7 +452,8 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Blog Histogram</p>
-                            <p class="option-description">Show an histogram of the account's posts history on the blog page of an user</p>
+                            <p class="option-description">Show an histogram of the account's posts history on the
+                                blog page of an user</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -399,7 +462,10 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">MarkDown Editor Beautifier</p>
-                            <p class="option-description">When you create a post, the preview and the editor are side by side and scroll together to show you the markup code and the preview of the same area (works only for screen wider than 900px)</p>
+                            <p class="option-description">When you create a post, the preview and the editor are
+                                side by side and scroll together to show you the
+                                markup code and the preview of the same area (works
+                                only for screen wider than 900px)</p>
                         </div>
 
                         <div class="sp_option_list">
@@ -408,22 +474,29 @@
                                 <span class="slider2 round"></span>
                             </label>
                             <p class="option-title">Float Post's Voting Bar</p>
-                            <p class="option-description">While reading a post, this feature keeps the voting bar alwasy visible on the top of the page so that it is easier to upvote and look at more information about the post</p>
+                            <p class="option-description">While reading a post, this feature keeps the voting bar
+                                alwasy visible on the top of the page so that it
+                                is easier to upvote and look at more information
+                                about the post</p>
                         </div>
 
                     </div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="powered">
-        <span class="switch-text">Quick Switcher</span>
-        <div id="shortcuts">
-            <img src="/src/img/platform-logos/steemit.png" id="steemify" /><img src="/src/img/platform-logos/utopian.png" id="utopify" /><img src="src/img/platform-logos/busy.png" id="busyfy" /><img src="/src/img/platform-logos/steemd.png" id="steemdify" />
+        <div id="powered">
+            <span class="switch-text">Quick Switcher</span>
+            <div id="shortcuts">
+                <img src="/src/img/platform-logos/steemit.png" id="steemify" /><img
+                    src="/src/img/platform-logos/utopian.png" id="utopify" /><img src="src/img/platform-logos/busy.png"
+                    id="busyfy" /><img src="/src/img/platform-logos/steemd.png" id="steemdify"
+                />
+            </div>
         </div>
-    </div>
-    <script src="vendor/sc2.min.js"></script>
-    <script src="vendor/jquery.js"></script>
-    <script src="vendor/steemjs.js"></script>
-    <script src="popup.js"></script>
-  </body>
+        <script src="vendor/sc2.min.js"></script>
+        <script src="vendor/jquery.js"></script>
+        <script src="vendor/steemjs.js"></script>
+        <script src="popup.js"></script>
+</body>
+
 </html>

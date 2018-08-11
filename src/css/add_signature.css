@@ -1,31 +1,31 @@
-.signature-panel{
-	margin-top: 1.5em;
+.signature-panel {
+    margin-top: 1.5em;
 }
 
-.signature-preview, .signature-editor
-{
-	min-height: 15em !important;
+.signature-preview,
+.signature-editor {
+    min-height: 15em !important;
 }
 
 /* Markdownlive Toolbar
 =======================================================================*/
 
 .markdownlive-bar {
-	padding:15px 10px;
-	background-color: #4a4a4a;
-	list-style:none;
+    padding: 15px 10px;
+    background-color: #4a4a4a;
+    list-style: none;
 }
 
 .markdownlive-bar li {
-	color: #ddd;
-	padding:10px;
-	display:inline;
+    color: #ddd;
+    padding: 10px;
+    display: inline;
 }
 
 .markdownlive-bar li:hover {
-	color: #fff;
-	background-color: #313131;
-	cursor:pointer;
+    color: #fff;
+    background-color: #313131;
+    cursor: pointer;
 }
 
 
@@ -34,42 +34,42 @@
 
 .markdownlive-preview {
     background-color: #f6f6f6;
-    padding:10px;
-    overflow:auto;
+    padding: 10px;
+    overflow: auto;
 }
 
 
 .markdownlive-preview table {
-	border: 1px solid #373737;
-	margin-bottom: 20px;
-	text-align: left;
+    border: 1px solid #373737;
+    margin-bottom: 20px;
+    text-align: left;
 }
 
 .markdownlive-preview th {
-	padding: 10px;
-	background: #373737;
-	color: #fff;
+    padding: 10px;
+    background: #373737;
+    color: #fff;
 }
 
 .markdownlive-preview td {
-	padding: 10px;
-	border: 1px solid #373737;
+    padding: 10px;
+    border: 1px solid #373737;
 }
 
-.bar{
-	padding-left: 0px !important;
-	padding-right: 0px !important;
+.bar {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 }
 
 ul.markdownlive-bar {
-	margin-left: 0px !important;
+    margin-left: 0px !important;
 }
 
-#select-type-signature
-{
-	margin-bottom: 1em !important;
+#select-type-signature {
+    margin-bottom: 1em !important;
 }
 
-.add-signature-post, .add-signature-comment{
-	margin-right: 1em;
+.add-signature-post,
+.add-signature-comment {
+    margin-right: 1em;
 }

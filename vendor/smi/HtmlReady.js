@@ -1,4 +1,3 @@
-
 const xmldom = {
     DOMParser: window.DOMParser,
     XMLSerializer: window.XMLSerializer
@@ -11,20 +10,43 @@ const imagePath = '(?:(?:\\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs/[a-z\\d]{40,}))
 const domainPath = '(?:[-a-zA-Z0-9\\._]*[-a-zA-Z0-9])'
 const urlChars = '(?:' + urlChar + '*' + urlCharEnd + ')?'
 
-const urlSet = function ({domain = domainPath, path} = {})  {
-     // urlChars is everything but html or markdown stop chars
+const urlSet = function({
+    domain = domainPath,
+    path
+} = {}) {
+    // urlChars is everything but html or markdown stop chars
     return `https?:\/\/${domain}(?::\\d{2,5})?(?:[/\\?#]${urlChars}${path ? path : ''})${path ? '' : '?'}`
 }
 
 /**
     Unless your using a 'g' (glob) flag you can store and re-use your regular expression.  Use the cache below.  If your using a glob (for example: replace all), the regex object becomes stateful and continues where it left off when called with the same string so naturally the regexp object can't be cached for long.
 */
-const any = function(flags = 'i') { return new RegExp(urlSet(), flags); }
-const local = function(flags = 'i') { return new RegExp(urlSet({domain: '(?:localhost|(?:.*\\.)?steemit.com)'}), flags); }
-const remote = function(flags = 'i') { return new RegExp(urlSet({domain: `(?!localhost|(?:.*\\.)?steemit.com)${domainPath}`}), flags); }
-const youTube = function(flags = 'i') { return new RegExp(urlSet({domain: '(?:(?:.*\.)?youtube.com|youtu.be)'}), flags); }
-const image = function(flags = 'i') { return new RegExp(urlSet({path: imagePath}), flags); }
-const imageFile = function(flags = 'i') { return new RegExp(imagePath, flags); }
+const any = function(flags = 'i') {
+    return new RegExp(urlSet(), flags);
+}
+const local = function(flags = 'i') {
+    return new RegExp(urlSet({
+        domain: '(?:localhost|(?:.*\\.)?steemit.com)'
+    }), flags);
+}
+const remote = function(flags = 'i') {
+    return new RegExp(urlSet({
+        domain: `(?!localhost|(?:.*\\.)?steemit.com)${domainPath}`
+    }), flags);
+}
+const youTube = function(flags = 'i') {
+    return new RegExp(urlSet({
+        domain: '(?:(?:.*\.)?youtube.com|youtu.be)'
+    }), flags);
+}
+const image = function(flags = 'i') {
+    return new RegExp(urlSet({
+        path: imagePath
+    }), flags);
+}
+const imageFile = function(flags = 'i') {
+    return new RegExp(imagePath, flags);
+}
 // export const nonImage = (flags = 'i') => new RegExp(urlSet({path: '!' + imageFile}), flags)
 // export const markDownImageRegExp = (flags = 'i') => new RegExp('\!\[[\w\s]*\]\(([^\)]+)\)', flags);
 
@@ -142,7 +164,9 @@ bittrex
 `.trim().split('\n');
 
 
-var tt = function(x){return x;};
+var tt = function(x) {
+    return x;
+};
 
 var validate_account_name = function(value, memo) {
     let i, label, len, length, ref, suffix;
@@ -191,7 +215,7 @@ var validate_account_name = function(value, memo) {
 
 
 
-var STM_Config=false;
+var STM_Config = false;
 /**
  * this regular expression should capture all possible proxy domains
  * Possible URL schemes are:
@@ -213,7 +237,7 @@ const NATURAL_SIZE = '0x0/';
  *                                          if true, preserves the first {int}x{int} in a proxy url. If not found, uses 0x0
  * @returns string
  */
- var proxifyImageUrl = function (url, dimensions = false) {
+var proxifyImageUrl = function(url, dimensions = false) {
     const proxyList = url.match(rProxyDomainsDimensions);
     let respUrl = url;
     if (proxyList) {
@@ -237,7 +261,7 @@ const NATURAL_SIZE = '0x0/';
 
 
 
-const noop = function () {}
+const noop = function() {}
 const DOMParser = new xmldom.DOMParser()
 const XMLSerializer = new xmldom.XMLSerializer()
 
@@ -305,8 +329,13 @@ const XMLSerializer = new xmldom.XMLSerializer()
     If hideImages and mutate is set to true all images will be replaced
     by <pre> elements containing just the image url.
 */
-window.HtmlReady = function (html, {mutate = true, hideImages = false} = {}) {
-    const state = {mutate}
+window.HtmlReady = function(html, {
+    mutate = true,
+    hideImages = false
+} = {}) {
+    const state = {
+        mutate
+    }
     state.hashtags = new Set()
     state.usertags = new Set()
     state.htmltags = new Set()
@@ -315,7 +344,7 @@ window.HtmlReady = function (html, {mutate = true, hideImages = false} = {}) {
     try {
         const doc = DOMParser.parseFromString(html, 'text/html')
         traverse(doc, state)
-        if(mutate) {
+        if (mutate) {
             if (hideImages) {
                 for (const image of Array.from(doc.getElementsByTagName('img'))) {
                     const pre = doc.createElement('pre')
@@ -328,30 +357,32 @@ window.HtmlReady = function (html, {mutate = true, hideImages = false} = {}) {
             }
         }
         // console.log('state', state)
-        if(!mutate) return state
+        if (!mutate) return state
         state.html = (doc) ? XMLSerializer.serializeToString(doc) : '';
         return state;
-    }catch(error) {
+    } catch (error) {
         // Not Used, parseFromString might throw an error in the future
         console.error(error.toString())
-        return {html}
+        return {
+            html
+        }
     }
 }
 
 function traverse(node, state, depth = 0) {
-    if(!node || !node.childNodes) return
+    if (!node || !node.childNodes) return
     Array(...node.childNodes).forEach(function(child) {
         // console.log(depth, 'child.tag,data', child.tagName, child.data)
         const tag = child.tagName ? child.tagName.toLowerCase() : null
-        if(tag) state.htmltags.add(tag)
+        if (tag) state.htmltags.add(tag)
 
-        if(tag === 'img')
+        if (tag === 'img')
             img(state, child)
-        else if(tag === 'iframe')
+        else if (tag === 'iframe')
             iframe(state, child)
-        else if(tag === 'a')
+        else if (tag === 'a')
             link(state, child)
-        else if(child.nodeName === '#text')
+        else if (child.nodeName === '#text')
             linkifyNode(child, state)
 
         traverse(child, state, depth + 1)
@@ -360,12 +391,12 @@ function traverse(node, state, depth = 0) {
 
 function link(state, child) {
     const url = child.getAttribute('href')
-    if(url) {
+    if (url) {
         state.links.add(url)
-        if(state.mutate) {
+        if (state.mutate) {
             // If this link is not relative, http, or https -- add https.
-            if(! /^\/(?!\/)|(https?:)?\/\//.test(url)) {
-                child.setAttribute('href', "https://"+url)
+            if (!/^\/(?!\/)|(https?:)?\/\//.test(url)) {
+                child.setAttribute('href', "https://" + url)
             }
         }
     }
@@ -374,35 +405,40 @@ function link(state, child) {
 // wrap iframes in div.videoWrapper to control size/aspect ratio
 function iframe(state, child) {
     const url = child.getAttribute('src')
-    if(url) {
-        const {images, links} = state
+    if (url) {
+        const {
+            images,
+            links
+        } = state
         const yt = youTubeId(url)
-        if(yt && images && links) {
+        if (yt && images && links) {
             links.add(yt.url)
             images.add('https://img.youtube.com/vi/' + yt.id + '/0.jpg')
         }
     }
 
-    const {mutate} = state
-    if(!mutate) return
+    const {
+        mutate
+    } = state
+    if (!mutate) return
 
     const tag = child.parentNode.tagName ? child.parentNode.tagName.toLowerCase() : child.parentNode.tagName
-    if(tag == 'div' && child.parentNode.getAttribute('class') == 'videoWrapper') return;
+    if (tag == 'div' && child.parentNode.getAttribute('class') == 'videoWrapper') return;
     const html = XMLSerializer.serializeToString(child)
     child.parentNode.replaceChild(DOMParser.parseFromString(`<div class="videoWrapper">${html}</div>`), child)
 }
 
 function img(state, child) {
     const url = child.getAttribute('src')
-    if(url) {
+    if (url) {
         state.images.add(url)
-        if(state.mutate) {
+        if (state.mutate) {
             let url2 = ipfsPrefix(url)
-            if(/^\/\//.test(url2)) {
+            if (/^\/\//.test(url2)) {
                 // Change relative protocol imgs to https
                 url2 = "https:" + url2
             }
-            if(url2 !== url) {
+            if (url2 !== url) {
                 child.setAttribute('src', url2)
             }
         }
@@ -414,39 +450,45 @@ function proxifyImages(doc) {
     if (!doc) return;
     [...doc.getElementsByTagName('img')].forEach(function(node) {
         const url = node.getAttribute('src')
-        if(! linksRe.local.test(url))
+        if (!linksRe.local.test(url))
             node.setAttribute('src', proxifyImageUrl(url, true))
     })
 }
 
-function linkifyNode(child, state) {try{
-    const tag = child.parentNode.tagName ? child.parentNode.tagName.toLowerCase() : child.parentNode.tagName
-    if(tag === 'code') return
-    if(tag === 'a') return
+function linkifyNode(child, state) {
+    try {
+        const tag = child.parentNode.tagName ? child.parentNode.tagName.toLowerCase() : child.parentNode.tagName
+        if (tag === 'code') return
+        if (tag === 'a') return
 
-    const {mutate} = state
-    if(!child.data) return
-    if(embedYouTubeNode(child, state.links, state.images)) return
-    if(embedVimeoNode(child, state.links, state.images)) return
+        const {
+            mutate
+        } = state
+        if (!child.data) return
+        if (embedYouTubeNode(child, state.links, state.images)) return
+        if (embedVimeoNode(child, state.links, state.images)) return
 
-    const data = XMLSerializer.serializeToString(child)
-    const content = linkify(data, state.mutate, state.hashtags, state.usertags, state.images, state.links)
-    if(mutate && content !== data) {
-        const newChild = DOMParser.parseFromString(`<span>${content}</span>`)
-        child.parentNode.replaceChild(newChild, child)
-        return newChild;
+        const data = XMLSerializer.serializeToString(child)
+        const content = linkify(data, state.mutate, state.hashtags, state.usertags, state.images, state.links)
+        if (mutate && content !== data) {
+            const newChild = DOMParser.parseFromString(`<span>${content}</span>`)
+            child.parentNode.replaceChild(newChild, child)
+            return newChild;
+        }
+    } catch (error) {
+        console.log(error)
     }
-} catch(error) {console.log(error)}}
+}
 
 function linkify(content, mutate, hashtags, usertags, images, links) {
     // hashtag
     content = content.replace(/(^|\s)(#[-a-z\d]+)/ig, function(tag) {
-        if(/#[\d]+$/.test(tag)) return tag // Don't allow numbers to be tags
+        if (/#[\d]+$/.test(tag)) return tag // Don't allow numbers to be tags
         const space = /^\s/.test(tag) ? tag[0] : ''
         const tag2 = tag.trim().substring(1)
         const tagLower = tag2.toLowerCase()
-        if(hashtags) hashtags.add(tagLower)
-        if(!mutate) return tag
+        if (hashtags) hashtags.add(tagLower)
+        if (!mutate) return tag
         return space + `<a href="/trending/${tagLower}">${tag}</a>`
     })
 
@@ -456,8 +498,8 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
         const user2 = user.trim().substring(1)
         const userLower = user2.toLowerCase()
         const valid = validate_account_name(userLower) == null
-        if(valid && usertags) usertags.add(userLower)
-        if(!mutate) return user
+        if (valid && usertags) usertags.add(userLower)
+        if (!mutate) return user
         return space + (valid ?
             `<a href="/@${userLower}">@${user2}</a>` :
             '@' + user2
@@ -465,74 +507,86 @@ function linkify(content, mutate, hashtags, usertags, images, links) {
     })
 
     content = content.replace(linksRe.any, function(ln) {
-        if(linksRe.image.test(ln)) {
-            if(images) images.add(ln)
+        if (linksRe.image.test(ln)) {
+            if (images) images.add(ln)
             return `<img src="${ipfsPrefix(ln)}" />`
         }
 
         // do not linkify .exe or .zip urls
-        if(/\.(zip|exe)$/i.test(ln)) return ln;
+        if (/\.(zip|exe)$/i.test(ln)) return ln;
 
-        if(links) links.add(ln)
+        if (links) links.add(ln)
         return `<a href="${ipfsPrefix(ln)}">${ln}</a>`
     })
     return content
 }
 
-function embedYouTubeNode(child, links, images) { try {
-    if(!child.data) return false
-    const data = child.data
-    const yt = youTubeId(data)
-    if(!yt) return false
+function embedYouTubeNode(child, links, images) {
+    try {
+        if (!child.data) return false
+        const data = child.data
+        const yt = youTubeId(data)
+        if (!yt) return false
 
-    const v = DOMParser.parseFromString(`~~~ embed:${yt.id} youtube ~~~`)
-    child.parentNode.replaceChild(v, child)
-    if(links) links.add(yt.url)
-    if(images) images.add('https://img.youtube.com/vi/' + yt.id + '/0.jpg')
-    return true
-} catch(error) { console.log(error); return false } }
+        const v = DOMParser.parseFromString(`~~~ embed:${yt.id} youtube ~~~`)
+        child.parentNode.replaceChild(v, child)
+        if (links) links.add(yt.url)
+        if (images) images.add('https://img.youtube.com/vi/' + yt.id + '/0.jpg')
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
+    }
+}
 
 /** @return {id, url} or <b>null</b> */
 function youTubeId(data) {
-    if(!data) return null
+    if (!data) return null
 
     const m1 = data.match(linksRe.youTube)
     const url = m1 ? m1[0] : null
-    if(!url) return null
+    if (!url) return null
 
     const m2 = url.match(linksRe.youTubeId)
     const id = m2 && m2.length >= 2 ? m2[1] : null
-    if(!id) return null
+    if (!id) return null
 
-    return {id, url}
+    return {
+        id,
+        url
+    }
 }
 
-function embedVimeoNode(child, links, /*images*/) {try{
-    if(!child.data) return false
-    const data = child.data
+function embedVimeoNode(child, links, /*images*/ ) {
+    try {
+        if (!child.data) return false
+        const data = child.data
 
-    let id
-    {
-        const m = data.match(linksRe.vimeoId)
-        id = m && m.length >= 2 ? m[1] : null
+        let id {
+            const m = data.match(linksRe.vimeoId)
+            id = m && m.length >= 2 ? m[1] : null
+        }
+        if (!id) return false;
+
+        const url = `https://player.vimeo.com/video/${id}`
+        const v = DOMParser.parseFromString(`~~~ embed:${id} vimeo ~~~`)
+        child.parentNode.replaceChild(v, child)
+        if (links) links.add(url)
+
+        // Preview image requires a callback.. http://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
+        // if(images) images.add('https://.../vi/' + id + '/0.jpg')
+
+        return true
+    } catch (error) {
+        console.log(error);
+        return false
     }
-    if(!id) return false;
-
-    const url = `https://player.vimeo.com/video/${id}`
-    const v = DOMParser.parseFromString(`~~~ embed:${id} vimeo ~~~`)
-    child.parentNode.replaceChild(v, child)
-    if(links) links.add(url)
-
-    // Preview image requires a callback.. http://stackoverflow.com/questions/1361149/get-img-thumbnails-from-vimeo
-    // if(images) images.add('https://.../vi/' + id + '/0.jpg')
-
-    return true
-} catch(error) {console.log(error); return false}}
+}
 
 function ipfsPrefix(url) {
-    if(STM_Config.ipfs_prefix) {
+    if (STM_Config.ipfs_prefix) {
         // Convert //ipfs/xxx  or /ipfs/xxx  into  https://steemit.com/ipfs/xxxxx
-        if(/^\/?\/ipfs\//.test(url)) {
+        if (/^\/?\/ipfs\//.test(url)) {
             const slash = url.charAt(1) === '/' ? 1 : 0
             url = url.substring(slash + '/ipfs/'.length) // start with only 1 /
             return STM_Config.ipfs_prefix + '/' + url

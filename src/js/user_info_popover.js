@@ -1,68 +1,61 @@
-var token_user_info_popover=null;
-var rewardBalanceUIP=null;
-var recentClaimsUIP=null;
-var steemPriceUIP=null;
-var votePowerReserveRateUIP=null;
+var token_user_info_popover = null;
+var rewardBalanceUIP = null;
+var recentClaimsUIP = null;
+var steemPriceUIP = null;
+var votePowerReserveRateUIP = null;
 var userNameRegEx = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])\/*/;
-var userInfoPopoverStarted=false;
+var userInfoPopoverStarted = false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.to==='user_info_popover'&&request.order==='start'&&token_user_info_popover==null)
-    {
-      	token_user_info_popover=request.token;
-		    rewardBalanceUIP=request.data.rewardBalance;
-		    recentClaimsUIP=request.data.recentClaims;
-		    steemPriceUIP=request.data.steemPrice;
-		    votePowerReserveRateUIP=request.data.votePowerReserveRate;
+    if (request.to === 'user_info_popover' && request.order === 'start' && token_user_info_popover == null) {
+        token_user_info_popover = request.token;
+        rewardBalanceUIP = request.data.rewardBalance;
+        recentClaimsUIP = request.data.recentClaims;
+        steemPriceUIP = request.data.steemPrice;
+        votePowerReserveRateUIP = request.data.votePowerReserveRate;
         checkUserForInfoPopover();
-        userInfoPopoverStarted=true;
-    }
-    else if(request.to==='user_info_popover'&&request.order==='click'&&token_user_info_popover==request.token)
-    {
-        rewardBalanceUIP=request.data.rewardBalance;
-        recentClaimsUIP=request.data.recentClaims;
-        steemPriceUIP=request.data.steemPrice;
-        votePowerReserveRateUIP=request.data.votePowerReserveRate;
+        userInfoPopoverStarted = true;
+    } else if (request.to === 'user_info_popover' && request.order === 'click' && token_user_info_popover == request.token) {
+        rewardBalanceUIP = request.data.rewardBalance;
+        recentClaimsUIP = request.data.recentClaims;
+        steemPriceUIP = request.data.steemPrice;
+        votePowerReserveRateUIP = request.data.votePowerReserveRate;
 
-      	checkUserForInfoPopover();
-    }
-    else if(request.to==='user_info_popover'&&request.order==='notif'&&token_user_info_popover==request.token)
-    {
-        rewardBalanceUIP=request.data.rewardBalance;
-        recentClaimsUIP=request.data.recentClaims;
-        steemPriceUIP=request.data.steemPrice;
-        votePowerReserveRateUIP=request.data.votePowerReserveRate;
+        checkUserForInfoPopover();
+    } else if (request.to === 'user_info_popover' && request.order === 'notif' && token_user_info_popover == request.token) {
+        rewardBalanceUIP = request.data.rewardBalance;
+        recentClaimsUIP = request.data.recentClaims;
+        steemPriceUIP = request.data.steemPrice;
+        votePowerReserveRateUIP = request.data.votePowerReserveRate;
 
-        if(userInfoPopoverStarted)
-          checkUserForInfoPopover();
+        if (userInfoPopoverStarted)
+            checkUserForInfoPopover();
     }
 
 
 });
 
-function checkUserForInfoPopover()
-{
-  if(regexBlogSteemit.test(window.location.href))
-  {
-    setTimeout(function(){
+function checkUserForInfoPopover() {
+    if (regexBlogSteemit.test(window.location.href)) {
+        setTimeout(function() {
 
-      if(window.location.href.match(userNameRegEx)!==null){
-        var userName = window.location.href.match(userNameRegEx)[1];
-        checkDisplayPopoverUserInfo(userName);
-      }
-    },100);
-  }
+            if (window.location.href.match(userNameRegEx) !== null) {
+                var userName = window.location.href.match(userNameRegEx)[1];
+                checkDisplayPopoverUserInfo(userName);
+            }
+        }, 100);
+    }
 }
 
-function checkDisplayPopoverUserInfo(userName)
-{
-  if($('.UserProfile__banner').length!==0)
-    displayPopoverUserInfo(userName);
-  else
-    setTimeout(function() {
-      checkDisplayPopoverUserInfo(userName);
-    },1000);
+function checkDisplayPopoverUserInfo(userName) {
+    if ($('.UserProfile__banner').length !== 0)
+        displayPopoverUserInfo(userName);
+    else
+        setTimeout(function() {
+            checkDisplayPopoverUserInfo(userName);
+        }, 1000);
 }
+
 
 
 function displayPopoverUserInfo(userName){

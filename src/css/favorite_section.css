@@ -1,56 +1,58 @@
 .add-as-favorite {
-  width: 70px;
-  height: 50px;
-  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+    width: 70px;
+    height: 50px;
+    background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
 }
 
 .theme-light .add-as-favorite {
-  width: 70px;
-  height: 50px;
-  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+    width: 70px;
+    height: 50px;
+    background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
 }
+
 .theme-dark .add-as-favorite {
-  width: 70px;
-  height: 50px;
-  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
+    width: 70px;
+    height: 50px;
+    background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
 }
 
 .is-favorite {
-  width: 70px;
-  height: 50px;
-  background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
+    width: 70px;
+    height: 50px;
+    background: url('chrome-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
 }
+
 @-moz-document url-prefix() {
-  .theme-light .add-as-favorite {
-    width: 70px;
-    height: 50px;
-    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
-  }
+    .theme-light .add-as-favorite {
+        width: 70px;
+        height: 50px;
+        background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_light.png') no-repeat;
+    }
 
-  .theme-dark .add-as-favorite {
-    width: 70px;
-    height: 50px;
-    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
-  }
+    .theme-dark .add-as-favorite {
+        width: 70px;
+        height: 50px;
+        background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_not_favorite_dark.png') no-repeat;
+    }
 
-  .is-favorite {
-    width: 70px;
-    height: 50px;
-    background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
-  }
+    .is-favorite {
+        width: 70px;
+        height: 50px;
+        background: url('moz-extension://__MSG_@@extension_id__/src/img/followee_favorite.png') no-repeat;
+    }
 }
 
 
 
 .favorite-item:hover .span-delete-favorite {
-  display:block;
-  cursor:pointer;
+    display: block;
+    cursor: pointer;
 }
 
 .span-delete-favorite {
-  font-weight: bold;
-  float: right;
-  display:none;
+    font-weight: bold;
+    float: right;
+    display: none;
 }
 
 .new-indicator {
@@ -65,8 +67,7 @@
     margin-left: 5px;
 }
 
-.favorite-star-busy
-{
-  margin-left: 0.5rem;
-  margin-top: 0.7rem;
+.favorite-star-busy {
+    margin-left: 0.5rem;
+    margin-top: 0.7rem;
 }

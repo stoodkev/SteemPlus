@@ -1,30 +1,30 @@
-.price-item{
-	min-height: 40px;
-	height: 100% !important;
-	text-align: center;
-	
-	
+.price-item {
+    min-height: 40px;
+    height: 100% !important;
+    text-align: center;
+
+
 }
 
-.price-item > a{
-	font-size: 14px;
-	color: black !important;
-	line-height: 1rem;
-	min-height: 40px;
-	vertical-align: middle;
-	padding-top: 8px;
+.price-item>a {
+    font-size: 14px;
+    color: black !important;
+    line-height: 1rem;
+    min-height: 40px;
+    vertical-align: middle;
+    padding-top: 8px;
 }
 
-.price-item > a:hover{
-	background-color: #f6f6f6 !important;
+.price-item>a:hover {
+    background-color: #f6f6f6 !important;
     color: #049173 !important;
 }
 
-.theme-dark .price-item > a:hover{
-	background-color: #2C3A45 !important;
+.theme-dark .price-item>a:hover {
+    background-color: #2C3A45 !important;
     color: #049173 !important;
 }
 
-.theme-dark .DropdownMenu.show > .VerticalMenu a {
-   color: #fcfcfc !important;
+.theme-dark .DropdownMenu.show>.VerticalMenu a {
+    color: #fcfcfc !important;
 }

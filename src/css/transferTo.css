@@ -1,13 +1,13 @@
-.divTransfer
-{
-  display: inline-block;
+.divTransfer {
+    display: inline-block;
 
 }
-.transfer_to
-{
-  display: inline-block;
+
+.transfer_to {
+    display: inline-block;
 
 }
-.currency{
-  cursor: pointer;
+
+.currency {
+    cursor: pointer;
 }

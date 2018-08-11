@@ -45,6 +45,8 @@ function startUtopianPost(){
 }
 
 function openUtopianDialog(){
+  if(window.location.href!="https://steemit.com/submit.html")
+    return;
   var div = document.createElement('div');
   div.id = 'overlay_utopian';
   var inner = "";

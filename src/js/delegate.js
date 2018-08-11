@@ -217,6 +217,7 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
 {
   // get outgoing delegation from the blockchain using steemjs
   steem.api.getVestingDelegations(usernamePageDelegation, null, 10, function(err, outgoingDelegations) {
+
     // get incoming delegation from steemSQL
     $.ajax({
       type: "GET",
@@ -295,17 +296,15 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   {
     if(isSteemit)
     {
-      console.log("b");
-      if($('.UserWallet__balance').length > 0)
+      if($('.delegate').length > 0)
       {
-        console.log("a");
         if(myAccountDelegation.name === usernamePageDelegation)
         {
           $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
         }
         else
         {
-          $('span [title="STEEM POWER delegated to/from this account"]').attr('id', 'popoverDelegation');
+          $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
         }
         $('#popoverDelegation').css('float', 'right');
       }

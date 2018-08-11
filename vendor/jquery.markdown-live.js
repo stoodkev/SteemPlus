@@ -4,8 +4,8 @@
  * Require jQuery & js-markdown-extra
  */
 
-(function ( $ ) {
- 
+(function($) {
+
     'use strict';
 
     var ver = '0.1.0',
@@ -14,23 +14,22 @@
     $.fn.markdownlive = function(options) {
 
         // Settings
-        var settings = $.extend({
-        }, options );
+        var settings = $.extend({}, options);
 
         // Functions
-        var updatePreview = function($this){
+        var updatePreview = function($this) {
 
                 var markdown_text = $this.val(),
                     markdown_html = Markdown(markdown_text),
                     $preview = $($this.attr('data-preview'));
 
-                if ($preview.length >0){
-                    $preview.html(markdown_html);    
+                if ($preview.length > 0) {
+                    $preview.html(markdown_html);
                 }
             },
 
             wrapSelection = function($this, $action) {
-                
+
                 var text = $this.val(),
                     length = text.length,
                     start = $this[0].selectionStart,
@@ -47,15 +46,15 @@
                 if (extendselect == 1) {
 
                     start = text.lastIndexOf("\n", start) + 1,
-                    end = text.indexOf("\n", end);
+                        end = text.indexOf("\n", end);
 
                     if (end === -1) {
                         end = text.length;
                     }
-                } 
+                }
 
                 // Set selection
-                selection =  text.substring(start, end)
+                selection = text.substring(start, end)
 
                 // Placeholder is only used if there is no selected text
                 if (selection.length == 0 && placeholder) {
@@ -75,45 +74,45 @@
 
                 // Reset selection
                 setFocus($this, start, end + after.length + before.length);
-                
+
                 // Update preview
                 updatePreview($this);
             },
 
-            setFocus = function ($object, start, end) {
-            
-                if (end === undefined){
+            setFocus = function($object, start, end) {
+
+                if (end === undefined) {
                     end = start;
                 }
 
                 $object[0].selectionStart = start;
                 $object[0].selectionEnd = end;
-                
+
                 $object.focus();
             };
 
         // Parsing dom
         return this.each(function() {
-            
+
             var $this = $(this),
                 $bar = $($this.attr("data-bar"));
-            
+
             // Init preview
             updatePreview($this);
 
             // Update preview on key up
-            $this.keyup(function(){
+            $this.keyup(function() {
                 updatePreview($this);
             });
 
             // Bar buttons
             if ($bar.length > 0) {
-                $bar.children('li').click(function(e){
+                $bar.children('li').click(function(e) {
                     e.preventDefault();
                     wrapSelection($this, $(this));
                 });
             }
         });
     };
- 
+
 }(jQuery));

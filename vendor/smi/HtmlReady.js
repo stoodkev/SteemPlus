@@ -562,10 +562,10 @@ function embedVimeoNode(child, links, /*images*/ ) {
         if (!child.data) return false
         const data = child.data
 
-        let id {
-            const m = data.match(linksRe.vimeoId)
-            id = m && m.length >= 2 ? m[1] : null
-        }
+        let id;
+        const m = data.match(linksRe.vimeoId)
+        id = m && m.length >= 2 ? m[1] : null
+
         if (!id) return false;
 
         const url = `https://player.vimeo.com/video/${id}`

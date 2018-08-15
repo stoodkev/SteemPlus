@@ -24,6 +24,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function startUtopianPost(){
+  if(window.location.href!="https://steemit.com/submit.html")
+    return;
     category=null;
     repository=null;
     replaceSecond=false;
@@ -45,13 +47,11 @@ function startUtopianPost(){
 }
 
 function openUtopianDialog(){
-  if(window.location.href!="https://steemit.com/submit.html")
-    return;
   var div = document.createElement('div');
   div.id = 'overlay_utopian';
   var inner = "";
     inner = '<div data-reactroot="" role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;"><div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;"><button class="close-button" type="button"><span aria-hidden="true" class="">×</span></button><div>'+
-    '<div class="row"><h3 class="column">Post to Utopian</h3></div>' +
+    '<div><h3>Post to Utopian</h3></div>' +
     '<div id= "disclaimer_utopian">You are about to post a contribution on Utopian. Before you post, make sure to review the <a href="https://join.utopian.io/guidelines/">guidelines</a>.'+
     '<br>If you change your mind and want to create a non-Utopian post, simply remove the utopian-io tag.</div>'+
     '<h4>Contribution category:</h4>'+
@@ -87,7 +87,6 @@ function openUtopianDialog(){
   list: {
       onClickEvent: function() {
         repository = $("#autocomplete-git").val();
-        console.log("item selected",repository);
         setOkButton();
       },
   },
@@ -112,7 +111,6 @@ function openUtopianDialog(){
 
 $("#autocomplete-git").easyAutocomplete(options);
 
-  console.log($("input[name='category']").val().split(" ")[1]);
   if(categories.includes($("input[name='category']").val().split(" ")[1])){
     $("#select_contribution_type option[value="+$("input[name='category']").val().split(" ")[1]+"]").prop("selected",true);
     setTemplate();
@@ -153,26 +151,30 @@ $("#autocomplete-git").easyAutocomplete(options);
     if(template!=null){
       if(template.match(/e\.g\. https\:\/\/github\.com\/utopian-io\/utopian\.io/))
       {
-        $("textarea[name='body']").val(template.replace("e.g. https://github.com/utopian-io/utopian.io","https://github.com/"+repository))
+        $('.ReplyEditor__body textarea')[0].value="";
+        $('.ReplyEditor__body textarea')[0].value =  $('.ReplyEditor__body textarea')[0].value+template.replace("e.g. https://github.com/utopian-io/utopian.io","https://github.com/"+repository);
       }
       else {
-        $("textarea[name='body']").val("#### Repository: \nhttps://github.com/"+repository+"\n"+template);
+        $('.ReplyEditor__body textarea')[0].value="#### Repository: \nhttps://github.com/"+repository+"\n"+template;
       }
     }
     else{
-      if(  $("textarea[name='body']").val().match(/Repository[\:]?[\s]+https\:\/\/github.com\/[A-Za-z0-9\_\.\-]+\/([A-Za-z0-9\_\.\-]+)/))
-        $("textarea[name='body']").val($("textarea[name='body']").val().replace(/(Repository[\:]?[\s]+https\:\/\/github.com\/)([A-Za-z0-9\_\.\-]+\/[A-Za-z0-9\_\.\-]+)/,"$1"+repository));
+      if(  $("textarea[name='body']")[0].value.match(/Repository[\:]?[\s]+https\:\/\/github.com\/[A-Za-z0-9\_\.\-]+\/([A-Za-z0-9\_\.\-]+)/))
+      $('.ReplyEditor__body textarea')[0].value=$("textarea[name='body']").val().replace(/(Repository[\:]?[\s]+https\:\/\/github.com\/)([A-Za-z0-9\_\.\-]+\/[A-Za-z0-9\_\.\-]+)/,"$1"+repository);
       else
-        $("textarea[name='body']").val("#### Repository: \nhttps://github.com/"+repository+"\n"+$("textarea[name='body']").val()).trigger("keypress").trigger("input").trigger("keyup");
+        $('.ReplyEditor__body textarea')[0].value="#### Repository: \nhttps://github.com/"+repository+"\n"+$("textarea[name='body']").val();
     }
-    $("textarea[name='body']").focus();
-    $("textarea[name='body']").select();
-    document.execCommand('copy');
-    $("textarea[name='body']").focus();
-    document.execCommand('paste');
+    var event = new Event('input', {
+        bubbles: true
+    });
+    $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+    event = new Event('keyup', {
+        bubbles: true
+    });
+    $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+    $('.ReplyEditor__body textarea').focus();
     utopianPost(true);
     if($(".utopian-post-buttons").length==0){
-      console.log("posting buttons");
       $(".div-benef-steemit-percentage").after("<div class='utopian-post-buttons'>\
       <div class='UserWallet__buysp hollow no-border' id='post-utopian'>Post with Utopian</div><div class='UserWallet__buysp hollow no-border' id='edit-utopian'>Edit</div><div class='UserWallet__buysp hollow no-border' id='cancel-utopian'>Cancel</div>\
       </div>");
@@ -186,7 +188,6 @@ $("#autocomplete-git").easyAutocomplete(options);
       var title=$('.vframe input').eq(0).val();
       var body=$('.vframe textarea').eq(0).val();
       var sbd_percent=$('.benef-steemit-percentage').eq(0).val();
-      console.log(sbd_percent);
       if(title=="")
         alert("Please enter a title!");
       else if(body=="")
@@ -237,23 +238,37 @@ $("#autocomplete-git").easyAutocomplete(options);
         ]
       }]
       ];
-
       console.log(operations);
-
       sc2.broadcast(
         operations,
         function(e, r)
         {
           if (e)
           {
-            console.log(e);
             if(e.error!==undefined)
             {
+              console.log(e,e.error);
               alert("Something went wrong, please try again later!");
             }
           }
           else {
-              window.location.replace('https://steemit.com');
+              $('.vframe input').eq(0).val("");
+              $('.vframe textarea').eq(0).val("");
+               $(' input[tabindex=3]').eq(0).val("");
+               var event = new Event('input', {
+                   bubbles: true
+               });
+               $('.vframe input')[0].dispatchEvent(event);
+               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+              $(' input[tabindex=3]')[0].dispatchEvent(event);
+
+               event = new Event('keyup', {
+                   bubbles: true
+               });
+               $('.vframe input')[0].dispatchEvent(event);
+               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+               $(' input[tabindex=3]')[0].dispatchEvent(event);
+               window.location.replace('https://steemit.com');
           }
         });
       }
@@ -280,7 +295,6 @@ function setTemplate(){
   if($("textarea").val()==""||$("#override_text").prop("checked")){
     $.get( "https://raw.githubusercontent.com/utopian-io/editor-templates/master/"+  $("#select_contribution_type option:selected").val(), function( data ) {
       template=data;
-      console.log("got template");
     });
   }
 }

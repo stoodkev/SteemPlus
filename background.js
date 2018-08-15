@@ -32,21 +32,25 @@ function websiteSwitch(command) {
 
         if (command === 'steemify') {
             if (web == 'busy.org' || web == 'utopian.io' || web == 'steemd.com') {
-
-                chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
                     var code = url.replace(web, 'steemit.com');
-                    chrome.tabs.update(tab.id, {
+                    chrome.tabs.update(tabs[0].id, {
                         url: code
                     });
                 });
             }
         }
         if (command === 'utopify') {
-
             if (web == 'busy.org' || web == 'steemit.com' || web == 'steemd.com') {
-                chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
                     var code = url.replace(web, 'utopian.io');
-                    chrome.tabs.update(tab.id, {
+                    chrome.tabs.update(tabs[0].id, {
                         url: code
                     });
                 });
@@ -54,18 +58,25 @@ function websiteSwitch(command) {
         }
         if (command === 'busyfy') {
             if (web == 'steemit.com' || web == 'utopian.io' || web == 'steemd.com') {
-                chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
                     var code = url.replace(web, 'busy.org');
-                    chrome.tabs.update(tab.id, {
+                    chrome.tabs.update(tabs[0].id, {
                         url: code
                     });
                 });
             }
-        } else if (command === 'steemdify') {
+        }
+        if (command === 'steemdify') {
             if (web == 'busy.org' || web == 'utopian.io' || web == 'steemit.com') {
-                chrome.tabs.getSelected(null, function(tab) {
+                chrome.tabs.query({
+                    active: true,
+                    currentWindow: true
+                }, function(tabs) {
                     var code = url.replace(web, 'steemd.com');
-                    chrome.tabs.update(tab.id, {
+                    chrome.tabs.update(tabs[0].id, {
                         url: code
                     });
                 });

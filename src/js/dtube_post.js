@@ -61,7 +61,10 @@ function startDtubePost()
   
   setTimeout(function(){
     checkInputDTube();
+    $("input[name=category]").attr('title', 'Information : Add \'dtube\' tag to post on DTube');
   },2000);
+
+
 }
 
 function checkInputDTube()

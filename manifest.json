@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "2.20.0.2",
+  "version": "2.21",
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://widget.blocktrades.us/ ; object-src 'self'; child-src 'unsafe-eval' 'self' https://widget.blocktrades.us/",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -104,7 +104,8 @@
         "src/js/utopian_post.js",
         "src/js/select_reward_dropdown.js",
         "src/js/vote_weight_slider_busy.js",
-        "src/js/beneficiary_donation.js"],
+        "src/js/beneficiary_donation.js",
+        "src/js/dtube_post.js"],
 
       "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css","vendor/easy-autocomplete.min.css","vendor/easy-autocomplete.themes.min.css",
         "src/css/delegate.css",
@@ -133,7 +134,8 @@
         "src/css/select_reward_dropdown.css",
         "src/css/vote_weight_slider_busy.css",
         "src/css/utopian_post.css",
-        "src/css/misc.css"],
+        "src/css/misc.css",
+        "src/css/dtube_post.css"],
       "run_at": "document_idle"
     }
   ]

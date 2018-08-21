@@ -1,20 +1,20 @@
-var autU,token_utopian,isSelectRewardDropdown=null;
+var autU,token_utopian_post,isSelectRewardDropdown=null;
 var category,repository,template=null;
 var categories=['analysis','blog','bug-hunting','copywriting','development','documentation','graphics','ideas','social','translations','tutorials','video-tutorials'];
 var replaceSecond=false;
 var isUtopianPost=false;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if(request.to=='utopian'){
+  if(request.to=='utopian_post'){
     autU=request.data.user;
-    if(request.order==='start'&&token_utopian==null)
+    if(request.order==='start'&&token_utopian_post==null)
     {
-      token_utopian=request.token;
+      token_utopian_post=request.token;
       autU=request.data.user;
       isSelectRewardDropdown=true;
       startUtopianPost();
     }
-    if(request.order==='click'&&token_utopian==request.token)
+    if(request.order==='click'&&token_utopian_post==request.token)
     {
       isSelectRewardDropdown=true;
       autU=request.data.user;

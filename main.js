@@ -180,7 +180,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         });
     });
 
-chrome.storage.local.get(['tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
+chrome.storage.local.get(['dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
     var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
         connect: false
     } : {
@@ -233,7 +233,8 @@ chrome.storage.local.get(['tip_user', 'resteem_indicator', 'add_signature', 'aut
             const followers_table = (items.followers_table == undefined || items.followers_table == 'show');
             const vote_weight_slider_busy = (items.vote_weight_slider_busy == undefined || items.vote_weight_slider_busy == 'show');
             const isPostFloatingBottomBarEnabled = (items.post_floating_bottom_bar == undefined || items.post_floating_bottom_bar == 'show');
-            const utopian = (items.utopian == undefined || items.utopian == 'show');
+            const utopian_post = (items.utopian_post == undefined || items.utopian_post == 'show');
+            const dtube_post = (items.dtube_post == undefined || items.dtube_post == 'show');
 
             // Feed+ const
             var whitelist = (items.whitelist !== undefined) ? items.whitelist : "";
@@ -253,10 +254,19 @@ chrome.storage.local.get(['tip_user', 'resteem_indicator', 'add_signature', 'aut
             };
 
             console.log('Starting features online...', user);
-            if (utopian && (steemit))
+            if (utopian_post && (steemit))
                 chrome.runtime.sendMessage({
                     token: token,
-                    to: 'utopian',
+                    to: 'utopian_post',
+                    order: 'start',
+                    data: {
+                        user: user
+                    }
+                });
+            if (dtube_post && (steemit))
+                chrome.runtime.sendMessage({
+                    token: token,
+                    to: 'dtube_post',
                     order: 'start',
                     data: {
                         user: user
@@ -383,10 +393,19 @@ chrome.storage.local.get(['tip_user', 'resteem_indicator', 'add_signature', 'aut
             $(document).click(function() {
                 setTimeout(function() {
                     if (urlOnline !== window.location.href) {
-                        if (utopian && (steemit))
+                        if (utopian_post && (steemit))
                             chrome.runtime.sendMessage({
                                 token: token,
-                                to: 'utopian',
+                                to: 'utopian_post',
+                                order: 'click',
+                                data: {
+                                    user: user
+                                }
+                            });
+                        if (dtube_post && (steemit))
+                            chrome.runtime.sendMessage({
+                                token: token,
+                                to: 'dtube_post',
                                 order: 'click',
                                 data: {
                                     user: user
@@ -544,7 +563,6 @@ function startOfflineFeatures(items, user, account) {
     const add_signature = (items.add_signature == undefined || items.add_signature == 'show');
     const resteem_indicator = (items.resteem_indicator == undefined || items.resteem_indicator == 'show');
     const tip_user = (items.tip_user == undefined || items.tip_user == 'show');
-
 
     const smi_installed_remind_me = (items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
     const smi_installed_remind_me_time = items.smi_installed_remind_me_time;
@@ -1182,7 +1200,6 @@ function startOfflineFeatures(items, user, account) {
                             steemPrice: steemPriceLS
                         }
                     });
-
 
                 if ($('.favorite-star').length > 0) {
                     $('.favorite-star').remove();

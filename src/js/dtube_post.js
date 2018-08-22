@@ -6,6 +6,9 @@ var isDTubePost = false;
 var droppedFiledDTubePost = null;
 var droppedSnapDTubePost = null;
 
+var isUploadedVideo = false;
+var isUploadedSnap = false;
+
 var snaphashDTube = null;
 var spritehashDTube = null;
 var encodedVideosDTube = null;
@@ -33,6 +36,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
+
 function canStartDTubePost()
 {
   if(regexCreatePostSteemit.test(window.location.href)&&retryCountDtubePost < 20)
@@ -52,11 +56,8 @@ function canStartDTubePost()
 
 function startDtubePost()
 {
-  $("input[name='category']").on('focus', function()
-  {
-    $("input[name='category']").bind('input propertychange', function(event){
-      checkInputDTube();
-    });
+  $("input[name='category']").bind('input propertychange', function(event){
+    checkInputDTube();
   });
   
   setTimeout(function(){
@@ -71,7 +72,6 @@ function checkInputDTube()
 {
   if($("input[name='category']").val().match(/^dtube /)&&!isDTubePost){
     if($("#post-dtube").length===0){
-      console.log('ici');
       $(".post-clear-div").after("<button class='button-steemit' id='post-dtube'>Post with DTube</button><button class='button-steemit' id='cancel-dtube'>Cancel DTube</button>");
       $(".benef").hide();
       $(".post-clear-div").hide();
@@ -108,8 +108,7 @@ function checkInputDTube()
           sbd_percent = 10000;
         }
 
-        if(articleDTube.info.title === "") articleDTube.info.title = title;
-
+        articleDTube.info.title = title;
         articleDTube.content.tags = tags;
 
         var operationsDTube = [
@@ -143,7 +142,6 @@ function checkInputDTube()
           ]
         }]
         ];
-        console.log(operationsDTube);
         sc2.broadcast(
           operationsDTube,
           function(e, r)
@@ -156,29 +154,35 @@ function checkInputDTube()
                 alert("Something went wrong, please try again later!");
               }
             }
-            else {
+            else 
+            {
               $('.vframe input').eq(0).val("");
               $('.vframe textarea').eq(0).val("");
               $(' input[tabindex=3]').eq(0).val("");
               var event = new Event('input', {
-               bubbles: true
-             });
+                bubbles: true
+              });
               $('.vframe input')[0].dispatchEvent(event);
               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
               $(' input[tabindex=3]')[0].dispatchEvent(event);
 
               event = new Event('keyup', {
-               bubbles: true
-             });
+                bubbles: true
+              });
               $('.vframe input')[0].dispatchEvent(event);
               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
               $(' input[tabindex=3]')[0].dispatchEvent(event);
               window.location.replace('https://steemit.com');
             }
-          });
+          }
+        );
       }
     });
     openDTubeDialog();
+  }
+  else if(isDTubePost)
+  {
+    cancelDTube();
   }
 }
 
@@ -190,6 +194,8 @@ function openDTubeDialog()
     $('#post-dtube').after($("<button class='button-steemit' id='reopen-dtube'> Open DTube Modal</div>"));
     $('#reopen-dtube').click(function(){
       $('#dtube-modal').show();
+      $('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
+      $('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
     });
   }
   var modalDTube = $(`
@@ -255,6 +261,8 @@ function openDTubeDialog()
     </div>
     </div>
     </div>`);
+  modalDTube.find('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
+  modalDTube.find('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
   modalDTube.find('.progress-div-video').hide();
   modalDTube.find('.progress-div-snap').hide();
   modalDTube.find('#addToPost').hide();
@@ -262,8 +270,12 @@ function openDTubeDialog()
   $('body').append(modalDTube);
 
   $('.close-button').click(function(){
-    console.log('hide');
-    $('#dtube-modal').hide();
+    if(isUploadedVideo || isUploadedSnap)
+    {
+      $('#dtube-modal').hide();
+    }
+    else
+      cancelDTube();
   });
 
   $('#uploadDTtube').click(function(){
@@ -286,7 +298,6 @@ function openDTubeDialog()
         // listen for progress events on the upload
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
-          console.log(evt);
           if (evt.lengthComputable) {
             updateProgressBar($('.upload-progress'), `${(evt.loaded / evt.total * 100).toFixed(2)}%`);
           }
@@ -294,10 +305,8 @@ function openDTubeDialog()
         return xhr;
       },
       success: function (result) {
-        console.log(result);
         if (typeof result === 'string')
           result = JSON.parse(result);
-        console.log(result);
         $('.uploadLabel').text('Upload Finished');
         getProgressByToken(result.token);
       },
@@ -330,7 +339,6 @@ function openDTubeDialog()
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
-            console.log(evt.loaded, evt.total);
           }
         }, false);
         return xhr;
@@ -341,7 +349,6 @@ function openDTubeDialog()
       success: function (result) {
         if (typeof result === 'string')
           result = JSON.parse(result)
-        console.log(result);
         $('.progress-div-snap').show();
         getProgressSnapByToken(result.token);
       },
@@ -363,7 +370,6 @@ function getProgressByToken(token)
     },
     url: 'https://cluster.d.tube/getProgressByToken/' + token,
     success: function(response) {
-      console.log(response);
       var ipfsAddSpriteProgressValue, spriteCreationProgressValue, ipfsAddSourceVideoProgressValue;
       if(response.sprite.ipfsAddSprite.step === "Waiting")
       {
@@ -415,6 +421,7 @@ function getProgressByToken(token)
         encodedVideosDTube = response.encodedVideos;
         videohashDTube = response.ipfsAddSourceVideo.hash;
         prepareDtubePost();
+        isUploadedVideo=true;
       }
       else
       {
@@ -439,7 +446,6 @@ function getProgressSnapByToken(token)
     },
     url: 'https://snap1.d.tube/getProgressByToken/' + token,
     success: function(response) {
-      console.log(response);
       $('.uploadSnapshotLabel').text('Processing...');
       if(response.ipfsAddSource.progress !== "100.00%" || response.ipfsAddOverlay.progress !== "100.00%")
         setTimeout(function(){
@@ -450,6 +456,7 @@ function getProgressSnapByToken(token)
         updateProgressBar($('.uploadSnapshot-progress'), "100.00%");
         snaphashDTube = response.ipfsAddSource.hash;
         overlayHashDTube = response.ipfsAddOverlay.hash;
+        isUploadedSnap = true;
         $('.uploadSnapshotLabel').text('Finished');
       }
     },
@@ -461,19 +468,16 @@ function getProgressSnapByToken(token)
 
 function updateProgressBar(progressbar, value)
 {
-  console.log(progressbar, value);
   progressbar.css("width", value);
   progressbar.text(value);
 }
 
 function prepareDtubePost()
 {
-  console.log('prepare Dtube post');
   $('#addToPost').show();
   $('#uploadDTtube').hide();
 
   $('#addToPost').click(function(){
-    console.log('add to post');
     var errorMessageDTubePost = null;
     if(snaphashDTube === null) errorMessageDTubePost = "No snapshot found. Please upload a snapshot and try again";
     else if(videohashDTube === null || spritehashDTube === null) errorMessageDTubePost = "No video found. Please upload a video and try again";
@@ -502,7 +506,6 @@ function prepareDtubePost()
     }
     else
     {
-      console.log(droppedFiledDTubePost);
       articleDTube = {
         info: {
           title: $('input[name=video-title-dtube]')[0].value,
@@ -523,20 +526,19 @@ function prepareDtubePost()
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {
           case '240p':
-            articleDTube.content.video240hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
-            break;
+          articleDTube.content.video240hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          break;
           case '480p':
-            articleDTube.content.video480hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
-            break;
+          articleDTube.content.video480hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          break;
           case '720p':
-            articleDTube.content.video720hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
-            break;
+          articleDTube.content.video720hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          break;
           case '1080p':
-            articleDTube.content.video1080hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
-            break;
+          articleDTube.content.video1080hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          break;
         }
       }
-      console.log(articleDTube);
       bodySteemit = '<center>';
       bodySteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'>';
       bodySteemit += '<img src=\'https://ipfs.io/ipfs/' + overlayHashDTube + '\'></a></center><hr>\n\n';
@@ -544,16 +546,19 @@ function prepareDtubePost()
       bodySteemit += '\n\n<hr>';
       bodySteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
       bodySteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
-      
+      $('.ReplyEditor__title').eq(0).val($('input[name=video-title-dtube]').eq(0).val());
       $('.ReplyEditor__body textarea')[0].value = bodySteemit;
       var event = new Event('input', {
         bubbles: true
       });
       $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+      $('.ReplyEditor__title').eq(0).val($('input[name=video-title-dtube]').eq(0).val());
+      $('.ReplyEditor__title')[0].dispatchEvent(event);
       event = new Event('keyup', {
-          bubbles: true
+        bubbles: true
       });
       $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+      $('.ReplyEditor__title')[0].dispatchEvent(event);
       $('.ReplyEditor__body textarea').focus();
 
       $('#dtube-modal').hide();
@@ -579,6 +584,8 @@ function cancelDTube()
   encodedVideos = null;
   overlayHashDTube = null;
   articleDTube = null;
+  isUploadedVideo = false;
+  isUploadedSnap = false;
 }
 
 function createPermlink(length)

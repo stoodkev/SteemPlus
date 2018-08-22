@@ -18,6 +18,8 @@ var overlayHashDTube = null;
 var articleDTube = null;
 
 var bodySteemit = null;
+var headerSteemit = null;
+var footerSteemit = null;
 
 // Listener to messages start, click
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -235,7 +237,6 @@ function checkInputDTube()
 // Will help user to upload videos
 function openDTubeDialog()
 {
-
   isDTubePost = true;
   if($('#reopen-dtube').length === 0)
   {
@@ -246,7 +247,12 @@ function openDTubeDialog()
       // Show the modal and replace the title and description in the modal by the one on steemit form
       $('#dtube-modal').show();
       $('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
-      $('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
+
+      var textareaContent = $('textarea[name=body]').eq(0).val();
+      textareaContent = textareaContent.replace(headerSteemit, "");
+      textareaContent = textareaContent.replace(footerSteemit, "");
+
+      $('textarea[name=video-description-dtube]').eq(0).val(textareaContent);
     });
   }
 
@@ -327,7 +333,7 @@ function openDTubeDialog()
 
   // Display modal
   $('body').append(modalDTube);
-  
+
   toggleAddToPostEnableStatus(false);
 
   // Listener on close modal button
@@ -503,15 +509,18 @@ function openDTubeDialog()
         }
       }
       // Create steemit new body
-      bodySteemit = '<center>';
-      bodySteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'>';
-      bodySteemit += '<img src=\'https://ipfs.io/ipfs/' + overlayHashDTube + '\'></a></center><hr>\n\n';
-      bodySteemit += articleDTube.content.description;
-      bodySteemit += '\n\n<hr>';
-      bodySteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
-      bodySteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
+      headerSteemit = '<center>';
+      headerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'>';
+      headerSteemit += '<img src=\'https://ipfs.io/ipfs/' + overlayHashDTube + '\'></a></center><hr>\n\n';
+      bodySteemit = articleDTube.content.description
+      footerSteemit = '\n\n<hr>';
+      footerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
+      footerSteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
+      
       $('.ReplyEditor__title').eq(0).val($('input[name=video-title-dtube]').eq(0).val());
-      $('.ReplyEditor__body textarea')[0].value = bodySteemit;
+      var text = headerSteemit.concat(bodySteemit);
+      text = text.concat(footerSteemit);
+      $('.ReplyEditor__body textarea')[0].value = text;
       var event = new Event('input', {
         bubbles: true
       });
@@ -687,6 +696,9 @@ function cancelDTube()
   articleDTube = null;
   isUploadedVideo = false;
   isUploadedSnap = false;
+  bodySteemit = null;
+  headerSteemit = null;
+  footerSteemit = null;
 }
 
 // Function used to generate a permlink

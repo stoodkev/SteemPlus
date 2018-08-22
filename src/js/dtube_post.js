@@ -90,7 +90,37 @@ function checkInputDTube()
 
     // Add listener on click post button
     $("#post-dtube").unbind('click').click(function(){
-      
+      if(!isUploadedSnap || !isUploadedVideo)
+      {
+        var errorMessageDTubePost = null;
+        if(!isUploadedSnap) errorMessageDTubePost = "No snapshot found. Please upload a snapshot and try again";
+        else if(!isUploadedVideo) errorMessageDTubePost = "No video found. Please upload a video and try again";
+        
+        // if not display error toast
+        if(errorMessageDTubePost !== null)
+        {
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-full-width",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": 0,
+            "extendedTimeOut": 0,
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut",
+            "tapToDismiss": true
+          };
+          toastr.error(errorMessageDTubePost, "Error");
+          return;
+        }
+      }
       // build the article to be posted
       var tags = $(' input[tabindex=3]').eq(0).val().split(' ');
       var permlinkSteemit=articleDTube.info.permlink

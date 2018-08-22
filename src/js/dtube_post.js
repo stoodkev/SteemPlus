@@ -69,7 +69,7 @@ function startDtubePost()
   // We need to check first because steemit keep draft and tags can be present when page is loaded
   setTimeout(function(){
     checkInputDTube();
-    $("input[name=category]").attr('title', 'Information : Add \'dtube\' tag to post on DTube');
+    $("input[name=category]").attr('title', 'Information : Add \'dtube\' tag in first position to post on DTube');
   },2000);
 }
 

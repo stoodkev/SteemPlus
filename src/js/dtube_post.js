@@ -36,15 +36,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
-
+// Function used to check if the feature can be started.
 function canStartDTubePost()
 {
+  // check if the page load is the post creation page.
   if(regexCreatePostSteemit.test(window.location.href)&&retryCountDtubePost < 20)
   {
+    // Check if needed element is loaded and start the feature
     if($("input[name='category']").length > 0)
       startDtubePost();
     else
     {
+      //If not wait one second
       setTimeout(function()
       {
         retryCountDtubePost++;
@@ -54,23 +57,28 @@ function canStartDTubePost()
   }
 }
 
+// Function used to start the feature
 function startDtubePost()
 {
+  // Add input listener on tags input
   $("input[name='category']").bind('input propertychange', function(event){
     checkInputDTube();
   });
   
+  // check the content of the input
+  // We need to check first because steemit keep draft and tags can be present when page is loaded
   setTimeout(function(){
     checkInputDTube();
     $("input[name=category]").attr('title', 'Information : Add \'dtube\' tag to post on DTube');
   },2000);
-
-
 }
 
+// Function used to check the tag input
 function checkInputDTube()
 {
+  // Check if 'dtube ' is present
   if($("input[name='category']").val().match(/^dtube /)&&!isDTubePost){
+    // open the modal and add the button for dtube
     if($("#post-dtube").length===0){
       $(".post-clear-div").after("<button class='button-steemit' id='post-dtube'>Post with DTube</button><button class='button-steemit' id='cancel-dtube'>Cancel DTube</button>");
       $(".benef").hide();
@@ -80,7 +88,10 @@ function checkInputDTube()
       });
     }
 
+    // Add listener on click post button
     $("#post-dtube").unbind('click').click(function(){
+      
+      // build the article to be posted
       var tags = $(' input[tabindex=3]').eq(0).val().split(' ');
       var permlinkSteemit=articleDTube.info.permlink
       .replace(/[^\w-]+/g,'');
@@ -93,6 +104,7 @@ function checkInputDTube()
         alert("Please write the body content of your post!");
       else{
         var beneficiaries_dtube=[];
+        // Share a part of the rewards between steemplus and dtube
         beneficiaries_dtube.push({
           account: 'steemplus-pay',
           weight: 100*1
@@ -107,10 +119,10 @@ function checkInputDTube()
           maximumAcceptedPayout = '0.000 SBD';
           sbd_percent = 10000;
         }
-
+        
         articleDTube.info.title = title;
         articleDTube.content.tags = tags;
-
+        
         var operationsDTube = [
         ['comment',
         {
@@ -156,6 +168,7 @@ function checkInputDTube()
             }
             else 
             {
+              // if article is posted, empty the form
               $('.vframe input').eq(0).val("");
               $('.vframe textarea').eq(0).val("");
               $(' input[tabindex=3]').eq(0).val("");
@@ -178,26 +191,36 @@ function checkInputDTube()
         );
       }
     });
+    // Open modal
     openDTubeDialog();
   }
   else if(isDTubePost)
   {
+    // if dtube is not present but was activated, cancel it
     cancelDTube();
   }
 }
 
+// Function used to create the dtube modal
+// Will help user to upload videos
 function openDTubeDialog()
 {
+
   isDTubePost = true;
   if($('#reopen-dtube').length === 0)
   {
+    // Add post and reopen modal buttons
     $('#post-dtube').after($("<button class='button-steemit' id='reopen-dtube'> Open DTube Modal</div>"));
+    // Listener on click on reopen modal
     $('#reopen-dtube').click(function(){
+      // Show the modal and replace the title and description in the modal by the one on steemit form
       $('#dtube-modal').show();
       $('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
       $('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
     });
   }
+
+  // Modal creation
   var modalDTube = $(`
     <div id="dtube-modal" data-reactroot="" role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
     <div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;">
@@ -261,15 +284,24 @@ function openDTubeDialog()
     </div>
     </div>
     </div>`);
+
+  // Replace the title and description in the modal by the one on steemit form
   modalDTube.find('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
   modalDTube.find('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
+  
+  // Hide all the progress bars
   modalDTube.find('.progress-div-video').hide();
   modalDTube.find('.progress-div-snap').hide();
+  // Hide buttons
   modalDTube.find('#addToPost').hide();
   modalDTube.find('#uploadDTtube').hide();
+
+  // Display modal
   $('body').append(modalDTube);
 
+  // Listener on close modal button
   $('.close-button').click(function(){
+    // We don't cancel dtube post if video or snapshot have been uploaded already
     if(isUploadedVideo || isUploadedSnap)
     {
       $('#dtube-modal').hide();
@@ -278,12 +310,17 @@ function openDTubeDialog()
       cancelDTube();
   });
 
+  // Listener on upload video button
   $('#uploadDTtube').click(function(){
+
+    // Create new formData
     var dataDTubePost = new FormData();
+    // Add the file to the form data
     dataDTubePost.append(droppedFiledDTubePost.name , droppedFiledDTubePost);
 
     var credentials = true;
     $('.progress-div-video').show();
+    // Launch ajax request to dtube upload system
     $.ajax({
       cache: false,
       contentType: false,
@@ -299,12 +336,14 @@ function openDTubeDialog()
         var xhr = new window.XMLHttpRequest();
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
+            // On progress, update progress bar
             updateProgressBar($('.upload-progress'), `${(evt.loaded / evt.total * 100).toFixed(2)}%`);
           }
         }, false);
         return xhr;
       },
       success: function (result) {
+        // In case of success get the progress of data processing
         if (typeof result === 'string')
           result = JSON.parse(result);
         $('.uploadLabel').text('Upload Finished');
@@ -316,6 +355,7 @@ function openDTubeDialog()
     });
   });
 
+  // Listener on video drop file
   $('.drop-area-dtube-video').on('drop', function(event)
   {
     droppedFiledDTubePost = event.originalEvent.dataTransfer.files[0];
@@ -323,6 +363,8 @@ function openDTubeDialog()
     $('#uploadDTtube').show();
   });
 
+  // Listener on snapshot drop file
+  // We decided to launch automatically the upload of the snapshot because it's a small image
   $('.drop-area-dtube-snap').on('drop', function(event)
   {
     droppedSnapDTubePost = event.originalEvent.dataTransfer.files[0];
@@ -331,6 +373,7 @@ function openDTubeDialog()
     var dataSnapDTubePost = new FormData();
     dataSnapDTubePost.append(droppedSnapDTubePost.name , droppedSnapDTubePost);
 
+    // Launch request to dtube snapshot upload system
     $.ajax({
       url: 'https://snap1.d.tube/uploadImage',
       type: "POST",
@@ -359,7 +402,8 @@ function openDTubeDialog()
   
 }
 
-
+// This function is used to track to progress of data processing
+// @parameter token : token used to identify an image processing
 function getProgressByToken(token)
 {
   $.ajax({
@@ -371,6 +415,7 @@ function getProgressByToken(token)
     url: 'https://cluster.d.tube/getProgressByToken/' + token,
     success: function(response) {
       var ipfsAddSpriteProgressValue, spriteCreationProgressValue, ipfsAddSourceVideoProgressValue;
+      // Update all the progress bars
       if(response.sprite.ipfsAddSprite.step === "Waiting")
       {
         ipfsAddSpriteProgressValue = 0.00;
@@ -415,8 +460,10 @@ function getProgressByToken(token)
         else $('.spriteCreationLabel').text('Processing...'); 
       }
 
+      // if treatment is finished get ready for posting on the blockchain
       if(response.finished)
       {
+        // saving hashs
         spritehashDTube = response.sprite.ipfsAddSprite.hash;
         encodedVideosDTube = response.encodedVideos;
         videohashDTube = response.ipfsAddSourceVideo.hash;
@@ -425,6 +472,7 @@ function getProgressByToken(token)
       }
       else
       {
+        // if not try again
         setTimeout(function(){
           getProgressByToken(token);
         }, 2500);
@@ -436,6 +484,7 @@ function getProgressByToken(token)
   });
 }
 
+// Function used to track snapshot treatment progress
 function getProgressSnapByToken(token)
 {
   $.ajax({
@@ -447,13 +496,16 @@ function getProgressSnapByToken(token)
     url: 'https://snap1.d.tube/getProgressByToken/' + token,
     success: function(response) {
       $('.uploadSnapshotLabel').text('Processing...');
+      // Update progressbar
       if(response.ipfsAddSource.progress !== "100.00%" || response.ipfsAddOverlay.progress !== "100.00%")
         setTimeout(function(){
           getProgressSnapByToken(token);
         },1000);
       else
       {
+        // If treatment is finish
         updateProgressBar($('.uploadSnapshot-progress'), "100.00%");
+        // save hash
         snaphashDTube = response.ipfsAddSource.hash;
         overlayHashDTube = response.ipfsAddOverlay.hash;
         isUploadedSnap = true;
@@ -466,22 +518,30 @@ function getProgressSnapByToken(token)
   });
 }
 
+// Function used to update progress bar
+// @parameter progressbar : targeted progressbar
+// @parameter value : value of the progress
 function updateProgressBar(progressbar, value)
 {
   progressbar.css("width", value);
   progressbar.text(value);
 }
 
+// Function used to prepare dtube post
 function prepareDtubePost()
 {
+  // Show button add to post
   $('#addToPost').show();
   $('#uploadDTtube').hide();
 
+  // Listener on add to post button
   $('#addToPost').click(function(){
+    // Check if both video and snapshot have been uploaded
     var errorMessageDTubePost = null;
     if(snaphashDTube === null) errorMessageDTubePost = "No snapshot found. Please upload a snapshot and try again";
     else if(videohashDTube === null || spritehashDTube === null) errorMessageDTubePost = "No video found. Please upload a video and try again";
     
+    // if not display error toast
     if(errorMessageDTubePost !== null)
     {
       toastr.options = {
@@ -506,6 +566,7 @@ function prepareDtubePost()
     }
     else
     {
+      // if both have been created, prepare json_metadata
       articleDTube = {
         info: {
           title: $('input[name=video-title-dtube]')[0].value,
@@ -522,7 +583,8 @@ function prepareDtubePost()
           tags: []
         }
       }
-
+      
+      // add hashs for differents qualities
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {
           case '240p':
@@ -539,6 +601,7 @@ function prepareDtubePost()
           break;
         }
       }
+      // Create steemit new body
       bodySteemit = '<center>';
       bodySteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'>';
       bodySteemit += '<img src=\'https://ipfs.io/ipfs/' + overlayHashDTube + '\'></a></center><hr>\n\n';
@@ -561,13 +624,16 @@ function prepareDtubePost()
       $('.ReplyEditor__title')[0].dispatchEvent(event);
       $('.ReplyEditor__body textarea').focus();
 
+      // hide the modal
       $('#dtube-modal').hide();
     }
   });
 }
 
+// Function used to cancel the dtube post
 function cancelDTube()
 {
+  // Remove dtube elements and show initials one
   $('input[name=category]')[0].value = "";
   $(".benef").show();
   $(".post-clear-div").show();
@@ -575,6 +641,8 @@ function cancelDTube()
   $("#cancel-dtube").remove();
   $("#reopen-dtube").remove();
   $("#dtube-modal").remove();
+
+  // Init all variables
   isDTubePost = false;
   droppedFiledDTubePost = null;
   droppedSnapDTubePost = null;
@@ -588,11 +656,14 @@ function cancelDTube()
   isUploadedSnap = false;
 }
 
+// Function used to generate a permlink
+// @parameter length
 function createPermlink(length)
 {
   var text = "";
   var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
 
+  // Depending on the length, pick x caracters in 'possible'
   for (var i = 0; i < length; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 

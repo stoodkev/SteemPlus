@@ -323,11 +323,12 @@ function openDTubeDialog()
   modalDTube.find('.progress-div-video').hide();
   modalDTube.find('.progress-div-snap').hide();
   // Hide buttons
-  modalDTube.find('#addToPost').hide();
   modalDTube.find('#uploadDTtube').hide();
 
   // Display modal
   $('body').append(modalDTube);
+  
+  toggleAddToPostEnableStatus(false);
 
   // Listener on close modal button
   $('.close-button').click(function(){
@@ -342,7 +343,8 @@ function openDTubeDialog()
 
   // Listener on upload video button
   $('#uploadDTtube').click(function(){
-
+    isUploadedVideo=false;
+    toggleAddToPostEnableStatus(false);
     // Create new formData
     var dataDTubePost = new FormData();
     // Add the file to the form data
@@ -388,6 +390,7 @@ function openDTubeDialog()
   // Listener on video drop file
   $('.drop-area-dtube-video').on('drop', function(event)
   {
+    $('#uploadDTtube').show();
     droppedFiledDTubePost = event.originalEvent.dataTransfer.files[0];
     $('.drop-area-dtube-msg-video').text(droppedFiledDTubePost.name);
     $('#uploadDTtube').show();
@@ -397,6 +400,8 @@ function openDTubeDialog()
   // We decided to launch automatically the upload of the snapshot because it's a small image
   $('.drop-area-dtube-snap').on('drop', function(event)
   {
+    isUploadedSnap=false;
+    toggleAddToPostEnableStatus(false);
     droppedSnapDTubePost = event.originalEvent.dataTransfer.files[0];
     $('.drop-area-dtube-msg-snap').text(droppedSnapDTubePost.name);
 
@@ -429,140 +434,6 @@ function openDTubeDialog()
       }
     });
   });
-  
-}
-
-// This function is used to track to progress of data processing
-// @parameter token : token used to identify an image processing
-function getProgressByToken(token)
-{
-  $.ajax({
-    type: "GET",
-    beforeSend: function(xhttp) {
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-    },
-    url: 'https://cluster.d.tube/getProgressByToken/' + token,
-    success: function(response) {
-      var ipfsAddSpriteProgressValue, spriteCreationProgressValue, ipfsAddSourceVideoProgressValue;
-      // Update all the progress bars
-      if(response.sprite.ipfsAddSprite.step === "Waiting")
-      {
-        ipfsAddSpriteProgressValue = 0.00;
-        $('.ipfsAddSpriteLabel').text('Waiting... Position in queue : ' + response.sprite.ipfsAddSprite.positionInQueue);
-      }
-      else if(response.sprite.ipfsAddSprite.step === "Init")
-      {
-        ipfsAddSpriteProgressValue = 0.00;
-        $('.ipfsAddSpriteLabel').text(response.sprite.ipfsAddSprite.progress);
-      }
-      else
-      {
-        ipfsAddSpriteProgressValue = (response.sprite.ipfsAddSprite.progress === null ? 0.00 : response.sprite.ipfsAddSprite.progress);
-        updateProgressBar($('.ipfsAddSprite-progress'), ipfsAddSpriteProgressValue);
-        if(ipfsAddSpriteProgressValue === "100.00%") $('.ipfsAddSpriteLabel').text('Finished');
-        else $('.ipfsAddSpriteLabel').text('Processing...'); 
-      }
-
-      if(response.ipfsAddSourceVideo.step === "Waiting")
-      {
-        ipfsAddSourceVideoProgressValue = 0.00;
-        $('.ipfsAddSourceVideoLabel').text('Waiting... Position in queue : ' + response.ipfsAddSourceVideo.positionInQueue);
-      }
-      else
-      {
-        ipfsAddSourceVideoProgressValue = (response.ipfsAddSourceVideo.progress === null ? 0.00 : response.ipfsAddSourceVideo.progress);
-        updateProgressBar($('.ipfsAddSourceVideo-progress'), ipfsAddSourceVideoProgressValue);
-        if(ipfsAddSourceVideoProgressValue === "100.00%") $('.ipfsAddSourceVideoLabel').text('Finished');
-        else $('.ipfsAddSourceVideoLabel').text('Processing...'); 
-      }
-
-      if(response.sprite.spriteCreation.step === "Waiting")
-      {
-        spriteCreationProgressValue = 0.00;
-        $('.spriteCreationLabel').text('Waiting... Position in queue : ' + response.sprite.spriteCreation.positionInQueue);
-      }
-      else
-      {
-        spriteCreationProgressValue = (response.sprite.spriteCreation.progress === null ? 0.00 : response.sprite.spriteCreation.progress);
-        updateProgressBar($('.spriteCreation-progress'), spriteCreationProgressValue);
-        if(spriteCreationProgressValue === "100.00%") $('.spriteCreationLabel').text('Finished');
-        else $('.spriteCreationLabel').text('Processing...'); 
-      }
-
-      // if treatment is finished get ready for posting on the blockchain
-      if(response.finished)
-      {
-        // saving hashs
-        spritehashDTube = response.sprite.ipfsAddSprite.hash;
-        encodedVideosDTube = response.encodedVideos;
-        videohashDTube = response.ipfsAddSourceVideo.hash;
-        prepareDtubePost();
-        isUploadedVideo=true;
-      }
-      else
-      {
-        // if not try again
-        setTimeout(function(){
-          getProgressByToken(token);
-        }, 2500);
-      }
-    },
-    error: function(msg) {
-      resolve(msg);
-    }
-  });
-}
-
-// Function used to track snapshot treatment progress
-function getProgressSnapByToken(token)
-{
-  $.ajax({
-    type: "GET",
-    beforeSend: function(xhttp) {
-      xhttp.setRequestHeader("Content-type", "application/json");
-      xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-    },
-    url: 'https://snap1.d.tube/getProgressByToken/' + token,
-    success: function(response) {
-      $('.uploadSnapshotLabel').text('Processing...');
-      // Update progressbar
-      if(response.ipfsAddSource.progress !== "100.00%" || response.ipfsAddOverlay.progress !== "100.00%")
-        setTimeout(function(){
-          getProgressSnapByToken(token);
-        },1000);
-      else
-      {
-        // If treatment is finish
-        updateProgressBar($('.uploadSnapshot-progress'), "100.00%");
-        // save hash
-        snaphashDTube = response.ipfsAddSource.hash;
-        overlayHashDTube = response.ipfsAddOverlay.hash;
-        isUploadedSnap = true;
-        $('.uploadSnapshotLabel').text('Finished');
-      }
-    },
-    error: function(msg) {
-      resolve(msg);
-    }
-  });
-}
-
-// Function used to update progress bar
-// @parameter progressbar : targeted progressbar
-// @parameter value : value of the progress
-function updateProgressBar(progressbar, value)
-{
-  progressbar.css("width", value);
-  progressbar.text(value);
-}
-
-// Function used to prepare dtube post
-function prepareDtubePost()
-{
-  // Show button add to post
-  $('#addToPost').show();
-  $('#uploadDTtube').hide();
 
   // Listener on add to post button
   $('#addToPost').click(function(){
@@ -658,6 +529,138 @@ function prepareDtubePost()
       $('#dtube-modal').hide();
     }
   });
+  
+}
+
+// This function is used to track to progress of data processing
+// @parameter token : token used to identify an image processing
+function getProgressByToken(token)
+{
+  $.ajax({
+    type: "GET",
+    beforeSend: function(xhttp) {
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+    },
+    url: 'https://cluster.d.tube/getProgressByToken/' + token,
+    success: function(response) {
+      var ipfsAddSpriteProgressValue, spriteCreationProgressValue, ipfsAddSourceVideoProgressValue;
+      // Update all the progress bars
+      if(response.sprite.ipfsAddSprite.step === "Waiting")
+      {
+        ipfsAddSpriteProgressValue = 0.00;
+        $('.ipfsAddSpriteLabel').text('Waiting... Position in queue : ' + response.sprite.ipfsAddSprite.positionInQueue);
+      }
+      else if(response.sprite.ipfsAddSprite.step === "Init")
+      {
+        ipfsAddSpriteProgressValue = 0.00;
+        $('.ipfsAddSpriteLabel').text(response.sprite.ipfsAddSprite.progress);
+      }
+      else
+      {
+        ipfsAddSpriteProgressValue = (response.sprite.ipfsAddSprite.progress === null ? 0.00 : response.sprite.ipfsAddSprite.progress);
+        updateProgressBar($('.ipfsAddSprite-progress'), ipfsAddSpriteProgressValue);
+        if(ipfsAddSpriteProgressValue === "100.00%") $('.ipfsAddSpriteLabel').text('Finished');
+        else $('.ipfsAddSpriteLabel').text('Processing...'); 
+      }
+
+      if(response.ipfsAddSourceVideo.step === "Waiting")
+      {
+        ipfsAddSourceVideoProgressValue = 0.00;
+        $('.ipfsAddSourceVideoLabel').text('Waiting... Position in queue : ' + response.ipfsAddSourceVideo.positionInQueue);
+      }
+      else
+      {
+        ipfsAddSourceVideoProgressValue = (response.ipfsAddSourceVideo.progress === null ? 0.00 : response.ipfsAddSourceVideo.progress);
+        updateProgressBar($('.ipfsAddSourceVideo-progress'), ipfsAddSourceVideoProgressValue);
+        if(ipfsAddSourceVideoProgressValue === "100.00%") $('.ipfsAddSourceVideoLabel').text('Finished');
+        else $('.ipfsAddSourceVideoLabel').text('Processing...'); 
+      }
+
+      if(response.sprite.spriteCreation.step === "Waiting")
+      {
+        spriteCreationProgressValue = 0.00;
+        $('.spriteCreationLabel').text('Waiting... Position in queue : ' + response.sprite.spriteCreation.positionInQueue);
+      }
+      else
+      {
+        spriteCreationProgressValue = (response.sprite.spriteCreation.progress === null ? 0.00 : response.sprite.spriteCreation.progress);
+        updateProgressBar($('.spriteCreation-progress'), spriteCreationProgressValue);
+        if(spriteCreationProgressValue === "100.00%") $('.spriteCreationLabel').text('Finished');
+        else $('.spriteCreationLabel').text('Processing...'); 
+      }
+
+      // if treatment is finished get ready for posting on the blockchain
+      if(response.finished)
+      {
+        // saving hashs
+        spritehashDTube = response.sprite.ipfsAddSprite.hash;
+        encodedVideosDTube = response.encodedVideos;
+        videohashDTube = response.ipfsAddSourceVideo.hash;
+        $('#uploadDTtube').hide();
+        isUploadedVideo=true;
+
+        if(isUploadedSnap)
+          toggleAddToPostEnableStatus(true);
+      }
+      else
+      {
+        // if not try again
+        setTimeout(function(){
+          getProgressByToken(token);
+        }, 2500);
+      }
+    },
+    error: function(msg) {
+      resolve(msg);
+    }
+  });
+}
+
+// Function used to track snapshot treatment progress
+function getProgressSnapByToken(token)
+{
+  $.ajax({
+    type: "GET",
+    beforeSend: function(xhttp) {
+      xhttp.setRequestHeader("Content-type", "application/json");
+      xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+    },
+    url: 'https://snap1.d.tube/getProgressByToken/' + token,
+    success: function(response) {
+      $('.uploadSnapshotLabel').text('Processing...');
+      // Update progressbar
+      if(response.ipfsAddSource.progress !== "100.00%" || response.ipfsAddOverlay.progress !== "100.00%")
+        setTimeout(function(){
+          getProgressSnapByToken(token);
+        },1000);
+      else
+      {
+        // If treatment is finish
+        updateProgressBar($('.uploadSnapshot-progress'), "100.00%");
+        // save hash
+        snaphashDTube = response.ipfsAddSource.hash;
+        overlayHashDTube = response.ipfsAddOverlay.hash;
+        isUploadedSnap = true;
+        $('.uploadSnapshotLabel').text('Finished');
+
+        if(isUploadedVideo)
+          toggleAddToPostEnableStatus(true);
+      }
+    },
+    error: function(msg) {
+      resolve(msg);
+    }
+  });
+}
+
+// Function used to update progress bar
+// @parameter progressbar : targeted progressbar
+// @parameter value : value of the progress
+function updateProgressBar(progressbar, value)
+{
+  progressbar.css("width", value);
+  progressbar.text(value);
 }
 
 // Function used to cancel the dtube post
@@ -698,6 +701,22 @@ function createPermlink(length)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
+}
+
+function toggleAddToPostEnableStatus(enabled)
+{
+  console.log("toggleAddToPostEnableStatus", enabled, $('#addToPost').eq(0));
+  if(enabled)
+  {
+    $('#addToPost').eq(0).prop('disabled', false);
+    $('#addToPost').eq(0).removeClass('button-steemit-disabled');
+  }
+  else
+  {
+    $('#addToPost').eq(0).prop('disabled', true);
+    $('#addToPost').eq(0).addClass('button-steemit-disabled');
+  }
+  
 }
 
 

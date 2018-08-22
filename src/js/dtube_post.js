@@ -194,7 +194,7 @@ function checkInputDTube()
     // Open modal
     openDTubeDialog();
   }
-  else if(isDTubePost)
+  else if(isDTubePost&&!$("input[name='category']").val().match(/^dtube /))
   {
     // if dtube is not present but was activated, cancel it
     cancelDTube();
@@ -634,7 +634,7 @@ function prepareDtubePost()
 function cancelDTube()
 {
   // Remove dtube elements and show initials one
-  $('input[name=category]')[0].value = "";
+  $('input[name=category]')[0].value = $('input[name=category]')[0].value.replace("dtube ", "");
   $(".benef").show();
   $(".post-clear-div").show();
   $("#post-dtube").remove();

@@ -468,7 +468,7 @@ function sendRequestAPICU(classificationParam, usernameParam, permlinkParam) {
             xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
         },
         dataType: "json",
-        url: 'https://multi.tube/s/api/classification-report/post',
+        url: 'https://steem-sincerity.dapptools.info/s/api/classification-report/post',
         data: JSON.stringify({
             "classified_account": usernameParam,
             "classification": classificationParam,

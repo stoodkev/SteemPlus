@@ -58,10 +58,22 @@ function createDropdownList() {
 
     // On click listener for clear button
     $('.clean-button-steemit').unbind('click').click(function() {
-        $('.ReplyEditor__title').value = '';
-        $('.vframe input').val('');
-        $('.vframe textarea').eq(0).val(' ');
-        $('.vframe textarea').eq(0).html(' ');
+        $('.vframe input').eq(0).val("");
+        $('.ReplyEditor__body textarea')[0].value = '';
+        $(' input[tabindex=3]').eq(0).val("");
+        var event = new Event('input', {
+        bubbles: true
+        });
+        $('.vframe input')[0].dispatchEvent(event);
+        $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+        $(' input[tabindex=3]')[0].dispatchEvent(event);
+
+        event = new Event('keyup', {
+        bubbles: true
+        });
+        $('.vframe input')[0].dispatchEvent(event);
+        $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+        $(' input[tabindex=3]')[0].dispatchEvent(event);
     });
 
     // On click listener for post button

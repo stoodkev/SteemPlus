@@ -516,6 +516,7 @@ function openDTubeDialog()
       footerSteemit = '\n\n<hr>';
       footerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
       footerSteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
+      footerSteemit += '<br>Posted with @steem-plus';
       
       $('.ReplyEditor__title').eq(0).val($('input[name=video-title-dtube]').eq(0).val());
       var text = headerSteemit.concat(bodySteemit);

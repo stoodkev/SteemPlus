@@ -449,6 +449,31 @@ chrome.storage.local.get(['tip_user', 'resteem_indicator', 'add_signature', 'aut
                                 select_reward_dropdown_enabled: true
                             }
                         });
+                        if (busy && feedp)
+                            chrome.runtime.sendMessage({
+                                token: token,
+                                to: 'feedp',
+                                order: 'click',
+                                data: {
+                                    steemit: steemit,
+                                    busy: busy,
+                                    feedp: {
+                                        weight: weight,
+                                        user: user,
+                                        resteem: resteem,
+                                        whitelist: whitelist,
+                                        blacklist: blacklist,
+                                        rep_feed: rep_feed,
+                                        rep_feed_check: rep_feed_check,
+                                        tag: tag,
+                                        list_tags: list_tags,
+                                        voted_check: voted_check,
+                                        sort: sort,
+                                        nb_posts: nb_posts,
+                                        classif: classif
+                                    }
+                                }
+                            });
                         urlOnline = window.location.href;
                     }
                     if (oneup && utopian)

@@ -236,7 +236,6 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward) {
 
             url: 'https://steemplus-api.herokuapp.com/api/get-rewards/' + usernamePageReward,
             success: function(result) {
-                console.log(result);
                 downloadingDataRewardTab = false;
                 initListReward(result, rewardsTab, type, subtype);
             },
@@ -281,7 +280,6 @@ function createRowsRewardsTab(rewardsTab, type, subtype) {
     var totalSP = 0;
 
     rewardsListLocal.forEach(function(item) {
-        console.log(item);
         if (item.type === subtype + '_' + type) {
             hasDataToDisplay = true;
             var rewardText = [];

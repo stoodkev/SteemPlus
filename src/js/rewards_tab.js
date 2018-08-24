@@ -236,6 +236,7 @@ function displayRewards(rewardsTab, type, subtype, usernamePageReward) {
 
             url: 'https://steemplus-api.herokuapp.com/api/get-rewards/' + usernamePageReward,
             success: function(result) {
+                console.log(result);
                 downloadingDataRewardTab = false;
                 initListReward(result, rewardsTab, type, subtype);
             },
@@ -280,7 +281,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype) {
     var totalSP = 0;
 
     rewardsListLocal.forEach(function(item) {
-
+        console.log(item);
         if (item.type === subtype + '_' + type) {
             hasDataToDisplay = true;
             var rewardText = [];
@@ -290,15 +291,35 @@ function createRowsRewardsTab(rewardsTab, type, subtype) {
                 beneficiariesList.forEach(function(bene) {
                     beneficiariesTotalWeight += bene["weight"] / 10000;
                 });
+                
+                if(item.max_accepted_payout === 0)
+                {
+                    rewardText.push("Declined Payout");
+                }
+                else if(parseInt(item.percent_steem_dollars === 10000))
+                {
+                    // 50% SP / 50% SBD
+                    var pendingAuthorSDB = parseFloat(item.pending_payout_value) * 0.75 * (1 - beneficiariesTotalWeight) * 0.5;
+                    var pendingAuthorSP = pendingAuthorSDB / base;
 
-                var pendingAuthorSDB = parseFloat(item.pending_payout_value) * 0.75 * (1 - beneficiariesTotalWeight) * 0.5;
-                var pendingAuthorSP = pendingAuthorSDB / base;
+                    rewardText.push(pendingAuthorSDB.toFixed(3) + ' SBD');
+                    rewardText.push(pendingAuthorSP.toFixed(3) + ' SP');
 
-                rewardText.push(pendingAuthorSDB.toFixed(3) + ' SBD');
-                rewardText.push(pendingAuthorSP.toFixed(3) + ' SP');
+                    totalSBD += pendingAuthorSDB;
+                    totalSP += pendingAuthorSP;
+                }
+                else
+                {
+                    // 100 % SP
+                    var pendingAuthorSDB = parseFloat(item.pending_payout_value) * 0.75 * (1 - beneficiariesTotalWeight);
+                    var pendingAuthorSP = pendingAuthorSDB / base;
 
-                totalSBD += pendingAuthorSDB;
-                totalSP += pendingAuthorSP;
+                    rewardText.push(pendingAuthorSP.toFixed(3) + ' SP');
+
+                    totalSP += pendingAuthorSP;
+                }
+
+                
             } else if (item.reward === -1) {
                 if (item.sbd_payout > 0) {
                     rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');

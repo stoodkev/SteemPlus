@@ -27,7 +27,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Function used to check url and start feature
 // No parameters
 function startTipUser() {
-    console.log("startTipUser");
     if (isSteemit) {
         // Check url of the page. Need to be on a post to start the function
         if (regexPostSteemit.test(window.location.href) && retryUserTip < 20) {
@@ -45,14 +44,11 @@ function startTipUser() {
     } else if (isBusy) {
         // Check url of the page. Need to be on a post to start the function
         if (regexPostBusy.test(window.location.href) && !window.location.href.includes('/transfers') && retryUserTip < 20) {
-            console.log('ici');
             if ($('.StoryFull__header__text__date').length === 0) {
                 // Looking for the right html element. If can't find it retry later. Maximum 20 seconds
-                console.log('retryUserTip', retryUserTip);
                 retryUserTip++;
                 setTimeout(startTipUser, 1000);
             } else {
-                console.log('start feature');
                 // Start feature
                 var userAuthorPopupInfoTip = $('.StoryFull__header__text__date ').parent().find('span.username')[0].innerHTML;
                 createTipButton($('.StoryFull__header__text__date '), userAuthorPopupInfoTip);
@@ -83,7 +79,6 @@ function startTipUser() {
 
 // Function used to create the tip button
 function createTipButton(element, username) {
-    console.log('createTipButton');
     if (username === myUsernameTip) return;
     // Create div
     var tipDiv = $('<div class="input-group div-hidden div-tip" style="margin-bottom: 5px;" id="' + username + '">\
@@ -114,8 +109,6 @@ function createTipButton(element, username) {
         });
     } else if (isBusy) 
     {
-        console.log(element);
-        console.log(tipDiv);
         if (element.hasClass('Comment__date')) {
             $(element).after(tipDiv);
         } else

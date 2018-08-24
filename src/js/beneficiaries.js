@@ -36,8 +36,6 @@ function startBeneficiaries() {
     // Needs to be on post page
     if (regexCreatePostSteemit.test(window.location.href) || regexCreatePostBusy.test(window.location.href))
         addBeneficiariesButton();
-    else
-        console.log('Non');
 }
 
 // Function used to check URL when message onclick is triggered

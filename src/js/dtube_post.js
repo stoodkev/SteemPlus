@@ -262,9 +262,9 @@ function openDTubeDialog()
     <div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;">
     <button class="close-button" type="button"><span aria-hidden="true" class="">×</span></button>
     <div>
-    <div><h3>Post on Dtube</h3></div>
+    <div><h3>Post on DTube</h3></div>
     <div id= "disclaimer_dtube">You are about to post using DTube. Upload your video using the following dropdown area.
-    <br>If you change your mind and want to create a non-Dtube post, simply remove the <b>dtube</b> tag.
+    <br>If you change your mind and want to create a non-DTube post, simply remove the <b>dtube</b> tag.
     </div>
     <label class="label-title dropAreaVideo">Video : </label>
     <div class="drop-area-dtube drop-area-dtube-video">

@@ -93,6 +93,9 @@ function openAuthorPopupInfo(element) {
         });
     }
 
+    // Add QR Code for steemwallet integration
+    $('.author-popup-message').append('<img align="right" src="https://api.qrserver.com/v1/create-qr-code/?data=' + userAuthorPopupInfo + '&size=80x80" alt="QR Code">');
+
     // Get followers from steemSQL
     currentRequest = $.ajax({
         type: "GET",
@@ -113,11 +116,11 @@ function openAuthorPopupInfo(element) {
 
             // if author is following you
             if (isFollowing !== undefined) {
-                $('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br>');
+                $('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br clear="all">');
             }
             // If not
             else {
-                $('.author-popup-message').append('<span class="author-popup-witness">Not following you</span><br>');
+                $('.author-popup-message').append('<span class="author-popup-witness">Not following you</span><br clear="all">');
             }
         },
         error: function(msg) {

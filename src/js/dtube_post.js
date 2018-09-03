@@ -270,6 +270,8 @@ function openDTubeDialog()
     <div class="drop-area-dtube drop-area-dtube-video">
     <span class="drop-area-dtube-msg drop-area-dtube-msg-video">Drop a file here</span>
     </div>
+    <input id="chooseVideoInput" type="file" style="display: none" />
+    <button class="button-steemit" id="chooseVideo">Choose Video</button>
     <button class="button-steemit" id="uploadDTtube">Upload</button>
 
     <div class="progress-div-video">
@@ -302,6 +304,8 @@ function openDTubeDialog()
     <div class="drop-area-dtube drop-area-dtube-snap">
     <span class="drop-area-dtube-msg drop-area-dtube-msg-snap">Drop a file here</span>
     </div>
+    <input id="chooseSnapInput" type="file" style="display: none" />
+    <button class="button-steemit" id="chooseSnap">Choose Snap</button>
 
     <div class="progress-div-snap">
     <label class="label-title uploadSnapshot">Upload Snapshot : </label>
@@ -335,6 +339,30 @@ function openDTubeDialog()
   $('body').append(modalDTube);
 
   toggleAddToPostEnableStatus(false);
+
+  $("#chooseVideo").on("click", function() {
+    $("#chooseVideoInput").trigger("click");
+    $("#chooseVideoInput").unbind('change').change(function(event){
+      $('#uploadDTtube').show();
+      droppedFiledDTubePost = event.target.files[0];
+      $('.drop-area-dtube-msg-video').text(droppedFiledDTubePost.name);
+      $('#uploadDTtube').show();
+    });
+  });
+
+  $("#chooseSnap").on("click", function() {
+    $("#chooseSnapInput").trigger("click");
+    $("#chooseSnapInput").unbind('change').change(function(){
+        isUploadedSnap=false;
+        toggleAddToPostEnableStatus(false);
+        droppedSnapDTubePost = event.target.files[0];
+        $('.drop-area-dtube-msg-snap').text(droppedSnapDTubePost.name);
+
+        var dataSnapDTubePost = new FormData();
+        dataSnapDTubePost.append(droppedSnapDTubePost.name , droppedSnapDTubePost);
+        uploadSnapFile(dataSnapDTubePost);
+    });
+  });
 
   // Listener on close modal button
   $('.close-button').click(function(){
@@ -413,32 +441,7 @@ function openDTubeDialog()
 
     var dataSnapDTubePost = new FormData();
     dataSnapDTubePost.append(droppedSnapDTubePost.name , droppedSnapDTubePost);
-
-    // Launch request to dtube snapshot upload system
-    $.ajax({
-      url: 'https://snap1.d.tube/uploadImage',
-      type: "POST",
-      data: dataSnapDTubePost,
-      xhr: function () {
-        var xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener("progress", function (evt) {
-          if (evt.lengthComputable) {
-          }
-        }, false);
-        return xhr;
-      },
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function (result) {
-        if (typeof result === 'string')
-          result = JSON.parse(result)
-        $('.progress-div-snap').show();
-        getProgressSnapByToken(result.token);
-      },
-      error: function (error) {
-      }
-    });
+    uploadSnapFile(dataSnapDTubePost);
   });
 
   // Listener on add to post button
@@ -540,6 +543,35 @@ function openDTubeDialog()
     }
   });
   
+}
+
+function uploadSnapFile(dataSnapDTubePost)
+{
+  // Launch request to dtube snapshot upload system
+  $.ajax({
+    url: 'https://snap1.d.tube/uploadImage',
+    type: "POST",
+    data: dataSnapDTubePost,
+    xhr: function () {
+      var xhr = new window.XMLHttpRequest();
+      xhr.upload.addEventListener("progress", function (evt) {
+        if (evt.lengthComputable) {
+        }
+      }, false);
+      return xhr;
+    },
+    cache: false,
+    contentType: false,
+    processData: false,
+    success: function (result) {
+      if (typeof result === 'string')
+        result = JSON.parse(result)
+      $('.progress-div-snap').show();
+      getProgressSnapByToken(result.token);
+    },
+    error: function (error) {
+    }
+  });
 }
 
 // This function is used to track to progress of data processing

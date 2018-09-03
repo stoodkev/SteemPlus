@@ -28,6 +28,10 @@ table.sppHistoryTable > tr:nth-child(even) {
     color: grey;
 }
 
+.description-how-to-earn.description-link:hover{
+	text-decoration: underline;
+}
+
 .title-how-to-earn {
 	font-weight: bold;
 }

@@ -149,7 +149,7 @@ function displaySteemplusPoints(userDetails)
                         <p class="caption-how-to-earn">${way.title}</p>
                         <p>
                             <label class="title-how-to-earn">How to get it ?</label>
-                            <a href="${way.description}" target="_blank"><label class="description-how-to-earn">Click here to get more details by reading the post.</label></a><br>
+                            <a href="/${way.description}" target="_blank"><label class="description-how-to-earn description-link">Click here to get more details by reading the post.</label></a><br>
                             <label class="title-how-to-earn">How much ?</label>
                             <label class="description-how-to-earn">${way.formula}</label>
                         </p>
@@ -167,7 +167,6 @@ function displaySteemplusPoints(userDetails)
             modal.find('.indexHowToEarnItem > a').click(function()
             {
                 howToEarnData = howToEarnSlider.data('unslider');
-                console.log(`${$(this).attr('name')}`);
                 howToEarnData.animate(parseInt(`${$(this).attr('name')}`), 'next');
             });
             

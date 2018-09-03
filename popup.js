@@ -11,7 +11,7 @@ var isConnectedToSteemConnect = null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['vote_weight_slider_busy', 'tip_user', 'utopian', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
+chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_user', 'utopian', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
     var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined || items.tokenExpire < Date.now()) ? {
         connect: false
     } : {
@@ -105,6 +105,7 @@ chrome.storage.local.get(['vote_weight_slider_busy', 'tip_user', 'utopian', 'res
     tip_user = items.tip_user == undefined ? 'show' : items.tip_user;
     vote_weight_slider_busy = items.vote_weight_slider_busy == undefined ? 'show' : items.vote_weight_slider_busy;
     utopian = items.utopian == undefined ? 'show' : items.utopian;
+    steemplus_points = items.steemplus_points == undefined ? 'show' : items.steemplus_points;
 
     // Steemit more info
     steemit_more_info = items.steemit_more_info == undefined ? 'show' : items.steemit_more_info;
@@ -154,6 +155,7 @@ chrome.storage.local.get(['vote_weight_slider_busy', 'tip_user', 'utopian', 'res
     $('input[name=add_signature]').prop('checked', add_signature == 'show');
     $('input[name=resteem_indicator]').prop('checked', resteem_indicator == 'show');
     $('input[name=tip_user]').prop('checked', tip_user == 'show');
+    $('input[name=steemplus_points]').prop('checked', steemplus_points == 'show');
 
     // Steemit more info
     $('input[name=steemit_more_info]').prop('checked', steemit_more_info == 'show');
@@ -502,6 +504,12 @@ $(document).on("change", "input[name=tip_user]", function() {
 $(document).on("change", "input[name=vote_weight_slider_busy]", function() {
     chrome.storage.local.set({
         vote_weight_slider_busy: $("input[name=vote_weight_slider_busy]").prop('checked') ? 'show' : 'hide'
+    });
+});
+
+$(document).on("change", "input[name=steemplus_points]", function() {
+    chrome.storage.local.set({
+        steemplus_points: $("input[name=steemplus_points]").prop('checked') ? 'show' : 'hide'
     });
 });
 

@@ -1,0 +1,19 @@
+table.sppHistoryTable {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.sppHistoryTable > tr > td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+table.sppHistoryTable > tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.sppHistoryModal {
+	min-width: 70%;
+}

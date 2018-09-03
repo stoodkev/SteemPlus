@@ -1,0 +1,67 @@
+.drop-area-dtube {
+  background-color: white;
+  outline: 2px dashed black;
+  outline-offset: -10px;
+  width: 100%;
+  height: 12rem;
+  background: #f7f7f7;
+  text-align: center;
+  line-height: 12rem;
+}
+
+.drop-area-dtube-msg
+{
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+}
+
+.progressbar {
+	border-radius: 7px;
+    background: #46A0F5;
+    text-align: center;
+    color: white;
+    padding-left: 2px; 
+}
+
+.progress-container {
+	background: #e8e8e8;
+    border-radius: 7px;
+}
+
+.label-progress
+{
+	margin-bottom: 10px;
+}
+
+.label-title
+{
+	font-weight: bold;
+    font-size: 1rem;
+}
+
+.video-description-dtube 
+{
+	max-height: 200px;
+	min-height: 200px !important;
+}
+
+.button-steemit-disabled
+{
+	cursor: not-allowed;
+    background: #e2e2e2;
+}
+
+.button-steemit-disabled:hover
+{
+	cursor: not-allowed;
+	color: rgb(31, 191, 143) !important;
+    margin-top: 1em;
+    font-weight: bold;
+    background: #e2e2e2;
+    padding: 1em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(31, 191, 143);
+    border-image: initial;
+}

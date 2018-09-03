@@ -8,6 +8,15 @@ var retrySteemplusPoint = 0;
 var isSteemit = null;
 var isBusy = null;
 
+var wayList = [
+    {id: "0", title: "Boost a post with Minnowbooster using Steemplus", description: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of money you sent to MinnowBooster (example : You send 0.20SBD or Steem, you receive 0.20 SPP)"},
+    {id: "1", title: "Boost a post with PostPromoter using Steemplus", description: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of money you sent to PostPromoter (example : You send 0.20SBD or Steem, you receive 0.20 SPP)"},
+    {id: "2", title: "Create a new post with Beneficiaries using Steemplus", description: "@steem-plus/steemplus-1-7-share-your-rewards-with-your-friends-beneficiaries-ideal-for-the-steemfest", "url": "src/img/howtoearnspp/beneficiaries.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SBD)"},
+    {id: "3", title: "Create a post with Donation for Steemplus", description: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SBD)"},
+    {id: "4", title: "Create a new DTube post using Steemplus", description: "", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SBD)"},
+    {id: "5", title: "Create a new Utopian.io post using Steemplus", description: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SBD)"}
+]
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'steemplus_points' && request.order === 'start' && token_steemplus_point == null) {
         token_steemplus_point = request.token;
@@ -124,56 +133,44 @@ function displaySteemplusPoints(userDetails)
                     <div id="modalTitle" class="row">
                         <h3 class="column">How to earn Steemplus Point</h3>
                     </div>
+                    <ol>
+                    </ol>
+                    <br><br>
                     <div class="howToEarnSlider">
                         <ul>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Boost a post with Minnowbooster using Steemplus</p>
-                                    <p><a href="http://artsaintjames.com" title="KJ James">artsaintjames.com</a></p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/extras.png")}" alt="Pen and ink painting">
-                            </li>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Boost a post with Postpromoter using Steemplus</p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
-                            </li>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Create a new post with Beneficiaries using Steemplus</p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
-                            </li>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Create a new Utopian.io post using Steemplus</p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
-                            </li>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Create a new DTube post using Steemplus</p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
-                            </li>
-                            <li>
-                                <div class="slide-text">
-                                    <p>Create a post with Donation for Steemplus</p>
-                                </div>
-                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
-                            </li>
                         </ul>
                     </div>
                 </div>
             </div>`);
 
-            modal.find('.howToEarnSlider').unslider({
+            wayList.forEach((way) => {
+                modal.find('.howToEarnSlider > ul').append(`<li>
+                    <div class="slide-text">
+                        <p class="caption-how-to-earn">${way.title}</p>
+                        <p>
+                            <label class="title-how-to-earn">How to get it ?</label>
+                            <a href="${way.description}" target="_blank"><label class="description-how-to-earn">Click here to get more details by reading the post.</label></a><br>
+                            <label class="title-how-to-earn">How much ?</label>
+                            <label class="description-how-to-earn">${way.formula}</label>
+                        </p>
+                    </div>
+                    <img src="${chrome.extension.getURL(way.url)}" alt="${way.title}">
+                </li>`);
+                modal.find('ol').append(`<li class="indexHowToEarnItem"><a name="${way.id}">${way.title}</a></li>`);
+            });
+
+            var howToEarnSlider = modal.find('.howToEarnSlider').unslider({
                 keys: true,
-                autoplay: true,
-                nav: false,
                 arrows: false
             });
+
+            modal.find('.indexHowToEarnItem > a').click(function()
+            {
+                howToEarnData = howToEarnSlider.data('unslider');
+                console.log(`${$(this).attr('name')}`);
+                howToEarnData.animate(parseInt(`${$(this).attr('name')}`), 'next');
+            });
+            
 
             modal.find('.close-button').on('click', function() {
                 modal.remove();

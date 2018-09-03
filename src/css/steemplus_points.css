@@ -17,3 +17,17 @@ table.sppHistoryTable > tr:nth-child(even) {
 .sppHistoryModal {
 	min-width: 70%;
 }
+
+.caption-how-to-earn {
+	text-align: center;
+	font-weight: bold;
+}
+
+.description-how-to-earn {
+	text-transform: none;
+    color: grey;
+}
+
+.title-how-to-earn {
+	font-weight: bold;
+}

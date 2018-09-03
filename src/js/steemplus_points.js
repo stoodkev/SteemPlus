@@ -124,8 +124,56 @@ function displaySteemplusPoints(userDetails)
                     <div id="modalTitle" class="row">
                         <h3 class="column">How to earn Steemplus Point</h3>
                     </div>
+                    <div class="howToEarnSlider">
+                        <ul>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Boost a post with Minnowbooster using Steemplus</p>
+                                    <p><a href="http://artsaintjames.com" title="KJ James">artsaintjames.com</a></p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/extras.png")}" alt="Pen and ink painting">
+                            </li>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Boost a post with Postpromoter using Steemplus</p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
+                            </li>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Create a new post with Beneficiaries using Steemplus</p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
+                            </li>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Create a new Utopian.io post using Steemplus</p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
+                            </li>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Create a new DTube post using Steemplus</p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
+                            </li>
+                            <li>
+                                <div class="slide-text">
+                                    <p>Create a post with Donation for Steemplus</p>
+                                </div>
+                                <img src="${chrome.extension.getURL("src/img/onboarding/plus.png")}" alt="Pen and ink painting">
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-              </div>`);
+            </div>`);
+
+            modal.find('.howToEarnSlider').unslider({
+                keys: true,
+                autoplay: true,
+                nav: false,
+                arrows: false
+            });
 
             modal.find('.close-button').on('click', function() {
                 modal.remove();

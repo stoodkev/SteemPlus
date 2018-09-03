@@ -83,6 +83,11 @@ Decimals added to user reputation. On mouse over, displays a steemian current Vo
 ![user Information](https://steemitimages.com/0x0/https://steemitimages.com/DQmbZx6GJNCKLoDgmnKBEgcihm8Y1W1BU5SLx7R8vn58vr4/image.png)
 [More details](https://steemit.com/@steem-plus/steemplus-2-5-integration-of-steemit-more-info-features)
 
+## [Author Popup](https://steemit.com/utopian-io/@helo/steemplus-adds-qrcode-to-author-popup-for-easy-steemwallet-integration)
+Includes author's name, username and about information.  You can follow/unfollow mute/unmute and tip.  Shows if the author follows you, if they vote for you as witness and the QR Code of their username for easy integration with steemwallet.
+
+![helo-qrcode.gif](https://cdn.steemitimages.com/DQmYAGd5AzvtBxTupz65wvhVX5C2W1gBTbosDkj1j7tmdcx/helo-qrcode.gif)
+
 ## [Wallet filters](https://steemit.com/@stoodkev/steemplus-wallet-filter)
 Allow filtering of your transactions, hide spam, research by user, minimum amount up to the last 500 results.
 ![Wallet filters](hhttps://steemitimages.com/0x0/https://steemitimages.com/DQmNLhrEJ3a5zawBkvcKAgaKmV15ygaRvxMNQZ3PyzpGfKq/refreshwallet.gif)

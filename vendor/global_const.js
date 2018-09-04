@@ -9,7 +9,7 @@ const regexFeedPlusBusy = /^https:\/\/busy\.org\/(created[a-zA-Z0-9\-\.\/]*|hot[
 const regexPostSteemit = /^https:\/\/steemit\.com\/[a-z0-9\-]+\/@[\.\-a-zA-Z0-9]*\/.*$/;
 const regexPostSteemitParameters = /^https:\/\/steemit\.com\/[a-z0-9\-]+\/@([\.\-a-zA-Z0-9]*)\/(.*)$/;
 const regexCreatePostSteemit = /^https:\/\/steemit\.com\/submit\.html$/;
-const regexCreatePostBusy = /^https:\/\/busy\.org[\/editor.*]?$/;
+const regexCreatePostBusy = /^https:\/\/busy\.org[\/editor]+$/;
 
 // Warning! To use this one you'll have to test the wallet too cause the format is the same
 const regexPostBusy = /^https:\/\/busy\.org\/@[a-zA-Z0-9\.\-]*\/.*$/;

@@ -19,6 +19,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         token_fp = request.token;
         FeedPlus(request.data.steemit, request.data.busy, request.data.feedp);
     }
+    if(request.to === 'feedp' && request.order === 'click' && token_fp === request.token)
+    {
+        FeedPlus(request.data.steemit, request.data.busy, request.data.feedp);
+    }
 });
 
 function FeedPlus(isSteemit, isBusy, feedp) {
@@ -61,6 +65,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
         }
 
         function createBusyFeedPlusButton() {
+            if($('#FeedPlus').length > 0) return;
             console.log('createBusyFeedPlusButton');
             feed_url = $('.Topnav__item-user a')[0].href + '/feed';
             console.log(feed_url);

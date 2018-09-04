@@ -51,7 +51,7 @@ function startPostVoteList() {
             var votersButton = $(this);
             setTimeout(function() {
                 if (votersButton.hasClass('show')) {
-                    var ul = votersButton.parent().find('ul.VerticalMenu');
+                    var ul = votersButton.parent().find('.Voting__voters_list > ul.VerticalMenu');
                     addPostVoteList(ul);
                 }
             }, 100);

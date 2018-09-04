@@ -56,11 +56,11 @@ function makePostBottomBarFloating() {
                 });
 
                 var footer = $('<div class="smi-post-footer">\
-            <div class="smi-post-footer-wrapper-1">\
-              <div class="smi-post-footer-wrapper-2">\
-              </div>\
-            </div>\
-          </div>');
+                    <div class="smi-post-footer-wrapper-1">\
+                      <div class="smi-post-footer-wrapper-2">\
+                      </div>\
+                    </div>\
+                </div>');
                 var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
 
                 tags.replaceWith(footer);
@@ -98,11 +98,11 @@ function makePostBottomBarFloating() {
                 $('.ant-modal-body').css('margin-bottom', '7.5rem');
 
                 var footer = $('<div class="smi-post-footer">\
-            <div class="smi-post-footer-wrapper-1">\
-              <div class="smi-post-footer-wrapper-2"  style="width:44em;">\
-              </div>\
-            </div>\
-          </div>');
+                    <div class="smi-post-footer-wrapper-1">\
+                      <div class="smi-post-footer-wrapper-2"  style="width:44em;">\
+                      </div>\
+                    </div>\
+                </div>');
                 var footerWrapper = footer.find('.smi-post-footer-wrapper-2');
 
                 postFooter.replaceWith(footer);
@@ -114,6 +114,16 @@ function makePostBottomBarFloating() {
                 }
 
                 update();
+                $('.smi-post-floating-footer').children().find('.Buttons__post-menu').click(function(){
+                    setTimeout(function(){
+                        $('.ant-popover-placement-bottomRight').addClass('ant-popover-placement-topRight');
+                        $('.ant-popover-placement-topRight').removeClass('ant-popover-placement-bottomRight');
+                        var heightPopup = $('.ant-popover-placement-topRight')[0].clientHeight;
+                        var offset = $('.smi-post-floating-footer').children().find('.Buttons__post-menu')[0].offsetHeight;
+                        var bottomScreen = $('body')[0].clientHeight + $(window).scrollTop() 
+                        $('.ant-popover-placement-topRight').css('top',(bottomScreen-(offset+heightPopup))+'px');
+                    },1000);
+                });
             } else {
                 setTimeout(function() {
                     makePostBottomBarFloating();

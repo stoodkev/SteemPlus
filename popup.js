@@ -44,11 +44,17 @@ chrome.storage.local.get(['dtube_post','vote_weight_slider_busy', 'tip_user', 'u
                 $('.need-online').removeAttr('title');
                 $('.need-online').removeClass('not-allowed');
                 $('.info_user_connected').css('display', 'block');
+                $('.disabled-feature > label > input').prop('disabled', true);
+                $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+                $('.disabled-feature').prop('checked', false);
             } else {
                 $('#onboarding').css('display', 'block');
                 $('#before_connect').css('display', 'none');
                 $('#connected').css('display', 'none');
                 $('#loginButton').css('display', 'none');
+                $('.disabled-feature > label > input').prop('disabled', true);
+                $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+                $('.disabled-feature').prop('checked', false);
 
             }
             $('.id_user').html('@' + me);
@@ -58,6 +64,7 @@ chrome.storage.local.get(['dtube_post','vote_weight_slider_busy', 'tip_user', 'u
                 steem.formatter.reputation(acc.reputation) +
                 '');
             getVotingPower();
+
         });
     }
     // Not connected
@@ -73,6 +80,9 @@ chrome.storage.local.get(['dtube_post','vote_weight_slider_busy', 'tip_user', 'u
             $('.need-online > label > input').prop('disabled', true);
             $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
             $('.need-online').prop('checked', false);
+            $('.disabled-feature > label > input').prop('disabled', true);
+            $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+            $('.disabled-feature').prop('checked', false);
         } else {
             $('#onboarding').css('display', 'block');
             $('#before_connect').css('display', 'none');
@@ -80,6 +90,9 @@ chrome.storage.local.get(['dtube_post','vote_weight_slider_busy', 'tip_user', 'u
             $('#loginButton').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
+            $('.disabled-feature > label > input').prop('disabled', true);
+            $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+            $('.disabled-feature').prop('checked', false);
         }
     }
 
@@ -133,12 +146,10 @@ chrome.storage.local.get(['dtube_post','vote_weight_slider_busy', 'tip_user', 'u
         $('input[name=ben]').prop('checked', ben == 'show');
         $('input[name=utopian_post]').prop('checked', utopian_post == 'show');
         $('input[name=dtube_post]').prop('checked', dtube_post == 'show');
-        $('input[name=oneup]').prop('checked', oneup == 'show');
+        if(!$('input[name=oneup]').parent().parent().hasClass('disabled-feature'))$('input[name=oneup]').prop('checked', oneup == 'show');
         $('input[name=feedp]').prop('checked', feedp == 'show');
         $('input[name=vote_weight_slider_busy]').prop('checked', vote_weight_slider_busy == 'show');
     }
-
-
 
     $('option[name=badges][value=' + badge + ']').prop('selected', true);
     $('input[name=del]').prop('checked', del == 'show');
@@ -297,8 +308,6 @@ $("#myRange").blur(function() {
         weight: document.getElementById('weight').value
     });
 });
-$("")
-
 
 $(document).on("change", "input[name=oneup]", function() {
     chrome.storage.local.set({

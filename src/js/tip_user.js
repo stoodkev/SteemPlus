@@ -107,14 +107,15 @@ function createTipButton(element, username) {
                 $(tipDiv).hide('slow');
             }
         });
-    } else if (isBusy) {
+    } else if (isBusy) 
+    {
         if (element.hasClass('Comment__date')) {
             $(element).after(tipDiv);
         } else
             $(element).parent().parent().after(tipDiv);
 
         $(tipDiv).hide();
-        if ($("#hide-show-tip-btn").length == 0)
+        if ($(element).parent().find("#hide-show-tip-btn").length == 0)
             $(element).before('<label id="hide-show-tip-btn" class="Topic tip-btn-busy" title="Send a tip">Tip</label>');
         // Click listener on tip button
         $('.tip-btn-busy').unbind('click').click(function() {

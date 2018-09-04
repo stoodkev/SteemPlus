@@ -54,10 +54,6 @@
     display: inline-block;
 }
 
-.inline_button button {
-    .UserWallet__buysp button hollow
-}
-
 .benef-busy {
     margin-bottom: 1em;
 }

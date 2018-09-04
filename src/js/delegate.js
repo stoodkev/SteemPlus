@@ -49,6 +49,7 @@ function startDelegation(isSteemit, isBusy, globalP)
   {
     if (isSteemit)
     {
+      console.log('started delegate');
       wallet_elt_d = ".FoundationDropdownMenu__label";
       classButton = "'UserWallet__buysp button hollow delegate";
 
@@ -129,19 +130,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
 
       if (isSteemit)
       {
-        if(usernamePageDelegation === myAccountDelegation.name)
-        {
-          $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
-        }
-        else
-        {
-          if($('.vests-added').length > 0)
-            $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
-          else
-            setTimeout(function(){
-              createButtonDelegation(isSteemit, busy, globalP);
-            },250);
-        }
+        $('.UserWallet__balance ')[1].childNodes[1].append(delegate_div);
         $('.delegate').parent().css('float', 'right');
         $('.delegate').parent().parent().addClass('delegationDiv');
       }
@@ -298,14 +287,7 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     {
       if($('.delegate').length > 0)
       {
-        if(myAccountDelegation.name === usernamePageDelegation)
-        {
-          $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
-        }
-        else
-        {
-          $('.delegate').parent().parent().find('div').eq(1).attr('id', 'popoverDelegation');
-        }
+        $('.delegate').parent().parent().find('div > span').eq(0).attr('id', 'popoverDelegation');
         $('#popoverDelegation').css('float', 'right');
       }
       else

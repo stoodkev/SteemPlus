@@ -69,7 +69,6 @@ function canStartSteemplusPoint()
 
 function downloadDataSteemplusPoints(usernameSPP)
 {
-    console.log('downloadDataSteemplusPoints');
     $.ajax({
         type: "GET",
         beforeSend: function(xhttp) {
@@ -102,7 +101,7 @@ function displaySteemplusPoints(userDetails)
                 <div class="column small-12 medium-4 nbPointsDiv">
                     <li class="DropdownMenu Wallet_dropdown dropdownSPPLink">
                         <a>
-                            <span>${(userDetails !== undefined ? userDetails.nbPoints : 0)} SPP
+                            <span>${(userDetails !== undefined ? userDetails.nbPoints.toFixed(2) : 0)} SPP
                                 <span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span>
                             </span>
                         </a>
@@ -189,7 +188,7 @@ function displaySteemplusPoints(userDetails)
                 <div id="modalTitle" class="row">
                     <h3 class="column">History of Steemplus Point</h3>
                 </div>
-                <h4 class="column">Total Steemplus Point : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints)} SPP</h4>
+                <h4 class="column">Total Steemplus Point : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
                 <div class="sppHistoryDetail">
                 </div>
             </div>
@@ -239,7 +238,7 @@ function displaySteemplusPoints(userDetails)
                     <span>Steemplus Points</span>
                 </div>
                 <div class="UserWalletSummary__value">
-                    <span><span>${(userDetails !== undefined ? userDetails.nbPoints : 0)}</span> SPP</span>
+                    <span><span>${(userDetails !== undefined ? userDetails.nbPoints.toFixed(2) : 0)}</span> SPP</span>
                 </div>
             </div>`);
 

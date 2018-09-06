@@ -26,6 +26,14 @@ var typeFiltersListWH = [{
         text: 'Claimed Rewards'
     },
     {
+        type: 'power_up',
+        text: 'Power Up'
+    },
+    {
+        type: 'power_down',
+        text: 'Power Down'
+    },
+    {
         type: 'hide_spam',
         text: 'Hide Spam'
     }
@@ -37,6 +45,8 @@ var filtersStateWH = {
         'hide_spam': false,
         'transfer_to': true,
         'transfer_from': true,
+        'power_up': true,
+        'power_down': true,
         'claim': true
     },
     search: '',
@@ -170,6 +180,7 @@ function startWalletHistory() {
                 },
                 url: 'https://steemplus-api.herokuapp.com/api/get-wallet-content/' + usernameWalletHistory,
                 success: function(result) {
+                    console.log(result);
                     dataWalletHistory = result;
                     if ($('.smi-transaction-table-filters').length === 0)
                         displayWalletHistory();
@@ -197,9 +208,23 @@ function displayWalletHistory() {
         var trWH = $('<tr class="Trans-wallet-filter wh-type-' + itemWalletHistory.type + '" id="item' + indexWH + '"></tr>');
         var tdTimestampWH = $('<td><span title="' + new Date(itemWalletHistory.timestamp) + '">' + moment(new Date(itemWalletHistory.timestamp)).fromNow() + '</span></td>');
         trWH.append(tdTimestampWH);
-
+            
         var textAmoutWH = '';
-        if (itemWalletHistory.type === 'claim') {
+        if (itemWalletHistory.type === 'start_power_down')
+        {
+            var amountPowerDown = getSPFromVestingSharesWH(itemWalletHistory.reward_vests);
+            textAmoutWH = 'Started power down of ' + amountPowerDown + ' SP';
+        }
+        else if (itemWalletHistory.type === 'stop_power_down') 
+        {
+            textAmoutWH = 'Power down canceled';
+        }
+        else if (itemWalletHistory.type === 'power_up') 
+        {
+            textAmoutWH = 'Powered up ' + itemWalletHistory.amount + ' ' + itemWalletHistory.amount_symbol;
+        }
+        else if (itemWalletHistory.type === 'claim') 
+        {
             var amountSP = getSPFromVestingSharesWH(itemWalletHistory.reward_vests);
 
             textAmoutWH = '';
@@ -207,7 +232,8 @@ function displayWalletHistory() {
             if (amountSP > 0) textAmoutWH = textAmoutWH + (textAmoutWH === '' ? '' : ' and ') + amountSP + ' SP' + (itemWalletHistory.reward_steem > 0 ? ' and ' : '');
             if (itemWalletHistory.reward_steem > 0) textAmoutWH = textAmoutWH = textAmoutWH + itemWalletHistory.reward_steem + " STEEM";
             textAmoutWH = 'Claim Rewards : ' + textAmoutWH
-        } else if (itemWalletHistory.type === 'transfer_to')
+        } 
+        else if (itemWalletHistory.type === 'transfer_to')
             textAmoutWH = itemWalletHistory.amount + ' ' + itemWalletHistory.amount_symbol + ' received from <a href="/@' + itemWalletHistory.to_from + '">@' + itemWalletHistory.to_from + '</a>';
         else if (itemWalletHistory.type === 'transfer_from')
             textAmoutWH = itemWalletHistory.amount + ' ' + itemWalletHistory.amount_symbol + ' sent to <a href="/@' + itemWalletHistory.to_from + '">@' + itemWalletHistory.to_from + '</a>';
@@ -478,13 +504,21 @@ function updateTableWH() {
                     return;
                 }
             }
+
+            // If type is power_down (start or stop)
+            if(filterTypeWH === 'power_down' && !filterTypesWH[filterTypeWH] && (row.type === 'start_power_down' || row.type === 'stop_power_down'))
+            {
+                $('#item' + index).hide();
+                return;  
+            }
         }
 
         // Filter on values
         var valueLine = {};
         valueLine['SP'] = (row.reward_vests === 0 ? -1 : parseFloat(getSPFromVestingSharesWH(row.reward_vests)));
 
-        if (row.type === 'transfer_from' || row.type === 'transfer_to') {
+        if (row.type === 'transfer_from' || row.type === 'transfer_to' || row.type === 'power_up') 
+        {
             if (row.amount_symbol === 'SBD') {
                 valueLine['SBD'] = row.amount;
                 valueLine['STEEM'] = -1;
@@ -492,14 +526,22 @@ function updateTableWH() {
                 valueLine['STEEM'] = row.amount;
                 valueLine['SBD'] = -1;
             }
-        } else {
+        }
+        else 
+        {
             valueLine['STEEM'] = (row.reward_steem === 0 ? -1 : row.reward_steem);
             valueLine['SBD'] = (row.reward_sbd === 0 ? -1 : row.reward_sbd);
         }
         var minAssets = filtersStateWH.minAsset;
 
         // Display the line if one of the value respect the filter
-        if (valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP')) {
+        if(row.type === 'start_power_down')
+        {
+            console.log(valueLine, row);
+            console.log(row.type === "start_power_down", valueLine['STEEM'], minAmountForAssetWH('STEEM'), valueLine['SBD'], minAmountForAssetWH('SBD'), valueLine['SP'], minAmountForAssetWH('SP'));
+            console.log(row.type !== "stop_power_down", valueLine['STEEM'] < minAmountForAssetWH('STEEM'), valueLine['SBD'] < minAmountForAssetWH('SBD'), valueLine['SP'] < minAmountForAssetWH('SP'));
+        }
+        if (row.type !== "stop_power_down" && valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP')) {
             $('#item' + index).hide();
             return;
         }
@@ -528,6 +570,8 @@ function isSteemSQLSynchronized() {
                             if (date_diff_indays(items.wallet_date_remember, Date.now()) >= 1) {
                                 displayMessageSynchronisation(nbBlockDifference);
                             }
+                            else
+                                displayMessageSynchronisation(nbBlockDifference);
                         } else {
                             if (items.wallet_choice === 'steemplus-wallet')
                                 startWalletHistory();

@@ -11,7 +11,7 @@ var isConnectedToSteemConnect = null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_user', 'utopian', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
+chrome.storage.local.get(['steemplus_points', 'dtube_post','vote_weight_slider_busy', 'tip_user', 'utopian_post', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
     var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined || items.tokenExpire < Date.now()) ? {
         connect: false
     } : {
@@ -44,11 +44,17 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
                 $('.need-online').removeAttr('title');
                 $('.need-online').removeClass('not-allowed');
                 $('.info_user_connected').css('display', 'block');
+                $('.disabled-feature > label > input').prop('disabled', true);
+                $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+                $('.disabled-feature').prop('checked', false);
             } else {
                 $('#onboarding').css('display', 'block');
                 $('#before_connect').css('display', 'none');
                 $('#connected').css('display', 'none');
                 $('#loginButton').css('display', 'none');
+                $('.disabled-feature > label > input').prop('disabled', true);
+                $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+                $('.disabled-feature').prop('checked', false);
 
             }
             $('.id_user').html('@' + me);
@@ -58,6 +64,7 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
                 steem.formatter.reputation(acc.reputation) +
                 '');
             getVotingPower();
+
         });
     }
     // Not connected
@@ -73,6 +80,9 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
             $('.need-online > label > input').prop('disabled', true);
             $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
             $('.need-online').prop('checked', false);
+            $('.disabled-feature > label > input').prop('disabled', true);
+            $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+            $('.disabled-feature').prop('checked', false);
         } else {
             $('#onboarding').css('display', 'block');
             $('#before_connect').css('display', 'none');
@@ -80,6 +90,9 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
             $('#loginButton').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
+            $('.disabled-feature > label > input').prop('disabled', true);
+            $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
+            $('.disabled-feature').prop('checked', false);
         }
     }
 
@@ -104,8 +117,9 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
     resteem_indicator = items.resteem_indicator == undefined ? 'show' : items.resteem_indicator;
     tip_user = items.tip_user == undefined ? 'show' : items.tip_user;
     vote_weight_slider_busy = items.vote_weight_slider_busy == undefined ? 'show' : items.vote_weight_slider_busy;
-    utopian = items.utopian == undefined ? 'show' : items.utopian;
     steemplus_points = items.steemplus_points == undefined ? 'show' : items.steemplus_points;
+    utopian_post = items.utopian_post == undefined ? 'show' : items.utopian_post;
+    dtube_post = items.dtube_post == undefined ? 'show' : items.dtube_post;
 
     // Steemit more info
     steemit_more_info = items.steemit_more_info == undefined ? 'show' : items.steemit_more_info;
@@ -131,13 +145,12 @@ chrome.storage.local.get(['steemplus_points','vote_weight_slider_busy', 'tip_use
 
     if (steemConnect.connect) {
         $('input[name=ben]').prop('checked', ben == 'show');
-        $('input[name=utopian]').prop('checked', utopian == 'show');
-        $('input[name=oneup]').prop('checked', oneup == 'show');
+        $('input[name=utopian_post]').prop('checked', utopian_post == 'show');
+        $('input[name=dtube_post]').prop('checked', dtube_post == 'show');
+        if(!$('input[name=oneup]').parent().parent().hasClass('disabled-feature'))$('input[name=oneup]').prop('checked', oneup == 'show');
         $('input[name=feedp]').prop('checked', feedp == 'show');
         $('input[name=vote_weight_slider_busy]').prop('checked', vote_weight_slider_busy == 'show');
     }
-
-
 
     $('option[name=badges][value=' + badge + ']').prop('selected', true);
     $('input[name=del]').prop('checked', del == 'show');
@@ -297,8 +310,6 @@ $("#myRange").blur(function() {
         weight: document.getElementById('weight').value
     });
 });
-$("")
-
 
 $(document).on("change", "input[name=oneup]", function() {
     chrome.storage.local.set({
@@ -311,9 +322,9 @@ $(document).on("change", "input[name=ben]", function() {
     });
 });
 
-$(document).on("change", "input[name=utopian]", function() {
+$(document).on("change", "input[name=utopian_post]", function() {
     chrome.storage.local.set({
-        utopian: $("input[name=utopian]").prop('checked') ? 'show' : 'hide'
+        utopian_post: $("input[name=utopian_post]").prop('checked') ? 'show' : 'hide'
     });
 });
 
@@ -500,7 +511,6 @@ $(document).on("change", "input[name=tip_user]", function() {
     });
 });
 
-
 $(document).on("change", "input[name=vote_weight_slider_busy]", function() {
     chrome.storage.local.set({
         vote_weight_slider_busy: $("input[name=vote_weight_slider_busy]").prop('checked') ? 'show' : 'hide'
@@ -510,6 +520,12 @@ $(document).on("change", "input[name=vote_weight_slider_busy]", function() {
 $(document).on("change", "input[name=steemplus_points]", function() {
     chrome.storage.local.set({
         steemplus_points: $("input[name=steemplus_points]").prop('checked') ? 'show' : 'hide'
+    });
+});
+
+$(document).on("change", "input[name=dtube_post]", function() {
+    chrome.storage.local.set({
+        dtube_post: $("input[name=dtube_post]").prop('checked') ? 'show' : 'hide'
     });
 });
 

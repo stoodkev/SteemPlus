@@ -112,6 +112,9 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>
             `);
+        if(myUsernameSPP !== window.SteemPlus.Utils.getPageAccountName())
+            divSPP.find('.howToEarn').remove();
+
         $('.UserWallet__balance').eq($('UserWallet__balance ').length-1).before(divSPP);
         $('.dropdownSPPLink').click(function(){
             if($(this).hasClass('show'))
@@ -207,7 +210,6 @@ function displaySteemplusPoints(userDetails)
                 </table>`);
                 var ptsDetails = userDetails.pointsDetails;
                 ptsDetails.sort(function(a, b) {return new Date(b.timestamp) - new Date(a.timestamp);});
-                console.log(ptsDetails);
                 ptsDetails.forEach((pointsDetail) => {
                     modal.find('.sppHistoryTable').append(`
                     <tr>

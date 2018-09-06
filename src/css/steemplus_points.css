@@ -1,0 +1,37 @@
+table.sppHistoryTable {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table.sppHistoryTable > tr > td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+table.sppHistoryTable > tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.sppHistoryModal {
+	min-width: 70%;
+}
+
+.caption-how-to-earn {
+	text-align: center;
+	font-weight: bold;
+}
+
+.description-how-to-earn {
+	text-transform: none;
+    color: grey;
+}
+
+.description-how-to-earn.description-link:hover{
+	text-decoration: underline;
+}
+
+.title-how-to-earn {
+	font-weight: bold;
+}

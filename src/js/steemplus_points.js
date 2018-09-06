@@ -77,7 +77,6 @@ function downloadDataSteemplusPoints(usernameSPP)
         },
         url: `https://steemplus-api.herokuapp.com/api/get-steemplus-points/${usernameSPP}`,
         success: function(response) {
-            console.log(response[0]);
             displaySteemplusPoints(response[0]);
         },
         error: function(msg) {
@@ -206,8 +205,10 @@ function displaySteemplusPoints(userDetails)
                         <th>Permlink</th>
                     </tr>
                 </table>`);
-                
-                userDetails.pointsDetails.forEach((pointsDetail) => {
+                var ptsDetails = userDetails.pointsDetails;
+                ptsDetails.sort(function(a, b) {return new Date(b.timestamp) - new Date(a.timestamp);});
+                console.log(ptsDetails);
+                ptsDetails.forEach((pointsDetail) => {
                     modal.find('.sppHistoryTable').append(`
                     <tr>
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
@@ -216,7 +217,6 @@ function displaySteemplusPoints(userDetails)
                         <td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>
                     </tr>`);
                 });
-
             }
 
             modal.find('.close-button').on('click', function() {

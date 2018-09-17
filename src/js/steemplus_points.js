@@ -94,7 +94,7 @@ function displaySteemplusPoints(userDetails)
                 <div class="column small-12 medium-8">
                     Steemplus Points
                     <div class="FormattedHTMLMessage secondary">
-                        This is the amount of Steemplus Point you earned. Click the amount of steemplus points to see the detail.
+                        SPP allow you to receive a share of @steem-plus vote and are redeemable for premium features.
                     </div>
                 </div>
                 <div class="column small-12 medium-4 nbPointsDiv">
@@ -106,7 +106,7 @@ function displaySteemplusPoints(userDetails)
                         </a>
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
                             <li class="howToEarn"><a>How to earn SPP</a></li>
-                            <li class="sppHistory"><a>Steemplus Point history</a></li>
+                            <li class="sppHistory"><a>Steemplus Point History</a></li>
                         </ul>
                     </li>
                 </div>

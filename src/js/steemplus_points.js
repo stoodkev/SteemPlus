@@ -9,12 +9,12 @@ var isSteemit = null;
 var isBusy = null;
 
 var wayList = [
-    {id: "0", title: "Boost a post with Minnowbooster using Steemplus", description: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of money you sent to MinnowBooster (example : You send 0.20SBD or Steem, you receive 0.20 SPP)"},
-    {id: "1", title: "Boost a post with PostPromoter using Steemplus", description: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of money you sent to PostPromoter (example : You send 0.20SBD or Steem, you receive 0.20 SPP)"},
-    {id: "2", title: "Create a new post with Beneficiaries using Steemplus", description: "@steem-plus/steemplus-1-7-share-your-rewards-with-your-friends-beneficiaries-ideal-for-the-steemfest", "url": "src/img/howtoearnspp/beneficiaries.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SPP)"},
-    {id: "3", title: "Create a post with Donation for Steemplus", description: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SPP)"},
-    {id: "4", title: "Create a new DTube post using Steemplus", description: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SPP)"},
-    {id: "5", title: "Create a new Utopian.io post using Steemplus", description: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : @steemplus-pay receive 5 SBD, you receive 500 SPP)"}
+    {id: "0", title: "Boost a post with Minnowbooster using Steemplus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on MinnowBooster.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of SBD sent to MinnowBooster (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
+    {id: "1", title: "Boost a post with PostPromoter using Steemplus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on PostPromoter.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of SBD sent to PostPromoter (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
+    {id: "2", title: "Create a new post with Beneficiaries using Steemplus",description:"Use the \'Add Beneficiaries\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-1-7-share-your-rewards-with-your-friends-beneficiaries-ideal-for-the-steemfest", "url": "src/img/howtoearnspp/beneficiaries.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "3", title: "Create a post with Donation for Steemplus",description:"Use the \'Post and Support\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "4", title: "Create a new DTube post using Steemplus",description:"Post to DTube by putting dtube followed by a space in the tag bar, then following the instructions in the DTube popup (Login to SteemConnect required).", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "5", title: "Create a new Utopian post using Steemplus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"}
 ]
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -41,7 +41,7 @@ function canStartSteemplusPoint()
     if(regexWalletSteemit.test(window.location.href))
     {
         if($('.Trans').length > 0)
-          downloadDataSteemplusPoints(window.SteemPlus.Utils.getPageAccountName());   
+          downloadDataSteemplusPoints(window.SteemPlus.Utils.getPageAccountName());
         else
             setTimeout(function(){
                 retrySteemplusPoint++;
@@ -105,7 +105,7 @@ function displaySteemplusPoints(userDetails)
                             </span>
                         </a>
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
-                            <li class="howToEarn"><a>How to earn SPP</a></li>
+                            <li class="howToEarn"><a>How to earn SPP ?</a></li>
                             <li class="sppHistory"><a>Steemplus Point History</a></li>
                         </ul>
                     </li>
@@ -131,11 +131,10 @@ function displaySteemplusPoints(userDetails)
                         <span aria-hidden="true" class="">×</span>
                     </button>
                     <div id="modalTitle" class="row">
-                        <h3 class="column">How to earn Steemplus Point</h3>
+                        <h3 class="column">How to earn Steemplus Points?</h3>
                     </div>
                     <ol>
                     </ol>
-                    <br><br>
                     <div class="howToEarnSlider">
                         <ul>
                         </ul>
@@ -149,7 +148,8 @@ function displaySteemplusPoints(userDetails)
                         <p class="caption-how-to-earn">${way.title}</p>
                         <p>
                             <label class="title-how-to-earn">How to get it ?</label>
-                            <a href="/${way.description}" target="_blank"><label class="description-how-to-earn description-link">Click here to get more details by reading the post.</label></a><br>
+                            <p>${way.description}</p>
+                            <a href="/${way.description_post}" target="_blank"><label class="description-how-to-earn description-link">Read this post for more information.</label></a><br>
                             <label class="title-how-to-earn">How much ?</label>
                             <label class="description-how-to-earn">${way.formula}</label>
                         </p>
@@ -169,7 +169,7 @@ function displaySteemplusPoints(userDetails)
                 howToEarnData = howToEarnSlider.data('unslider');
                 howToEarnData.animate(parseInt(`${$(this).attr('name')}`), 'next');
             });
-            
+
 
             modal.find('.close-button').on('click', function() {
                 modal.remove();

@@ -21,6 +21,7 @@ table.sppHistoryTable > tr:nth-child(even) {
 .caption-how-to-earn {
 	text-align: center;
 	font-weight: bold;
+  font-size: 20px;
 }
 
 .description-how-to-earn {
@@ -34,4 +35,17 @@ table.sppHistoryTable > tr:nth-child(even) {
 
 .title-how-to-earn {
 	font-weight: bold;
+}
+
+#modalTitle {
+  margin-bottom: 20px;
+}
+
+.unslider {
+    margin-top: 40px;
+}
+
+::-webkit-scrollbar {
+    width: 0px;  /* remove scrollbar space */
+    background: transparent;  /* optional: just make scrollbar invisible */
 }

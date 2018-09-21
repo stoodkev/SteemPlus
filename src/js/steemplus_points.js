@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function canStartSteemplusPoint()
 {
     if(retrySteemplusPoint >= 20) return;
-
+    console.log('ici');
     if(regexWalletSteemit.test(window.location.href))
     {
         if($('.Trans').length > 0)
@@ -220,7 +220,7 @@ function displaySteemplusPoints(userDetails)
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
                         <td>${pointsDetail.typeTransaction.name}</td>
                         <td>${pointsDetail.nbPoints.toFixed(2)}</td>
-                        ${(pointsDetail.url === undefined ? `<td>${pointsDetail.permlink}</td>` : `<td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
+                        ${(pointsDetail.url === undefined ? `<td><a href="${pointsDetail.permlink}">${pointsDetail.permlink}</a></td>` : `<td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
                     </tr>`);
                 });
             }
@@ -248,7 +248,7 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>`);
 
-        $('.icon-people_fill').parent().after(divSPP);
+        // $('.icon-people_fill').parent().after(divSPP);
 
 
     }

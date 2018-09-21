@@ -3,6 +3,7 @@ var token_steemplus_point = null;
 var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 
 var myUsernameSPP = null;
+var usernameSPP = null;
 var retrySteemplusPoint = 0;
 
 var isSteemit = null;
@@ -54,8 +55,10 @@ function canStartSteemplusPoint()
         {
             if(window.location.href.includes('/wallet'))
                 downloadDataSteemplusPoints(myUsernameSPP);
-            else
-                downloadDataSteemplusPoints(window.location.href.split('@')[1].split('/')[0]);
+            else {
+                usernameSPP = window.location.href.split('@')[1].split('/')[0];
+                downloadDataSteemplusPoints(usernameSPP);
+            }
         }
         else
             setTimeout(function(){
@@ -211,12 +214,13 @@ function displaySteemplusPoints(userDetails)
                 var ptsDetails = userDetails.pointsDetails;
                 ptsDetails.sort(function(a, b) {return new Date(b.timestamp) - new Date(a.timestamp);});
                 ptsDetails.forEach((pointsDetail) => {
+                    console.log(pointsDetail);
                     modal.find('.sppHistoryTable').append(`
                     <tr>
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
                         <td>${pointsDetail.typeTransaction.name}</td>
                         <td>${pointsDetail.nbPoints.toFixed(2)}</td>
-                        <td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>
+                        ${(pointsDetail.url === undefined ? `<td>${pointsDetail.permlink}</td>` : `<td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
                     </tr>`);
                 });
             }

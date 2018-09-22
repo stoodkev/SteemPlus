@@ -38,7 +38,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function canStartSteemplusPoint()
 {
     if(retrySteemplusPoint >= 20) return;
-    console.log('ici');
     if(regexWalletSteemit.test(window.location.href))
     {
         if($('.Trans').length > 0)
@@ -47,7 +46,7 @@ function canStartSteemplusPoint()
             setTimeout(function(){
                 retrySteemplusPoint++;
                 canStartSteemplusPoint();
-            })
+            },100);
     }
     else if(regexWalletBusy.test(window.location.href))
     {

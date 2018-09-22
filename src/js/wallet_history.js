@@ -180,7 +180,7 @@ function startWalletHistory() {
                 },
                 url: 'https://steemplus-api.herokuapp.com/api/get-wallet-content/' + usernameWalletHistory,
                 success: function(result) {
-                    console.log(result);
+                    //console.log(result);
                     dataWalletHistory = result;
                     if ($('.smi-transaction-table-filters').length === 0)
                         displayWalletHistory();
@@ -208,22 +208,22 @@ function displayWalletHistory() {
         var trWH = $('<tr class="Trans-wallet-filter wh-type-' + itemWalletHistory.type + '" id="item' + indexWH + '"></tr>');
         var tdTimestampWH = $('<td><span title="' + new Date(itemWalletHistory.timestamp) + '">' + moment(new Date(itemWalletHistory.timestamp)).fromNow() + '</span></td>');
         trWH.append(tdTimestampWH);
-            
+
         var textAmoutWH = '';
         if (itemWalletHistory.type === 'start_power_down')
         {
             var amountPowerDown = getSPFromVestingSharesWH(itemWalletHistory.reward_vests);
             textAmoutWH = 'Started power down of ' + amountPowerDown + ' SP';
         }
-        else if (itemWalletHistory.type === 'stop_power_down') 
+        else if (itemWalletHistory.type === 'stop_power_down')
         {
             textAmoutWH = 'Power down canceled';
         }
-        else if (itemWalletHistory.type === 'power_up') 
+        else if (itemWalletHistory.type === 'power_up')
         {
             textAmoutWH = 'Powered up ' + itemWalletHistory.amount + ' ' + itemWalletHistory.amount_symbol;
         }
-        else if (itemWalletHistory.type === 'claim') 
+        else if (itemWalletHistory.type === 'claim')
         {
             var amountSP = getSPFromVestingSharesWH(itemWalletHistory.reward_vests);
 
@@ -232,7 +232,7 @@ function displayWalletHistory() {
             if (amountSP > 0) textAmoutWH = textAmoutWH + (textAmoutWH === '' ? '' : ' and ') + amountSP + ' SP' + (itemWalletHistory.reward_steem > 0 ? ' and ' : '');
             if (itemWalletHistory.reward_steem > 0) textAmoutWH = textAmoutWH = textAmoutWH + itemWalletHistory.reward_steem + " STEEM";
             textAmoutWH = 'Claim Rewards : ' + textAmoutWH
-        } 
+        }
         else if (itemWalletHistory.type === 'transfer_to')
             textAmoutWH = itemWalletHistory.amount + ' ' + itemWalletHistory.amount_symbol + ' received from <a href="/@' + itemWalletHistory.to_from + '">@' + itemWalletHistory.to_from + '</a>';
         else if (itemWalletHistory.type === 'transfer_from')
@@ -509,7 +509,7 @@ function updateTableWH() {
             if(filterTypeWH === 'power_down' && !filterTypesWH[filterTypeWH] && (row.type === 'start_power_down' || row.type === 'stop_power_down'))
             {
                 $('#item' + index).hide();
-                return;  
+                return;
             }
         }
 
@@ -517,7 +517,7 @@ function updateTableWH() {
         var valueLine = {};
         valueLine['SP'] = (row.reward_vests === 0 ? -1 : parseFloat(getSPFromVestingSharesWH(row.reward_vests)));
 
-        if (row.type === 'transfer_from' || row.type === 'transfer_to' || row.type === 'power_up') 
+        if (row.type === 'transfer_from' || row.type === 'transfer_to' || row.type === 'power_up')
         {
             if (row.amount_symbol === 'SBD') {
                 valueLine['SBD'] = row.amount;
@@ -527,7 +527,7 @@ function updateTableWH() {
                 valueLine['SBD'] = -1;
             }
         }
-        else 
+        else
         {
             valueLine['STEEM'] = (row.reward_steem === 0 ? -1 : row.reward_steem);
             valueLine['SBD'] = (row.reward_sbd === 0 ? -1 : row.reward_sbd);
@@ -537,9 +537,9 @@ function updateTableWH() {
         // Display the line if one of the value respect the filter
         if(row.type === 'start_power_down')
         {
-            console.log(valueLine, row);
+          /*  console.log(valueLine, row);
             console.log(row.type === "start_power_down", valueLine['STEEM'], minAmountForAssetWH('STEEM'), valueLine['SBD'], minAmountForAssetWH('SBD'), valueLine['SP'], minAmountForAssetWH('SP'));
-            console.log(row.type !== "stop_power_down", valueLine['STEEM'] < minAmountForAssetWH('STEEM'), valueLine['SBD'] < minAmountForAssetWH('SBD'), valueLine['SP'] < minAmountForAssetWH('SP'));
+            console.log(row.type !== "stop_power_down", valueLine['STEEM'] < minAmountForAssetWH('STEEM'), valueLine['SBD'] < minAmountForAssetWH('SBD'), valueLine['SP'] < minAmountForAssetWH('SP'));*/
         }
         if (row.type !== "stop_power_down" && valueLine['STEEM'] < minAmountForAssetWH('STEEM') && valueLine['SBD'] < minAmountForAssetWH('SBD') && valueLine['SP'] < minAmountForAssetWH('SP')) {
             $('#item' + index).hide();

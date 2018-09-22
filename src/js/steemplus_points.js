@@ -3,6 +3,7 @@ var token_steemplus_point = null;
 var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 
 var myUsernameSPP = null;
+var usernameSPP = null;
 var retrySteemplusPoint = 0;
 
 var isSteemit = null;
@@ -37,7 +38,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 function canStartSteemplusPoint()
 {
     if(retrySteemplusPoint >= 20) return;
-
+    console.log('ici');
     if(regexWalletSteemit.test(window.location.href))
     {
         if($('.Trans').length > 0)
@@ -54,8 +55,10 @@ function canStartSteemplusPoint()
         {
             if(window.location.href.includes('/wallet'))
                 downloadDataSteemplusPoints(myUsernameSPP);
-            else
-                downloadDataSteemplusPoints(window.location.href.split('@')[1].split('/')[0]);
+            else {
+                usernameSPP = window.location.href.split('@')[1].split('/')[0];
+                downloadDataSteemplusPoints(usernameSPP);
+            }
         }
         else
             setTimeout(function(){
@@ -94,7 +97,7 @@ function displaySteemplusPoints(userDetails)
                 <div class="column small-12 medium-8">
                     Steemplus Points
                     <div class="FormattedHTMLMessage secondary">
-                        This is the amount of Steemplus Point you earned. Click the amount of steemplus points to see the detail.
+                        SPP allow you to receive a share of @steem-plus vote and are redeemable for premium features.
                     </div>
                 </div>
                 <div class="column small-12 medium-4 nbPointsDiv">
@@ -105,8 +108,8 @@ function displaySteemplusPoints(userDetails)
                             </span>
                         </a>
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
-                            <li class="howToEarn"><a>How to earn SPP?</a></li>
-                            <li class="sppHistory"><a>Steemplus Point history</a></li>
+                            <li class="howToEarn"><a>How to earn SPP ?</a></li>
+                            <li class="sppHistory"><a>Steemplus Point History</a></li>
                         </ul>
                     </li>
                 </div>
@@ -211,12 +214,13 @@ function displaySteemplusPoints(userDetails)
                 var ptsDetails = userDetails.pointsDetails;
                 ptsDetails.sort(function(a, b) {return new Date(b.timestamp) - new Date(a.timestamp);});
                 ptsDetails.forEach((pointsDetail) => {
+                    console.log(pointsDetail);
                     modal.find('.sppHistoryTable').append(`
                     <tr>
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
                         <td>${pointsDetail.typeTransaction.name}</td>
                         <td>${pointsDetail.nbPoints.toFixed(2)}</td>
-                        <td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>
+                        ${(pointsDetail.url === undefined ? `<td><a href="${pointsDetail.permlink}">${pointsDetail.permlink}</a></td>` : `<td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
                     </tr>`);
                 });
             }
@@ -244,7 +248,7 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>`);
 
-        $('.icon-people_fill').parent().after(divSPP);
+        // $('.icon-people_fill').parent().after(divSPP);
 
 
     }

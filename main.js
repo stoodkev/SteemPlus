@@ -1462,7 +1462,7 @@ function checkLastPost(last_post_url, account) {
                 var hasChosenAsProxy = account.proxy === 'stoodkev';
 
                 toastr.info('Thanks for using SteemPlus!<br />' +
-                    'We just released a new post that you might be interested about:<br /><br /> ' + result[0].title +
+                    'We just released a new post that you might find interesting:<br /><br /> ' + result[0].title +
                     '<br /><br />' +
                     ((hasVotedWitness || hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
                       You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />') +

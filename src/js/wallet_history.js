@@ -592,7 +592,7 @@ function getLastBlockID() {
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
             },
-            url: 'http://steemplus-api.herokuapp.com/api/get-last-block-id',
+            url: 'https://steemplus-api.herokuapp.com/api/get-last-block-id',
             success: function(response) {
                 resolve(response[0]['block_num']);
             },

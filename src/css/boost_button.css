@@ -65,3 +65,12 @@
 #postPromoterInformation strong {
     width: 100%;
 }
+
+
+.nightmode .modal-content-busy, .nightmode .select-busy, .nightmode input {
+    background: #191e23;
+}
+
+.nightmode .amount-error > small {
+    color: #f2f2f2;
+}

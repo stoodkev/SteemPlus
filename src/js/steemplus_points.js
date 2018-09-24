@@ -108,7 +108,7 @@ function displaySteemplusPoints(userDetails)
                         </a>
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
                             <li class="howToEarn"><a>How to earn SPP ?</a></li>
-                            <li class="sppHistory"><a>Steemplus Point History</a></li>
+                            <li class="sppHistory"><a>Steemplus Points History</a></li>
                         </ul>
                     </li>
                 </div>
@@ -190,7 +190,7 @@ function displaySteemplusPoints(userDetails)
                     <span aria-hidden="true" class="">×</span>
                 </button>
                 <div id="modalTitle" class="row">
-                    <h3 class="column">History of Steemplus Point</h3>
+                    <h3 class="column">Steemplus Points History</h3>
                 </div>
                 <h4 class="column">Total Steemplus Point : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
                 <div class="sppHistoryDetail">

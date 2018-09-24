@@ -207,7 +207,7 @@ function createGifPicker(textarea) {
 
     pickerContainer.find('.query').keyup(function(e) {
         e.preventDefault();
-        if (evt.keyCode != 13) {
+        if (e.keyCode != 13) {
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = null;

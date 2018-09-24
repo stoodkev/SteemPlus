@@ -1268,6 +1268,13 @@ form.vframe2 {
     background-color: #1C252B;
 }
 
+.nightmode .smi-post-footer.smi-post-floating-footer .smi-post-footer-wrapper-2,
+.smi-post-footer-wrapper-2.smi-post-floating-footer-on-body {
+    background-color: #191e23;
+}
+
+
+
 
 /* Blog Histogram */
 

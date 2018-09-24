@@ -363,19 +363,19 @@ li.big-view .PostSummary__footer {
 }
 
 .spammer_classif:hover {
-    color: #d82727;
+    color: #d82727 !important;
 }
 
 .bot_classif:hover {
-    color: #ea9041;
+    color: #ea9041 !important;
 }
 
 .human_classif:hover {
-    color: #42bb8b;
+    color: #42bb8b !important;
 }
 
 .pending_classif:hover {
-    color: #a8b2c1;
+    color: #a8b2c1 !important;
 }
 
 .validate-fd-busy {
@@ -388,6 +388,7 @@ li.big-view .PostSummary__footer {
     border: 1px solid #2088ff;
     height: 2em;
     color: black;
+    width: 100%;
 }
 
 .filters-busy {
@@ -481,4 +482,12 @@ li.big-view .PostSummary__footer {
     padding: 0.5rem;
     border: 1px solid #e9e7e7;
     border-radius: 4px;
+}
+
+.nightmode .busy-filters-container, .nightmode .input-settings-fp {
+    background: #191e23;
+}
+
+.nightmode .Topics__title.title-busy, .nightmode .input-settings-fp, .nightmode .filter_content label {
+    color: #f2f2f2;
 }

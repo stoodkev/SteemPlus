@@ -22,13 +22,14 @@ chrome.storage.local.get(['steemplus_points', 'dtube_post','vote_weight_slider_b
     isConnectedToSteemConnect = steemConnect.connect;
     // Connected
     if (steemConnect.connect === true) {
-        sc2.init({
+        api=sc2.Initialize({
+            baseURL:"https://steemconnect.com",
             app: 'steem-plus',
             callbackURL: 'https://steemit.com/@stoodkev',
             accessToken: steemConnect.sessionToken,
             scope: ['vote', 'comment', 'comment_options, custom_json']
         });
-        sc2.me().then((mee) => {
+        api.me().then((mee) => {
 
 
             me = mee.name;
@@ -693,7 +694,7 @@ function Upvote() {
     }, function(tabs) {
         tab = tabs[0].url;
         if (tab.split('@')[tab.split('@').length - 1].split('/')[0] !== '' && tab.split('@')[tab.split('@').length - 1].split('/')[1] !== '')
-            sc2.vote(
+            api.vote(
                 me, // Voter
                 tab.split('@')[tab.split('@').length - 1].split('/')[0], // Author
                 tab.split('@')[tab.split('@').length - 1].split('/')[1], // Permlink

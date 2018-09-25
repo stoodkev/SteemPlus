@@ -134,6 +134,12 @@ function FeedPlus(isSteemit, isBusy, feedp) {
         app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
 
         function GetFeed(author, perm) {
+          console.log({
+              limit: LIMIT_PER_CALL,
+              tag: user_fp,
+              start_author: author,
+              start_permlink: perm
+          });
             steem.api.getDiscussionsByFeed({
                 limit: LIMIT_PER_CALL,
                 tag: user_fp,
@@ -143,7 +149,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
                 if (err) console.log(err);
                 feed_calls = feed_calls + 1;
-
+                console.log(result);
                 result.forEach(function(elt, i, array) {
                     if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
@@ -485,7 +491,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             var elt = filtered_list[this.id];
             var that = this;
             if (elt.voted) {
-                sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function(err, res) {
+                api.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function(err, res) {
                     if (err) console.log(err);
                     if (res) console.log(res);
 
@@ -497,7 +503,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                 });
             } else {
                 {
-                    sc2.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function(err, res) {
+                    api.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function(err, res) {
                         if (err) console.log(err);
                         if (res) console.log(res);
                         if (res !== null) {

@@ -9,6 +9,7 @@ const DEFAULT_FEED_SIZE = 3;
 var urlOffline = window.location.href;
 var urlOnline = window.location.href;
 var user = null;
+let api=null;
 
 var offlineModeRetryCount = 0;
 
@@ -207,7 +208,7 @@ chrome.storage.local.get(['steemplus_points', 'dtube_post' ,'utopian_post' ,'tip
     console.log('Connecting...');
     if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
         initializeSteemConnect(steemConnect.sessionToken);
-        sc2.me().then((me) => {
+        api.me().then((me) => {
             console.log(me);
 
 
@@ -1273,9 +1274,10 @@ function startOfflineFeatures(items, user, account) {
 }
 
 function initializeSteemConnect(sessionToken) {
-    sc2.init({
+    api=sc2.Initialize({
+        baseURL:'https://steemconnect.com',
         app: 'steem-plus',
-        callbackURL: 'https://steemit.com/@stoodkev',
+        callbackURL: 'https://steemit.com/@steem-plus',
         accessToken: sessionToken,
         scope: ['vote', 'comment', 'comment_options', 'custom_json']
     });
@@ -1349,13 +1351,10 @@ function getBTCPriceAsync() {
 function getSteemPrice() {
     Promise.all([getBTCPriceAsync(), getPriceSBDAsync(), getPriceSteemAsync()])
         .then(function(values) {
-            const btc_price = values[0];
-            const priceSBD = values[1];
-            const priceSteem = values[2];
             market = {
-                SBDperSteem: priceSteem / priceSBD,
-                priceSteem: priceSteem * btc_price,
-                priceSBD: priceSBD * btc_price
+                SBDperSteem: values[2] / values[1],
+                priceSteem: values[2] * values[0],
+                priceSBD: values[1] * values[0]
             };
             chrome.storage.local.set({
                 market: market
@@ -1369,7 +1368,6 @@ function getSteemPrice() {
                     user: user
                 }
             });
-            console.log(market);
         });
 }
 

@@ -239,7 +239,7 @@ $("#autocomplete-git").easyAutocomplete(options);
       }]
       ];
       console.log(operations);
-      sc2.broadcast(
+      api.broadcast(
         operations,
         function(e, r)
         {

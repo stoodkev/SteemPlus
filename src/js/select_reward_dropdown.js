@@ -125,13 +125,15 @@ function createDropdownList() {
             }]
         ];
         // Create post using steem connect
-        sc2.broadcast(
+        console.log(operations);
+        api.broadcast(
             operations,
             function(e, r) {
                 if (e) {
                     console.log(e);
-                    if (e.error !== undefined)
+                    if (e.error !== undefined){
                         alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:' + e.error);
+                      }
                 } else
                     window.location.replace('https://steemit.com/' + tags[0] + '/@' + usernameRewardDropdown + '/' + title);
             });

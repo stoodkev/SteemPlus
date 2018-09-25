@@ -350,7 +350,7 @@ function postBeneficiaries() {
 
     console.log(operations);
 
-    sc2.broadcast(
+    api.broadcast(
         operations,
         function(e, r) {
             if (e) {

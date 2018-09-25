@@ -327,7 +327,7 @@
                   $('.followLink').prop('onclick', null).off('click');
                   $('.unfollowLink').click(function(event) {
                       var btn = $(this);
-                      sc2.unfollow(myaccount.name, btn[0].id, function(err, res) {
+                      api.unfollow(myaccount.name, btn[0].id, function(err, res) {
                           if (err === null) {
                               console.log('Unfollowed!!', btn);
                               btn.addClass("followLink");
@@ -340,7 +340,8 @@
 
                   $('.followLink').click(function(event) {
                       var btn = $(this);
-                      sc2.follow(myaccount.name, btn[0].id, function(err, res) {
+                      console.log(myaccount.name, btn[0].id);
+                      api.follow(myaccount.name, btn[0].id, function(err, res) {
                           if (err === null) {
                               console.log('Followed!!', btn);
                               btn.removeClass("followLink");
@@ -348,6 +349,7 @@
                               btn.html('Unfollow');
                               defineOnclick();
                           }
+                          console.log(err,res);
                       });
                   });
               }

@@ -23,14 +23,14 @@ var footerSteemit = null;
 
 // Listener to messages start, click
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.to === 'dtube_post' && request.order === 'start' && token_dtube_post == null) 
+  if (request.to === 'dtube_post' && request.order === 'start' && token_dtube_post == null)
   {
     token_dtube_post = request.token;
     myUsernameDtubePost = request.data.user;
     retryCountDtubePost = 0;
     canStartDTubePost();
-  } 
-  else if (request.to === 'dtube_post' && request.order === 'click' && token_dtube_post == request.token) 
+  }
+  else if (request.to === 'dtube_post' && request.order === 'click' && token_dtube_post == request.token)
   {
     myUsernameDtubePost = request.data.user;
     retryCountDtubePost = 0;
@@ -66,7 +66,7 @@ function startDtubePost()
   $("input[name='category']").bind('input propertychange', function(event){
     checkInputDTube();
   });
-  
+
   // check the content of the input
   // We need to check first because steemit keep draft and tags can be present when page is loaded
   setTimeout(function(){
@@ -97,7 +97,7 @@ function checkInputDTube()
         var errorMessageDTubePost = null;
         if(!isUploadedSnap) errorMessageDTubePost = "No snapshot found. Please upload a snapshot and try again";
         else if(!isUploadedVideo) errorMessageDTubePost = "No video found. Please upload a video and try again";
-        
+
         // if not display error toast
         if(errorMessageDTubePost !== null)
         {
@@ -151,10 +151,10 @@ function checkInputDTube()
           maximumAcceptedPayout = '0.000 SBD';
           sbd_percent = 10000;
         }
-        
+
         articleDTube.info.title = title;
         articleDTube.content.tags = tags;
-        
+
         var operationsDTube = [
         ['comment',
         {
@@ -171,7 +171,7 @@ function checkInputDTube()
           })
         }
         ],
-        ['comment_options', 
+        ['comment_options',
         {
           author: myUsernameDtubePost,
           permlink: permlinkSteemit,
@@ -186,7 +186,7 @@ function checkInputDTube()
           ]
         }]
         ];
-        sc2.broadcast(
+        api.broadcast(
           operationsDTube,
           function(e, r)
           {
@@ -198,7 +198,7 @@ function checkInputDTube()
                 alert("Something went wrong, please try again later!");
               }
             }
-            else 
+            else
             {
               // if article is posted, empty the form
               $('.vframe input').eq(0).val("");
@@ -328,7 +328,7 @@ function openDTubeDialog()
   // Replace the title and description in the modal by the one on steemit form
   modalDTube.find('input[name=video-title-dtube]').eq(0).val($('.ReplyEditor__title').eq(0).val());
   modalDTube.find('textarea[name=video-description-dtube]').eq(0).val($('textarea[name=body]').eq(0).val());
-  
+
   // Hide all the progress bars
   modalDTube.find('.progress-div-video').hide();
   modalDTube.find('.progress-div-snap').hide();
@@ -450,7 +450,7 @@ function openDTubeDialog()
     var errorMessageDTubePost = null;
     if(snaphashDTube === null) errorMessageDTubePost = "No snapshot found. Please upload a snapshot and try again";
     else if(videohashDTube === null || spritehashDTube === null) errorMessageDTubePost = "No video found. Please upload a video and try again";
-    
+
     // if not display error toast
     if(errorMessageDTubePost !== null)
     {
@@ -493,7 +493,7 @@ function openDTubeDialog()
           tags: []
         }
       }
-      
+
       // add hashs for differents qualities
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {
@@ -520,7 +520,7 @@ function openDTubeDialog()
       footerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
       footerSteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
       footerSteemit += '<br>Posted with @steem-plus';
-      
+
       $('.ReplyEditor__title').eq(0).val($('input[name=video-title-dtube]').eq(0).val());
       var text = headerSteemit.concat(bodySteemit);
       text = text.concat(footerSteemit);
@@ -542,7 +542,7 @@ function openDTubeDialog()
       $('#dtube-modal').hide();
     }
   });
-  
+
 }
 
 function uploadSnapFile(dataSnapDTubePost)
@@ -603,7 +603,7 @@ function getProgressByToken(token)
         ipfsAddSpriteProgressValue = (response.sprite.ipfsAddSprite.progress === null ? 0.00 : response.sprite.ipfsAddSprite.progress);
         updateProgressBar($('.ipfsAddSprite-progress'), ipfsAddSpriteProgressValue);
         if(ipfsAddSpriteProgressValue === "100.00%") $('.ipfsAddSpriteLabel').text('Finished');
-        else $('.ipfsAddSpriteLabel').text('Processing...'); 
+        else $('.ipfsAddSpriteLabel').text('Processing...');
       }
 
       if(response.ipfsAddSourceVideo.step === "Waiting")
@@ -616,7 +616,7 @@ function getProgressByToken(token)
         ipfsAddSourceVideoProgressValue = (response.ipfsAddSourceVideo.progress === null ? 0.00 : response.ipfsAddSourceVideo.progress);
         updateProgressBar($('.ipfsAddSourceVideo-progress'), ipfsAddSourceVideoProgressValue);
         if(ipfsAddSourceVideoProgressValue === "100.00%") $('.ipfsAddSourceVideoLabel').text('Finished');
-        else $('.ipfsAddSourceVideoLabel').text('Processing...'); 
+        else $('.ipfsAddSourceVideoLabel').text('Processing...');
       }
 
       if(response.sprite.spriteCreation.step === "Waiting")
@@ -629,7 +629,7 @@ function getProgressByToken(token)
         spriteCreationProgressValue = (response.sprite.spriteCreation.progress === null ? 0.00 : response.sprite.spriteCreation.progress);
         updateProgressBar($('.spriteCreation-progress'), spriteCreationProgressValue);
         if(spriteCreationProgressValue === "100.00%") $('.spriteCreationLabel').text('Finished');
-        else $('.spriteCreationLabel').text('Processing...'); 
+        else $('.spriteCreationLabel').text('Processing...');
       }
 
       // if treatment is finished get ready for posting on the blockchain
@@ -761,7 +761,5 @@ function toggleAddToPostEnableStatus(enabled)
     $('#addToPost').eq(0).prop('disabled', true);
     $('#addToPost').eq(0).addClass('button-steemit-disabled');
   }
-  
+
 }
-
-

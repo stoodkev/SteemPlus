@@ -97,7 +97,7 @@ function addBenefDonationButton() {
 
 // Function used to submit the new post
 function postBeneficiaryDonation() {
-    var author = autb;
+    var author = autbd;
     var tags = [];
     var title = null;
     var permlink = null;
@@ -168,7 +168,7 @@ function postBeneficiaryDonation() {
 
     console.log(operations);
 
-    sc2.broadcast(
+    api.broadcast(
         operations,
         function(e, r) {
             if (e) {

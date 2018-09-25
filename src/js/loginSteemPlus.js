@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     window.location.replace(url.searchParams.get("state"));
                 });
         } else {
-            var loginURL = "https://v2.steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=" + uri_login + "&scope=vote,comment,custom_json,comment_options&state=";
+            var loginURL = "https://steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=" + uri_login + "&scope=vote,comment,custom_json,comment_options&state=";
             loginURL += window.location.href;
             var loginIcon = $('<a></a>').append($('<img/>').attr('class', classbutton));
         }
@@ -49,7 +49,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             $(loginIcon).children().first().attr('src', chrome.extension.getURL("src/img/logged.png"))
                 .attr('title', 'Log out of SteemPlus?');
             $(loginIcon).click(function() {
-                sc2.revokeToken(function(err, res) {
+                api.revokeToken(function(err, res) {
                     console.log(err, res);
                     chrome.storage.local.remove(['sessionToken', 'tokenExpire'], function() {
                         window.location.replace(window.location.href);

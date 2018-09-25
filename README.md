@@ -232,10 +232,7 @@ If you're using Chrome, it's very straightforward, you just have to install Stee
 1. Enjoy!
 
 ### On Firefox
-1. Install [Chrome Store Foxified](https://addons.mozilla.org/en-US/firefox/addon/chrome-store-foxified/).
-1. Select Add to Firefox in [here](https://chrome.google.com/webstore/detail/steemplus/mjbkjgcplmaneajhcbegoffkedeankaj?hl=en).
-1. If you wish to install the add-on permanently, you need to login to addons.mozilla.org and have your cookies enabled!
-1. SteemPlus is open source and available on [Github](https://github.com/stoodkev/SteemPlus).
+1. Install directly from the Mozilla Addons Store [here](https://addons.mozilla.org/en-US/firefox/addon/steem-plus/)
 
 @stoodkev for @steem-plus
 Powered by @adsactly

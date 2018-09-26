@@ -3,7 +3,7 @@
 
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "3.0.0.3",
+  "version": "3.0.1.0",
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://widget.blocktrades.us/ ; object-src 'self'; child-src 'unsafe-eval' 'self' https://widget.blocktrades.us/",
   "browser_action": {
     "default_icon": "src/img/logo.png",

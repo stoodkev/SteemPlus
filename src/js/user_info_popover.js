@@ -59,10 +59,10 @@ function checkDisplayPopoverUserInfo(userName) {
 
 
 function displayPopoverUserInfo(userName){
-	window.SteemPlus.Utils.getAccounts([userName], function(err, result){
-		if(!$('.UserProfile__banner').hasClass('smi-profile-banner-1'))
+	steem.api.getAccounts([userName], function(err, result){
+	if(!$('.UserProfile__banner').hasClass('smi-profile-banner-1'))
 		  $('.UserProfile__banner').addClass('smi-profile-banner-1');
-		Promise.all([window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]), window.SteemPlus.Utils.getVotingDollarsPerAccount(100, result[0], rewardBalanceUIP, recentClaimsUIP, steemPriceUIP, votePowerReserveRateUIP)])
+		Promise.all([window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]), window.SteemPlus.Utils.getVotingDollarsPerAccount(100, result[0], rewardBalanceUIP, recentClaimsUIP, steemPriceUIP, votePowerReserveRateUIP), window.SteemPlus.Utils.getRC(account.name)])
 		.then(function(values) {
       $("#popover").remove();
  			var pop=document.createElement('a');
@@ -79,16 +79,18 @@ function displayPopoverUserInfo(userName){
         $('.UserProfile__rep').parent().after(pop);
         $('.rep').remove();
         $('.UserProfile__rep').parent().after('<span class="rep">(' + reputation + ')</span>');
-
   			var title='<h5>User Information</h5>';
-  			var votingPower = values[0]/100;
+  			var votingPower = values[0];
   			var votingDollars = parseFloat(values[1]);
   			var fullInString = window.SteemPlus.Utils.getTimeBeforeFull(votingPower*100);
-
+        var rc=values[2];
+        console.log(rc);
   		$('#popover').attr('data-toggle','popover');
-  	    $('#popover').attr('data-content','<h5>Voting Power:  <span class="value_of">' + votingPower + '%</span>'
+  	    $('#popover').attr('data-content','<h5>Voting Mana:  <span class="value_of">' + votingPower + '%</span>'
   	      +'</h5><hr/><h5>Voting Value:  <span class="value_of">' + votingDollars.toFixed(2) + '$</span>'
   	      +'</h5><hr/><h5>Full in:  <span class="value_of">' + fullInString + '</span>'
+  	      +'</h5><hr/><h5>RC Mana:  <span class="value_of">' + rc.estimated_pct + '%</span>'
+  	      +'</h5><hr/><h5>Full in:  <span class="value_of">' + rc.fullin + '</span>'
   	      +'</h5>');
   	    $('#popover').attr('data-placement','right');
   	    $('#popover').attr('title',title);

@@ -128,13 +128,23 @@
 
 
     var getVotingPowerPerAccount = function(account) {
-        var voting_power = account.voting_power;
-        var last_vote_time = new Date((account.last_vote_time) + 'Z');
-        var elapsed_seconds = (new Date() - last_vote_time) / 1000;
-        var regenerated_power = Math.round((STEEMIT_100_PERCENT * elapsed_seconds) / STEEMIT_VOTE_REGENERATION_SECONDS);
-        var current_power = Math.min(voting_power + regenerated_power, STEEMIT_100_PERCENT);
-        return current_power;
+      const mana= getMana(account);
+      return mana.estimated_pct.toFixed(2);
     };
+
+    var getMana = function(account) {
+        const STEEM_VOTING_MANA_REGENERATION_SECONDS =432000;
+        const estimated_max = parseFloat(account.vesting_shares.replace(" VESTS", ""))*1000000;
+        const current_mana = parseFloat(account.voting_manabar.current_mana);
+        const last_update_time = account.voting_manabar.last_update_time;
+        const diff_in_seconds = Math.round(Date.now()/1000-last_update_time);
+        let estimated_mana = (current_mana + diff_in_seconds * estimated_max / STEEM_VOTING_MANA_REGENERATION_SECONDS);
+        if (estimated_mana > estimated_max)
+            estimated_mana = estimated_max;
+        const estimated_pct = estimated_mana / estimated_max * 100;
+      return {"current_mana": current_mana, "last_update_time": last_update_time,
+                "estimated_mana": estimated_mana, "estimated_max": estimated_max, "estimated_pct": estimated_pct};
+    }
 
     var getEffectiveVestingSharesPerAccount = function(account) {
         var effective_vesting_shares = parseFloat(account.vesting_shares.replace(" VESTS", "")) +
@@ -153,37 +163,17 @@
 
 
     var getVotingDollarsPerAccount = function(voteWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, full) {
-
-        if (!account) {
-            account = currentUserAccount;
-        }
-        if (!account) {
-            return;
-        }
-
         if (rewardBalance && recentClaims && steemPrice && votePowerReserveRate) {
             var effective_vesting_shares = Math.round(getEffectiveVestingSharesPerAccount(account) * 1000000);
-            var voting_power = account.voting_power;
+            var current_power = full ? 10000 : getVotingPowerPerAccount(account)*100;
             var weight = voteWeight * 100;
-            var last_vote_time = new Date((account.last_vote_time) + 'Z');
-
-
-            var elapsed_seconds = (new Date() - last_vote_time) / 1000;
-            var regenerated_power = Math.round((STEEMIT_100_PERCENT * elapsed_seconds) / STEEMIT_VOTE_REGENERATION_SECONDS);
-
-            var current_power = full ? 10000 : Math.min(voting_power + regenerated_power, STEEMIT_100_PERCENT);
             var max_vote_denom = votePowerReserveRate * STEEMIT_VOTE_REGENERATION_SECONDS / (60 * 60 * 24);
             var used_power = Math.round((current_power * weight) / STEEMIT_100_PERCENT);
             used_power = Math.round((used_power + max_vote_denom - 1) / max_vote_denom);
-
             var rshares = Math.round((effective_vesting_shares * used_power) / (STEEMIT_100_PERCENT))
-
-
             var voteValue = rshares *
                 rewardBalance / recentClaims *
                 steemPrice;
-
-
             return voteValue;
 
         }
@@ -256,6 +246,35 @@
         steem.api.getAccountVotes(name, cb);
     }
 
+    var getRC=function(name,cb){
+      let data={"jsonrpc":"2.0","id":1,"method":"rc_api.find_rc_accounts","params":{"accounts":[name]}};
+
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+        url: "https://api.steemit.com",
+        type: "POST",
+        data: JSON.stringify(data),
+        success: function(response){
+          const STEEM_RC_MANA_REGENERATION_SECONDS =432000;
+          const estimated_max = parseFloat(response.result.rc_accounts["0"].max_rc);
+          const current_mana = parseFloat(response.result.rc_accounts["0"].rc_manabar.current_mana);
+          const last_update_time = parseFloat(response.result.rc_accounts["0"].rc_manabar.last_update_time);
+          const diff_in_seconds = Math.round(Date.now()/1000-last_update_time);
+          let estimated_mana = (current_mana + diff_in_seconds * estimated_max / STEEM_RC_MANA_REGENERATION_SECONDS);
+          if (estimated_mana > estimated_max)
+              estimated_mana = estimated_max;
+
+          const estimated_pct = estimated_mana / estimated_max * 100;
+          const res= {"current_mana": current_mana, "last_update_time": last_update_time,
+                  "estimated_mana": estimated_mana, "estimated_max": estimated_max, "estimated_pct": estimated_pct.toFixed(2),"fullin":getTimeBeforeFull(estimated_pct*100)};
+          fulfill(res);
+        },
+        error:function(e){
+          console.log(e);
+        }
+      });
+    });
+  }
 
     var getLoadingHtml = function(options) {
         var divClass = 'smi-spinner';
@@ -676,6 +695,7 @@
         getSteemPrice: function() {
             return steemPrice;
         },
+        getMana:getMana,
         getVotingPowerPerAccount: getVotingPowerPerAccount,
         getVotingDollarsPerAccount: getVotingDollarsPerAccount,
         getVotingDollarsPerShares: getVotingDollarsPerShares,
@@ -697,6 +717,7 @@
         getReputation: getReputation,
         getUserTopMenusBusy,
         getUserTopMenusBusy,
+        getRC:getRC,
         getTimeBeforeFull: getTimeBeforeFull
     };
 

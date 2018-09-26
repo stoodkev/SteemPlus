@@ -209,8 +209,6 @@ chrome.storage.local.get(['steemplus_points', 'dtube_post' ,'utopian_post' ,'tip
     if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
         initializeSteemConnect(steemConnect.sessionToken);
         api.me().then((me) => {
-            console.log(me);
-
 
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);

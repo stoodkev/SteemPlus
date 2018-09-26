@@ -134,7 +134,8 @@
 
     var getMana = function(account) {
         const STEEM_VOTING_MANA_REGENERATION_SECONDS =432000;
-        const estimated_max = parseFloat(account.vesting_shares.replace(" VESTS", ""))*1000000;
+        const estimated_max = getEffectiveVestingSharesPerAccount(account)*1000000;
+        console.log(estimated_max);
         const current_mana = parseFloat(account.voting_manabar.current_mana);
         const last_update_time = account.voting_manabar.last_update_time;
         const diff_in_seconds = Math.round(Date.now()/1000-last_update_time);
@@ -142,6 +143,8 @@
         if (estimated_mana > estimated_max)
             estimated_mana = estimated_max;
         const estimated_pct = estimated_mana / estimated_max * 100;
+      console.log({"current_mana": current_mana, "last_update_time": last_update_time,
+                "estimated_mana": estimated_mana, "estimated_max": estimated_max, "estimated_pct": estimated_pct});
       return {"current_mana": current_mana, "last_update_time": last_update_time,
                 "estimated_mana": estimated_mana, "estimated_max": estimated_max, "estimated_pct": estimated_pct};
     }
@@ -247,6 +250,7 @@
     }
 
     var getRC=function(name,cb){
+      console.log(name);
       let data={"jsonrpc":"2.0","id":1,"method":"rc_api.find_rc_accounts","params":{"accounts":[name]}};
 
       return new Promise(function(fulfill,reject){
@@ -267,6 +271,7 @@
           const estimated_pct = estimated_mana / estimated_max * 100;
           const res= {"current_mana": current_mana, "last_update_time": last_update_time,
                   "estimated_mana": estimated_mana, "estimated_max": estimated_max, "estimated_pct": estimated_pct.toFixed(2),"fullin":getTimeBeforeFull(estimated_pct*100)};
+          console.log(res);
           fulfill(res);
         },
         error:function(e){

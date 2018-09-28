@@ -142,7 +142,7 @@ function checkInputDTube()
           weight: 100*1
         },{
           account: 'dtube.rewards',
-          weight: 100*24
+          weight: 100*9
         });
 
         var maximumAcceptedPayout = '100000.000 SBD';

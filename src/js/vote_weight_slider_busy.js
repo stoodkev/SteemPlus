@@ -124,7 +124,7 @@ function setupUnlikeButton(btnBusy) {
         $(btnBusy).remove();
 }
 
-function createPopupVoteSlider(element) {
+async function createPopupVoteSlider(element) {
     var currentWeight = 100;
     dollars = 0;
     var popoverPosition = (isPostPage && isFloatingFooterEnabled ? 'top' : 'bottom');
@@ -134,15 +134,15 @@ function createPopupVoteSlider(element) {
     $(element).attr('data-html', 'true');
     $(element).attr('data-trigger', 'click');
     $(element).popover('show');
-    dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+    dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
     $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
 
     $(element).parent().find('#vote-weight-slider-busy').slider({
         tooltip: 'hide'
     });
-    $(element).parent().find('#vote-weight-slider-busy').on('change', function(slideEvt) {
+    $(element).parent().find('#vote-weight-slider-busy').on('change', async function(slideEvt) {
         currentWeight = slideEvt.value.newValue;
-        dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+        dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
         $(element).parent().find('.percentage-vote-slider-busy').html(currentWeight);
         $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
     });

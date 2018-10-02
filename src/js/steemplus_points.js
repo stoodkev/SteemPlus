@@ -219,7 +219,7 @@ function displaySteemplusPoints(userDetails)
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
                         <td>${pointsDetail.typeTransaction.name}</td>
                         <td>${pointsDetail.nbPoints.toFixed(2)}</td>
-                        ${(pointsDetail.url === undefined ? `<td><a href="${pointsDetail.permlink}">${pointsDetail.permlink}</a></td>` : `<td><a href="@${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
+                        ${(pointsDetail.url === undefined ? `<td><a target="_blank" href="${pointsDetail.permlink}">${pointsDetail.permlink}</a></td>` : `<td><a target="_blank" href="${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
                     </tr>`);
                 });
             }

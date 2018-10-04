@@ -18,7 +18,7 @@ var steemMonsterStarterPack = {
 	"starter_pack": {
 		"name": "Starter Pack",
 		"image": "beta_starter_set",
-		"usdPrice": 5
+		"usdPrice": 10
 	}
 }
 

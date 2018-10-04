@@ -1,0 +1,28 @@
+#disclaimer_steem_monster {
+	margin-bottom: 1rem;
+}
+
+#image_pack {
+	height: 420px;
+	width: 300px;
+}
+
+.image_pack_div {
+	text-align: center;
+}
+
+.total_transaction {
+	width: 100%;
+	text-align: right;
+}
+
+.input-group-label {
+	padding-right: 1rem;
+	padding-left: 1rem;
+	min-width: 7rem;
+	text-align: center;
+}
+
+.purchase-pack {
+	width: 100%;
+}

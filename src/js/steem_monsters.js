@@ -41,10 +41,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 function startSteemMonsterTab() {
+	console.log('start steem monsters');
     if (regexBlogSteemit.test(window.location.href)) {
     	pageUsernameSteemMonster = window.SteemPlus.Utils.getPageAccountName();
     	if(pageUsernameSteemMonster === myUsernameSteemMonster)
     	{
+    		console.log('creat tab steem monsters');
 	        window.SteemPlus.Tabs.createTab({
 	            id: 'steem_monsters',
 	            title: 'Steem Monster',

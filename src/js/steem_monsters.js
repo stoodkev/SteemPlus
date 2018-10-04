@@ -35,7 +35,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         isBusy = request.data.busy;
         myUsernameSteemMonster = request.data.user;
         retrySteemMonster = 0;
-        startSteemMonsterTab();
+				setTimeout(function(){
+        	startSteemMonsterTab();
+				},1000);
     }
 });
 

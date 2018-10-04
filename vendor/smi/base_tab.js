@@ -312,8 +312,6 @@
         $('body').on('click', '.UserHeader__container > div > a', onMenuItemClick);
     }
 
-
-
     var Tabs = {
         createTab: createTab,
         enableTab: enableTab,
@@ -323,5 +321,4 @@
 
     window.SteemPlus = window.SteemPlus || {};
     window.SteemPlus.Tabs = Tabs;
-
 })()

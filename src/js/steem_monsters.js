@@ -41,15 +41,13 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 function startSteemMonsterTab() {
-	console.log('start steem monsters');
     if (regexBlogSteemit.test(window.location.href)) {
     	pageUsernameSteemMonster = window.SteemPlus.Utils.getPageAccountName();
     	if(pageUsernameSteemMonster === myUsernameSteemMonster)
     	{
-    		console.log('creat tab steem monsters');
 	        window.SteemPlus.Tabs.createTab({
 	            id: 'steem_monsters',
-	            title: 'Steem Monster',
+	            title: 'SteemMonsters',
 	            enabled: true,
 	            createTab: createSteemMonsterTab,
 	            newTab: true
@@ -59,7 +57,7 @@ function startSteemMonsterTab() {
     	}
     	else
     		$('.menu-steem_monster-tab-li').remove();
-    } 
+    }
 }
 
 // Function used to create the tab content
@@ -137,7 +135,7 @@ function createSteemMonsterTab(steemMonsterTab) {
 				});
 				urlSteemMonster = `https://v2.steemconnect.com/sign/transfer?from=${pageUsernameSteemMonster}&to=steemmonsters&amount=${response.payment}&memo=${response.uid}`;
         		$('.total_transaction').text(response.payment);
-            
+
 			}
 			else {
 				Object.keys(steemMonsterStarterPack).map(function(packType, index) {

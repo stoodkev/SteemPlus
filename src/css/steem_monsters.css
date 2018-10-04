@@ -1,5 +1,5 @@
 #disclaimer_steem_monster {
-	margin-bottom: 1rem;
+	margin-bottom: 0px;
 }
 
 #image_pack {
@@ -25,4 +25,11 @@
 
 .purchase-pack {
 	width: 100%;
+}
+.form_buy_pack {
+	margin-top: 65px;
+}
+.container-steem-monster {
+	padding: 0px !important;
+	margin:0px !important;
 }

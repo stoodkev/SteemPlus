@@ -78,7 +78,7 @@ function createSteemMonsterTab(steemMonsterTab) {
 						<h6 id="steemMonster-information-message"></h6>\
 	          			<div class="container container-steem-monster">\
     						<div id= "disclaimer_steem_monster">\
-    							Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. If you don\'t have an account on SteemMonsters yet, follow <a href="https://steemmonsters.com/?ref=steemplus-pay" target="_blank">this link</a> to do so, you will automatically get SPP for all your future purchases.\
+    							Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href="https://steemmonsters.com/?ref=steemplus-pay" target="_blank">this link</a> to do so, you will automatically get SPP for all your future purchases.\
     						</div>\
     						<div class="row">\
     							<div class="col-6 column form_buy_pack">\

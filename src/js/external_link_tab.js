@@ -78,6 +78,11 @@ var externalLinks = [{
     href: function(username) {
         return 'http://steemocean.com/voter/' + username;
     }
+}, {
+    title: 'Accusta - account statistics',
+    href: function(username) {
+        return 'https://steemit.accusta.tk/@' + username + '/by_month';
+    }
 }];
 
 

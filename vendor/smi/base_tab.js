@@ -143,7 +143,10 @@
                             hideOrShowDropdownPanel();
                             showTab(tab.id);
                         });
-                        $(menuDropDownSP).find('.dropdown-pane-SP > ul').append(menuLi);
+                        if(tab.newTab)
+                            $('.UserProfile__top-menu > div > ul.menu').eq(0).append(menuLi);
+                        else
+                            $(menuDropDownSP).find('.dropdown-pane-SP > ul').append(menuLi);
                     }
 
                     // if(onCreate && window.location.hash === '#' + tab.id){

@@ -102,7 +102,7 @@ function createMinnowBoosterTransferUI() {
 
         var min = parseFloat(globalInfo.min_upvote);
         var max = Math.min(
-            parseFloat(globalInfo.daily_limit) - parseFloat(accountInfo.user_daily_usage),
+            parseFloat(globalInfo.daily_limit)*(normalList?1:2) - parseFloat(accountInfo.user_daily_usage),
             parseFloat(globalInfo.weekly_limit) - parseFloat(accountInfo.user_weekly_usage)
         );
 
@@ -112,40 +112,10 @@ function createMinnowBoosterTransferUI() {
 
         var accountInfoUI = '<div class="column small-12">\
         <strong>About the author: <a href="/@' + authorBooster + '" target="_blank" rel="noopener">@' + authorBooster + '</a></strong><br>\
-        <small>Daily Limit: ' + parseFloat(accountInfo.user_daily_usage).toFixed(2) + ' / ' + parseFloat(globalInfo.daily_limit).toFixed(2) + ' SBD</small> <br>\
+        <small>Daily Limit: ' + parseFloat(accountInfo.user_daily_usage).toFixed(2) + ' / ' + (parseFloat(globalInfo.daily_limit)*(normalList?1:2)).toFixed(2) + ' SBD</small> <br>\
       </div>';
 
-        if (alreadyBoosted) {
-
-            var amount = parseFloat(alreadyBoosted.upvote);
-
-            transferUI = $('<div id="modalContent">\
-          <div id="modalTitle" class="row">\
-            <h3 class="column">Boost with <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a></h3>\
-          </div>\
-          <div>\
-            <div class="row">\
-              <div class="column small-12">\
-              The boost functionality is provided by <a href="/@steem-plus" target="_blank" rel="noopener">@steem-plus</a>\
-              with the support of the <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> team.\
-              We don\'t have access to your private key, and the payment is made through SteemConnect.\
-              <br>\
-              </div>\
-            </div>\
-            <br>\
-            <div class="row">' + accountInfoUI + '</div>\
-            <br>\
-            <br>\
-            <div class="row">\
-              <div class="column small-12" style="color: red;">\
-              This post already received a ~' + amount.toFixed(2) + '$ upvote from <a href="/@minnowbooster" target="_blank" rel="noopener">@minnowbooster</a> thanks to <a href="/@' + alreadyBoosted.from + '" target="_blank" rel="noopener">' + alreadyBoosted.from + '</a>.\
-              <br>\
-              </div>\
-            </div>\
-          </div>\
-        </div>');
-
-        } else if (!globalInfo.post_voting_enabled) {
+        if (!globalInfo.post_voting_enabled) {
 
             transferUI = $('<div id="modalContent">\
           <div id="modalTitle" class="row">\
@@ -317,7 +287,7 @@ function createMinnowBoosterTransferUI() {
                         }
 
                         var maxAvailableAmount = Math.min(
-                            parseFloat(globalInfo.daily_limit) - parseFloat(accountInfo.user_daily_usage),
+                            parseFloat(globalInfo.daily_limit)*(normalList?1:2) - parseFloat(accountInfo.user_daily_usage),
                             parseFloat(maxVote)
                         );
 

@@ -192,7 +192,8 @@ function displaySteemplusPoints(userDetails)
                 <div id="modalTitle" class="row">
                     <h3 class="column">Steemplus Points History</h3>
                 </div>
-                <h4 class="column">Total Steemplus Point : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
+                <p>SPP earned from posts will be collected after payout.<br>SPP earned from transactions might take up to 20 minutes to be collected.</p>
+                <h4 class="column">Total Steemplus Points : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
                 <div class="sppHistoryDetail">
                 </div>
             </div>

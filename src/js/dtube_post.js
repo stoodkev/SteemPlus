@@ -361,6 +361,7 @@ function openDTubeDialog()
         var dataSnapDTubePost = new FormData();
         dataSnapDTubePost.append(droppedSnapDTubePost.name , droppedSnapDTubePost);
         uploadSnapFile(dataSnapDTubePost);
+        console.log("uploadsnapfile");
     });
   });
 
@@ -400,6 +401,7 @@ function openDTubeDialog()
       xhr: function () {
         // listen for progress events on the upload
         var xhr = new window.XMLHttpRequest();
+        console.log("zhr",xhr);
         xhr.upload.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
             // On progress, update progress bar
@@ -409,6 +411,7 @@ function openDTubeDialog()
         return xhr;
       },
       success: function (result) {
+        console.log("success yea");
         // In case of success get the progress of data processing
         if (typeof result === 'string')
           result = JSON.parse(result);
@@ -548,6 +551,7 @@ function openDTubeDialog()
 function uploadSnapFile(dataSnapDTubePost)
 {
   // Launch request to dtube snapshot upload system
+  console.log("upload");
   $.ajax({
     url: 'https://snap1.d.tube/uploadImage',
     type: "POST",
@@ -568,8 +572,10 @@ function uploadSnapFile(dataSnapDTubePost)
         result = JSON.parse(result)
       $('.progress-div-snap').show();
       getProgressSnapByToken(result.token);
+      console.log(result.token);
     },
     error: function (error) {
+      console.log(error);
     }
   });
 }

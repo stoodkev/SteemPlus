@@ -98,7 +98,7 @@ function createSteemMonsterTab(steemMonsterTab) {
 					                  	</select>\
 				                  	</div>\
 					                <div class="input-group" style="margin-bottom: 1.25rem;">\
-					                  <h4>Total : <span class="total_transaction"></span></h4>\
+					                  <h5>Total : <span class="total_transaction"></span></h5>\
 					                </div>\
 					                <div class="input-group" style="margin-bottom: 1.25rem;">\
 					                  <button class="button-steemit purchase-pack">Purchase</button>\

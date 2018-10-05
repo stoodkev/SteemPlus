@@ -42,22 +42,36 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 function startSteemMonsterTab() {
-	if (regexBlogSteemit.test(window.location.href)) {
-		pageUsernameSteemMonster = window.SteemPlus.Utils.getPageAccountName();
-		if(pageUsernameSteemMonster === myUsernameSteemMonster)
+	if(retrySteemMonster > 20) return;
+
+	if(regexBlogSteemit.test(window.location.href)) {
+		if($('.UserProfile__top-nav').length === 0)
 		{
-			window.SteemPlus.Tabs.createTab({
-				id: 'steem_monsters',
-				title: 'Steem Monsters',
-				enabled: true,
-				createTab: createSteemMonsterTab,
-				newTab: true
-			});
-			if (window.location.href.includes('#steem_monsters'))
-				window.SteemPlus.Tabs.showTab('steem_monsters');
+			setTimeout(function() {
+                retrySteemMonster++;
+                startSteemMonsterTab();
+            }, 1000);
 		}
-		else{
-			$('.menu-steem_monsters-tab-li').remove();
+		else
+		{
+			pageUsernameSteemMonster = window.SteemPlus.Utils.getPageAccountName();
+			console.log(pageUsernameSteemMonster, myUsernameSteemMonster);
+			if(pageUsernameSteemMonster === myUsernameSteemMonster)
+			{
+				window.SteemPlus.Tabs.createTab({
+					id: 'steem_monsters',
+					title: 'Steem Monsters',
+					enabled: true,
+					createTab: createSteemMonsterTab,
+					newTab: true
+				});
+				if (window.location.href.includes('#steem_monsters'))
+					window.SteemPlus.Tabs.showTab('steem_monsters');
+			}
+			else{
+				console.log('delete tab');
+				$('.menu-steem_monsters-tab-li').eq(0).remove();
+			}
 		}
 	}
 }

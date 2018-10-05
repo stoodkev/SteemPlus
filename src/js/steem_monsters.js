@@ -174,6 +174,8 @@ function createSteemMonsterTab(steemMonsterTab) {
 	});
 
 	$('#quantity_pack').on("input propertychange", function(){
+		if($('#quantity_pack').val()>32767)
+			$('#quantity_pack').val(32767);
 		sendRequestToSteemMonster();
 	});
 

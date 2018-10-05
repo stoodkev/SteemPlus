@@ -144,7 +144,10 @@
                             showTab(tab.id);
                         });
                         if(tab.newTab)
-                            $('.UserProfile__top-menu > div > ul.menu').eq(0).append(menuLi);
+                            if($('.menuSP_dropdown').length === 0)
+                                $('.UserProfile__top-menu > div > ul.menu').eq(0).append(menuLi);
+                            else
+                                $('.menuSP_dropdown').eq(0).before(menuLi);
                         else
                             $(menuDropDownSP).find('.dropdown-pane-SP > ul').append(menuLi);
                     }

@@ -503,7 +503,7 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                                 account: account
                             }
                         });
-                }, 200);
+                }, 500);
             });
             console.log('Offline Features');
             initOfflineFeatures(true, items, user, account);

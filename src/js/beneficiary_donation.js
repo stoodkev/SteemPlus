@@ -174,6 +174,7 @@ function postBeneficiaryDonation() {
             if (e) {
                 console.log(e);
                 if (e.error !== undefined) {
+                    console.log(e,e.error);
                     alert("Something went wrong, please try again later!");
                 }
             } else {

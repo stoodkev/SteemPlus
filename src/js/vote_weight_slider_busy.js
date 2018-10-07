@@ -155,7 +155,7 @@ async function createPopupVoteSlider(element) {
         }
         var username = tmp.split('/')[0];
         var permlink = tmp.split('/')[1];
-        sc2.vote(account.name, username, permlink, currentWeight * 100, function(err, res) {
+        api.vote(account.name, username, permlink, currentWeight * 100, function(err, res) {
             if (err) console.log(err);
             if (res) console.log(res);
             if (res !== null) {
@@ -179,7 +179,7 @@ function unlikePost(btnBusy) {
     }
     var username = tmp.split('/')[0];
     var permlink = tmp.split('/')[1];
-    sc2.vote(account.name, username, permlink, 0, function(err, res) {
+    api.vote(account.name, username, permlink, 0, function(err, res) {
         if (err) console.log(err);
         if (res) console.log(res);
         if (res !== null) {

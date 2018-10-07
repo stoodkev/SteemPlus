@@ -4,7 +4,7 @@ var feed_url, user_fp, feedplus_url = null;
 var list_posts = [];
 var list_authors = [];
 var filtered_list = [];
-var ad, terminate = false;
+var ad, terminate,has_ad = false;
 var feedplus, a, img, menu_list, app_content, menu_feedplus, post_div, reblog, ad_post = null;
 var first_display = true;
 var show_posts = 0;
@@ -544,8 +544,9 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
         }
 
-        if (ad) {
+        if (ad&&!has_ad) {
             ad = false;
+            has_ad=true;
             $(ad_post).css('color', ' #4ba2f2');
             $(ad_post).css('margin-bottom', ' 4em');
             $(ad_post).html($(ad_post).html() + ' - Sponsored');

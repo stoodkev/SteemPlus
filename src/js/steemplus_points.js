@@ -175,7 +175,7 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-2" style="padding-top: 5px;">Receive</div>
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 5px;">
-                                <input id="receive_amount" type="number" placeholder="Amount" name="receive_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="0" step="0.001">
+                                <input id="receive_amount" type="number" placeholder="Amount" name="receive_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="1" step="1">
                                 <span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">
                                     <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" disabled>
                                         <option value="SPP" selected="">SPP</option>
@@ -211,7 +211,7 @@ function displaySteemplusPoints(userDetails)
                 }
 
                 var memoBuySPP = `buySPP : Bought ${amountReceived} SPP for ${amountSent} ${sentCurrency}`;
-                var urlBuySPP = 'https://v2.steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20SBD&memo=' + memoBuySPP;
+                var urlBuySPP = 'https://steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20SBD&memo=' + memoBuySPP;
                 var win = window.open(urlBuySPP, '_blank');
                 if (win) {
                     //Browser has allowed it to be opened
@@ -372,4 +372,24 @@ function displaySteemplusPoints(userDetails)
 
 
     }
+}
+
+function refreshSentInput(modal)
+{  
+    let amountReceived = modal.find('#receive_amount').val();
+    let sentCurrency = modal.find('#sent_currency').val();
+    if(sentCurrency === 'SBD')
+        modal.find('#sent_amount').val((amountReceived/100).toFixed(2));
+    else 
+        modal.find('#sent_amount').val((amountReceived/100/sbdPerSteem).toFixed(2));
+}
+
+function refreshReceivedInput(modal)
+{
+    let sentAmount = modal.find('#sent_amount').val();
+    let sentCurrency = modal.find('#sent_currency').val();
+    if(sentCurrency === 'SBD')
+        modal.find('#receive_amount').val((sentAmount*100).toFixed(2));
+    else 
+        modal.find('#receive_amount').val((sentAmount*100*sbdPerSteem).toFixed(2));
 }

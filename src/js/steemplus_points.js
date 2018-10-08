@@ -5,6 +5,7 @@ var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 var myUsernameSPP = null;
 var usernameSPP = null;
 var retrySteemplusPoint = 0;
+var sbdPerSteem = null;
 
 var isSteemit = null;
 var isBusy = null;
@@ -25,12 +26,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         myUsernameSPP = request.data.user;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
+        sbdPerSteem = request.data.market.SBDperSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     } else if (request.to === 'steemplus_points' && request.order === 'click' && token_steemplus_point == request.token) {
         myUsernameSPP = request.data.user;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
+        sbdPerSteem = request.data.market.SBDperSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     }

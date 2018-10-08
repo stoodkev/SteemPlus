@@ -21,7 +21,7 @@ table.sppHistoryTable > tr:nth-child(even) {
 .caption-how-to-earn {
 	text-align: center;
 	font-weight: bold;
-  font-size: 20px;
+    font-size: 20px;
 }
 
 .description-how-to-earn {
@@ -38,9 +38,19 @@ table.sppHistoryTable > tr:nth-child(even) {
 }
 
 #modalTitle {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .unslider {
     margin-top: 40px;
+}
+
+.label_buy_spp{
+    min-width: 2rem !important;
+}
+
+.disclaimerBuySpp {
+    margin-bottom: 1rem;
+    font-style: italic;
+    text-transform: none;
 }

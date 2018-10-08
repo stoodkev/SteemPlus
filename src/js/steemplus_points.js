@@ -5,6 +5,7 @@ var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 var myUsernameSPP = null;
 var usernameSPP = null;
 var retrySteemplusPoint = 0;
+var sbdPerSteem = null;
 
 var isSteemit = null;
 var isBusy = null;
@@ -16,7 +17,8 @@ var wayList = [
     {id: "3", title: "Create a post with Donation for Steemplus",description:"Use the \'Post and Support\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
     {id: "4", title: "Create a new DTube post using Steemplus",description:"Post to DTube by putting dtube followed by a space in the tag bar, then following the instructions in the DTube popup (Login to SteemConnect required).", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
     {id: "5", title: "Create a new Utopian post using Steemplus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "6", title: "Buy Steem Monsters packs using Steemplus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"}
+    {id: "6", title: "Buy Steem Monsters packs using Steemplus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-31--buy-your-steem-monsters-packs-from-steemplus-and-earn-steemplus-points-spp", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"},
+    {id: "7", title: "Buy SteemPlus Points",description: "Send STEEM or SBD to @steemplus-pay.", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/buySpp.png", formula: "Send 1 SBD get 100 SPP."}
 ]
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -25,12 +27,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         myUsernameSPP = request.data.user;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
+        sbdPerSteem = request.data.market.SBDperSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     } else if (request.to === 'steemplus_points' && request.order === 'click' && token_steemplus_point == request.token) {
         myUsernameSPP = request.data.user;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
+        sbdPerSteem = request.data.market.SBDperSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     }
@@ -110,13 +114,16 @@ function displaySteemplusPoints(userDetails)
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
                             <li class="howToEarn"><a>How to earn SPP ?</a></li>
                             <li class="sppHistory"><a>Steemplus Points History</a></li>
+                            <li class="buySPP"><a>Buy Steemplus Points</a></li>
                         </ul>
                     </li>
                 </div>
             </div>
             `);
-        if(myUsernameSPP !== window.SteemPlus.Utils.getPageAccountName())
+        if(myUsernameSPP !== window.SteemPlus.Utils.getPageAccountName()){
+            divSPP.find('.buySPP').remove();
             divSPP.find('.howToEarn').remove();
+        }
 
         $('.UserWallet__balance').eq($('UserWallet__balance ').length-1).before(divSPP);
         $('.dropdownSPPLink').click(function(){
@@ -124,6 +131,122 @@ function displaySteemplusPoints(userDetails)
                 $(this).removeClass('show');
             else
                 $(this).addClass('show');
+        });
+        $('.buySPP').click(function(){
+            let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
+                <div class="reveal-overlay fade in" style="display: block;"></div>
+                <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">
+                    <button class="close-button" type="button">
+                        <span aria-hidden="true" class="">×</span>
+                    </button>
+                    <div id="modalTitle" class="row">
+                        <h3 class="column">Buy SteemPlus Points</h3>
+                    </div>
+                    <div class="row">
+                        <label class="disclaimerBuySpp">Your new SteemPlus Points can take up to 10 minutes to appear in your balance.</label>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">To</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <span class="input-group-label label_buy_spp">@</span>
+                                <select id="selectReceiverSPP" style="min-width: 5rem; height: inherit; background-color: transparent;" autofocus="" disabled>
+                                    <option value="steemplus-pay" selected="">steemplus-pay</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">Send</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 5px;">
+                                <input id="sent_amount" type="number" placeholder="Amount" name="sent_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="0" step="0.001">
+                                <span class="input-group-label label_buy_spp" style="padding-left: 0px; padding-right: 0px;">
+                                    <select id="sent_currency" name="sent_currency" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">
+                                        <option value="SBD" selected="">SBD</option>
+                                        <option value="STEEM">STEEM</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="amount-error" style="color: rgb(51, 51, 51);">
+                                <small>Min: 0.010 SBD</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">Receive</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 5px;">
+                                <input id="receive_amount" type="number" placeholder="Amount" name="receive_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="1" step="1">
+                                <span class="input-group-label label_buy_spp" style="padding-left: 0px; padding-right: 0px;">
+                                    <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" disabled>
+                                        <option value="SPP" selected="">SPP</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="amount-error" style="color: rgb(51, 51, 51);">
+                                <small>Min: 1 SPP</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <button class="button-steemit" id="buySPPButton">Buy SPP</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+
+            modal.find('#buySPPButton').on('click', function(){
+                let amountReceived = modal.find('#receive_amount').val();
+                let amountSent = modal.find('#sent_amount').val();
+                let sentCurrency = modal.find('#sent_currency').val();
+                let selectReceiverSPP = modal.find('#selectReceiverSPP').val();
+
+                if(amountReceived < 1){
+                    alert(`You can't buy less than 1 SPP`);
+                    modal.find('#receive_amount').val(1);
+                    refreshSentInput();
+                    return;
+                }
+
+                var memoBuySPP = `buySPP : Bought ${amountReceived} SPP for ${amountSent} ${sentCurrency}`;
+                var urlBuySPP = 'https://steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20' + sentCurrency + '&memo=' + memoBuySPP;
+                var win = window.open(urlBuySPP, '_blank');
+                if (win) {
+                    //Browser has allowed it to be opened
+                    win.focus();
+                } else {
+                    //Browser has blocked it
+                    alert('Please allow popups for this website');
+                }
+            });
+            modal.find('#receive_amount').on('input', function(){
+                sentIsLastInput = false;
+                refreshSentInput(modal);
+            });
+            modal.find('#sent_amount').on('input', function(){
+                sentIsLastInput = true;
+                refreshReceivedInput(modal);
+            });
+            modal.find('#sent_currency').on('input', function(){
+                if(sentIsLastInput)
+                    refreshReceivedInput(modal);
+                else
+                    refreshSentInput(modal);
+            });
+
+            modal.find('.close-button').on('click', function() {
+                modal.remove();
+            });
+            modal.find('.reveal-overlay').on('click', function() {
+                modal.remove();
+            });
+            $('body').append(modal);
         });
         $('.howToEarn').click(function()
         {
@@ -253,4 +376,24 @@ function displaySteemplusPoints(userDetails)
 
 
     }
+}
+
+function refreshSentInput(modal)
+{  
+    let amountReceived = modal.find('#receive_amount').val();
+    let sentCurrency = modal.find('#sent_currency').val();
+    if(sentCurrency === 'SBD')
+        modal.find('#sent_amount').val((amountReceived/100).toFixed(2));
+    else 
+        modal.find('#sent_amount').val((amountReceived/100/sbdPerSteem).toFixed(2));
+}
+
+function refreshReceivedInput(modal)
+{
+    let sentAmount = modal.find('#sent_amount').val();
+    let sentCurrency = modal.find('#sent_currency').val();
+    if(sentCurrency === 'SBD')
+        modal.find('#receive_amount').val((sentAmount*100).toFixed(2));
+    else 
+        modal.find('#receive_amount').val((sentAmount*100*sbdPerSteem).toFixed(2));
 }

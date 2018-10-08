@@ -789,7 +789,8 @@ function startOfflineFeatures(items, user, account) {
             data: {
                 user: user,
                 steemit: steemit,
-                busy: busy
+                busy: busy,
+                market: market
             }
         });
     if (steem_monsters && steemit)
@@ -1256,7 +1257,9 @@ function startOfflineFeatures(items, user, account) {
                         data: {
                             user: user,
                             steemit: steemit,
-                            busy: busy
+                            busy: busy,
+                            market: market
+
                         }
                     });
                 if (steem_monsters && steemit)

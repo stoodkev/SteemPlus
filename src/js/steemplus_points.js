@@ -17,7 +17,8 @@ var wayList = [
     {id: "3", title: "Create a post with Donation for Steemplus",description:"Use the \'Post and Support\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
     {id: "4", title: "Create a new DTube post using Steemplus",description:"Post to DTube by putting dtube followed by a space in the tag bar, then following the instructions in the DTube popup (Login to SteemConnect required).", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
     {id: "5", title: "Create a new Utopian post using Steemplus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "6", title: "Buy Steem Monsters packs using Steemplus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"}
+    {id: "6", title: "Buy Steem Monsters packs using Steemplus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-31--buy-your-steem-monsters-packs-from-steemplus-and-earn-steemplus-points-spp", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"},
+    {id: "7", title: "Buy SteemPlus Points",description: "Send STEEM or SBD to @steemplus-pay.", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/buySpp.png", formula: "Send 1 SBD get 100 SPP."}
 ]
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
@@ -139,7 +140,7 @@ function displaySteemplusPoints(userDetails)
                         <span aria-hidden="true" class="">×</span>
                     </button>
                     <div id="modalTitle" class="row">
-                        <h3 class="column">Buy Steemplus Point</h3>
+                        <h3 class="column">Buy SteemPlus Points</h3>
                     </div>
                     <div class="row">
                         <label class="disclaimerBuySpp">Your new SteemPlus Points can take up to 10 minutes to appear in your balance.</label>
@@ -149,8 +150,8 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-2" style="padding-top: 5px;">To</div>
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 1.25rem;">
-                                <span class="input-group-label">@</span>
-                                <select id="selectReceiverSPP" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" autofocus="">
+                                <span class="input-group-label label_buy_spp">@</span>
+                                <select id="selectReceiverSPP" style="min-width: 5rem; height: inherit; background-color: transparent;" autofocus="" disabled>
                                     <option value="steemplus-pay" selected="">steemplus-pay</option>
                                 </select>
                             </div>
@@ -162,7 +163,7 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 5px;">
                                 <input id="sent_amount" type="number" placeholder="Amount" name="sent_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="0" step="0.001">
-                                <span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">
+                                <span class="input-group-label label_buy_spp" style="padding-left: 0px; padding-right: 0px;">
                                     <select id="sent_currency" name="sent_currency" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;">
                                         <option value="SBD" selected="">SBD</option>
                                         <option value="STEEM">STEEM</option>
@@ -179,7 +180,7 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 5px;">
                                 <input id="receive_amount" type="number" placeholder="Amount" name="receive_amount" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="1" step="1">
-                                <span class="input-group-label" style="padding-left: 0px; padding-right: 0px;">
+                                <span class="input-group-label label_buy_spp" style="padding-left: 0px; padding-right: 0px;">
                                     <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" disabled>
                                         <option value="SPP" selected="">SPP</option>
                                     </select>
@@ -207,14 +208,14 @@ function displaySteemplusPoints(userDetails)
                 let selectReceiverSPP = modal.find('#selectReceiverSPP').val();
 
                 if(amountReceived < 1){
-                    alert(`You can buy less than 1 SPP`);
+                    alert(`You can't buy less than 1 SPP`);
                     modal.find('#receive_amount').val(1);
                     refreshSentInput();
                     return;
                 }
 
                 var memoBuySPP = `buySPP : Bought ${amountReceived} SPP for ${amountSent} ${sentCurrency}`;
-                var urlBuySPP = 'https://steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20SBD&memo=' + memoBuySPP;
+                var urlBuySPP = 'https://steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20' + sentCurrency + '&memo=' + memoBuySPP;
                 var win = window.open(urlBuySPP, '_blank');
                 if (win) {
                     //Browser has allowed it to be opened

@@ -11,13 +11,13 @@ var isSteemit = null;
 var isBusy = null;
 
 var wayList = [
-    {id: "0", title: "Boost a post with Minnowbooster using Steemplus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on MinnowBooster.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of SBD sent to MinnowBooster (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
-    {id: "1", title: "Boost a post with PostPromoter using Steemplus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on PostPromoter.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of SBD sent to PostPromoter (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
-    {id: "2", title: "Create a new post with Beneficiaries using Steemplus",description:"Use the \'Add Beneficiaries\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-1-7-share-your-rewards-with-your-friends-beneficiaries-ideal-for-the-steemfest", "url": "src/img/howtoearnspp/beneficiaries.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "3", title: "Create a post with Donation for Steemplus",description:"Use the \'Post and Support\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "4", title: "Create a new DTube post using Steemplus",description:"Post to DTube by putting dtube followed by a space in the tag bar, then following the instructions in the DTube popup (Login to SteemConnect required).", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "5", title: "Create a new Utopian post using Steemplus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
-    {id: "6", title: "Buy Steem Monsters packs using Steemplus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-31--buy-your-steem-monsters-packs-from-steemplus-and-earn-steemplus-points-spp", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"},
+    {id: "0", title: "Boost a post with Minnowbooster using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on MinnowBooster.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of SBD sent to MinnowBooster (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
+    {id: "1", title: "Boost a post with PostPromoter using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on PostPromoter.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of SBD sent to PostPromoter (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
+    {id: "2", title: "Create a new post with Beneficiaries using SteemPlus",description:"Use the \'Add Beneficiaries\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-1-7-share-your-rewards-with-your-friends-beneficiaries-ideal-for-the-steemfest", "url": "src/img/howtoearnspp/beneficiaries.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "3", title: "Create a post with Donation for SteemPlus",description:"Use the \'Post and Support\' button on the post creation page. (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-2-18-2-post-and-support", "url": "src/img/howtoearnspp/donation.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "4", title: "Create a new DTube post using SteemPlus",description:"Post to DTube by putting dtube followed by a space in the tag bar, then following the instructions in the DTube popup (Login to SteemConnect required).", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-221-earn-more-by-posting-to-dtube-via-steemplus", "url": "src/img/howtoearnspp/dtube.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "5", title: "Create a new Utopian post using SteemPlus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
+    {id: "6", title: "Buy Steem Monsters packs using SteemPlus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "https://steemit.com/utopian-io/@steem-plus/steemplus-31--buy-your-steem-monsters-packs-from-steemplus-and-earn-steemplus-points-spp", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"},
     {id: "7", title: "Buy SteemPlus Points",description: "Send STEEM or SBD to @steemplus-pay.", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/buySpp.png", formula: "Send 1 SBD get 100 SPP."}
 ]
 
@@ -99,7 +99,7 @@ function displaySteemplusPoints(userDetails)
         let divSPP = $(`
             <div class="UserWallet__balance row zebra">
                 <div class="column small-12 medium-8">
-                    Steemplus Points
+                    SteemPlus Points
                     <div class="FormattedHTMLMessage secondary">
                         SPP allow you to receive a share of @steem-plus vote and are redeemable for premium features.
                     </div>
@@ -113,8 +113,8 @@ function displaySteemplusPoints(userDetails)
                         </a>
                         <ul class="VerticalMenu menu vertical VerticalMenu dropdownSPP">
                             <li class="howToEarn"><a>How to earn SPP ?</a></li>
-                            <li class="sppHistory"><a>Steemplus Points History</a></li>
-                            <li class="buySPP"><a>Buy Steemplus Points</a></li>
+                            <li class="sppHistory"><a>SteemPlus Points History</a></li>
+                            <li class="buySPP"><a>Buy SteemPlus Points</a></li>
                         </ul>
                     </li>
                 </div>
@@ -145,7 +145,7 @@ function displaySteemplusPoints(userDetails)
                     <div class="row">
                         <label class="disclaimerBuySpp">Your new SteemPlus Points can take up to 10 minutes to appear in your balance.</label>
                     </div>
-                    
+
                     <div class="row">
                         <div class="column small-2" style="padding-top: 5px;">To</div>
                         <div class="column small-10">
@@ -257,7 +257,7 @@ function displaySteemplusPoints(userDetails)
                         <span aria-hidden="true" class="">×</span>
                     </button>
                     <div id="modalTitle" class="row">
-                        <h3 class="column">How to earn Steemplus Points?</h3>
+                        <h3 class="column">How to earn SteemPlus Points?</h3>
                     </div>
                     <ol>
                     </ol>
@@ -314,10 +314,10 @@ function displaySteemplusPoints(userDetails)
                     <span aria-hidden="true" class="">×</span>
                 </button>
                 <div id="modalTitle" class="row">
-                    <h3 class="column">Steemplus Points History</h3>
+                    <h3 class="column">SteemPlus Points History</h3>
                 </div>
                 <p>SPP earned from posts will be collected after payout.<br>SPP earned from transactions might take up to 20 minutes to be collected.</p>
-                <h4 class="column">Total Steemplus Points : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
+                <h4 class="column">Total SteemPlus Points : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
                 <div class="sppHistoryDetail">
                 </div>
             </div>
@@ -365,7 +365,7 @@ function displaySteemplusPoints(userDetails)
             <div class="UserWalletSummary__item">
                 <i class="iconfont icon-Dollar UserWalletSummary__icon"></i>
                 <div class="UserWalletSummary__label">
-                    <span>Steemplus Points</span>
+                    <span>SteemPlus Points</span>
                 </div>
                 <div class="UserWalletSummary__value">
                     <span><span>${(userDetails !== undefined ? userDetails.nbPoints.toFixed(2) : 0)}</span> SPP</span>
@@ -379,12 +379,12 @@ function displaySteemplusPoints(userDetails)
 }
 
 function refreshSentInput(modal)
-{  
+{
     let amountReceived = modal.find('#receive_amount').val();
     let sentCurrency = modal.find('#sent_currency').val();
     if(sentCurrency === 'SBD')
         modal.find('#sent_amount').val((amountReceived/100).toFixed(2));
-    else 
+    else
         modal.find('#sent_amount').val((amountReceived/100/sbdPerSteem).toFixed(2));
 }
 
@@ -394,6 +394,6 @@ function refreshReceivedInput(modal)
     let sentCurrency = modal.find('#sent_currency').val();
     if(sentCurrency === 'SBD')
         modal.find('#receive_amount').val((sentAmount*100).toFixed(2));
-    else 
+    else
         modal.find('#receive_amount').val((sentAmount*100*sbdPerSteem).toFixed(2));
 }

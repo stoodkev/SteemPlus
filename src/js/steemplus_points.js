@@ -161,7 +161,7 @@ function displaySteemplusPoints(userDetails)
                         <label class="errorAmountDelegationMessage">You can't delegate to Steemplus because your maximum amount available is below the minimum amount we authorize</label>
                     </div>
                     <div class="row">
-                        <label class="disclaimerDelegateSpp">Delegate Steem Power to SteemPlus and get rewards. You can obtain to kind of reward : SPP and a part of the curation reward or more SPP.</label>
+                        <label class="disclaimerDelegateSpp">Delegate Steem Power to SteemPlus and get SPP as rewards.</label>
                     </div>
 
                     <div class="row">
@@ -169,7 +169,7 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 1.25rem;">
                                 <span class="input-group-label label_buy_spp">@</span>
-                                <input id="delegatedUser" type="text" name="delegatedUser" value="steemplus-pay" disabled>
+                                <input id="delegatedUser" type="text" name="delegatedUser" value="steemplus" disabled>
                             </div>
                         </div>
                     </div>
@@ -182,20 +182,9 @@ function displaySteemplusPoints(userDetails)
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="column small-2" style="padding-top: 5px;">Reward</div>
-                        <div class="column small-10">
-                            <div class="input-group" style="margin-bottom: 1.25rem;">
-                                <select id="selectReward" name="selectReward" style="min-width: 5rem; height: inherit; background-color: transparent;">
-                                    <option value="0" selected="">Curation Reward and SPP</option>
-                                    <option value="1">Only SPP</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row">
-                        <div class="column small-2" style="padding-top: 5px;">Receive</div>
+                        <div class="column small-2" style="padding-top: 5px;">Amount</div>
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 5px;">
                                 <input id="amountDelegationSPP" type="number" placeholder="Amount" name="amountDelegationSPP" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="${minAmountDelegationSPP}" max="${maxAmountAvailableDelegationSPP}" step="1">
@@ -249,7 +238,7 @@ function displaySteemplusPoints(userDetails)
 
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
-                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steemplus-pay&vesting_shares='+delegatedVestsSPP+'%20VESTS';
+                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steemplus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
                 window.open(url, '_blank');
             });
 

@@ -787,10 +787,14 @@ function startOfflineFeatures(items, user, account) {
             to: 'steemplus_points',
             order: 'start',
             data: {
-                user: user,
+                account: account,
                 steemit: steemit,
                 busy: busy,
-                market: market
+                market: market,
+                global: {
+                    totalSteem: totalSteemLS,
+                    totalVests: totalVestsLS
+                }
             }
         });
     if (steem_monsters && steemit)
@@ -1255,10 +1259,14 @@ function startOfflineFeatures(items, user, account) {
                         to: 'steemplus_points',
                         order: 'click',
                         data: {
-                            user: user,
+                            account: account,
                             steemit: steemit,
                             busy: busy,
-                            market: market
+                            market: market,
+                            global: {
+                                totalSteem: totalSteemLS,
+                                totalVests: totalVestsLS
+                            }
 
                         }
                     });

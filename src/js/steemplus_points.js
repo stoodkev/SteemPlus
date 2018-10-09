@@ -3,9 +3,13 @@ var token_steemplus_point = null;
 var userPageRegex = /^.*@([a-z][a-z0-9.\-]+[a-z0-9])$/;
 
 var myUsernameSPP = null;
+var myAccountSPP = null;
 var usernameSPP = null;
 var retrySteemplusPoint = 0;
+
 var sbdPerSteem = null;
+var totalVestsSPP = null;
+var totalSteemSPP = null;
 
 var isSteemit = null;
 var isBusy = null;
@@ -24,17 +28,23 @@ var wayList = [
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'steemplus_points' && request.order === 'start' && token_steemplus_point == null) {
         token_steemplus_point = request.token;
-        myUsernameSPP = request.data.user;
+        myUsernameSPP = request.data.account.name;
+        myAccountSPP = request.data.account;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
         sbdPerSteem = request.data.market.SBDperSteem;
+        totalVestsSPP = request.data.global.totalVests;
+        totalSteemSPP = request.data.global.totalSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     } else if (request.to === 'steemplus_points' && request.order === 'click' && token_steemplus_point == request.token) {
-        myUsernameSPP = request.data.user;
+        myUsernameSPP = request.data.account.name;
+        myAccountSPP = request.data.account;
         isSteemit = request.data.steemit;
         isBusy = request.data.busy;
         sbdPerSteem = request.data.market.SBDperSteem;
+        totalVestsSPP = request.data.global.totalVests;
+        totalSteemSPP = request.data.global.totalSteem;
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     }
@@ -124,6 +134,7 @@ function displaySteemplusPoints(userDetails)
         if(myUsernameSPP !== window.SteemPlus.Utils.getPageAccountName()){
             divSPP.find('.buySPP').remove();
             divSPP.find('.howToEarn').remove();
+            divSPP.find('.sppDelegation').remove();
         }
 
         $('.UserWallet__balance').eq($('UserWallet__balance ').length-1).before(divSPP);
@@ -132,6 +143,123 @@ function displaySteemplusPoints(userDetails)
                 $(this).removeClass('show');
             else
                 $(this).addClass('show');
+        });
+        $('.sppDelegation').click(async function(){
+            let maxAmountAvailableDelegationSPP = await getMaxSP();
+            let minAmountDelegationSPP = 100;
+
+            let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
+                <div class="reveal-overlay fade in" style="display: block;"></div>
+                <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">
+                    <button class="close-button" type="button">
+                        <span aria-hidden="true" class="">×</span>
+                    </button>
+                    <div id="modalTitle" class="row">
+                        <h3 class="column">Delegate to SteemPlus</h3>
+                    </div>
+                    <div class="row">
+                        <label class="errorAmountDelegationMessage">You can't delegate to Steemplus because your maximum amount available is below the minimum amount we authorize</label>
+                    </div>
+                    <div class="row">
+                        <label class="disclaimerDelegateSpp">Delegate Steem Power to SteemPlus and get rewards. You can obtain to kind of reward : SPP and a part of the curation reward or more SPP.</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">To</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <span class="input-group-label label_buy_spp">@</span>
+                                <input id="delegatedUser" type="text" name="delegatedUser" value="steemplus-pay" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">From</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <span class="input-group-label label_buy_spp">@</span>
+                                <input id="delegatingUser" type="text" name="delegatingUser" value="${myUsernameSPP}" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">Reward</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <select id="selectReward" name="selectReward" style="min-width: 5rem; height: inherit; background-color: transparent;">
+                                    <option value="0" selected="">Curation Reward and SPP</option>
+                                    <option value="1">Only SPP</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="column small-2" style="padding-top: 5px;">Receive</div>
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 5px;">
+                                <input id="amountDelegationSPP" type="number" placeholder="Amount" name="amountDelegationSPP" value="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" autofocus="" min="${minAmountDelegationSPP}" max="${maxAmountAvailableDelegationSPP}" step="1">
+                                <span class="input-group-label label_buy_spp" style="padding-left: 0px; padding-right: 0px;">
+                                    <select name="asset" placeholder="Asset" style="min-width: 5rem; height: inherit; background-color: transparent; border: none;" disabled>
+                                        <option value="SPP" selected="">SP</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="amountDelegationSpan" style="color: rgb(51, 51, 51);">
+                                <small>Min: <span class="minAmountDelegationSPP"></span> SP</small> / <small>Max Available: <a id="maxAvailableLink"><span class="maxAmountAvailableDelegationSPP"></span> SP</a></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column small-10">
+                            <div class="input-group" style="margin-bottom: 1.25rem;">
+                                <button class="button-steemit" id="delegationSPPButton">Delegate</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+
+            if(minAmountDelegationSPP > maxAmountAvailableDelegationSPP){
+                modal.find('#delegationSPPButton').prop('disabled', true);
+                modal.find('#delegationSPPButton').addClass('disabled');
+            }
+            else {
+                modal.find('.errorAmountDelegationMessage').remove();
+            }
+
+            modal.find('#maxAvailableLink').click(function(){
+                modal.find('#amountDelegationSPP').val(maxAmountAvailableDelegationSPP);
+            });
+            
+            modal.find('.minAmountDelegationSPP').text(minAmountDelegationSPP);
+            modal.find('.maxAmountAvailableDelegationSPP').text(maxAmountAvailableDelegationSPP);
+
+            modal.find('#delegationSPPButton').on('click', function(){
+                const amountDelegation = modal.find('#amountDelegationSPP').val();
+
+                if(amountDelegation < minAmountDelegationSPP){
+                    alert(`The amount you want to delegate is too low. The minimum you can delgate is ${minAmountDelegationSPP} SP`);
+                    return;
+                }
+                if(amountDelegation > maxAmountAvailableDelegationSPP){
+                    alert(`The amount you want to delegate is too high. The maximum you can delegate is ${maxAmountAvailableDelegationSPP} SP`);
+                    return;
+                }
+
+                var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
+                delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
+                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steemplus-pay&vesting_shares='+delegatedVestsSPP+'%20VESTS';
+                window.open(url, '_blank');
+            });
+
+            modal.find('.close-button').on('click', function() {
+                modal.remove();
+            });
+            modal.find('.reveal-overlay').on('click', function() {
+                modal.remove();
+            });
+            $('body').append(modal);
         });
         $('.buySPP').click(function(){
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
@@ -397,4 +525,19 @@ function refreshReceivedInput(modal)
         modal.find('#receive_amount').val((sentAmount*100).toFixed(2));
     else
         modal.find('#receive_amount').val((sentAmount*100*sbdPerSteem).toFixed(2));
+}
+
+// Function used to get the maximum SP user can delegate
+async function getMaxSP(){
+    let myOutgoingDelegations = await steem.api.getVestingDelegationsAsync(myAccountSPP.name, null, 10);
+    let tmp = 0;
+    for (myOutgoingDelegation of myOutgoingDelegations) {
+      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, totalVestsSPP, totalSteemSPP)) * 100) / 100;
+      if(valueDelegation>0)
+        tmp += valueDelegation;
+    }
+    let myTotalOutgoingDelegation = tmp;
+    var myVests = parseFloat(steem.formatter.vestToSteem(myAccountSPP.vesting_shares.replace(' VESTS',''), totalVestsSPP, totalSteemSPP) * 100) / 100;
+    var maxSP = myVests - myTotalOutgoingDelegation - 5.000;
+    return (maxSP > 0 ? maxSP.toFixed(3) : 0);
 }

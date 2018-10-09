@@ -115,6 +115,7 @@ function displaySteemplusPoints(userDetails)
                             <li class="howToEarn"><a>How to earn SPP ?</a></li>
                             <li class="sppHistory"><a>SteemPlus Points History</a></li>
                             <li class="buySPP"><a>Buy SteemPlus Points</a></li>
+                            <li class="sppDelegation"><a>Delegate to SteemPlus</a></li>
                         </ul>
                     </li>
                 </div>

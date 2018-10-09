@@ -169,7 +169,7 @@ function displaySteemplusPoints(userDetails)
                         <div class="column small-10">
                             <div class="input-group" style="margin-bottom: 1.25rem;">
                                 <span class="input-group-label label_buy_spp">@</span>
-                                <input id="delegatedUser" type="text" name="delegatedUser" value="steemplus" disabled>
+                                <input id="delegatedUser" type="text" name="delegatedUser" value="steem-plus" disabled>
                             </div>
                         </div>
                     </div>
@@ -238,7 +238,7 @@ function displaySteemplusPoints(userDetails)
 
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
-                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steemplus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
+                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
                 window.open(url, '_blank');
             });
 

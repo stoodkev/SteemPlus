@@ -1,12 +1,9 @@
 (function() {
-
-
-    var STEEMIT_100_PERCENT = 10000;
-    var STEEMIT_VOTE_REGENERATION_SECONDS = (5 * 60 * 60 * 24); // 5 day
-
-    var pageAccountNameRegexp = /^\/@([a-z0-9\-\.]*)([\/\#].*)?$/;
-    var domCheckTimeout = 100;
-
+    const STEEM_100_PERCENT = 10000;
+    const STEEM_VOTE_REGENERATION_SECONDS = (5 * 60 * 60 * 24); // 5 day
+    const VOTE_DUST_THRESHOLD=50000000;
+    const pageAccountNameRegexp = /^\/@([a-z0-9\-\.]*)([\/\#].*)?$/;
+    const domCheckTimeout = 100;
     const noImageAvailable = "src/img/no-image-available-hi.png";
 
     var getPageAccountName = function() {
@@ -170,10 +167,15 @@
             var effective_vesting_shares = Math.round(getEffectiveVestingSharesPerAccount(account) * 1000000);
             var current_power = full ? 10000 : await getVotingPowerPerAccount(account)*100;
             var weight = voteWeight * 100;
-            var max_vote_denom = votePowerReserveRate * STEEMIT_VOTE_REGENERATION_SECONDS / (60 * 60 * 24);
-            var used_power = Math.round((current_power * weight) / STEEMIT_100_PERCENT);
-            used_power = Math.round((used_power + max_vote_denom - 1) / max_vote_denom);
-            var rshares = Math.round((effective_vesting_shares * used_power) / (STEEMIT_100_PERCENT))
+            var max_vote_denom = votePowerReserveRate * STEEM_VOTE_REGENERATION_SECONDS  ;
+
+            var used_power = Math.floor((current_power * weight)) / STEEM_100_PERCENT*(60 * 60 * 24);
+            used_power = Math.floor((used_power + max_vote_denom - 1) / max_vote_denom);
+            var rshares = Math.floor((effective_vesting_shares * used_power)) / (STEEM_100_PERCENT);
+            if (Math.abs(rshares) <= VOTE_DUST_THRESHOLD)
+              rshares= 0;
+            rshares -= VOTE_DUST_THRESHOLD;
+            rshares=Math.max(rshares,0);
             var voteValue = rshares *
                 rewardBalance / recentClaims *
                 steemPrice;

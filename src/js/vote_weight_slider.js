@@ -4,7 +4,7 @@ var rewardBalance = null;
 var recentClaims = null;
 var steemPrice = null;
 var votePowerReserveRate = null;
-var account = null;
+var account_vws = null;
 
 var voteWeightSliderStarted = false;
 
@@ -20,9 +20,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vws = request.data.account;
             retryCountVoteWeightSlider = 0;
-
             startVoteWeightSlider();
             voteWeightSliderStarted = true;
 
@@ -32,7 +31,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vws = request.data.account;
 
             if (voteWeightSliderStarted)
                 startVoteWeightSlider();
@@ -42,7 +41,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vws = request.data.account;
 
             if (voteWeightSliderStarted)
                 startVoteWeightSlider();
@@ -79,8 +78,7 @@ async function updateVotingSlider(weightDisplay) {
         }));
         weightDisplay.after(weightDollars);
     }
-
-    var dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /, ''), 10), account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+    var dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /, ''), 10), account_vws, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
 
     if ((typeof dollars === 'undefined' || dollars === undefined) && retryCountVoteWeightSlider < 20) {
         retryCountVoteWeightSlider++;
@@ -137,7 +135,6 @@ async function updateVotingSlider(weightDisplay) {
 
 function tryUpdateVotingSlider(weightDisplay) {
     //var weightDisplay = $('span.Voting__button .weight-display');
-    console.log(weightDisplay);
     if (weightDisplay.length) {
         updateVotingSlider(weightDisplay);
     }

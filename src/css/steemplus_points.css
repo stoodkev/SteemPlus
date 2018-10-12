@@ -51,7 +51,6 @@ table.sppHistoryTable > tr:nth-child(even) {
 
 .disclaimerBuySpp, .disclaimerDelegateSpp, .errorAmountDelegationMessage {
     margin-bottom: 1rem;
-    font-style: italic;
     text-transform: none;
 }
 .errorAmountDelegationMessage {

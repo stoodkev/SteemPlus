@@ -13,6 +13,8 @@ var totalSteemSPP = null;
 
 var isSteemit = null;
 var isBusy = null;
+var isDelegatingToSteemPlus = false;
+var delegatingToSteemPlus = 0;
 
 // List of all the different ways to earn SPP
 var wayList = [
@@ -24,7 +26,7 @@ var wayList = [
     {id: "5", title: "Create a new Utopian post using SteemPlus",description: "Post to Utopian by typing utopian-io followed by a space in the tag bar, then following the instructions in the Utopian popup (Login to SteemConnect required).", description_post: "@steem-plus/steemplus-220-utopian--steemplus-partnership--bigger-upvotes", "url": "src/img/howtoearnspp/utopian.png", formula: "The amount @steemplus-pay will receive as a benefactor * 100 (example : if @steemplus-pay receives 5 SBD worth of SP, you will receive 500 SPP)"},
     {id: "6", title: "Buy Steem Monsters packs using SteemPlus",description: "Earn SteemPlus Points (SPP) for each SteemMonsters pack you buy from SteemPlus. <br> If you don\'t have an account on SteemMonsters yet, follow <a href='https://steemmonsters.com/?ref=steemplus-pay' target='_blank'>this link</a> to do so, you will automatically get SPP for all your future purchases.", description_post: "@steem-plus/steemplus-31--buy-your-steem-monsters-packs-from-steemplus-and-earn-steemplus-points-spp", "url": "src/img/howtoearnspp/steemmonsters.png", formula: "You will get 10 times more SPP than the SPP you spend (spend 20 SBD buying cards, earn 200 SPP)"},
     {id: "7", title: "Buy SteemPlus Points",description: "Send STEEM or SBD to @steemplus-pay.", description_post: "@steem-plus/steemplus-32--buy-spp", "url": "src/img/howtoearnspp/buySpp.png", formula: "Send 1 SBD get 100 SPP."},
-    {id: "8", title: "Delegate Steem Power to SteemPlus",description: "Delegate Steem Power to @steem-plus and get SPP", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/delegation.png", formula: "Get 1 SPP per week per SBD worth of Steem Power (SPP per week = AmountSP * STEEMPrice/SBDPrice )"}
+    {id: "8", title: "Delegate Steem Power to @steem-plus",description: "Delegate Steem Power to @steem-plus and get weekly SPP payouts (first payout one week after the first delegation)", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/delegation.png", formula: "Get 1 SPP per week per SBD worth of Steem Power (SPP per week = AmountSP * STEEMPrice/SBDPrice )"}
 ]
 
 // Listener on messages coming from main
@@ -143,7 +145,7 @@ function displaySteemplusPoints(userDetails)
                             <li class="howToEarn"><a>How to earn SPP ?</a></li>
                             <li class="sppHistory"><a>SteemPlus Points History</a></li>
                             <li class="buySPP"><a>Buy SteemPlus Points</a></li>
-                            <li class="sppDelegation"><a>Delegate to SteemPlus</a></li>
+                            <li class="sppDelegation"><a>Delegate to @steem-plus</a></li>
                         </ul>
                     </li>
                 </div>
@@ -171,7 +173,7 @@ function displaySteemplusPoints(userDetails)
         $('.sppDelegation').click(async function(){
             // click is async function because we want to use await
             // Calculate the maximum amout user can delegate
-            let maxAmountAvailableDelegationSPP = await getMaxSP();
+            let maxAmountAvailableDelegationSPP = await getMaxSPForSPP();
 
             // Create Delegation modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
@@ -181,10 +183,13 @@ function displaySteemplusPoints(userDetails)
                         <span aria-hidden="true" class="">×</span>
                     </button>
                     <div id="modalTitle" class="row">
-                        <h3 class="column">Delegate Steem Power to SteemPlus</h3>
+                        <h3 class="column">Delegate Steem Power to @steem-plus</h3>
                     </div>
                     <div class="row">
-                        <label class="disclaimerDelegateSpp">Delegate Steem Power to @steem-plus and get SPP.</label>
+                        <label class="disclaimerDelegateSpp">Delegate Steem Power to @steem-plus and and get weekly SPP payouts.</label>
+                    </div>
+                    <div class="row">
+                        <label class="alreadyDelegating disclaimerDelegateSpp">Currently delegated : ${delegatingToSteemPlus} SP <br>To delegate more, please enter the total number of SP to be delegated (ie : if you are delegating 100 SP and wish to delegate 100 SP more, enter 200 SP)</label>
                     </div>
 
                     <div class="row">
@@ -231,6 +236,8 @@ function displaySteemplusPoints(userDetails)
                     </div>
                 </div>
             </div>`);
+
+            if(!isDelegatingToSteemPlus) modal.find('.alreadyDelegating').remove();
 
             // On click on max available link, put the maximum available delegation in amount input
             modal.find('#maxAvailableLink').click(function(){
@@ -562,12 +569,16 @@ function refreshReceivedInput(modal)
 }
 
 // Function used to get the maximum SP user can delegate
-async function getMaxSP(){
+async function getMaxSPForSPP(){
     let myOutgoingDelegations = await steem.api.getVestingDelegationsAsync(myAccountSPP.name, null, 10);
     let tmp = 0;
     for (myOutgoingDelegation of myOutgoingDelegations) {
-      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, totalVestsSPP, totalSteemSPP)) * 100) / 100;
-      if(valueDelegation>0)
+      let valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, totalVestsSPP, totalSteemSPP)) * 100) / 100;
+      if(myOutgoingDelegation.delegatee === 'steem-plus') {
+        isDelegatingToSteemPlus = true;
+        delegatingToSteemPlus = valueDelegation;
+      }
+      else if(valueDelegation>0)
         tmp += valueDelegation;
     }
     let myTotalOutgoingDelegation = tmp;

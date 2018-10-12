@@ -486,17 +486,13 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
 
 function getVestString(vests) {
     if (parseInt(vests) / 1000000000 > 1)
-        return numberWithCommas((parseInt(vests) / 1000000000).toFixed(3)) + ' GVests';
+        return window.SteemPlus.Utils.numberWithCommas((parseInt(vests) / 1000000000).toFixed(3)) + ' GVests';
     else if (parseInt(vests) / 1000000 > 1)
-        return numberWithCommas((parseInt(vests) / 1000000).toFixed(3)) + ' MVests';
+        return window.SteemPlus.Utils.numberWithCommas((parseInt(vests) / 1000000).toFixed(3)) + ' MVests';
     else if (parseInt(vests) / 1000)
-        return numberWithCommas((parseInt(vests) / 1000).toFixed(3)) + ' kVests';
+        return window.SteemPlus.Utils.numberWithCommas((parseInt(vests) / 1000).toFixed(3)) + ' kVests';
     else
-        return numberWithCommas(vests) + ' Vests';
-}
-
-var numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return window.SteemPlus.Utils.numberWithCommas(vests) + ' Vests';
 }
 
 function startTabIn(usernameTabWitnesses, isMyPageWitnesses) {

@@ -161,6 +161,10 @@
     };
 
 
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
     var getVotingDollarsPerAccount =  function(voteWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, full) {
         return new Promise(async function(fulfill,reject){
           if (rewardBalance && recentClaims && steemPrice && votePowerReserveRate) {
@@ -724,6 +728,7 @@
         getUserTopMenusBusy,
         getUserTopMenusBusy,
         getRC:getRC,
+        numberWithCommas:numberWithCommas,
         getTimeBeforeFull: getTimeBeforeFull
     };
 

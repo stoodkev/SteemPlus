@@ -213,7 +213,7 @@
                       return 'Loading...';
                   }
                   return type === 'display' ?
-                      numberWithCommas(sp.toFixed(2)) :
+                      window.SteemPlus.Utils.numberWithCommas((sp.toFixed(2)) :
                       sp;
               }
           }, {
@@ -446,8 +446,4 @@
               getFollowingListName(username, lastFollowing, followingList, callback);
           }
       });
-  }
-
-  var numberWithCommas = (x) => {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }

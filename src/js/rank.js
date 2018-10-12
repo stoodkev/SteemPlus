@@ -146,33 +146,33 @@ function getTitleString(titleBadge, vests) {
     else title = tmp[0] + ' I';
 
     if (vests < 333333)
-        title = title.concat(" - Next step 'Plankton II' in " + numberWithCommas(steem.formatter.vestToSteem(333333 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Plankton II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(333333 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 666666)
-        title = title.concat(" - Next step 'Plankton I' in " + numberWithCommas(steem.formatter.vestToSteem(666666 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Plankton I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(666666 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 1000000)
-        title = title.concat(" - Next step 'Minnow III' in " + numberWithCommas(steem.formatter.vestToSteem(1000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Minnow III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(1000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 4000000)
-        title = title.concat(" - Next step 'Minnow II' in " + numberWithCommas(steem.formatter.vestToSteem(4000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Minnow II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(4000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 7000000)
-        title = title.concat(" - Next step 'Minnow I' in " + numberWithCommas(steem.formatter.vestToSteem(7000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Minnow I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(7000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 10000000)
-        title = title.concat(" - Next step 'Doplhin III' in " + numberWithCommas(steem.formatter.vestToSteem(10000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Doplhin III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(10000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 40000000)
-        title = title.concat(" - Next step 'Doplhin II' in " + numberWithCommas(steem.formatter.vestToSteem(40000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Doplhin II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(40000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 70000000)
-        title = title.concat(" - Next step 'Doplhin I' in " + numberWithCommas(steem.formatter.vestToSteem(70000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Doplhin I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(70000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 100000000)
-        title = title.concat(" - Next step 'Orca III' in " + numberWithCommas(steem.formatter.vestToSteem(100000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Orca III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(100000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 400000000)
-        title = title.concat(" - Next step 'Orca II' in " + numberWithCommas(steem.formatter.vestToSteem(400000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Orca II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(400000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 700000000)
-        title = title.concat(" - Next step 'Orca I' in " + numberWithCommas(steem.formatter.vestToSteem(700000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Orca I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(700000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 1000000000)
-        title = title.concat(" - Next step 'Whale III' in " + numberWithCommas(steem.formatter.vestToSteem(1000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Whale III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(1000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 4000000000)
-        title = title.concat(" - Next step 'Whale II' in " + numberWithCommas(steem.formatter.vestToSteem(4000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Whale II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(4000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 8000000000)
-        title = title.concat(" - Next step 'Whale I' in " + numberWithCommas(steem.formatter.vestToSteem(8000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Whale I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(8000000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
 
     return title;
 }
@@ -245,9 +245,4 @@ function getAccountData(username) {
             resolve(response);
         });
     });
-}
-
-// Function used to format the numbers
-var numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

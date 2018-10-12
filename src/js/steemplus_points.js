@@ -137,7 +137,7 @@ function displaySteemplusPoints(userDetails)
                 <div class="column small-12 medium-4 nbPointsDiv">
                     <li class="DropdownMenu Wallet_dropdown dropdownSPPLink">
                         <a>
-                            <span>${(userDetails !== undefined ? userDetails.nbPoints.toFixed(2) : 0)} SPP
+                            <span>${(userDetails !== undefined ? window.SteemPlus.Utils.numberWithCommas(userDetails.nbPoints.toFixed(2)) : 0)} SPP
                                 <span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg></span>
                             </span>
                         </a>
@@ -243,7 +243,7 @@ function displaySteemplusPoints(userDetails)
             modal.find('#maxAvailableLink').click(function(){
                 modal.find('#amountDelegationSPP').val(maxAmountAvailableDelegationSPP);
             });
-            
+
             // Set maximum delegation link value
             modal.find('.maxAmountAvailableDelegationSPP').text(maxAmountAvailableDelegationSPP);
 
@@ -251,13 +251,13 @@ function displaySteemplusPoints(userDetails)
             modal.find('#delegationSPPButton').on('click', function(){
                 // Retrieve delegation value
                 const amountDelegation = modal.find('#amountDelegationSPP').val();
-                
+
                 // If value greater than maximum, notify user
                 if(amountDelegation > maxAmountAvailableDelegationSPP){
                     alert(`The amount you want to delegate is too high. The maximum you can delegate is ${maxAmountAvailableDelegationSPP} SP`);
                     return;
                 }
-                
+
                 // Calculate number of vests
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
@@ -265,7 +265,7 @@ function displaySteemplusPoints(userDetails)
                 var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
                 window.open(urlDelegationSPP, '_blank');
             });
-            
+
             // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
@@ -346,7 +346,7 @@ function displaySteemplusPoints(userDetails)
                     </div>
                 </div>
             </div>`);
-            
+
             // On click on Buy SPP button
             modal.find('#buySPPButton').on('click', function(){
                 // Retrieve values
@@ -392,7 +392,7 @@ function displaySteemplusPoints(userDetails)
                 else
                     refreshSentInput(modal);
             });
-            
+
             // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
@@ -441,7 +441,7 @@ function displaySteemplusPoints(userDetails)
                 </li>`);
                 modal.find('ol').append(`<li class="indexHowToEarnItem"><a name="${way.id}">${way.title}</a></li>`);
             });
-            
+
             // Configure the slider
             // No arrow, navigation with keyboard activated
             var howToEarnSlider = modal.find('.howToEarnSlider').unslider({
@@ -479,12 +479,12 @@ function displaySteemplusPoints(userDetails)
                     <h3 class="column">SteemPlus Points History</h3>
                 </div>
                 <p>SPP earned from posts will be collected after payout.<br>SPP earned from transactions might take up to 20 minutes to be collected.</p>
-                <h4 class="column">Total SteemPlus Points : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : userDetails.nbPoints.toFixed(2))} SPP</h4>
+                <h4 class="column">Total SteemPlus Points : ${(userDetails === undefined || userDetails.nbPoints === 0 ? 0 : window.SteemPlus.Utils.numberWithCommas(userDetails.nbPoints.toFixed(2)))} SPP</h4>
                 <div class="sppHistoryDetail">
                 </div>
             </div>
           </div>`);
-            
+
             // If user has no detail or no points, display error message
             if(userDetails === undefined || userDetails.nbPoints === 0)
                 modal.find('.sppHistoryDetail').append('<h4>No detail available</h4>');
@@ -508,7 +508,7 @@ function displaySteemplusPoints(userDetails)
                     <tr>
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
                         <td>${pointsDetail.typeTransaction.name}</td>
-                        <td>${pointsDetail.nbPoints.toFixed(2)}</td>
+                        <td>${window.SteemPlus.Utils.numberWithCommas(pointsDetail.nbPoints.toFixed(2))}</td>
                         ${(pointsDetail.url === undefined ? `<td><a target="_blank" href="${pointsDetail.permlink}">${pointsDetail.permlink}</a></td>` : `<td><a target="_blank" href="${pointsDetail.url}">${pointsDetail.title}</a></td>`)}
                     </tr>`);
                 });

@@ -4,7 +4,7 @@ var rewardBalance = null;
 var recentClaims = null;
 var steemPrice = null;
 var votePowerReserveRate = null;
-var account = null;
+var account_vwsb = null;
 var isFloatingFooterEnabled = null
 
 var isPostPage = false;
@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vwsb = request.data.account;
             isFloatingFooterEnabled = request.data.isPostFloatingBottomBarEnabled;
             retryCountVoteWeightSliderBusy = 0;
             isPostPage = false;
@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vwsb = request.data.account;
             isFloatingFooterEnabled = request.data.isPostFloatingBottomBarEnabled;
             isPostPage = false;
 
@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             recentClaims = request.data.recentClaims;
             steemPrice = request.data.steemPrice;
             votePowerReserveRate = request.data.votePowerReserveRate;
-            account = request.data.account;
+            account_vwsb = request.data.account;
         }
     }
 });
@@ -134,7 +134,7 @@ async function createPopupVoteSlider(element) {
     $(element).attr('data-html', 'true');
     $(element).attr('data-trigger', 'click');
     $(element).popover('show');
-    dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+    dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account_vwsb, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
     $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
 
     $(element).parent().find('#vote-weight-slider-busy').slider({
@@ -142,7 +142,7 @@ async function createPopupVoteSlider(element) {
     });
     $(element).parent().find('#vote-weight-slider-busy').on('change', async function(slideEvt) {
         currentWeight = slideEvt.value.newValue;
-        dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+        dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(currentWeight, account_vwsb, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
         $(element).parent().find('.percentage-vote-slider-busy').html(currentWeight);
         $(element).parent().find('.value-vote-slider-busy').html(dollars.toFixed(3));
     });
@@ -155,7 +155,7 @@ async function createPopupVoteSlider(element) {
         }
         var username = tmp.split('/')[0];
         var permlink = tmp.split('/')[1];
-        api.vote(account.name, username, permlink, currentWeight * 100, function(err, res) {
+        api.vote(account_vwsb.name, username, permlink, currentWeight * 100, function(err, res) {
             if (err) console.log(err);
             if (res) console.log(res);
             if (res !== null) {
@@ -179,7 +179,7 @@ function unlikePost(btnBusy) {
     }
     var username = tmp.split('/')[0];
     var permlink = tmp.split('/')[1];
-    api.vote(account.name, username, permlink, 0, function(err, res) {
+    api.vote(account_vwsb.name, username, permlink, 0, function(err, res) {
         if (err) console.log(err);
         if (res) console.log(res);
         if (res !== null) {

@@ -434,20 +434,20 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
     lineNumberWitness++;
     if (lineNumberWitness % 2 === 0) classOddEven = 'evenLine';
 
-    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Weekly Reward</div>');
-    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastWeekValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Weekly Rewards</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(witnessInfoLocal.lastWeekValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0)) + ' SP</div>');
     classOddEven = '';
     lineNumberWitness++;
     if (lineNumberWitness % 2 === 0) classOddEven = 'evenLine';
 
-    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Monthly Reward</div>');
-    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.lastMonthValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Monthly Rewards</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(witnessInfoLocal.lastMonthValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0)) + ' SP</div>');
     classOddEven = '';
     lineNumberWitness++;
     if (lineNumberWitness % 2 === 0) classOddEven = 'evenLine';
 
-    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Forever Reward</div>');
-    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + steem.formatter.vestToSteem(witnessInfoLocal.foreverValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0) + ' SP</div>');
+    $(rowMyWitness).append('<div class="col-3 witness-cells ' + classOddEven + '">Total Rewards</div>');
+    $(rowMyWitness).append('<div class="col-9 witness-cells ' + classOddEven + '"> ' + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(witnessInfoLocal.foreverValue, totalVestsWitnessTab, totalSteemWitnessTab).toFixed(0)) + ' SP</div>');
     classOddEven = '';
     lineNumberWitness++;
     if (lineNumberWitness % 2 === 0) classOddEven = 'evenLine';

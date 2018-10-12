@@ -212,20 +212,19 @@
                   if (typeof sp !== 'number') {
                       return 'Loading...';
                   }
-                  return type === 'display' ?
-                      window.SteemPlus.Utils.numberWithCommas((sp.toFixed(2)) :
-                      sp;
+                  return type === 'display' ? window.SteemPlus.Utils.numberWithCommas((sp.toFixed(2))) : sp;
               }
           }, {
               // upvote worth
               type: 'currency',
               orderSequence: ['desc', 'asc' ],
-              render: function(data, type, row, meta) {
+              render:  function(data, type, row, meta) {
                   var account = row;
                   if (!account.loaded) {
                       return 'Loading...';
                   }
-                  var dollars = window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+                  const dollars =  window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+                  console.log(dollars);
                   if (typeof dollars !== 'number') {
                       return 'Loading...';
                   }

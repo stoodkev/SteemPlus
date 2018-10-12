@@ -166,10 +166,9 @@
   }
 
     var getVotingDollarsPerAccount =  function(voteWeight, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, full) {
-        return new Promise(async function(fulfill,reject){
           if (rewardBalance && recentClaims && steemPrice && votePowerReserveRate) {
             var effective_vesting_shares = Math.round(getEffectiveVestingSharesPerAccount(account) * 1000000);
-            var current_power = full ? 10000 : await getVotingPowerPerAccount(account)*100;
+            var current_power = full ? 10000 : getMana(account).estimated_pct.toFixed(2)*100;
             var weight = voteWeight * 100;
             var max_vote_denom = votePowerReserveRate * STEEM_VOTE_REGENERATION_SECONDS  ;
 
@@ -183,10 +182,9 @@
             var voteValue = rshares *
                 rewardBalance / recentClaims *
                 steemPrice;
-            fulfill(voteValue);
+            return voteValue;
           }
-          else reject();
-          });
+          else return null;
     };
 
 

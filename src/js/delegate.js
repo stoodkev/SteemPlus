@@ -243,36 +243,38 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
   {
     $(divDelegation).append('<h5 class="incoming-delegation">Incoming - </h5><div id="list_delegators"></div>');
     totalIncomingDelegation = 0;
+    incomingDelegations.sort(function(a,b){return b.vesting_shares-a.vesting_shares;})
     incomingDelegations.forEach(function(item) {
-      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(item.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
+      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(item.vesting_shares, globalP.totalVests, globalP.totalSteem) * 100) / 100);
       if(valueDelegation > 0){
-        $(divDelegation).find('#list_delegators').append('<span style="float:left; margin-bottom:3px;" title="' + new Date(item.delegation_date) + '">' + valueDelegation + ' SP delegated by @' + item.delegator + '</span><br>');
+        $(divDelegation).find('#list_delegators').append('<span style="float:left; margin-bottom:3px;" title="' + new Date(item.delegation_date) + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated by @' + item.delegator + '</span><br>');
       totalIncomingDelegation += valueDelegation;
       }
     });
     $(divDelegation).find('#list_delegators').append('<br>');
-    $(divDelegation).find('.incoming-delegation').append(totalIncomingDelegation.toFixed(3) + ' SP');
+    $(divDelegation).find('.incoming-delegation').append(window.SteemPlus.Utils.numberWithCommas(totalIncomingDelegation.toFixed(3)) + ' SP');
   }
   else
   {
     totalIncomingDelegation = 0;
   }
+  outgoingDelegations.sort(function(a,b){return parseFloat(b.vesting_shares.split(" ")[0])-parseFloat(a.vesting_shares.split(" ")[0]);});
   if(outgoingDelegations.length > 0)
   {
     var inner = '';
     totalOutgoingDelegation = 0;
     $(divDelegation).append('<h5 class="outgoing-delegation">Outgoing - </h5><div id="list_delegee"></div>');
     for (outgoingDelegation of outgoingDelegations) {
-      var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(outgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
+      var valueDelegation =Math.round(parseFloat(steem.formatter.vestToSteem(outgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem) * 100) / 100);
       if(valueDelegation>0){
         if(myAccountDelegation.name===usernamePageDelegation)
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '<a target="_blank" href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del '+ (isBusy ? 'stop_del_busy' : '') +'" type="button"><span aria-hidden="true" style="color:red ; margin-right:2em;" class="">×</span></button></a></span>');
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated to @' + outgoingDelegation.delegatee + '<a target="_blank" href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del '+ (isBusy ? 'stop_del_busy' : '') +'" type="button"><span aria-hidden="true" style="color:red ; margin-right:2em;" class="">×</span></button></a></span>');
         else
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' + valueDelegation + ' SP delegated to @' + outgoingDelegation.delegatee + '</span>');
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated to @' + outgoingDelegation.delegatee + '</span>');
         totalOutgoingDelegation += valueDelegation;
       }
     }
-    $(divDelegation).find('.outgoing-delegation').append(totalOutgoingDelegation.toFixed(3) + ' SP');
+    $(divDelegation).find('.outgoing-delegation').append(window.SteemPlus.Utils.numberWithCommas(totalOutgoingDelegation.toFixed(3)) + ' SP');
   }
   else
   {

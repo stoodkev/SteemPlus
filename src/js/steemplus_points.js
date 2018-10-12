@@ -14,7 +14,7 @@ var totalSteemSPP = null;
 var isSteemit = null;
 var isBusy = null;
 
-
+// List of all the different ways to earn SPP
 var wayList = [
     {id: "0", title: "Boost a post with Minnowbooster using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on MinnowBooster.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of SBD sent to MinnowBooster (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
     {id: "1", title: "Boost a post with PostPromoter using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on PostPromoter.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of SBD sent to PostPromoter (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
@@ -27,8 +27,10 @@ var wayList = [
     {id: "8", title: "Delegate Steem Power to SteemPlus",description: "Delegate Steem Power to @steem-plus and get SPP", description_post: "@steem-plus/", "url": "src/img/howtoearnspp/delegation.png", formula: "Get 1 SPP per week per SBD worth of Steem Power (SPP per week = AmountSP * STEEMPrice/SBDPrice )"}
 ]
 
+// Listener on messages coming from main
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'steemplus_points' && request.order === 'start' && token_steemplus_point == null) {
+        // On start
         token_steemplus_point = request.token;
         myUsernameSPP = request.data.account.name;
         myAccountSPP = request.data.account;
@@ -40,6 +42,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         retrySteemplusPoint = 0;
         canStartSteemplusPoint();
     } else if (request.to === 'steemplus_points' && request.order === 'click' && token_steemplus_point == request.token) {
+        // On click
         myUsernameSPP = request.data.account.name;
         myAccountSPP = request.data.account;
         isSteemit = request.data.steemit;
@@ -52,18 +55,27 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
+
+// Function used to check if Steemplus Points can start or not
 function canStartSteemplusPoint()
 {
+    // Check retry limit
     if(retrySteemplusPoint >= 20) return;
+
+    // Check if current page is wallet
     if(regexWalletSteemit.test(window.location.href))
     {
-        if($('.Trans').length > 0)
-          downloadDataSteemplusPoints(window.SteemPlus.Utils.getPageAccountName());
-        else
+        if($('.Trans').length > 0){
+            // If page ready start downloading data
+            downloadDataSteemplusPoints(window.SteemPlus.Utils.getPageAccountName());
+        }
+        else {
+            // If not restart
             setTimeout(function(){
                 retrySteemplusPoint++;
                 canStartSteemplusPoint();
             },100);
+        }
     }
     else if(regexWalletBusy.test(window.location.href))
     {
@@ -104,10 +116,14 @@ function downloadDataSteemplusPoints(usernameSPP)
     });
 }
 
+// Function used to display the number of SPP a user owns
+// @parameter userDetails: Details of the user's account concerning SPP
 function displaySteemplusPoints(userDetails)
 {
+    // If user using Steemit
     if(isSteemit)
     {
+        // Create new div
         let divSPP = $(`
             <div class="UserWallet__balance row zebra">
                 <div class="column small-12 medium-8">
@@ -132,23 +148,32 @@ function displaySteemplusPoints(userDetails)
                     </li>
                 </div>
             </div>
-            `);
+        `);
+        // If user not on his wallet, delete buy SPP, how to earn and delegation items
+        // User has to be on his wallet to use those
         if(myUsernameSPP !== window.SteemPlus.Utils.getPageAccountName()){
             divSPP.find('.buySPP').remove();
             divSPP.find('.howToEarn').remove();
             divSPP.find('.sppDelegation').remove();
         }
 
+        // Add SPP to wallet
         $('.UserWallet__balance').eq($('UserWallet__balance ').length-1).before(divSPP);
+
+        // On click listener to dropdown menu
         $('.dropdownSPPLink').click(function(){
             if($(this).hasClass('show'))
                 $(this).removeClass('show');
             else
                 $(this).addClass('show');
         });
+        // If click on Delegation item
         $('.sppDelegation').click(async function(){
+            // click is async function because we want to use await
+            // Calculate the maximum amout user can delegate
             let maxAmountAvailableDelegationSPP = await getMaxSP();
 
+            // Create Delegation modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
                 <div class="reveal-overlay fade in" style="display: block;"></div>
                 <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">
@@ -207,26 +232,34 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>`);
 
+            // On click on max available link, put the maximum available delegation in amount input
             modal.find('#maxAvailableLink').click(function(){
                 modal.find('#amountDelegationSPP').val(maxAmountAvailableDelegationSPP);
             });
             
+            // Set maximum delegation link value
             modal.find('.maxAmountAvailableDelegationSPP').text(maxAmountAvailableDelegationSPP);
 
+            // Listener on delegate button
             modal.find('#delegationSPPButton').on('click', function(){
+                // Retrieve delegation value
                 const amountDelegation = modal.find('#amountDelegationSPP').val();
-
+                
+                // If value greater than maximum, notify user
                 if(amountDelegation > maxAmountAvailableDelegationSPP){
                     alert(`The amount you want to delegate is too high. The maximum you can delegate is ${maxAmountAvailableDelegationSPP} SP`);
                     return;
                 }
-
+                
+                // Calculate number of vests
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
+                // Create delegation steemconnect link
                 var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
                 window.open(urlDelegationSPP, '_blank');
             });
-
+            
+            // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
             });
@@ -235,7 +268,10 @@ function displaySteemplusPoints(userDetails)
             });
             $('body').append(modal);
         });
+
+        // On click on buy SPP item
         $('.buySPP').click(function(){
+            // Create modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
                 <div class="reveal-overlay fade in" style="display: block;"></div>
                 <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">
@@ -303,13 +339,16 @@ function displaySteemplusPoints(userDetails)
                     </div>
                 </div>
             </div>`);
-
+            
+            // On click on Buy SPP button
             modal.find('#buySPPButton').on('click', function(){
+                // Retrieve values
                 let amountReceived = modal.find('#receive_amount').val();
                 let amountSent = modal.find('#sent_amount').val();
                 let sentCurrency = modal.find('#sent_currency').val();
                 let selectReceiverSPP = modal.find('#selectReceiverSPP').val();
 
+                // We set the minimum to 1, So if amount receive < 1, set notify user, set the value to 1
                 if(amountReceived < 1){
                     alert(`You can't buy less than 1 SPP`);
                     modal.find('#receive_amount').val(1);
@@ -317,6 +356,7 @@ function displaySteemplusPoints(userDetails)
                     return;
                 }
 
+                // If value amount received is correct then create memo and steem connect url
                 var memoBuySPP = `buySPP : Bought ${amountReceived} SPP for ${amountSent} ${sentCurrency}`;
                 var urlBuySPP = 'https://steemconnect.com/sign/transfer?from=' + myUsernameSPP + '&to=' + selectReceiverSPP + '&amount=' + amountSent + '%20' + sentCurrency + '&memo=' + memoBuySPP;
                 var win = window.open(urlBuySPP, '_blank');
@@ -328,6 +368,9 @@ function displaySteemplusPoints(userDetails)
                     alert('Please allow popups for this website');
                 }
             });
+
+            // Listener on input.
+            // Those 3 input are refresh everytime there is an input
             modal.find('#receive_amount').on('input', function(){
                 sentIsLastInput = false;
                 refreshSentInput(modal);
@@ -342,7 +385,8 @@ function displaySteemplusPoints(userDetails)
                 else
                     refreshSentInput(modal);
             });
-
+            
+            // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
             });
@@ -351,8 +395,10 @@ function displaySteemplusPoints(userDetails)
             });
             $('body').append(modal);
         });
+        // On click on How to earn SPP item
         $('.howToEarn').click(function()
         {
+            // Create modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
               <div class="reveal-overlay fade in" style="display: block;"></div>
                 <div class="reveal fade in" role="document" tabindex="-1" style="display: block; min-height: 200px;">
@@ -371,6 +417,7 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>`);
 
+            // For each item of the way list, create a slider
             wayList.forEach((way) => {
                 modal.find('.howToEarnSlider > ul').append(`<li>
                     <div class="slide-text">
@@ -387,19 +434,22 @@ function displaySteemplusPoints(userDetails)
                 </li>`);
                 modal.find('ol').append(`<li class="indexHowToEarnItem"><a name="${way.id}">${way.title}</a></li>`);
             });
-
+            
+            // Configure the slider
+            // No arrow, navigation with keyboard activated
             var howToEarnSlider = modal.find('.howToEarnSlider').unslider({
                 keys: true,
                 arrows: false
             });
 
+            // Click on each link make the correct slider appears
             modal.find('.indexHowToEarnItem > a').click(function()
             {
                 howToEarnData = howToEarnSlider.data('unslider');
                 howToEarnData.animate(parseInt(`${$(this).attr('name')}`), 'next');
             });
 
-
+            // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
             });
@@ -408,8 +458,10 @@ function displaySteemplusPoints(userDetails)
             });
             $('body').append(modal);
         });
+        // Click on SPP history item
         $('.sppHistory').click(function()
         {
+            // Create history modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
           <div class="reveal-overlay fade in" style="display: block;"></div>
             <div class="reveal fade in sppHistoryModal" role="document" tabindex="-1" style="display: block; min-height: 200px;">
@@ -425,11 +477,13 @@ function displaySteemplusPoints(userDetails)
                 </div>
             </div>
           </div>`);
-
+            
+            // If user has no detail or no points, display error message
             if(userDetails === undefined || userDetails.nbPoints === 0)
                 modal.find('.sppHistoryDetail').append('<h4>No detail available</h4>');
             else
             {
+                // If not create a table for history
                 modal.find('.sppHistoryDetail').append(`<table class="sppHistoryTable">
                     <tr>
                         <th>Date</th>
@@ -438,10 +492,11 @@ function displaySteemplusPoints(userDetails)
                         <th>Permlink</th>
                     </tr>
                 </table>`);
+                // Retrieve details
                 var ptsDetails = userDetails.pointsDetails;
                 ptsDetails.sort(function(a, b) {return new Date(b.timestamp) - new Date(a.timestamp);});
                 ptsDetails.forEach((pointsDetail) => {
-                    console.log(pointsDetail);
+                    // For each detail, create a row in the table
                     modal.find('.sppHistoryTable').append(`
                     <tr>
                         <td><span title="${new Date(pointsDetail.timestamp)}"><span>${moment(new Date(pointsDetail.timestamp)).fromNow()}</span></span></td>
@@ -452,6 +507,7 @@ function displaySteemplusPoints(userDetails)
                 });
             }
 
+            // Close modal listeners
             modal.find('.close-button').on('click', function() {
                 modal.remove();
             });
@@ -481,8 +537,10 @@ function displaySteemplusPoints(userDetails)
     }
 }
 
+// Function used to refresh sent amount input
 function refreshSentInput(modal)
 {
+    // If received amount updated then retrieve the value and convert it.
     let amountReceived = modal.find('#receive_amount').val();
     let sentCurrency = modal.find('#sent_currency').val();
     if(sentCurrency === 'SBD')
@@ -491,8 +549,10 @@ function refreshSentInput(modal)
         modal.find('#sent_amount').val((amountReceived/100/sbdPerSteem).toFixed(2));
 }
 
+// Function used to refresh sent amount input
 function refreshReceivedInput(modal)
 {
+    // If sent amount updated then retrieve the value and convert it.
     let sentAmount = modal.find('#sent_amount').val();
     let sentCurrency = modal.find('#sent_currency').val();
     if(sentCurrency === 'SBD')

@@ -14,6 +14,7 @@ var totalSteemSPP = null;
 var isSteemit = null;
 var isBusy = null;
 
+
 var wayList = [
     {id: "0", title: "Boost a post with Minnowbooster using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on MinnowBooster.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/minnowbooster.png" , formula: "The amount of SBD sent to MinnowBooster (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
     {id: "1", title: "Boost a post with PostPromoter using SteemPlus",description:"Use the \'Boost\' Button on the bottom of the article to buy votes on PostPromoter.", description_post: "@steem-plus/steemplus-2-19-updated-boost-button-collaboration-announcement-earn-more-with-steemplus-points", "url": "src/img/howtoearnspp/postpromoter.png", formula: "The amount of SBD sent to PostPromoter (example : You get 1 SPP for 1 SBD or 1 SBD worth of Steem)"},
@@ -222,8 +223,8 @@ function displaySteemplusPoints(userDetails)
 
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
-                var urlDelegationSPP = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
-                window.open(url, '_blank');
+                var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
+                window.open(urlDelegationSPP, '_blank');
             });
 
             modal.find('.close-button').on('click', function() {

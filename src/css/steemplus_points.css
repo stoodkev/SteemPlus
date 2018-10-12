@@ -49,8 +49,16 @@ table.sppHistoryTable > tr:nth-child(even) {
     min-width: 2rem !important;
 }
 
-.disclaimerBuySpp {
+.disclaimerBuySpp, .disclaimerDelegateSpp, .errorAmountDelegationMessage {
     margin-bottom: 1rem;
-    font-style: italic;
     text-transform: none;
+}
+.errorAmountDelegationMessage {
+    color: red;
+}
+
+#delegationSPPButton.disabled, #delegationSPPButton.disabled:hover {
+    background: #e6e6e6 !important;
+    cursor: not-allowed !important;
+    color: rgb(31, 191, 143) !important;
 }

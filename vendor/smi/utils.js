@@ -176,7 +176,6 @@
               rshares= 0;
             rshares -= VOTE_DUST_THRESHOLD;
             rshares=Math.max(rshares,0);
-            console.log(rshares);
             var voteValue = rshares *
                 rewardBalance / recentClaims *
                 steemPrice;

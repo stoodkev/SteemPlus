@@ -13,6 +13,8 @@ var totalSteemSPP = null;
 
 var isSteemit = null;
 var isBusy = null;
+var isDelegatingToSteemPlus = false;
+var delegatingToSteemPlus = 0;
 
 // List of all the different ways to earn SPP
 var wayList = [
@@ -171,7 +173,7 @@ function displaySteemplusPoints(userDetails)
         $('.sppDelegation').click(async function(){
             // click is async function because we want to use await
             // Calculate the maximum amout user can delegate
-            let maxAmountAvailableDelegationSPP = await getMaxSP();
+            let maxAmountAvailableDelegationSPP = await getMaxSPForSPP();
 
             // Create Delegation modal
             let modal = $(`<div role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
@@ -185,6 +187,9 @@ function displaySteemplusPoints(userDetails)
                     </div>
                     <div class="row">
                         <label class="disclaimerDelegateSpp">Delegate Steem Power to @steem-plus and get SPP.</label>
+                    </div>
+                    <div class="row">
+                        <label class="alreadyDelegating disclaimerDelegateSpp">Currently delegated : ${delegatingToSteemPlus} SP <br>To delegate more, please enter the total number of SP to be delegated (ie : if you are delegating 100 SP and wish to delegate 100 SP more, enter 200 SP)</label>
                     </div>
 
                     <div class="row">
@@ -231,6 +236,8 @@ function displaySteemplusPoints(userDetails)
                     </div>
                 </div>
             </div>`);
+
+            if(!isDelegatingToSteemPlus) modal.find('.alreadyDelegating').remove();
 
             // On click on max available link, put the maximum available delegation in amount input
             modal.find('#maxAvailableLink').click(function(){
@@ -562,11 +569,15 @@ function refreshReceivedInput(modal)
 }
 
 // Function used to get the maximum SP user can delegate
-async function getMaxSP(){
+async function getMaxSPForSPP(){
     let myOutgoingDelegations = await steem.api.getVestingDelegationsAsync(myAccountSPP.name, null, 10);
     let tmp = 0;
     for (myOutgoingDelegation of myOutgoingDelegations) {
+      if(myOutgoingDelegation.delegatee === 'steem-plus') {
       var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, totalVestsSPP, totalSteemSPP)) * 100) / 100;
+        isDelegatingToSteemPlus = true;
+        delegatingToSteemPlus = valueDelegation;
+      }
       if(valueDelegation>0)
         tmp += valueDelegation;
     }

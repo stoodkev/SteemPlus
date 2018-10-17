@@ -496,8 +496,11 @@ function openDTubeDialog()
           tags: []
         }
       }
-      if($('input[name=video-duration-dtube]')[0]!="")
-      articleDTube.info.duration=$('input[name=video-duration-dtube]')[0];
+      if(!Number.isNaN(parseInt($('input[name=video-duration-dtube]').eq(0).val())))
+        articleDTube.info.duration=parseInt($('input[name=video-duration-dtube]').eq(0).val());
+      else
+        delete articleDTube.info.duration;
+      console.log($('input[name=video-duration-dtube]').eq(0).val(),articleDTube);
       // add hashs for differents qualities
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {

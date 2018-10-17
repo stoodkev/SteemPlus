@@ -208,19 +208,8 @@ function getDelegationInformation(isSteemit, isBusy, globalP, account)
   steem.api.getVestingDelegations(usernamePageDelegation, null, 10, function(err, outgoingDelegations) {
 
     // get incoming delegation from steemSQL
-    $.ajax({
-      type: "GET",
-      beforeSend: function(xhttp) {
-        xhttp.setRequestHeader("Content-type", "application/json");
-        xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-      },
-      url: 'https://steemplus-api.herokuapp.com/api/get-incoming-delegations/' + usernamePageDelegation,
-      success: function(incomingDelegations) {
-        createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP);
-      },
-      error: function(msg) {
-        console.log(msg);
-      }
+    window.SteemPlus.api.getDelegators(usernamePageDelegation).then(function(incomingDelegations){
+      createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoingDelegations, globalP);
     });
   });
 

@@ -5,6 +5,8 @@
     const pageAccountNameRegexp = /^\/@([a-z0-9\-\.]*)([\/\#].*)?$/;
     const domCheckTimeout = 100;
     const noImageAvailable = "src/img/no-image-available-hi.png";
+    const APIBaseUrl="http://localhost:3000/";
+    //const APIBaseUrl="https://api.steemplus.app/";
 
     var getPageAccountName = function() {
         var parseLocation = window.location.pathname.match(pageAccountNameRegexp);
@@ -730,8 +732,242 @@
         getTimeBeforeFull: getTimeBeforeFull
     };
 
+    let currentRequest = null;
+    // Get followers from SteemPlus API
+
+    function getFollowersFollowees (name){
+      return new Promise(function(fulfill,reject){
+        currentRequest = $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+                if (currentRequest != null) {
+                    currentRequest.abort();
+                }
+            },
+            // URL of steemplus-api
+            url: APIBaseUrl+'follow/' + name,
+            success: function(response) {
+              fulfill(response)
+            },
+            error: function(msg) {
+                console.log(msg);
+            }
+        });
+      });
+    }
+
+    function getResteems(username,permlink){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: APIBaseUrl+'reblogs/'+username+'/'+permlink,
+            success: function(result) {
+              fulfill(result);
+            },
+            error: function(msg) {
+                console.log(msg);
+            }
+        });
+      });
+    }
+
+    function getWitnessesRanks(){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+            },
+            url: APIBaseUrl+'witnesses-ranks',
+            success: function(result) {
+              fulfill(result)
+            },
+            error: function(msg) {
+              reject(msg.responseJSON.error);
+            }
+        });
+      });
+    }
+
+    function getWitnessInfo(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+            },
+            url: APIBaseUrl+'witness/' + name,
+            success: function(result) {
+                fulfill(result);
+            },
+            error: function(msg) {
+                reject(msg.responseJSON.error);
+            }
+        });
+      });
+    }
+
+    function getReceivedWitnessVotes(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+            },
+            url: APIBaseUrl+'received-witness-votes/' + name,
+            success: function(result) {
+              fulfill(result);
+                  },
+            error: function(msg) {
+                reject(msg.responseJSON.error);
+            }
+        });
+      });
+    }
+
+    function getWallet(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+            },
+            url: APIBaseUrl+'wallet/' + name,
+            success: function(result) {
+                fulfill(result);
+            },
+            error: function(msg) {
+                console.log(msg.responseJSON.error);
+            }
+        });
+      });
+    }
+
+    function getLastBlockID() {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: "GET",
+                beforeSend: function(xhttp) {
+                    xhttp.setRequestHeader("Content-type", "application/json");
+                    xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+                },
+                url: 'https://steemplus-api.herokuapp.com/api/get-last-block-id',
+                success: function(response) {
+                    resolve(response[0]['block_num']);
+                },
+                error: function(msg) {
+                    resolve(msg);
+                }
+            });
+        });
+    }
+
+    function getMentions(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: APIBaseUrl+'mentions/' + name,
+            success: function(result) {
+              fulfill(result);
+            },
+            error: function(msg) {
+                reject(msg);
+            }
+        });
+      });
+    }
+
+    function getRewards(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+
+            url: APIBaseUrl+'rewards/' + name,
+            success: function(result) {
+              fulfill(result);
+            },
+            error: function(msg) {
+              reject(msg);
+            }
+        });
+      });
+    }
+
+    function getDelegators(name){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+          type: "GET",
+          beforeSend: function(xhttp) {
+            xhttp.setRequestHeader("Content-type", "application/json");
+            xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+          },
+          url: APIBaseUrl+'delegators/' + name,
+          success: function(incomingDelegations) {
+            fulfill(incomingDelegations);
+          },
+          error: function(msg) {
+            console.log(msg);
+            reject(msg);
+          }
+        });
+      });
+    }
+
+    function getSPP(username){
+      return new Promise(function(fulfill,reject){
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: APIBaseUrl+'spp/'+username,
+            success: function(response) {
+                console.log(response);
+                fulfill(response);
+            },
+            error: function(msg) {
+              console.log(msg);
+                reject(msg);
+            }
+        });
+      });
+    }
+
+    var api={
+      getFollowersFollowees:getFollowersFollowees,
+      getResteems:getResteems,
+      getWitnessesRanks:getWitnessesRanks,
+      getWitnessInfo:getWitnessInfo,
+      getReceivedWitnessVotes:getReceivedWitnessVotes,
+      getWallet:getWallet,
+      getLastBlockID:getLastBlockID,
+      getMentions:getMentions,
+      getRewards:getRewards,
+      getDelegators:getDelegators,
+      getSPP:getSPP
+    }
 
     window.SteemPlus = window.SteemPlus || {};
+    window.SteemPlus.api=api;
     window.SteemPlus.Settings = Settings;
     window.SteemPlus.Utils = Utils;
 

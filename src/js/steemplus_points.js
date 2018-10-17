@@ -103,20 +103,10 @@ function canStartSteemplusPoint()
 
 function downloadDataSteemplusPoints(usernameSPP)
 {
-    $.ajax({
-        type: "GET",
-        beforeSend: function(xhttp) {
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-        },
-        url: `https://steemplus-api.herokuapp.com/api/get-steemplus-points/${usernameSPP}`,
-        success: function(response) {
-            displaySteemplusPoints(response[0]);
-        },
-        error: function(msg) {
-            resolve(msg);
-        }
-    });
+  window.SteemPlus.api.getSPP(usernameSPP).then(function(response){
+    console.log(response);
+    displaySteemplusPoints(response[0]);
+  });
 }
 
 // Function used to display the number of SPP a user owns

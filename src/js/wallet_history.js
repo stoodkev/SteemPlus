@@ -171,23 +171,10 @@ function startWalletHistory() {
     chrome.storage.local.get(['filters_state_wallet'], function(items) {
         if (items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
         if ($('.Trans').length > 0 && regexWalletSteemit.test(window.location.href)) {
-            usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
-            $.ajax({
-                type: "GET",
-                beforeSend: function(xhttp) {
-                    xhttp.setRequestHeader("Content-type", "application/json");
-                    xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-                },
-                url: 'https://steemplus-api.herokuapp.com/api/get-wallet-content/' + usernameWalletHistory,
-                success: function(result) {
-                    //console.log(result);
-                    dataWalletHistory = result;
-                    if ($('.smi-transaction-table-filters').length === 0)
-                        displayWalletHistory();
-                },
-                error: function(msg) {
-                    console.log(msg.responseJSON.error);
-                }
+            window.SteemPlus.api.getWallet(window.SteemPlus.Utils.getPageAccountName()).then(function(result){
+              dataWalletHistory = result;
+              if ($('.smi-transaction-table-filters').length === 0)
+                  displayWalletHistory();
             });
         } else {
             setTimeout(function() {
@@ -556,7 +543,7 @@ function getSPFromVestingSharesWH(vests) {
 
 // Function used to determine if SteemSQL is synchronized
 function isSteemSQLSynchronized() {
-    Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), getLastBlockID()])
+    Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), window.SteemPlus.api.getLastBlockID()])
         .then(function(value) {
             var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
 
@@ -582,23 +569,4 @@ function isSteemSQLSynchronized() {
                 });
             }
         });
-}
-
-function getLastBlockID() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://steemplus-api.herokuapp.com/api/get-last-block-id',
-            success: function(response) {
-                resolve(response[0]['block_num']);
-            },
-            error: function(msg) {
-                resolve(msg);
-            }
-        });
-    });
 }

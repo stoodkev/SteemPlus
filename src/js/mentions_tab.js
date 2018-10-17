@@ -134,31 +134,23 @@ function createMentionsTab(mentionsTab) {
 // @parameter reset : need to reset UI or not
 function displayMentions(mentionsTab, type, usernamePageMentions, reset) {
     if (mentionsTabPostsComments === null && !downloadingDataMentionTab) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                downloadingDataMentionTab = true;
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://steemplus-api.herokuapp.com/api/get-mentions/' + usernamePageMentions,
-            success: function(result) {
-                if ($('.error-mentions-label').length === 0) $('.error-mentions-label').remove();
-                mentionsTabPostsComments = result;
-                createRowsMentionTab(mentionsTab, type, reset);
-                downloadingDataMentionTab = false;
-            },
-            error: function(msg) {
-                downloadingDataMentionTab = false;
-                if ($('.error-mentions-label').length === 0) {
-                    var errorLabel = document.createElement('h2');
-                    $(errorLabel).addClass('articles__h1');
-                    $(errorLabel).addClass('error-mentions-label');
-                    $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
-                    $('.MentionsTabLoading').hide();
-                    $('.articles').prepend(errorLabel);
-                }
-            }
+        downloadingDataMentionTab = true;
+        window.SteemPlus.api.getMentions(usernamePageMentions).then(function(result){
+          if ($('.error-mentions-label').length === 0)
+              $('.error-mentions-label').remove();
+          mentionsTabPostsComments = result;
+          createRowsMentionTab(mentionsTab, type, reset);
+        }).catch(function(e){
+          if ($('.error-mentions-label').length === 0) {
+              var errorLabel = document.createElement('h2');
+              $(errorLabel).addClass('articles__h1');
+              $(errorLabel).addClass('error-mentions-label');
+              $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
+              $('.MentionsTabLoading').hide();
+              $('.articles').prepend(errorLabel);
+          }
+        }).finally(function(){
+          downloadingDataMentionTab = false;
         });
     } else {
         if (downloadingDataMentionTab) {

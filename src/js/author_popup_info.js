@@ -68,7 +68,6 @@ function startAuthorPopupInfo() {
     }
 }
 
-let currentRequest = null;
 
 function openAuthorPopupInfo(element) {
     var userAuthorPopupInfo = null;
@@ -96,37 +95,21 @@ function openAuthorPopupInfo(element) {
     // Add QR Code for steemwallet integration
     $('.author-popup-message').append('<img align="right" src="https://api.qrserver.com/v1/create-qr-code/?data=' + userAuthorPopupInfo + '&size=80x80" alt="QR Code">');
 
-    // Get followers from steemSQL
-    currentRequest = $.ajax({
-        type: "GET",
-        beforeSend: function(xhttp) {
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            if (currentRequest != null) {
-                currentRequest.abort();
-            }
-        },
-        // URL of steemplus-api
-        url: 'https://steemplus-api.herokuapp.com/api/get-followers-followee/' + myUsernameAuthorPopupInfo,
-        success: function(response) {
+    window.SteemPlus.api.getFollowersFollowees(myUsernameAuthorPopupInfo).then(function(response){
+      var isFollowing = response.find(function(elem) {
+          return elem.follower === userAuthorPopupInfo;
+      });
 
-            var isFollowing = response.find(function(elem) {
-                return elem.follower === userAuthorPopupInfo;
-            });
-
-            // if author is following you
-            if (isFollowing !== undefined) {
-                $('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br clear="all">');
-            }
-            // If not
-            else {
-                $('.author-popup-message').append('<span class="author-popup-witness">Not following you</span><br clear="all">');
-            }
-        },
-        error: function(msg) {
-            console.log(msg);
-        }
+      // if author is following you
+      if (isFollowing !== undefined) {
+          $('.author-popup-message').append('<span class="author-popup-witness">Following you</span><br clear="all">');
+      }
+      // If not
+      else {
+          $('.author-popup-message').append('<span class="author-popup-witness">Not following you</span><br clear="all">');
+      }
     });
+
     // Get author account
     steem.api.getAccounts([userAuthorPopupInfo], function(err, result) {
         if (err) console.log(err);

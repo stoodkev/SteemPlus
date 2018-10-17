@@ -93,20 +93,11 @@ function createTabWitnesses(witnessesTab) {
     $('.switch-field').hide();
 
     if (witnessRankLocal === null) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-            },
-            url: 'https://steemplus-api.herokuapp.com/api/get-witnesses-rank',
-            success: function(result) {
-                witnessRankLocal = result;
-                managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
-            },
-            error: function(msg) {
-                alert(msg.responseJSON.error);
-            }
+        window.SteemPlus.api.getWitnessesRanks().then(function(result){
+              witnessRankLocal = result;
+              managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
+        }).catch(function(e){
+          alert(e);
         });
     } else {
         managedTabWitness(usernameTabWitnesses, isMyPageWitnesses);
@@ -330,21 +321,12 @@ function startMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
     $('.witness-content').append(witnessesMyTab);
 
     if (witnessInfoLocal === null) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-            },
-            url: 'https://steemplus-api.herokuapp.com/api/get-witness/' + usernameTabWitnesses,
-            success: function(result) {
-                witnessInfoLocal = result;
-                if ($('#my-witness').prop('checked'))
-                    displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
-            },
-            error: function(msg) {
-                alert(msg.responseJSON.error);
-            }
+        window.SteemPlus.api.getWitnessInfo(usernameTabWitnesses).then(function(result){
+          witnessInfoLocal = result;
+          if ($('#my-witness').prop('checked'))
+              displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
+        }).catch(function(e){
+          alert(e);
         });
     } else {
         displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList);
@@ -498,22 +480,14 @@ function getVestString(vests) {
 function startTabIn(usernameTabWitnesses, isMyPageWitnesses) {
     if (!$('#witness-in').prop('checked')) return;
     if (witnessVoteReceivedLocal === null) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
-            },
-            url: 'https://steemplus-api.herokuapp.com/api/get-received-witness-votes/' + usernameTabWitnesses,
-            success: function(result) {
-                witnessVoteReceivedLocal = result;
-                if ($('#witness-in').prop('checked'))
-                    displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
-            },
-            error: function(msg) {
-                alert(msg.responseJSON.error);
-            }
+        window.SteemPlus.api.getReceivedWitnessVotes(usernameTabWitnesses).then(function(result){
+          witnessVoteReceivedLocal = result;
+          if ($('#witness-in').prop('checked'))
+              displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
+        }).catch(function(e){
+            alert(e);
         });
+
     } else {
         displayWitnessIn(usernameTabWitnesses, isMyPageWitnesses, witnessVoteReceivedLocal);
     }

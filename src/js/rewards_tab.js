@@ -226,30 +226,20 @@ function initListReward(list, rewardsTab, type, subtype) {
 function displayRewards(rewardsTab, type, subtype, usernamePageReward) {
     if (rewardsListLocal === null && !downloadingDataRewardTab) {
         // No data and not downloading
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                downloadingDataRewardTab = true;
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-
-            url: 'https://steemplus-api.herokuapp.com/api/get-rewards/' + usernamePageReward,
-            success: function(result) {
-                downloadingDataRewardTab = false;
-                initListReward(result, rewardsTab, type, subtype);
-            },
-            error: function(msg) {
-                downloadingDataRewardTab = false;
-                if ($('.error-rewards-label').length === 0) {
-                    var errorLabel = document.createElement('h2');
-                    $(errorLabel).addClass('articles__h1');
-                    $(errorLabel).addClass('error-rewards-label');
-                    $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
-                    $('.RewardsTabLoading').hide();
-                    $('.articles').prepend(errorLabel);
-                }
-            }
+        downloadingDataRewardTab = true;
+        window.SteemPlus.api.getRewards(usernamePageReward).then(function(result){
+              initListReward(result, rewardsTab, type, subtype);
+        }).catch(function(e){
+          if ($('.error-rewards-label').length === 0) {
+              var errorLabel = document.createElement('h2');
+              $(errorLabel).addClass('articles__h1');
+              $(errorLabel).addClass('error-rewards-label');
+              $(errorLabel).append('Looks like we are having trouble retrieving information from steemSQL. Please try again later.');
+              $('.RewardsTabLoading').hide();
+              $('.articles').prepend(errorLabel);
+          }
+        }).finally(function(){
+          downloadingDataRewardTab = false;
         });
     } else {
         if (rewardsListLocal !== null) {
@@ -289,7 +279,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype) {
                 beneficiariesList.forEach(function(bene) {
                     beneficiariesTotalWeight += bene["weight"] / 10000;
                 });
-                
+
                 if(item.max_accepted_payout === 0)
                 {
                     rewardText.push("Declined Payout");
@@ -317,7 +307,7 @@ function createRowsRewardsTab(rewardsTab, type, subtype) {
                     totalSP += pendingAuthorSP;
                 }
 
-                
+
             } else if (item.reward === -1) {
                 if (item.sbd_payout > 0) {
                     rewardText.push(item.sbd_payout.toFixed(3) + ' SBD');

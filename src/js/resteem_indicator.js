@@ -52,7 +52,7 @@ function startResteemIndicator() {
 }
 
 function addResteemIndicationInPostButton(usernameResteemIndicator, permlinkResteemIndicator)
-{   
+{
     console.log('addResteemIndicationInPostButton');
     if (isSteemit) {
         $('.Reblog__button').after('<div class="DropdownMenu resteem-list">\
@@ -67,7 +67,7 @@ function addResteemIndicationInPostButton(usernameResteemIndicator, permlinkRest
             $('.resteem-list').toggleClass('show');
             if(!isDownloadedCountResteem)
                 displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteemIndicator);
-            
+
         });
     }
     else if(isBusy)
@@ -82,7 +82,7 @@ function addResteemIndicationInPostButton(usernameResteemIndicator, permlinkRest
             if(event.target===$('.Buttons__number_resteem')[0] &&!isDownloadedCountResteem)
                 displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteemIndicator);
         };
-                
+
     }
 }
 
@@ -92,53 +92,36 @@ function addResteemIndicationInPostButton(usernameResteemIndicator, permlinkRest
 // @parameter permlinkResteemIndicator : permlink of the post
 function displayResteemIndicatorInPost(usernameResteemIndicator, permlinkResteemIndicator) {
     console.log('displayResteemIndicatorInPost');
-    $.ajax({
-        type: "POST",
-        beforeSend: function(xhttp) {
-            xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-        },
-        url: 'https://steemplus-api.herokuapp.com/api/get-reblogs/',
-        data: JSON.stringify({
-            "data": [{
-                "author": usernameResteemIndicator,
-                "permlink": permlinkResteemIndicator
-            }]
-        }),
-        success: function(result) {
-            if (isSteemit) {
-                $('.ul-resteem-list').append('<li class="resteem-item"><center><b>' + result.length + ' resteem(s)</b></center></li>');
-                result.forEach(function(item) {
-                    $('.ul-resteem-list').append('<li class="resteem-item"><a href="/@' + item.account + '">+ ' + item.account + '</a></li>');
-                });
-                isDownloadedCountResteem = true;
-            } 
-            else if (isBusy) {
-                console.log(result);
-                if (result.length > 0) {
-                    var contentResteem = '';
-                    result.forEach(function(item) {
-                        contentResteem += '<h5><a href="/@' + item.account + '">+ ' + item.account + '</a></h5>';
-                    });
-                    $('.Buttons__number_resteem').text(result.length);
+    window.SteemPlus.api.getResteems(usernameResteemIndicator,permlinkResteemIndicator).then(function(result){
+      if (isSteemit) {
+          $('.ul-resteem-list').append('<li class="resteem-item"><center><b>' + result.length + ' resteem(s)</b></center></li>');
+          result.forEach(function(item) {
+              $('.ul-resteem-list').append('<li class="resteem-item"><a href="/@' + item.account + '">+ ' + item.account + '</a></li>');
+          });
+          isDownloadedCountResteem = true;
+      }
+      else if (isBusy) {
+          console.log(result);
+          if (result.length > 0) {
+              var contentResteem = '';
+              result.forEach(function(item) {
+                  contentResteem += '<h5><a href="/@' + item.account + '">+ ' + item.account + '</a></h5>';
+              });
+              $('.Buttons__number_resteem').text(result.length);
 
-                    $('.Buttons__number_resteem').attr('data-toggle', 'popover');
-                    $('.Buttons__number_resteem').attr('data-content', '<h5>' + contentResteem + '</h5>');
-                    $('.Buttons__number_resteem').attr('data-placement', 'top');
-                    $('.Buttons__number_resteem').attr('data-html', 'true');
-                    $('.Buttons__number_resteem').attr('animation', 'false');
-                    $('.Buttons__number_resteem').attr('title', 'Resteems');
-                    $('.Buttons__number_resteem').attr('container', 'popover-resteem');
-                    $('.Buttons__number_resteem').attr('data-trigger', 'hover');
-                    $('.Buttons__number_resteem').popover();
-                    isDownloadedCountResteem = true;
-                }
+              $('.Buttons__number_resteem').attr('data-toggle', 'popover');
+              $('.Buttons__number_resteem').attr('data-content', '<h5>' + contentResteem + '</h5>');
+              $('.Buttons__number_resteem').attr('data-placement', 'top');
+              $('.Buttons__number_resteem').attr('data-html', 'true');
+              $('.Buttons__number_resteem').attr('animation', 'false');
+              $('.Buttons__number_resteem').attr('title', 'Resteems');
+              $('.Buttons__number_resteem').attr('container', 'popover-resteem');
+              $('.Buttons__number_resteem').attr('data-trigger', 'hover');
+              $('.Buttons__number_resteem').popover();
+              isDownloadedCountResteem = true;
+          }
 
-            } else
-                return;
-        },
-        error: function(msg) {
-            console.log(msg);
-        }
+      } else
+          return;
     });
 }

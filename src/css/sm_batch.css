@@ -1,0 +1,12 @@
+#total {
+  float: right;
+  display: inline-block;
+  width: 200px;
+  font-size: 1.4em;
+  height: 43.85px;
+  margin-top: 8px;
+}
+
+#buttons {
+  width: 100% !important;
+}

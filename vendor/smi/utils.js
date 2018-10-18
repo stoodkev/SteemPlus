@@ -860,7 +860,7 @@
                     xhttp.setRequestHeader("Content-type", "application/json");
                     xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
                 },
-                url: 'https://steemplus-api.herokuapp.com/api/get-last-block-id',
+                url: APIBaseUrl+'last-block',
                 success: function(response) {
                     resolve(response[0]['block_num']);
                 },

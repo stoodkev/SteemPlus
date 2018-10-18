@@ -5,7 +5,7 @@
     const pageAccountNameRegexp = /^\/@([a-z0-9\-\.]*)([\/\#].*)?$/;
     const domCheckTimeout = 100;
     const noImageAvailable = "src/img/no-image-available-hi.png";
-    const APIBaseUrl="https://steem-plus-api-test.herokuapp.com/";
+    const APIBaseUrl="https://api.steemplus.app/";
 
     var getPageAccountName = function() {
         var parseLocation = window.location.pathname.match(pageAccountNameRegexp);

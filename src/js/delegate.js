@@ -205,7 +205,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
 function getDelegationInformation(isSteemit, isBusy, globalP, account)
 {
   // get outgoing delegation from the blockchain using steemjs
-  steem.api.getVestingDelegations(usernamePageDelegation, null, 10, function(err, outgoingDelegations) {
+  steem.api.getVestingDelegations(usernamePageDelegation, null, 1000, function(err, outgoingDelegations) {
 
     // get incoming delegation from steemSQL
     window.SteemPlus.api.getDelegators(usernamePageDelegation).then(function(incomingDelegations){

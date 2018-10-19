@@ -2,7 +2,8 @@ var xhttp = new XMLHttpRequest();
 const steemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com'));
 const busy = window.location.href.includes('busy.org');
 const utopian = window.location.href.includes('utopian.io');
-console.log('Starting SteemPlus', steemit, busy, utopian);
+const steemMonsters = window.location.href.includes('steemmonsters.com');
+console.log('Starting SteemPlus...');
 var market = null;
 var SBDperSteem = 0;
 const DEFAULT_FEED_SIZE = 3;
@@ -52,7 +53,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.storage.local.set({
             steemPriceLS: steemPrice
         });
-        chrome.storage.local.get(['vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
+        chrome.storage.local.get(['sm_batch','vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
 
             var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
                 connect: false
@@ -73,8 +74,13 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
             const followers_table = (items.followers_table == undefined || items.followers_table == 'show');
             const user_info_popover = (items.user_info_popover == undefined || items.user_info_popover == 'show');
             const vote_weight_slider_busy = (items.vote_weight_slider_busy == undefined || items.vote_weight_slider_busy == 'show');
-
-
+            const sm_batch=(items.sm_batch == undefined || items.sm_batch == 'show');
+            if(steemMonsters&&sm_batch)
+              chrome.runtime.sendMessage({
+                  token: token,
+                  to: 'sm_batch',
+                  order: 'start'
+              });
             if (delegation && (steemit || busy))
                 chrome.runtime.sendMessage({
                     token: token,

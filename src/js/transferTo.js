@@ -89,7 +89,7 @@ function createButtonT(isSteemit, busy, account, balance) {
         transfer_button.style.display = 'block';
         transfer_button.style.float = 'right';
         transfer_to.appendChild(transfer_button);
-        $('.UserWallet .small-10 h4')[0].after(transfer_to);
+        $('.UserWallet .row')[0].append(transfer_to);
         const receiver = window.location.href.split('@')[1].split('/')[0];
 
         $('.transfer_to').click(function() {

@@ -1,5 +1,5 @@
 var token_dtube_post = null;
-
+let duration=null;
 var retryCountDtubePost = 0;
 var myUsernameDtubePost = null;
 var isDTubePost = false;
@@ -261,7 +261,6 @@ function openDTubeDialog()
     <div id="dtube-modal" data-reactroot="" role="dialog" style="bottom: 0px; left: 0px; overflow-y: scroll; position: fixed; right: 0px; top: 0px;">
     <div class="reveal-overlay fade in" style="display: block;"></div><div class="reveal fade in" role="document" tabindex="-1" style="display: block;">
     <button class="close-button" type="button"><span aria-hidden="true" class="">×</span></button>
-    <div>
     <div><h3>Post on DTube</h3></div>
     <div id= "disclaimer_dtube">You are about to post using DTube. Upload your video using the following dropdown area.
     <br>If you change your mind and want to create a non-DTube post, simply remove the <b>dtube</b> tag.
@@ -317,6 +316,8 @@ function openDTubeDialog()
     <div class="videoInformation">
     <label class="label-title">Video Title</label>
     <input type="text" name="video-title-dtube"/>
+    <label class="label-title">Video Duration (In seconds, Optional) </label>
+    <input type="number" name="video-duration-dtube"/>
     <label class="label-title">Description</label>
     <textarea class="video-description-dtube" name="video-description-dtube"></textarea>
     </div>
@@ -486,7 +487,6 @@ function openDTubeDialog()
           snaphash: snaphashDTube,
           author: myUsernameDtubePost,
           permlink: createPermlink(8),
-          duration: 20,
           filesize: droppedFiledDTubePost.size,
           spritehash: spritehashDTube
         },
@@ -496,7 +496,11 @@ function openDTubeDialog()
           tags: []
         }
       }
-
+      if(!Number.isNaN(parseInt($('input[name=video-duration-dtube]').eq(0).val())))
+        articleDTube.info.duration=parseInt($('input[name=video-duration-dtube]').eq(0).val());
+      else
+        delete articleDTube.info.duration;
+      console.log($('input[name=video-duration-dtube]').eq(0).val(),articleDTube);
       // add hashs for differents qualities
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {
@@ -647,6 +651,7 @@ function getProgressByToken(token)
         videohashDTube = response.ipfsAddSourceVideo.hash;
         $('#uploadDTtube').hide();
         isUploadedVideo=true;
+
 
         if(isUploadedSnap)
           toggleAddToPostEnableStatus(true);

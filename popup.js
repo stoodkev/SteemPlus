@@ -2,7 +2,7 @@ document.getElementById('vote').addEventListener("click", Upvote);
 var weight;
 var vpow;
 var width = 0;
-var utopian, badge, ben, feedp, del, drop, acc_v, transfers, oneup, post_votes_list;
+var utopian, badge, ben, feedp, del, drop, acc_v, transfers, oneup, post_votes_list,sm_batch;
 var me, acc;
 var menus = document.getElementsByClassName("menu");
 var content = document.getElementsByClassName("content");
@@ -11,7 +11,7 @@ var isConnectedToSteemConnect = null;
 
 $('#shortcuts, .switch-text').hide();
 // Get local parameters stored using Chrome Storage API
-chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post','vote_weight_slider_busy', 'tip_user', 'utopian_post', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
+chrome.storage.local.get(['sm_batch','steem_monsters', 'steemplus_points', 'dtube_post','vote_weight_slider_busy', 'tip_user', 'utopian_post', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'post_floating_bottom_bar', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'onboarding', 'oneup', 'sessionToken', 'tokenExpire', 'weight', 'resteem', 'blacklist', 'whitelist', 'reputation', 'rep', 'badge', 'del', 'ben', 'feedp', 'drop', 'acc_v', 'transfers'], function(items) {
     var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined || items.tokenExpire < Date.now()) ? {
         connect: false
     } : {
@@ -121,7 +121,8 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post','vo
     steemplus_points = items.steemplus_points == undefined ? 'show' : items.steemplus_points;
     utopian_post = items.utopian_post == undefined ? 'show' : items.utopian_post;
     dtube_post = items.dtube_post == undefined ? 'show' : items.dtube_post;
-    steem_monsters = items.dtubsteem_monsterse_post == undefined ? 'show' : items.steem_monsters;
+    steem_monsters = items.steem_monsters == undefined ? 'show' : items.steem_monsters;
+    sm_batch = items.sm_batch == undefined ? 'show' : items.sm_batch;
 
     // Steemit more info
     steemit_more_info = items.steemit_more_info == undefined ? 'show' : items.steemit_more_info;
@@ -172,6 +173,7 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post','vo
     $('input[name=tip_user]').prop('checked', tip_user == 'show');
     $('input[name=steemplus_points]').prop('checked', steemplus_points == 'show');
     $('input[name=steem_monsters]').prop('checked', steem_monsters == 'show');
+    $('input[name=sm_batch]').prop('checked', sm_batch == 'show');
 
     // Steemit more info
     $('input[name=steemit_more_info]').prop('checked', steemit_more_info == 'show');
@@ -535,6 +537,12 @@ $(document).on("change", "input[name=dtube_post]", function() {
 $(document).on("change", "input[name=steem_monsters]", function() {
     chrome.storage.local.set({
         steem_monsters: $("input[name=steem_monsters]").prop('checked') ? 'show' : 'hide'
+    });
+});
+
+$(document).on("change", "input[name=sm_batch]", function() {
+    chrome.storage.local.set({
+        sm_batch: $("input[name=sm_batch]").prop('checked') ? 'show' : 'hide'
     });
 });
 

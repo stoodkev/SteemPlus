@@ -1,6 +1,9 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log("bgs: forwarded " + request.data + " to the tab " + request.to);
-    if (request.command !== undefined) websiteSwitch(request.command)
+    if (request.command !== undefined){
+      if(request.command!=="getVideoDuration")
+        websiteSwitch(request.command);
+    }
     else {
         chrome.tabs.query({
             active: true,
@@ -17,6 +20,15 @@ chrome.commands.onCommand.addListener(function(command) {
 });
 
 
+function arrayBufferToBase64(buffer) {
+  var reader = new FileReader();
+ reader.readAsDataURL(buffer);
+ reader.onloadend = function() {
+     base64data = reader.result;
+     console.log(base64data);
+     return base64data;
+ }
+}
 
 function websiteSwitch(command) {
     chrome.tabs.query({

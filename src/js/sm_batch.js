@@ -1,11 +1,16 @@
 let tokenSmBatch=null;
 let batchIsStarted=false;
 let batch=[];
+let total_sm=null;
+let hasSKC=false;
+let user = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
 		waitForMarketPurchase();
+		findPurchaseMethod();
+
   }
 });
 
@@ -17,7 +22,7 @@ function waitForMarketPurchase(){
         startBatchPurchase();
      else if($("#card_details_dialog").eq(0).css("display")!="block"&&batchIsStarted)
         batchIsStarted=false;
-      },200);
+      },500);
    });
 }
 
@@ -53,22 +58,50 @@ function startBatchPurchase(){
             return item.uid!=$(parent).attr("uid");
         });
       }
-      const total=window.SteemPlus.Utils.numberWithCommas(
+      total_sm=window.SteemPlus.Utils.numberWithCommas(
         batch.reduce(function(accumulator,value){
           return accumulator+parseFloat(value.price);
         },0).toFixed(3)
       );
       const items=batch.length;
-      console.log(batch,total,items);
+      console.log(batch,total_sm,items);
       if(items>0){
         $("#batch_buy").attr("disabled",false);
-        $("#total").html("Total : $"+total);
+        $("#total").html("Total : $"+total_sm);
       }
       else{
         $("#total").html("");
         $("#batch_buy").attr("disabled",true);
       }
-
       $("#batch_buy").html("Batch Buy ("+items+")");
     });
+
+		$("#batch_buy").click(function(){
+				sendTransfer();
+		});
+}
+
+function sendTransfer(){
+	let memo="sm_market_purchase:";
+	for (let tx of batch){
+		memo+=tx.market_id+",";
+	}
+	memo=memo.slice(0,memo.length-1);
+	memo+=":steemplus";
+	console.log(total_sm,memo);
+	marketSettings=await requestMarketSettings();
+	if(hasSKC)
+		steem_keychain.requestTransfer(user, "steemmonsters", total_sm, memo, $("#ddlCurrency option:selected").val(), function(response) {
+				console.log('main js response - transfer');
+				console.log(response);
+		});
+}
+
+function findPurchaseMethod(){
+	setTimeout(function(){
+		user=$(".username").html();
+		steem_keychain.requestHandshake(function() {
+					hasSKC=true;
+			});
+	},1000);
 }

@@ -69,6 +69,7 @@ function startVoteWeightSlider() {
 
 async function updateVotingSlider(weightDisplay) {
     weightDisplay.css('margin-top', '-10px');
+    console.log("a");
     var weightDollars = weightDisplay.parent().find('.voting_weight_dollars');
     if (weightDollars.length === 0) {
         var weightDollars = $('<div class="voting_weight_dollars"></div>');
@@ -78,7 +79,9 @@ async function updateVotingSlider(weightDisplay) {
         }));
         weightDisplay.after(weightDollars);
     }
-    var dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace(/ /, ''), 10), account_vws, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+    const dollars = await window.SteemPlus.Utils.getVotingDollarsPerAccount(parseInt(weightDisplay.eq(0).text().replace("-", ''), 10), account_vws, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
+    const votingEl = weightDisplay.closest('.Voting');
+    const flagInfo = votingEl.find('.Voting__about-flag');
 
     if ((typeof dollars === 'undefined' || dollars === undefined) && retryCountVoteWeightSlider < 20) {
         retryCountVoteWeightSlider++;
@@ -86,11 +89,9 @@ async function updateVotingSlider(weightDisplay) {
             tryUpdateVotingSlider();
         }, 1000);
     } else {
-        weightDollars.text(dollars.toFixed(2) + '$');
+        weightDollars.text((flagInfo.length?"-":"")+dollars.toFixed(2) + '$');
     }
 
-    var votingEl = weightDisplay.closest('.Voting');
-    var flagInfo = votingEl.find('.Voting__about-flag');
     if (flagInfo.length) {
 
         var pendingPayout;
@@ -124,7 +125,7 @@ async function updateVotingSlider(weightDisplay) {
         var voteTotalDollars = voteTotal.find('.after-downvote-total-dollar');
 
         if (typeof dollars !== 'undefined') {
-            var v = pendingPayout + dollars;
+            var v = pendingPayout - dollars;
             voteTotalDollars.text(v.toFixed(2) + '$');
         }
 

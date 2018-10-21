@@ -3,7 +3,7 @@ let batchIsStarted=false;
 let batch=[];
 let total_sm=null;
 let hasSKC=false;
-let user = null;
+let userSM = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
@@ -81,7 +81,7 @@ function startBatchPurchase(){
 		});
 }
 
-function sendTransfer(){
+async function sendTransfer(){
 	let memo="sm_market_purchase:";
 	for (let tx of batch){
 		memo+=tx.market_id+",";
@@ -89,9 +89,11 @@ function sendTransfer(){
 	memo=memo.slice(0,memo.length-1);
 	memo+=":steemplus";
 	console.log(total_sm,memo);
-	marketSettings=await requestMarketSettings();
+	marketSettings=await window.SteemPlus.SteemMonsters.getMarketSettings();
+	const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?marketSettings.steem_price:marketSettings.sbd_price);
+	const total=total_sm/rate;
 	if(hasSKC)
-		steem_keychain.requestTransfer(user, "steemmonsters", total_sm, memo, $("#ddlCurrency option:selected").val(), function(response) {
+		window.steemplus_keychain.requestTransfer(userSM, "steemmonsters", total, memo, $("#ddlCurrency option:selected").val(), function(response) {
 				console.log('main js response - transfer');
 				console.log(response);
 		});
@@ -99,9 +101,20 @@ function sendTransfer(){
 
 function findPurchaseMethod(){
 	setTimeout(function(){
-		user=$(".username").html();
-		steem_keychain.requestHandshake(function() {
-					hasSKC=true;
-			});
+		userSM=$(".username").html();
+		console.log("user",userSM);
+		console.log(window);
+		window.steemplus_keychain.requestHandshake(function(){
+				console.log("a");
+		});
 	},1000);
 }
+
+function dispatchCustomEvent(name, data, callback) {
+        let whatever = Object.assign({
+            request_id: 1
+        }, data);
+        document.dispatchEvent(new CustomEvent(name, {
+            detail: whatever
+        }));
+    }

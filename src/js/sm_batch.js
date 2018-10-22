@@ -116,8 +116,8 @@ function startBatchPurchase(){
 				return;
 			}
 			if($(".left_sm select option:selected").val()=="Cheapest"){
-					for(let i=0;i<Math.min($("#input_sm").val(),$(".batchItem:not(:hidden)"));i++){
-						$(".batchItem").eq(i).prop('checked', true).trigger("change");
+					for(let i=0;i<Math.min($("#input_sm").val(),$(".batchItem:not(:hidden)").length);i++){
+						$(".batchItem:not(:hidden)").eq(i).prop('checked', true).trigger("change");
 					}
 			} else if($(".left_sm select option:selected").val()=="Upto"){
 				let totalUpTo=0;

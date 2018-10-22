@@ -109,7 +109,28 @@ function startBatchPurchase(){
 				}
 		});
 
-		
+		$("#input_sm").on('input',function(){
+			batch=[];
+			$(".batchItem:checked").prop('checked', false).trigger("change");
+			if($("#input_sm").val()==""){
+				return;
+			}
+			if($(".left_sm select option:selected").val()=="Cheapest"){
+					for(let i=0;i<Math.min($("#input_sm").val(),$(".batchItem:not(:hidden)"));i++){
+						$(".batchItem").eq(i).prop('checked', true).trigger("change");
+					}
+			} else if($(".left_sm select option:selected").val()=="Upto"){
+				let totalUpTo=0;
+				for (let it of $(".batchItem:not(:hidden)")){
+					const parent = $(it).parent().parent();
+					if(totalUpTo+parseFloat($(parent).attr("price"))<=parseFloat($("#input_sm").val())){
+						totalUpTo+=parseFloat($(parent).attr("price"));
+						$(it).prop('checked', true).trigger("change");
+					}
+					else return;
+				}
+			}
+		});
 
 		$("#batch_buy").click(function(){
 				sendTransfer();

@@ -1,12 +1,35 @@
 #total {
   float: right;
   display: inline-block;
-  width: 200px;
+  width: 180px;
   font-size: 1.4em;
-  height: 43.85px;
-  margin-top: 8px;
+  text-align: center;
+  height: 50px;
+  margin-top: -3px;
 }
 
 #buttons {
   width: 100% !important;
+}
+
+.left_sm{
+  text-align: left;
+  width: 100%;
+}
+
+.select-sm {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+#input_sm {
+  display: none;
+  width: 75px;
+  height:25px;
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+#ddlCurrency {
+  display: inline-block !importan;
 }

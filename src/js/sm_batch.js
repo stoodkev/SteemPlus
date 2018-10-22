@@ -9,8 +9,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
 		waitForMarketPurchase();
-		findPurchaseMethod();
-
   }
 });
 
@@ -46,8 +44,16 @@ function startBatchPurchase(){
     batchButton.innerHTML="Batch Buy (0)";
     $("#buttons").append(batchButton);
     $("#buttons").append($("<span id='total'></span>"));
+		$(".market-header").next().after("<div class='market-header select-sm'><div class='left_sm'>Select <select style='font-size:20px'>\
+		<option selected='true' disabled='disabled'>Filters</option>    \
+		<option value='All'>All</option>\
+		<option value='None'>None</option>\
+		<option value='Cheapest'>X Cheapest cards</option>\
+		<option value='Upto'>Up to X$</option>\
+		</select></div><div  class='left_sm'>\
+		<input type='number' id='input_sm'/></div></div>");
 
-    $(".batchItem").change(function(){
+    $(".batchItem").change(async function(){
       const parent = $(this).parent().parent();
       if ($(this).is(':checked')){
         batch.push({market_id:$(parent).attr("market_id"),price:$(parent).attr("price"),uid:$(parent).attr("uid")});
@@ -65,6 +71,7 @@ function startBatchPurchase(){
       );
       const items=batch.length;
       console.log(batch,total_sm,items);
+			marketSettings= window.SteemPlus.SteemMonsters.getMarketSettings();
       if(items>0){
         $("#batch_buy").attr("disabled",false);
         $("#total").html("Total : $"+total_sm);
@@ -74,7 +81,35 @@ function startBatchPurchase(){
         $("#batch_buy").attr("disabled",true);
       }
       $("#batch_buy").html("Batch Buy ("+items+")");
+			const market= await marketSettings;
+			const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
+			const total=(total_sm/rate).toFixed(3);
+			$("#total").html("Total : $"+total_sm+"<br>("+total+" "+$("#ddlCurrency option:selected").val()+")");
     });
+
+		$(".left_sm select").change(function(){
+				batch=[];
+				$("#input_sm").val("");
+				switch($(".left_sm select option:selected").val()){
+					case "None":
+						$(".batchItem:checked").prop('checked', false).trigger("change");
+							$("#input_sm").hide();
+						break;
+					case "All":
+						$(".batchItem:checked").prop('checked', false).trigger("change");
+						$(".batchItem:not(:checked):not(:hidden)").prop('checked', true).trigger("change");
+							$("#input_sm").hide();
+						break;
+					case "Cheapest":
+						$("#input_sm").show();
+						break;
+					case "Upto":
+						$("#input_sm").show();
+						break;
+				}
+		});
+
+		
 
 		$("#batch_buy").click(function(){
 				sendTransfer();
@@ -82,6 +117,7 @@ function startBatchPurchase(){
 }
 
 async function sendTransfer(){
+	const username=$(".username").html();
 	let memo="sm_market_purchase:";
 	for (let tx of batch){
 		memo+=tx.market_id+",";
@@ -89,32 +125,8 @@ async function sendTransfer(){
 	memo=memo.slice(0,memo.length-1);
 	memo+=":steemplus";
 	console.log(total_sm,memo);
-	marketSettings=await window.SteemPlus.SteemMonsters.getMarketSettings();
-	const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?marketSettings.steem_price:marketSettings.sbd_price);
-	const total=total_sm/rate;
-	if(hasSKC)
-		window.steemplus_keychain.requestTransfer(userSM, "steemmonsters", total, memo, $("#ddlCurrency option:selected").val(), function(response) {
-				console.log('main js response - transfer');
-				console.log(response);
-		});
-}
 
-function findPurchaseMethod(){
-	setTimeout(function(){
-		userSM=$(".username").html();
-		console.log("user",userSM);
-		console.log(window);
-		window.steemplus_keychain.requestHandshake(function(){
-				console.log("a");
-		});
-	},1000);
-}
+	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
+	window.open(steemconnect_sign);
 
-function dispatchCustomEvent(name, data, callback) {
-        let whatever = Object.assign({
-            request_id: 1
-        }, data);
-        document.dispatchEvent(new CustomEvent(name, {
-            detail: whatever
-        }));
-    }
+}

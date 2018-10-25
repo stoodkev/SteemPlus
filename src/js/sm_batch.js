@@ -2,6 +2,7 @@ let tokenSmBatch=null;
 let batchIsStarted=false;
 let batch=[];
 let total_sm=null;
+let total_rate=null;
 let hasSKC=false;
 let userSM = null;
 
@@ -83,8 +84,8 @@ function startBatchPurchase(){
       $("#batch_buy").html("Batch Buy ("+items+")");
 			const market= await marketSettings;
 			const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
-			const total=(total_sm/rate).toFixed(3);
-			$("#total").html("Total : $"+total_sm+"<br>("+total+" "+$("#ddlCurrency option:selected").val()+")");
+			 total_rate=(total_sm/rate).toFixed(3);
+			$("#total").html("Total : $"+total_sm+"<br>("+total_rate+" "+$("#ddlCurrency option:selected").val()+")");
     });
 
 		$(".left_sm select").change(function(){
@@ -144,10 +145,10 @@ async function sendTransfer(){
 		memo+=tx.market_id+",";
 	}
 	memo=memo.slice(0,memo.length-1);
-	memo+=":steemplus";
-	console.log(total_sm,memo);
+	memo+=":"+username;
+	memo+=":steemplus-pay";
 
-	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
+	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
 	window.open(steemconnect_sign);
 
 }

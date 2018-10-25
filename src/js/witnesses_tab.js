@@ -232,10 +232,10 @@ function isWitness(username, list) {
 }
 
 function getWitnessRank(username, list) {
-
-    return list.find(function(e) {
+    const userObj= list.find(function(e) {
         return e.name === username;
-    }).rank;
+    });
+    return userObj?userObj.rank:null;
 }
 
 function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses) {

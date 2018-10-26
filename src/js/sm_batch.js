@@ -13,6 +13,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   }
 });
 
+steem_keychain.requestHandshake(function(){
+	console.log("handshake");
+});
+
+
 function waitForMarketPurchase(){
   console.log("start");
    $(document).click(function(){
@@ -65,7 +70,7 @@ function startBatchPurchase(){
             return item.uid!=$(parent).attr("uid");
         });
       }
-      total_sm=window.SteemPlus.Utils.numberWithCommas(
+      total_sm=numberWithCommas(
         batch.reduce(function(accumulator,value){
           return accumulator+parseFloat(value.price);
         },0).toFixed(3)
@@ -151,4 +156,8 @@ async function sendTransfer(){
 	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
 	window.open(steemconnect_sign);
 
+}
+
+const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

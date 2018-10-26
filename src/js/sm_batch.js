@@ -17,6 +17,9 @@ steem_keychain.requestHandshake(function(){
 	console.log("handshake");
 });
 
+steem_keychain.requestCustomJson("stoodkev","custom","Posting","{}","Hi",function(result){
+	console.log(result);
+});
 
 function waitForMarketPurchase(){
   console.log("start");

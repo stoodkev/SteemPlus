@@ -14,7 +14,9 @@ var steem_keychain = {
             type: "decode",
             username: account,
             message: message,
-            method: key
+            method: key,
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
 
         this.dispatchCustomEvent("swRequest", request, callback);
@@ -31,7 +33,8 @@ var steem_keychain = {
             json_metadata: json_metadata,
             permlink: permlink,
             comment_options: comment_options,
-            extension:chrome.runtime.id
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
         console.log(request);
 
@@ -45,7 +48,8 @@ var steem_keychain = {
             permlink: permlink,
             author: author,
             weight: weight,
-            extension:chrome.runtime.id
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
 
         this.dispatchCustomEvent("swRequest", request, callback);
@@ -59,8 +63,10 @@ var steem_keychain = {
             method: key, // Posting key is used by default, active can be specified for id=custom .
             json: json, //content of your json
             display_msg: display_msg,
-            extension:chrome.runtime.id
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
+        console.log(request);
 
         this.dispatchCustomEvent("swRequest", request, callback);
     },
@@ -73,7 +79,8 @@ var steem_keychain = {
             memo: memo,
             enforce:enforce,
             currency: currency,
-            extension:chrome.runtime.id
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
         this.dispatchCustomEvent("swRequest", request, callback);
     },
@@ -84,7 +91,8 @@ var steem_keychain = {
             delegatee: delegatee,
             amount: amount,
             unit:unit,
-            extension:chrome.runtime.id
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
         };
         this.dispatchCustomEvent("swRequest", request, callback);
     },

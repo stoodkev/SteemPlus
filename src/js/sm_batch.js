@@ -10,25 +10,27 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
 		waitForMarketPurchase();
+		steem_keychain.requestHandshake(function(){
+			console.log("handshake");
+			hasSKC=true;
+		});
   }
 });
 
 function waitForMarketPurchase(){
-  console.log("start");
    $(document).click(function(){
      setTimeout(function(){
      if(!batchIsStarted&&$("#menu_item_market").hasClass("active")&&$("#card_details_dialog").eq(0).css("display")=="block")
         startBatchPurchase();
      else if($("#card_details_dialog").eq(0).css("display")!="block"&&batchIsStarted)
         batchIsStarted=false;
-      },500);
+      },3000);
    });
 }
 
 function startBatchPurchase(){
   batch=[];
   batchIsStarted=true;
-    console.log("Starting Batch Purchase");
     for(const detail of $(".card-detail-container")){
       const check = document.createElement("input");    // Create with DOM
       check.type = "checkbox";
@@ -65,13 +67,12 @@ function startBatchPurchase(){
             return item.uid!=$(parent).attr("uid");
         });
       }
-      total_sm=window.SteemPlus.Utils.numberWithCommas(
+      total_sm=numberWithCommas(
         batch.reduce(function(accumulator,value){
           return accumulator+parseFloat(value.price);
         },0).toFixed(3)
       );
       const items=batch.length;
-      console.log(batch,total_sm,items);
 			marketSettings= window.SteemPlus.SteemMonsters.getMarketSettings();
       if(items>0){
         $("#batch_buy").attr("disabled",false);
@@ -84,8 +85,9 @@ function startBatchPurchase(){
       $("#batch_buy").html("Batch Buy ("+items+")");
 			const market= await marketSettings;
 			const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
-			 total_rate=(total_sm/rate).toFixed(3);
+			 total_rate=(parseFloat(total_sm.replace(",",""))/rate).toFixed(3);
 			$("#total").html("Total : $"+total_sm+"<br>("+total_rate+" "+$("#ddlCurrency option:selected").val()+")");
+			checkMemoSize(batch);
     });
 
 		$(".left_sm select").change(function(){
@@ -149,6 +151,24 @@ async function sendTransfer(){
 	memo+=":steemplus-pay";
 
 	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
-	window.open(steemconnect_sign);
+	if(hasSKC){
+		steem_keychain.requestTransfer(username, "steemmonsters", total_rate, memo, $("#ddlCurrency option:selected").val(), function(result){
+			if(!result.success)
+					window.open(steemconnect_sign);
+		},true);
+	}
+	else
+		window.open(steemconnect_sign);
 
+}
+
+function checkMemoSize(batch){
+	if(batch.length>45){
+			$("#batch_buy").attr("disabled",true);
+			$("#total").html("Please buy 45 or fewer at a time.");
+	}
+}
+
+const numberWithCommas = (x) => {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

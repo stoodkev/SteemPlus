@@ -89,7 +89,8 @@ function createDropdownList() {
         tags = $('input[tabindex=3]').eq(0).val().split(' ');
         permlink = $('.vframe input').eq(0).val().toLowerCase()
             .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
+            .replace(/[^\w-]+/g, '')
+            .replace(/--+/g, '-');
         title = $('.vframe input').eq(0).val();
         body = $('.vframe textarea').eq(0).val();
         sbd_percent = $('.benef-steemit-percentage').eq(0).val();

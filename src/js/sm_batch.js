@@ -56,7 +56,7 @@ function startBatchPurchase(){
 		</select></div><div  class='left_sm'>\
 		<input type='number' id='input_sm'/></div></div>");
 
-    $(".batchItem").change(async function(){
+    $(".batchItem").change(function(){
       const parent = $(this).parent().parent();
       if ($(this).is(':checked')){
         batch.push({market_id:$(parent).attr("market_id"),price:$(parent).attr("price"),uid:$(parent).attr("uid")});
@@ -83,12 +83,12 @@ function startBatchPurchase(){
         $("#batch_buy").attr("disabled",true);
       }
       $("#batch_buy").html("Batch Buy ("+items+")");
-			const market= await marketSettings;
-			const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
-			 total_rate=(parseFloat(total_sm.replace(",",""))/rate).toFixed(3);
-			$("#total").html("Total : $"+total_sm+"<br>("+total_rate+" "+$("#ddlCurrency option:selected").val()+")");
-			checkMemoSize(batch);
+			getPrice();
     });
+
+		$("#ddlCurrency") .change(function(){
+				getPrice();
+		});
 
 		$(".left_sm select").change(function(){
 				batch=[];
@@ -171,4 +171,12 @@ function checkMemoSize(batch){
 
 const numberWithCommas = (x) => {
 	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+async function getPrice(){
+	const market= await marketSettings;
+	const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
+	 total_rate=(parseFloat(total_sm.replace(",",""))/rate).toFixed(3);
+	$("#total").html("Total : $"+total_sm+"<br>("+total_rate+" "+$("#ddlCurrency option:selected").val()+")");
+	checkMemoSize(batch);
 }

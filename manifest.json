@@ -106,7 +106,8 @@
         "src/js/beneficiary_donation.js",
         "src/js/steemplus_points.js",
         "src/js/dtube_post.js",
-        "src/js/steem_monsters.js"
+        "src/js/steem_monsters.js",
+        "src/js/premium_features.js"
         ],
       "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css","vendor/easy-autocomplete.min.css","vendor/easy-autocomplete.themes.min.css",
         "src/css/delegate.css",
@@ -138,7 +139,8 @@
         "src/css/misc.css",
         "src/css/steemplus_points.css",
         "src/css/dtube_post.css",
-        "src/css/steem_monsters.css"
+        "src/css/steem_monsters.css",
+        "src/css/premium_features.css"
         ],
       "run_at": "document_idle"
     },

@@ -1474,7 +1474,6 @@ function checkLastPost(last_post_url, account) {
     console.log('account', account);
     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus', null, new Date().toISOString().split('.')[0], 1, function(err, result) {
         if (!result[0].title.includes('SteemPlus Statistics')) {
-          console.log("nop");
             if (last_post_url == undefined || last_post_url !== result[0].url) {
                 toastr.options = {
                     "closeButton": false,
@@ -1503,7 +1502,7 @@ function checkLastPost(last_post_url, account) {
                     '<br /><br />' +
                     ((hasVotedWitness || hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
                       You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />') +
-                    '<button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
+                    '<button class="btn btn-primary" id="new_post_yes">Read</button><button class="btn btn-primary" id="new_post_fundition">Support on Fundition</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
                 $('#new_post_yes').click(function() {
                     chrome.storage.local.set({
@@ -1518,6 +1517,10 @@ function checkLastPost(last_post_url, account) {
                         //Browser has blocked it
                         alert('Please allow popups for this website');
                     }
+                });
+
+                $('#new_post_fundition').click(function() {
+                    window.open("https://fundition.io/#!/@steem-plus/6om5dpvkb/news");
                 });
 
                 $('#new_post_no').click(function() {

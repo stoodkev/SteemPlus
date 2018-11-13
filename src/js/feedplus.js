@@ -236,7 +236,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
         //Download information for Steem Sincerity
 
         // Create user list
-        var usernameList = [];
+      /*  var usernameList = [];
         filtered_list.forEach(function(item) {
             if (!usernameList.includes(item.username))
                 usernameList.push(item.username);
@@ -260,7 +260,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             filtered_list = filtered_list.filter(function(elt) {
                 return filteredUsernames.includes(elt.username);
             });
-        }
+        } */
 
         // Sort data
         Sort(isSteemit, isBusy, feedp);
@@ -360,12 +360,12 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     '<input type="radio" name="tag" value="show" id="all_tag"><label for="all_tag">Show all tags</label> <br>' +
                     '<input type="radio" name="tag" value="list" id="show_tag"><label for="show_tag">Show only</label><textarea rows="4" id="list_tags" placeholder="steem life" style="width: 100%"></textarea><br>' +
                     '</div><hr>' +
-                    '<div class="filters"><div class="category_filter" id="classification_block"><img src="' + more + '"/> Classification </div></div><div class="filter_content">' +
+                    /*'<div class="filters"><div class="category_filter" id="classification_block"><img src="' + more + '"/> Classification </div></div><div class="filter_content">' +
                     '<input type="checkbox" name="classif" value="human" id="show_human_classif"><label for="human_classif" class="human_classif">Human</label> <br>' +
                     '<input type="checkbox" name="classif" value="bot" id="show_bot_classif"><label for="bot_classif" class="bot_classif">Bot</label><br>' +
                     '<input type="checkbox" name="classif" value="spammer" id="show_spammer_classif"><label for="spammer_classif" class="spammer_classif">Spammer</label><br>' +
                     '<input type="checkbox" name="classif" value="pending" id="show_pending_classif"><label for="pending_classif" class="pending_classif">Pending</label><br>' +
-                    '</div><hr>' +
+                    '</div><hr>' +*/
                     '<div class="filters"><div class="category_filter" id="resteem_block"><img src="' + more + '"/> Resteems </div><div class="filter_content"> <input type="radio" name="resteem" value="show" id="show"><label for="show">Show all</label> <br>' +
                     '<input type="radio" name="resteem" value="hide" id="hide"><label for="hide">Hide all</label> <br>' +
                     '<input type="radio" name="resteem" value="blacklist_radio" id="blacklist_radio"><label for="blacklist_radio"> Blacklist</label><textarea rows="4" id="blacklist" style="width: 100%"></textarea><br>' +
@@ -392,12 +392,12 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     '<input type="radio" name="tag" value="show" id="all_tag"><label for="all_tag">Show all tags</label> <br>' +
                     '<input type="radio" name="tag" value="list" id="show_tag"><label for="show_tag">Show only</label><textarea rows="4" class="busy-list-tags" id="list_tags" placeholder="steem life" style="width: 100%"></textarea><br>' +
                     '</div><hr class="busy-rule">' +
-                    '<div class="filters filters-busy"><div class="category_filter" id="classification_block"><img src="' + more + '"/> Classification </div></div><div class="filter_content">' +
+                    /*'<div class="filters filters-busy"><div class="category_filter" id="classification_block"><img src="' + more + '"/> Classification </div></div><div class="filter_content">' +
                     '<input type="checkbox" name="classif" value="human" id="show_human_classif"><label for="human_classif" class="human_classif">Human</label> <br>' +
                     '<input type="checkbox" name="classif" value="bot" id="show_bot_classif"><label for="bot_classif" class="bot_classif">Bot</label><br>' +
                     '<input type="checkbox" name="classif" value="spammer" id="show_spammer_classif"><label for="spammer_classif" class="spammer_classif">Spammer</label><br>' +
                     '<input type="checkbox" name="classif" value="pending" id="show_pending_classif"><label for="pending_classif" class="pending_classif">Pending</label><br>' +
-                    '</div><hr class="busy-rule">' +
+                    '</div><hr class="busy-rule">' +*/
                     '<div class="filters filters-busy"><div class="category_filter" id="resteem_block"><img src="' + more + '"/> Resteems </div></div><div class="filter_content"> <input type="radio" name="resteem" value="show" id="show"><label for="show">Show all</label> <br>' +
                     '<input type="radio" name="resteem" value="hide" id="hide"><label for="hide">Hide all</label> <br>' +
                     '<input type="radio" name="resteem" value="blacklist_radio" id="blacklist_radio"><label for="blacklist_radio"> Blacklist</label><textarea rows="4" id="blacklist" style="width: 100%"></textarea><br>' +
@@ -585,7 +585,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             $('#voted_check').prop('checked', feedp.voted_check);
 
 
-        if (Object.keys(feedp.classif).length > 0) {
+        /*if (Object.keys(feedp.classif).length > 0) {
             if (feedp.classif.human !== null)
                 $('#show_human_classif').prop('checked', feedp.classif.human);
             if (feedp.classif.bot !== null)
@@ -599,7 +599,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             $('#show_bot_classif').prop('checked', feedp.classif.bot);
             $('#show_spammer_classif').prop('checked', feedp.classif.spammer);
             $('#show_pending_classif').prop('checked', feedp.classif.pending);
-        }
+        }*/
     }
 
     function DisableMenu(isDisabled) {
@@ -820,7 +820,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 // @parameter arrayUsernames : username list used to create url
 // @parameter i : index used to create url
 // @parameter classifList : list of allowed classification used to create allowed user list
-function getDataFromAPIClassif(arrayUsernames, i, classifList) {
+/*function getDataFromAPIClassif(arrayUsernames, i, classifList) {
     var tmp = [];
     var url = 'https://steem-sincerity.dapptools.info/s/api/accounts-info/' + arrayUsernames.slice(0 + i * 100, 100 + i * 100).join(',');
     $.ajax({
@@ -866,4 +866,4 @@ function getDataFromAPIClassif(arrayUsernames, i, classifList) {
         }
     });
     return tmp;
-}
+}*/

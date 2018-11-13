@@ -251,12 +251,12 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             var list_tags = (items.list_tags !== undefined) ? items.list_tags : null;
             var voted_check = (items.vote_check !== undefined) ? items.voted_check : false;
             var nb_posts = (items.nb_posts !== undefined && items.nb_posts < 10 && items.nb_posts !== '') ? items.nb_posts : DEFAULT_FEED_SIZE;
-            var classif = (items.classif !== undefined) ? items.classif : {
+            /*var classif = (items.classif !== undefined) ? items.classif : {
                 bot: true,
                 human: true,
                 pending: true,
                 spammer: true
-            };
+            };*/
 
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
@@ -325,7 +325,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                             voted_check: voted_check,
                             sort: sort,
                             nb_posts: nb_posts,
-                            classif: classif
+                            //classif: classif
                         }
                     }
                 });
@@ -494,7 +494,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                                         voted_check: voted_check,
                                         sort: sort,
                                         nb_posts: nb_posts,
-                                        classif: classif
+                                        //classif: classif
                                     }
                                 }
                             });
@@ -583,7 +583,7 @@ function startOfflineFeatures(items, user, account) {
 
     const favorite_section = (items.favorite_section == undefined || items.favorite_section == 'show');
     const board_reward = (items.board_reward == undefined || items.board_reward == 'show');
-    const classification_user = (items.classification_user == undefined || items.classification_user == 'show');
+    //const classification_user = (items.classification_user == undefined || items.classification_user == 'show');
     const witnesses_tab = (items.witnesses_tab == undefined || items.witnesses_tab == 'show');
     const article_count = (items.article_count == undefined || items.article_count == 'show');
     const wallet_history = (items.wallet_history == undefined || items.wallet_history == 'show');
@@ -684,7 +684,7 @@ function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-    if (classification_user && (steemit || busy))
+  /*  if (classification_user && (steemit || busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'classification_user',
@@ -694,7 +694,7 @@ function startOfflineFeatures(items, user, account) {
                 steemit: steemit,
                 busy: busy
             }
-        });
+        });*/
     if (witnesses_tab && (steemit || busy))
         chrome.runtime.sendMessage({
             token: token,
@@ -1134,7 +1134,7 @@ function startOfflineFeatures(items, user, account) {
                             steemPrice: steemPriceLS
                         }
                     });
-                if (classification_user && (steemit || busy))
+                /*if (classification_user && (steemit || busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'classification_user',
@@ -1144,7 +1144,7 @@ function startOfflineFeatures(items, user, account) {
                             steemit: steemit,
                             busy: busy
                         }
-                    });
+                    });*/
                 if (witnesses_tab && (steemit || busy))
                     chrome.runtime.sendMessage({
                         token: token,
@@ -1479,7 +1479,7 @@ function date_diff_indays(date1, date2) {
 function checkLastPost(last_post_url, account) {
     console.log('account', account);
     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus', null, new Date().toISOString().split('.')[0], 1, function(err, result) {
-        if (!result[0].url.includes('budget') && !result[0].url.includes('Budget')) {
+        if (!result[0].title.includes('SteemPlus Statistics')) {
             if (last_post_url == undefined || last_post_url !== result[0].url) {
                 toastr.options = {
                     "closeButton": false,
@@ -1508,7 +1508,7 @@ function checkLastPost(last_post_url, account) {
                     '<br /><br />' +
                     ((hasVotedWitness || hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
                       You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />') +
-                    '<button class="btn btn-primary" id="new_post_yes">Read</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
+                    '<button class="btn btn-primary" id="new_post_yes">Read</button><button class="btn btn-primary" id="new_post_fundition">Support on Fundition</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
                 $('#new_post_yes').click(function() {
                     chrome.storage.local.set({
@@ -1523,6 +1523,10 @@ function checkLastPost(last_post_url, account) {
                         //Browser has blocked it
                         alert('Please allow popups for this website');
                     }
+                });
+
+                $('#new_post_fundition').click(function() {
+                    window.open("https://fundition.io/#!/@steem-plus/6om5dpvkb/news");
                 });
 
                 $('#new_post_no').click(function() {

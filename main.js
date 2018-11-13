@@ -251,12 +251,12 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
             var list_tags = (items.list_tags !== undefined) ? items.list_tags : null;
             var voted_check = (items.vote_check !== undefined) ? items.voted_check : false;
             var nb_posts = (items.nb_posts !== undefined && items.nb_posts < 10 && items.nb_posts !== '') ? items.nb_posts : DEFAULT_FEED_SIZE;
-            var classif = (items.classif !== undefined) ? items.classif : {
+            /*var classif = (items.classif !== undefined) ? items.classif : {
                 bot: true,
                 human: true,
                 pending: true,
                 spammer: true
-            };
+            };*/
 
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
@@ -325,7 +325,7 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                             voted_check: voted_check,
                             sort: sort,
                             nb_posts: nb_posts,
-                            classif: classif
+                            //classif: classif
                         }
                     }
                 });
@@ -494,7 +494,7 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                                         voted_check: voted_check,
                                         sort: sort,
                                         nb_posts: nb_posts,
-                                        classif: classif
+                                        //classif: classif
                                     }
                                 }
                             });
@@ -583,7 +583,7 @@ function startOfflineFeatures(items, user, account) {
 
     const favorite_section = (items.favorite_section == undefined || items.favorite_section == 'show');
     const board_reward = (items.board_reward == undefined || items.board_reward == 'show');
-    const classification_user = (items.classification_user == undefined || items.classification_user == 'show');
+    //const classification_user = (items.classification_user == undefined || items.classification_user == 'show');
     const witnesses_tab = (items.witnesses_tab == undefined || items.witnesses_tab == 'show');
     const article_count = (items.article_count == undefined || items.article_count == 'show');
     const wallet_history = (items.wallet_history == undefined || items.wallet_history == 'show');
@@ -683,7 +683,7 @@ function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-    if (classification_user && (steemit || busy))
+  /*  if (classification_user && (steemit || busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'classification_user',
@@ -693,7 +693,7 @@ function startOfflineFeatures(items, user, account) {
                 steemit: steemit,
                 busy: busy
             }
-        });
+        });*/
     if (witnesses_tab && (steemit || busy))
         chrome.runtime.sendMessage({
             token: token,
@@ -1128,7 +1128,7 @@ function startOfflineFeatures(items, user, account) {
                             steemPrice: steemPriceLS
                         }
                     });
-                if (classification_user && (steemit || busy))
+                /*if (classification_user && (steemit || busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'classification_user',
@@ -1138,7 +1138,7 @@ function startOfflineFeatures(items, user, account) {
                             steemit: steemit,
                             busy: busy
                         }
-                    });
+                    });*/
                 if (witnesses_tab && (steemit || busy))
                     chrome.runtime.sendMessage({
                         token: token,

@@ -34,7 +34,6 @@ chrome.storage.local.get(['sm_batch','steem_monsters', 'steemplus_points', 'dtub
 
             me = mee.name;
             acc = mee.account;
-            console.log(me, acc, mee);
             if (items.onboarding == 'complete') {
                 $('#connected').css('display', 'block');
                 $('#onboarding').css('display', 'none');
@@ -140,7 +139,6 @@ chrome.storage.local.get(['sm_batch','steem_monsters', 'steemplus_points', 'dtub
     md_editor_beautifier = items.md_editor_beautifier == undefined ? 'show' : items.md_editor_beautifier;
     post_floating_bottom_bar = items.post_floating_bottom_bar == undefined ? 'show' : items.post_floating_bottom_bar;
 
-    //console.log(items.resteem);
     if (weight !== undefined) {
         document.getElementById('weight').value = weight;
         document.getElementById("myRange").value = weight;
@@ -716,7 +714,6 @@ function Upvote() {
                 tab.split('@')[tab.split('@').length - 1].split('/')[1], // Permlink
                 document.getElementById('weight').value * 100, // Weight (10000 = 100%)
                 function(err, result) {
-                    console.log(err, result);
                     if (err !== undefined && err !== null && err.cause !== undefined && err.cause.toString().includes('Voting weight is too small, please accumulate more voting power or steem power.'))
                         alert('Voting weight is too small, please accumulate more voting power or steem power.');
                     else {

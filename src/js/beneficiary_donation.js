@@ -167,7 +167,9 @@ function postBeneficiaryDonation() {
     ];
 
     console.log(operations);
-
+    /*steem_keychain.requestBroadcast(author,operations,"posting",function(a){
+        console.log(a);
+    });*/
     api.broadcast(
         operations,
         function(e, r) {

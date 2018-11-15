@@ -96,7 +96,31 @@ var steem_keychain = {
         };
         this.dispatchCustomEvent("swRequest", request, callback);
     },
+    requestSignBuffer: function(account, message, key, callback) {
+        var request = {
+            type: "signBuffer",
+            username: account,
+            message: message,
+            method: key,
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
+        };
 
+        this.dispatchCustomEvent("swRequest", request, callback);
+    },
+
+    requestBroadcast: function(account, operations, key, callback) {
+        var request = {
+            type: "broadcast",
+            username: account,
+            operations,
+            method: key,
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
+        };
+
+        this.dispatchCustomEvent("swRequest", request, callback);
+    },
     // Send the customEvent
     dispatchCustomEvent: function(name, data, callback) {
         this.requests[this.current_id] = callback;

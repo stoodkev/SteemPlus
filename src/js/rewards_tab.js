@@ -77,7 +77,7 @@ function startTabReward() {
             });
 
             // Display the tab if #rewards in url
-            if (window.location.href.includes('#rewards'))
+            if (window.location.href.includes('#rewards') && $('#rewards-tab-container').length == 0)
                 window.SteemPlus.Tabs.showTab('rewards');
         }
     }
@@ -98,7 +98,7 @@ function createRewardsTab(rewardsTab) {
         activeClass = 'UserMenu__item--active';
     }
 
-    rewardsTab.html('<div class="feed-layout container"><div class="row">\
+    rewardsTab.html('<div class="feed-layout container" id="rewards-tab-container"><div class="row">\
 		<div class="UserProfile__tab_content UserProfile__tab_content_smi UserProfile__tab_content_RewardsTab column layout-list">\
 			<article class="articles">\
 				<div class="Rewards" style="display: none;">\

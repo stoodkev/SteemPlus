@@ -173,7 +173,8 @@ async function postBeneficiaryDonation() {
                 console.log(e);
                 if (e.error !== undefined) {
                     console.log(e,e.error,e.message,e.error_description);
-                    alert("Something went wrong, please try again later!");
+                    alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+
                 }
             } else {
                 if (isSteemit)

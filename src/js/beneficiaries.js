@@ -374,7 +374,7 @@ async function postBeneficiaries() {
                         if (errorUsernames.length > 0) alert('The following usernames are not correct : ' + errorUsernames.join(', '));
                         // If all the accounts name are correct then display error message. Problem might come from steemConnect.
                         else
-                            alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error code:' + e.error);
+                            alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
                     });
                 }
             } else {

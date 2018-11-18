@@ -272,7 +272,7 @@ function isEverythingFilled() {
 }
 
 // Function used to submit the new post
-function postBeneficiaries() {
+async function postBeneficiaries() {
     var author = autb;
     var tags = [];
     var title = null;
@@ -283,10 +283,8 @@ function postBeneficiaries() {
     // Get all attributes for a post (title, permlink, tags...)
     if (isSteemit) {
         tags = $(' input[tabindex=3]').eq(0).val().split(' ');
-        permlink = $('.vframe input').eq(0).val().toLowerCase()
-            .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
         title = $('.vframe input').eq(0).val();
+        permlink = await window.SteemPlus.Utils.createPermlink(author,title);
         body = $('.vframe textarea').eq(0).val();
         sbd_percent = $('.benef-steemit-percentage').eq(0).val();
     } else if (isBusy) {

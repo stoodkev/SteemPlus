@@ -96,7 +96,7 @@ function addBenefDonationButton() {
 }
 
 // Function used to submit the new post
-function postBeneficiaryDonation() {
+async function postBeneficiaryDonation() {
     var author = autbd;
     var tags = [];
     var title = null;
@@ -107,10 +107,8 @@ function postBeneficiaryDonation() {
     // Get all attributes for a post (title, permlink, tags...)
     if (isSteemit) {
         tags = $(' input[tabindex=3]').eq(0).val().split(' ');
-        permlink = $('.vframe input').eq(0).val().toLowerCase()
-            .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
         title = $('.vframe input').eq(0).val();
+        permlink = await window.SteemPlus.Utils.createPermlink(author,title);
         body = $('.vframe textarea').eq(0).val();
         sbd_percent = isSelectRewardDropdownEnabled_d ? $('.benef-steemit-percentage').eq(0).val() : 10000;
     } else if (isBusy) {
@@ -118,9 +116,7 @@ function postBeneficiaryDonation() {
             tags.push($(this).attr('title'));
         });
         title = $('.Editor__title').eq(0).val();
-        permlink = title.toLowerCase()
-            .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
+        permlink = await window.SteemPlus.Utils.createPermlink(author,title);
         body = $('textarea.ant-input').eq(0).val();
         sbd_percent = (($(".ant-select-selection-selected-value span").html().includes('50')) ? 10000 : 0);
     }
@@ -176,7 +172,7 @@ function postBeneficiaryDonation() {
             if (e) {
                 console.log(e);
                 if (e.error !== undefined) {
-                    console.log(e,e.error);
+                    console.log(e,e.error,e.message,e.error_description);
                     alert("Something went wrong, please try again later!");
                 }
             } else {

@@ -180,12 +180,10 @@ $("#autocomplete-git").easyAutocomplete(options);
       </div>");
     }
 
-    $("#post-utopian").unbind('click').click(function(){
+    $("#post-utopian").unbind('click').click(async function(){
       var tags = $(' input[tabindex=3]').eq(0).val().split(' ');
-      var permlink=$('.vframe input').eq(0).val().toLowerCase()
-      .replace(/ /g,'-')
-      .replace(/[^\w-]+/g,'');
       var title=$('.vframe input').eq(0).val();
+      var permlink = await window.SteemPlus.Utils.createPermlink(autU,title);
       var body=$('.vframe textarea').eq(0).val();
       var sbd_percent=$('.benef-steemit-percentage').eq(0).val();
       if(title=="")

@@ -1473,7 +1473,7 @@ function date_diff_indays(date1, date2) {
 function checkLastPost(last_post_url, account) {
     console.log('account', account);
     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus', null, new Date().toISOString().split('.')[0], 1, function(err, result) {
-        if (!result[0].title.includes('SteemPlus Statistics')) {
+        if (!result[0].title.includes('Daily SteemPlus Stats')) {
             if (last_post_url == undefined || last_post_url !== result[0].url) {
                 toastr.options = {
                     "closeButton": false,

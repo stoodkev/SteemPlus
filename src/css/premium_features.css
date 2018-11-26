@@ -1,0 +1,52 @@
+.premium-feature-list-content {
+  min-height: 100%;
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.feature {
+  width: 100%;
+  flex: 0 0 auto;
+  margin: 5px;
+}
+
+.feature-even {
+  background: #f4f4f4;
+}
+
+.button-steemit-subscribe, .button-steemit-unsubscribe:hover {
+    background: transparent;
+    color: #1FBF8F;
+    padding: 1em;
+    margin-top: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+
+.button-steemit-subscribe:hover, .button-steemit-unsubscribe {
+    background: #1FBF8F;
+    color: white !important;
+    padding: 1em;
+    margin-top: 1em;
+    font-weight: bold;
+    border: 1px solid #1FBF8F;
+}
+
+.payment-feature {
+  padding: 1rem;
+  text-align: center;
+}
+
+.payment-feature > p {
+  line-height: inherit;
+  margin-bottom: 0rem;
+}
+
+.description-feature {
+  padding: 1rem;
+}

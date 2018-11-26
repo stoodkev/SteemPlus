@@ -94,41 +94,6 @@
         if (isSteemit) {
             window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus) {
                 var menu = menus.eq(0); // first menu
-                var menuDropDownSP = null;
-
-
-                if ($('.menuSP_dropdown').length > 0) {
-                    menuDropDownSP = $('.menuSP_dropdown');
-                } else {
-                    menuDropDownSP = $('<li class="menuSP_dropdown">\
-            <a class="smi-open-menu-SP" aria-haspopup="true">\
-              SteemPlus\
-              <span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;">\
-                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg>\
-              </span>\
-            </a>\
-            <div class="dropdown-pane dropdown-pane-SP">\
-              <ul class="VerticalMenu menuSP vertical">\
-              </ul>\
-            </div>\
-          </li>');
-                }
-                $(menu).append(menuDropDownSP);
-
-                menuDropDownSP.find('a.smi-open-menu-SP').unbind('click').on('click', function(e) {
-                    e.preventDefault();
-                    // if($('.dropdown-pane-SP').hasClass('is-open'))
-                    hideOrShowDropdownPanel();
-                });
-
-                $('body').on('click', function(e) {
-                    //hideOrShowDropdownPanel();
-                    var t = $(e.target);
-                    if (!t.closest('.menuSP_dropdown').length) {
-                        $('.menuSP_dropdown .dropdown-pane-SP').removeClass('is-open');
-                        $('.menuSP_dropdown .dropdown-pane-SP').hide();
-                    }
-                });
 
                 tabs.forEach(function(tab) {
                     if (!tab.enabled) {
@@ -143,13 +108,40 @@
                             hideOrShowDropdownPanel();
                             showTab(tab.id);
                         });
-                        if(tab.newTab)
+                        if(tab.newButton)
                             if($('.menuSP_dropdown').length === 0)
                                 $('.UserProfile__top-menu > div > ul.menu').eq(0).append(menuLi);
                             else
                                 $('.menuSP_dropdown').eq(0).before(menuLi);
-                        else
-                            $(menuDropDownSP).find('.dropdown-pane-SP > ul').append(menuLi);
+                        else if(tab.newDropdown)
+                        {
+                            let dropdown = null;
+                            if($(`.dd-${tab.nameDropdown}`).length === 0)
+                            {
+                                dropdown = $(`<li class="menuSP_dropdown">
+                                    <a class="smi-open-menu-SP dd-${tab.nameDropdown}" aria-haspopup="true">
+                                      ${tab.labelDropdown}
+                                      <span class="Icon dropdown-arrow" style="display: inline-block; width: 1.12rem; height: 1.12rem;">
+                                        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><g><polygon points="128,90 256,218 384,90"></polygon></g></svg>
+                                      </span>
+                                    </a>
+                                    <div class="dropdown-pane dropdown-pane-SP dd-${tab.nameDropdown}">
+                                      <ul class="VerticalMenu menuSP vertical">
+                                      </ul>
+                                    </div>
+                                </li>`);
+                                $(menu).append(dropdown);
+                                $(`a.dd-${tab.nameDropdown}.smi-open-menu-SP`).unbind('click').on('click', function(e) {
+                                    console.log('click')
+                                    e.preventDefault();
+                                    // if($('.dropdown-pane-SP').hasClass('is-open'))
+                                    hideOrShowDropdownPanel('dd-'+tab.nameDropdown);
+                                });
+                            }
+                            else {
+                                $(`.dd-${tab.nameDropdown} > ul`).append(menuLi);
+                            }
+                        }
                     }
 
                     // if(onCreate && window.location.hash === '#' + tab.id){
@@ -225,13 +217,14 @@
         }
     };
 
-    function hideOrShowDropdownPanel() {
-        if ($('.dropdown-pane-SP').attr('display') === 'block' || $('.dropdown-pane-SP').hasClass('is-open')) {
-            $('.dropdown-pane-SP').removeClass('is-open');
-            $('.dropdown-pane-SP').hide();
+    function hideOrShowDropdownPanel(className) {
+        console.log($(`.dropdown-pane-SP.${className}`))
+        if ($(`.dropdown-pane-SP.${className}`).attr('display') === 'block' || $(`.dropdown-pane-SP.${className}`).hasClass('is-open')) {
+            $(`.dropdown-pane-SP.${className}`).removeClass('is-open');
+            $(`.dropdown-pane-SP.${className}`).hide();
         } else {
-            $('.dropdown-pane-SP').addClass('is-open');
-            $('.dropdown-pane-SP').show();
+            $(`.dropdown-pane-SP.${className}`).addClass('is-open');
+            $(`.dropdown-pane-SP.${className}`).show();
         }
     }
 
@@ -251,6 +244,7 @@
 
 
     var createTab = function(tab) {
+        console.log(tab);
         tabs.push(tab);
         tabsById[tab.id] = tab;
 

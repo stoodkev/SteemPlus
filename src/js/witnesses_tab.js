@@ -45,7 +45,10 @@ function startWitnessesTab() {
             id: 'witnesses',
             title: 'Witness',
             enabled: true,
-            createTab: createTabWitnesses
+            createTab: createTabWitnesses,
+                newDropdown: true,
+                nameDropdown: "steemplus",
+                labelDropdown: "SteemPlus"
         });
         if (window.location.href.includes('#witnesses'))
             window.SteemPlus.Tabs.showTab('witnesses');

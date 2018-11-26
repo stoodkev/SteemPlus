@@ -54,7 +54,10 @@ function startTabReward() {
                 id: 'rewards',
                 title: 'Rewards',
                 enabled: true,
-                createTab: createRewardsTab
+                createTab: createRewardsTab,
+                newDropdown: true,
+                nameDropdown: "steemplus",
+                labelDropdown: "SteemPlus"
             });
 
             // Display the tab if #rewards in url

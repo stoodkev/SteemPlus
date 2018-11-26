@@ -818,9 +818,10 @@ function startOfflineFeatures(items, user, account) {
     if (premium_features && steemit)
         chrome.runtime.sendMessage({
             token: token,
+            order: 'start',
             to: 'premium_features',
             data: {}
-        })
+        });
 
     if (steemit_more_info) {
         if (steemit && post_votes_list)
@@ -1292,6 +1293,14 @@ function startOfflineFeatures(items, user, account) {
                             steemit: steemit,
                             busy: busy
                         }
+                    });
+
+                if (premium_features && steemit)
+                    chrome.runtime.sendMessage({
+                        token: token,
+                        order: 'click',
+                        to: 'premium_features',
+                        data: {}
                     });
 
                 if ($('.favorite-star').length > 0) {

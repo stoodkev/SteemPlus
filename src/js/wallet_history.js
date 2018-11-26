@@ -171,6 +171,7 @@ function startWalletHistory() {
     chrome.storage.local.get(['filters_state_wallet'], function(items) {
         if (items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
         if ($('.Trans').length > 0 && regexWalletSteemit.test(window.location.href)) {
+            usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
             window.SteemPlus.api.getWallet(window.SteemPlus.Utils.getPageAccountName()).then(function(result){
               dataWalletHistory = result;
               if ($('.smi-transaction-table-filters').length === 0)
@@ -278,8 +279,9 @@ function createWalletHistoryFiltersUI() {
         '</div>\
 		</div>\
 		</div>');
+    console.log(usernameWalletHistory,accountWH.name);
 
-    if (usernameWalletHistory === accountWH.name) {
+    if (usernameWalletHistory == accountWH.name) {
         $('table').parent().find('.secondary').after($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
 			<input type="submit" id="displayModalWH" value="Add private memo key">\
 			</div>'));

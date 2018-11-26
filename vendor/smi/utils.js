@@ -690,6 +690,28 @@
         return fullInString;
     }
 
+    function createPermlink(author,title){
+      return new Promise(function(fulfill, reject){
+        let permlink= title.toLowerCase()
+            .replace(/ /g, '-')
+            .replace(/[^\w-]+/g, '');
+        steem.api.getContent(author, permlink, function(err, result) {
+          console.log(err, result);
+          if(result.author==""){
+            fulfill(permlink);
+          }
+          else fulfill(permlink+"-"+randomString(5));
+        });
+      });
+    }
+
+    function randomString(length) {
+      let result = '';
+      let chars='0123456789abcdefghijklmnopqrstuvwxyz';
+      for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+      return result;
+    }
+
     var Utils = {
         getPageAccountName: getPageAccountName,
         getLoggedUserName: getLoggedUserName,
@@ -728,7 +750,8 @@
         getUserTopMenusBusy,
         getRC:getRC,
         numberWithCommas:numberWithCommas,
-        getTimeBeforeFull: getTimeBeforeFull
+        getTimeBeforeFull: getTimeBeforeFull,
+        createPermlink:createPermlink
     };
 
     let currentRequest = null;
@@ -965,34 +988,10 @@
       getSPP:getSPP
     }
 
-    function getMarketSettings(){
-      return new Promise(function(fulfill,reject){
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: "https://steemmonsters.com/purchases/settings",
-            success: function(response) {
-                console.log(response);
-                fulfill(response);
-            },
-            error: function(msg) {
-              console.log(msg);
-                reject(msg);
-            }
-        });
-      });
-    }
 
-    var sm= {
-      getMarketSettings:getMarketSettings
-    }
 
     window.SteemPlus = window.SteemPlus || {};
     window.SteemPlus.api=api;
-    window.SteemPlus.SteemMonsters=sm;
     window.SteemPlus.Settings = Settings;
     window.SteemPlus.Utils = Utils;
 

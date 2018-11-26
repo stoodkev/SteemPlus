@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "3.5.3",
+  "version": "3.5.4.1",
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://widget.blocktrades.us/ ; object-src 'self'; child-src 'unsafe-eval' 'self' https://widget.blocktrades.us/",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -107,6 +107,7 @@
         "src/js/dtube_post.js",
         "src/js/steem_monsters.js",
         "src/js/premium_features.js"
+        "vendor/steem_keychain.js"
         ],
       "css":["vendor/unslider/unslider.css","vendor/font-awesome.min.css","vendor/unslider/unslider-dots.css","vendor/bootstrap.css","vendor/bootstrap-grid.css","vendor/btn.css","vendor/datatables.min.css","vendor/justifiedGallery.min.css","vendor/toastr.min.css","vendor/bootstrap-slider/bootstrap-slider.min.css","vendor/easy-autocomplete.min.css","vendor/easy-autocomplete.themes.min.css",
         "src/css/delegate.css",

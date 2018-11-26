@@ -105,7 +105,7 @@
                         menuLi = $('<li class="smi-menu-li ' + tab._menuClass + '"><a href="#">' + tab.title + '</a></li>');
                         menuLi.find('a').unbind('click').on('click', function(e) {
                             e.preventDefault();
-                            hideOrShowDropdownPanel();
+                            hideOrShowDropdownPanel('dd-'+tab.nameDropdown);
                             showTab(tab.id);
                         });
                         if(tab.newButton)
@@ -132,7 +132,6 @@
                                 </li>`);
                                 $(menu).append(dropdown);
                                 $(`a.dd-${tab.nameDropdown}.smi-open-menu-SP`).unbind('click').on('click', function(e) {
-                                    console.log('click')
                                     e.preventDefault();
                                     // if($('.dropdown-pane-SP').hasClass('is-open'))
                                     hideOrShowDropdownPanel('dd-'+tab.nameDropdown);
@@ -218,7 +217,6 @@
     };
 
     function hideOrShowDropdownPanel(className) {
-        console.log($(`.dropdown-pane-SP.${className}`))
         if ($(`.dropdown-pane-SP.${className}`).attr('display') === 'block' || $(`.dropdown-pane-SP.${className}`).hasClass('is-open')) {
             $(`.dropdown-pane-SP.${className}`).removeClass('is-open');
             $(`.dropdown-pane-SP.${className}`).hide();

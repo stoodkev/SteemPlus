@@ -242,7 +242,6 @@
 
 
     var createTab = function(tab) {
-        console.log(tab);
         tabs.push(tab);
         tabsById[tab.id] = tab;
 

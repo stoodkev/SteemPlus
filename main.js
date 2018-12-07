@@ -11,6 +11,7 @@ var urlOffline = window.location.href;
 var urlOnline = window.location.href;
 var user = null;
 let api=null;
+let activePremiumFeaturesSubscriptions = null;
 
 var offlineModeRetryCount = 0;
 
@@ -62,7 +63,6 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 sessionToken: items.sessionToken,
                 tokenExpire: items.tokenExpire
             };
-
 
             const delegation = (items.del == undefined || items.del == "show");
             const account_value = (items.acc_v == undefined || items.acc_v == "show");
@@ -214,7 +214,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
     console.log('Connecting...');
     if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
         initializeSteemConnect(steemConnect.sessionToken);
-        api.me().then((me) => {
+        api.me().then(async function(me) {
 
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
@@ -258,6 +258,9 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                 spammer: true
             };*/
 
+
+            activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
                 chrome.runtime.sendMessage({
@@ -286,7 +289,8 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                         user: user,
                         steemit: steemit,
                         busy: busy,
-                        select_reward_dropdown_enabled: true
+                        select_reward_dropdown_enabled: true,
+                        isPremium: hasPremiumFeature("Remove Beneficiaries Fee")
                     }
                 });
             if (steemit && feedp && resteem === 'whitelist_radio' || resteem === 'blacklist_radio')
@@ -425,7 +429,8 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                                     user: user,
                                     steemit: steemit,
                                     busy: busy,
-                                    select_reward_dropdown_enabled: true
+                                    select_reward_dropdown_enabled: true,
+                                    isPremium: hasPremiumFeature("Remove Beneficiaries Fee")
                                 }
                             });
                         if (steemit && followers_table && steemit_more_info)
@@ -552,7 +557,10 @@ function initOfflineFeatures(isConnected, items, user, account) {
     }
 }
 
-function startOfflineFeatures(items, user, account) {
+async function startOfflineFeatures(items, user, account) {
+
+    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+
     const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
     const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
     const totalVestsLS = (items.totalVestsLS == undefined ? 1 : items.totalVestsLS);
@@ -820,7 +828,7 @@ function startOfflineFeatures(items, user, account) {
             token: token,
             order: 'start',
             to: 'premium_features',
-            data: {}
+            data: {activePremiumFeaturesSubscriptions: activePremiumFeaturesSubscriptions}
         });
 
     if (steemit_more_info) {
@@ -1300,7 +1308,7 @@ function startOfflineFeatures(items, user, account) {
                         token: token,
                         order: 'click',
                         to: 'premium_features',
-                        data: {}
+                        data: {activePremiumFeaturesSubscriptions: activePremiumFeaturesSubscriptions}
                     });
 
                 if ($('.favorite-star').length > 0) {
@@ -1431,6 +1439,31 @@ function makeToken() {
     for (var i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
+}
+
+function hasPremiumFeature(feature){
+    return activePremiumFeaturesSubscriptions.find(sub => {
+        return sub.premiumFeature.name === feature;
+    }) !== undefined;
+}
+
+function getActivePremiumFeatureSubscriptions(user) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: 'https://api.steemplus.app/features/'+ user,
+            success: function(response) {
+                resolve(response.activeSubscriptions);
+            },
+            error: function(msg) {
+                resolve(msg);
+            }
+        });
+    });
 }
 
 function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time) {

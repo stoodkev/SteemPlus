@@ -26,6 +26,7 @@
     margin-top: 1em;
     font-weight: bold;
     border: 1px solid #1FBF8F;
+    min-width: 10rem;
 }
 
 .button-steemit-subscribe:hover, .button-steemit-unsubscribe {
@@ -35,6 +36,7 @@
     margin-top: 1em;
     font-weight: bold;
     border: 1px solid #1FBF8F;
+    min-width: 10rem;
 }
 
 .payment-feature {
@@ -49,4 +51,9 @@
 
 .description-feature {
   padding: 1rem;
+}
+
+.cancel-message {
+  color: red !important;
+  font-style: italic !important;
 }

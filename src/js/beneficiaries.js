@@ -12,6 +12,7 @@ var communities = ['minnowsupport'];
 var isSteemit = null;
 var isBusy = null;
 var isSelectRewardDropdownEnabled = null;
+let isPremiumBeneficiaries = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to == 'ben') {
@@ -22,10 +23,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         if (request.order === 'start' && token_benef == null) {
             token_benef = request.token;
             isSelectRewardDropdownEnabled = request.data.select_reward_dropdown_enabled;
+            isPremiumBeneficiaries = request.data.isPremium;
             startBeneficiaries();
         }
         if (request.order === 'click' && token_benef == request.token) {
             isSelectRewardDropdownEnabled = request.data.select_reward_dropdown_enabled;
+            isPremiumBeneficiaries = request.data.isPremium;
             onClickB();
         }
     }
@@ -83,8 +86,8 @@ function addBeneficiariesButton() {
             // Remove message...
             $('.message-beneficiaries').remove();
             // ... and create a new one
-            $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
-
+            if(!isPremiumBeneficiaries) $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
+            else $('.benef').parent().after('<p class="message-beneficiaries">You subscribe to the beneficiaries premium feature. You won\'t be charged 5%.</p>');
             // If one line 'new beneficiaries' exist
             if ($('.close').length === 1) {
                 // ... create new post button
@@ -162,7 +165,8 @@ function addBeneficiariesButton() {
             $('.benef').parent().after('<li class="beneficiaries"><div class="benef_elt benef_elt_busy"><span class="sign" >@</span><input type="text" placeholder="username"></div><div class="benef_elt benef_elt_busy" style="width: 15%;"><input style="width: 75%;" type="number" placeholder="10"><span class="sign" >%</span></div><a  class="close"></a> </li>');
 
             $('.message-beneficiaries').remove()
-            $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
+            if(!isPremiumBeneficiaries) $('.benef').parent().after('<p class="message-beneficiaries">By using the beneficiaries feature, you accept that @steem-plus will be set as a 5% beneficiary.</p>');
+            else $('.benef').parent().after('<p class="message-beneficiaries">You subscribe to the beneficiaries premium feature. You won\'t be charged 5%.</p>');
 
             if ($('.close').length === 1) {
                 var buttonPost = $('.Editor__bottom__submit')[0];
@@ -299,7 +303,7 @@ async function postBeneficiaries() {
         sbd_percent = $('.benef-busy-percentage').eq(0).val();
     }
 
-    if (communities.includes(autb))
+    if (communities.includes(autb) || isPremiumBeneficiaries)
         console.log('no fee');
     else
         beneficiaries.push({
@@ -347,7 +351,7 @@ async function postBeneficiaries() {
     ];
 
     console.log(operations);
-
+    return;
     api.broadcast(
         operations,
         function(e, r) {

@@ -47,7 +47,10 @@ function startVotesTab() {
             id: 'votes',
             title: 'Votes',
             enabled: true,
-            createTab: createVotesTab
+            createTab: createVotesTab,
+            newDropdown: true,
+            nameDropdown: "steemplus",
+            labelDropdown: "SteemPlus"
         });
         if (window.location.href.includes('#votes'))
             window.SteemPlus.Tabs.showTab('votes');

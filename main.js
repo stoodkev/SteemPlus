@@ -11,6 +11,7 @@ var urlOffline = window.location.href;
 var urlOnline = window.location.href;
 var user = null;
 let api=null;
+let activePremiumFeaturesSubscriptions = null;
 
 var offlineModeRetryCount = 0;
 
@@ -62,7 +63,6 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                 sessionToken: items.sessionToken,
                 tokenExpire: items.tokenExpire
             };
-
 
             const delegation = (items.del == undefined || items.del == "show");
             const account_value = (items.acc_v == undefined || items.acc_v == "show");
@@ -187,7 +187,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         });
     });
 
-chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
+chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
     var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
         connect: false
     } : {
@@ -214,7 +214,7 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
     console.log('Connecting...');
     if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
         initializeSteemConnect(steemConnect.sessionToken);
-        api.me().then((me) => {
+        api.me().then(async function(me) {
 
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
@@ -258,6 +258,9 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                 spammer: true
             };*/
 
+
+            activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
                 chrome.runtime.sendMessage({
@@ -286,7 +289,8 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                         user: user,
                         steemit: steemit,
                         busy: busy,
-                        select_reward_dropdown_enabled: true
+                        select_reward_dropdown_enabled: true,
+                        isPremium: hasPremiumFeature("Remove Beneficiaries Fee")
                     }
                 });
             if (steemit && feedp && resteem === 'whitelist_radio' || resteem === 'blacklist_radio')
@@ -425,7 +429,8 @@ chrome.storage.local.get(['steem_monsters', 'steemplus_points', 'dtube_post' ,'u
                                     user: user,
                                     steemit: steemit,
                                     busy: busy,
-                                    select_reward_dropdown_enabled: true
+                                    select_reward_dropdown_enabled: true,
+                                    isPremium: hasPremiumFeature("Remove Beneficiaries Fee")
                                 }
                             });
                         if (steemit && followers_table && steemit_more_info)
@@ -552,7 +557,10 @@ function initOfflineFeatures(isConnected, items, user, account) {
     }
 }
 
-function startOfflineFeatures(items, user, account) {
+async function startOfflineFeatures(items, user, account) {
+
+    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+
     const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
     const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
     const totalVestsLS = (items.totalVestsLS == undefined ? 1 : items.totalVestsLS);
@@ -595,6 +603,7 @@ function startOfflineFeatures(items, user, account) {
     const tip_user = (items.tip_user == undefined || items.tip_user == 'show');
     const steemplus_points = (items.steemplus_points == undefined || items.steemplus_points == 'show');
     const steem_monsters = (items.steem_monsters == undefined || items.steem_monsters == 'show');
+    const premium_features = (items.premium_features == undefined || items.premium_features == 'show');
 
     const smi_installed_remind_me = (items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
     const smi_installed_remind_me_time = items.smi_installed_remind_me_time;
@@ -814,7 +823,13 @@ function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-
+    if (premium_features && steemit)
+        chrome.runtime.sendMessage({
+            token: token,
+            order: 'start',
+            to: 'premium_features',
+            data: {activePremiumFeaturesSubscriptions: activePremiumFeaturesSubscriptions}
+        });
 
     if (steemit_more_info) {
         if (steemit && post_votes_list)
@@ -1288,6 +1303,14 @@ function startOfflineFeatures(items, user, account) {
                         }
                     });
 
+                if (premium_features && steemit)
+                    chrome.runtime.sendMessage({
+                        token: token,
+                        order: 'click',
+                        to: 'premium_features',
+                        data: {activePremiumFeaturesSubscriptions: activePremiumFeaturesSubscriptions}
+                    });
+
                 if ($('.favorite-star').length > 0) {
                     $('.favorite-star').remove();
                 }
@@ -1416,6 +1439,31 @@ function makeToken() {
     for (var i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
+}
+
+function hasPremiumFeature(feature){
+    return activePremiumFeaturesSubscriptions.find(sub => {
+        return sub.premiumFeature.name === feature;
+    }) !== undefined;
+}
+
+function getActivePremiumFeatureSubscriptions(user) {
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            type: "GET",
+            beforeSend: function(xhttp) {
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+            },
+            url: 'https://api.steemplus.app/features/'+ user,
+            success: function(response) {
+                resolve(response.activeSubscriptions);
+            },
+            error: function(msg) {
+                resolve(msg);
+            }
+        });
+    });
 }
 
 function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time) {

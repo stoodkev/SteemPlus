@@ -50,7 +50,10 @@ function createTab() {
             id: 'mentions',
             title: 'Mentions',
             enabled: true,
-            createTab: createMentionsTab
+            createTab: createMentionsTab,
+                newDropdown: true,
+                nameDropdown: "steemplus",
+                labelDropdown: "SteemPlus"
         });
         if (window.location.href.includes('#mentions'))
             window.SteemPlus.Tabs.showTab('mentions');

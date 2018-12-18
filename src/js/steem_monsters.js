@@ -63,7 +63,7 @@ function startSteemMonsterTab() {
 					title: 'Steem Monsters',
 					enabled: true,
 					createTab: createSteemMonsterTab,
-					newTab: true
+					newButton: true
 				});
 				if (window.location.href.includes('#steem_monsters'))
 					window.SteemPlus.Tabs.showTab('steem_monsters');

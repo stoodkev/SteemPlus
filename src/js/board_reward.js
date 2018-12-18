@@ -145,7 +145,10 @@ function createBoardRewardTab() {
                 id: 'board-reward',
                 title: 'Awards',
                 enabled: true,
-                createTab: createBoardRewardPage
+                createTab: createBoardRewardPage,
+                newDropdown: true,
+                nameDropdown: "steemplus",
+                labelDropdown: "SteemPlus"
             });
             if (window.location.href.includes('#board-reward'))
                 window.SteemPlus.Tabs.showTab('board-reward');

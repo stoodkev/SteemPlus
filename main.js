@@ -1442,6 +1442,9 @@ function makeToken() {
 }
 
 function hasPremiumFeature(feature){
+  if(!activePremiumFeaturesSubscriptions)
+    return false;
+  else
     return activePremiumFeaturesSubscriptions.find(sub => {
         return sub.premiumFeature.name === feature;
     }) !== undefined;

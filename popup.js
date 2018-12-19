@@ -76,6 +76,7 @@ chrome.storage.local.get(['premium_features','sm_batch','steem_monsters', 'steem
             $('#before_connect').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
+            $('#steemhunt').hide();
             $('#shortcuts, .switch-text').show();
             $('.need-online > label > input').prop('disabled', true);
             $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
@@ -90,6 +91,7 @@ chrome.storage.local.get(['premium_features','sm_batch','steem_monsters', 'steem
             $('#loginButton').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
+            $('#steemhunt').hide();
             $('.disabled-feature > label > input').prop('disabled', true);
             $('.disabled-feature').attr('title', "This feature is temporarily disabled.");
             $('.disabled-feature').prop('checked', false);
@@ -628,10 +630,12 @@ $('.back_menu').click(function() {
         $('#loginButton').show();
         $('#more_menu').hide();
         $('#vote-menu').css('display', 'none');
+        $('#steemhunt').hide();
     } else {
         $('#loginButton').hide();
         $('#more_menu').show();
         $('#vote-menu').css('display', 'block');
+        $('#steemhunt').show();
     }
 
 });
@@ -687,6 +691,7 @@ function onboard(onBoardingID) {
             $('#shortcuts, .switch-text').show();
             $('.need-online > label > input').prop('disabled', false);
             $('.need-online').removeAttr('title');
+            $('#steemhunt').show();
             $('.need-online').removeClass('not-allowed');
             $('.info_user_connected').css('display', 'block');
         } else {
@@ -696,6 +701,7 @@ function onboard(onBoardingID) {
             $('#before_connect').css('display', 'none');
             $('.info_user_connected').css('display', 'none');
             $('#vote-menu').css('display', 'none');
+            $('#steemhunt').hide();
             $('#shortcuts, .switch-text').show();
             $('.need-online > label > input').prop('disabled', true);
             $('.need-online').attr('title', "This feature is not available in offline. Please login to SteemConnect to use it.");
@@ -738,3 +744,12 @@ function Upvote() {
 
 
 }
+// Open on SteemHunt
+$("#steemhunt").click(function(){
+  const query = { active: true, currentWindow: true };
+  chrome.tabs.query(query, function callback(tabs) {
+    const currentTab = tabs[0];
+    let url="https://steemhunt.com/post?title="+currentTab.title+"&url="+currentTab.url+"&by=steemplus";
+    window.open(url, '_blank');
+  });
+});

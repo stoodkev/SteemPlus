@@ -236,7 +236,7 @@ function displayWalletHistory() {
             } else {
                 try {
                     var textMemo = window.decodeMemo(memoKeyWH, itemWalletHistory.memo);
-                    tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>' + textMemo.slice(1, textMemo.length) + '</i></span></td>');
+                    tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>' + escapeHtml(textMemo.slice(1, textMemo.length)) + '</i></span></td>');
                 } catch (err) {
                     tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><i>Invalid memo...</i></span></td>');
                 }
@@ -246,7 +246,7 @@ function displayWalletHistory() {
             if (itemWalletHistory.memo.startsWith('#'))
                 tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"></span></td>');
             else
-                tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo">' + itemWalletHistory.memo + '</span></td>');
+                tdMemo = $('<td class="show-for-medium" style="max-width: 40rem; word-wrap: break-word;"><span class="Memo"><safescript>' + escapeHtml(itemWalletHistory.memo) + '</safescript></span></td>');
         }
 
         trWH.append(tdMemo);
@@ -255,6 +255,23 @@ function displayWalletHistory() {
     });
 
     createWalletHistoryFiltersUI();
+}
+
+var entityMap = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+  '/': '&#x2F;',
+  '`': '&#x60;',
+  '=': '&#x3D;'
+};
+
+function escapeHtml (string) {
+  return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+    return entityMap[s];
+  });
 }
 
 // Function used to create the wallet filter UI (buttons, inputs ...)

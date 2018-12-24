@@ -301,7 +301,7 @@ async function postBeneficiaries() {
         sbd_percent = $('.benef-busy-percentage').eq(0).val();
     }
 
-    if ( isPremiumBeneficiaries)
+    if (isPremiumBeneficiaries)
         console.log('no fee');
     else
         beneficiaries.push({

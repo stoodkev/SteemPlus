@@ -7,8 +7,6 @@ var beneficiaries;
 const STEEM_PLUS_FEED = 5;
 var autb = null;
 var token_benef = null;
-var communities = ['minnowsupport'];
-
 var isSteemit = null;
 var isBusy = null;
 var isSelectRewardDropdownEnabled = null;
@@ -303,7 +301,7 @@ async function postBeneficiaries() {
         sbd_percent = $('.benef-busy-percentage').eq(0).val();
     }
 
-    if (communities.includes(autb) || isPremiumBeneficiaries)
+    if ( isPremiumBeneficiaries)
         console.log('no fee');
     else
         beneficiaries.push({
@@ -311,7 +309,7 @@ async function postBeneficiaries() {
             weight: 100 * STEEM_PLUS_FEED
         });
     if (beneficiaries.length > 6) {
-        alert("You have set up too many beneficiaries (max number=5, 6 for registered communities)");
+        alert("You have set up too many beneficiaries (max number=5, 6 for premium users)");
     }
 
     var maximumAcceptedPayout = '100000.000 SBD';
@@ -350,8 +348,6 @@ async function postBeneficiaries() {
         }]
     ];
 
-    console.log(operations);
-    return;
     api.broadcast(
         operations,
         function(e, r) {

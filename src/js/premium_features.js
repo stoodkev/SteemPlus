@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         token_premium_features = request.token;
         activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
         startPremiumFeatures()
-    } 
+    }
     else if (request.to === 'premium_features' && request.order === 'click' && token_premium_features == request.token) {
       activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
       startPremiumFeatures()
@@ -41,9 +41,10 @@ function createTabPremiumFeatureList(premiumFeatureList) {
   // Calculate the total for all the subscriptions
   // This will help user to know how much they spend per month
   let totalAmountSubscription = 0;
-  activePremiumFeaturesSubscriptionsUser.map(function(sub){
-    totalAmountSubscription += sub.premiumFeature.price;
-  });
+  if(activePremiumFeaturesSubscriptionsUser)
+    activePremiumFeaturesSubscriptionsUser.map(function(sub){
+      totalAmountSubscription += sub.premiumFeature.price;
+    });
 
   // Create tab content
   premiumFeatureList.html('\
@@ -133,7 +134,7 @@ function getCancelMessage(feature){
   // If feature is not active, no cancel message
   if(feature !== undefined && feature.isCanceled)
     return `<div class="FormattedHTMLMessage secondary cancel-message">
-              Your subscription will be canceled on ${moment(new Date(feature.lastPayment)).add(1, 'month')}. If you want to still use it, subscribe again (you won't be charged again). 
+              Your subscription will be canceled on ${moment(new Date(feature.lastPayment)).add(1, 'month')}. If you want to still use it, subscribe again (you won't be charged again).
             </div>`
   else return '';
 }
@@ -156,9 +157,9 @@ function getSubscriptionPanel(isActive, feature){
 // Function used to find a feature in the feature list
 // @param name : name of the feature
 function findFeature(name) {
-  return activePremiumFeaturesSubscriptionsUser.find(function(sub) {
+  return (activePremiumFeaturesSubscriptionsUser&&activePremiumFeaturesSubscriptionsUser.find(function(sub) {
     return name === sub.premiumFeature.name;
-  })
+  }));
 }
 
 // function used to subscribe to a feature
@@ -172,7 +173,7 @@ function subscribeFeature(nameFeature){
 // @param nameFeature : name of the feature
 function unsubscribeFeature(nameFeature){
   const memo = `Premium Feature : Cancel subscription for [${nameFeature}] id:${generateRequestID(12)}`;
-  sendTransfer(memo);  
+  sendTransfer(memo);
 }
 
 

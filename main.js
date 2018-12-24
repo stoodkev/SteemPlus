@@ -1442,9 +1442,9 @@ function makeToken() {
 }
 
 function hasPremiumFeature(feature){
-    return activePremiumFeaturesSubscriptions.find(sub => {
+    return (activePremiumFeaturesSubscriptions&&activePremiumFeaturesSubscriptions.find(sub => {
         return sub.premiumFeature.name === feature;
-    }) !== undefined;
+    }) !== undefined);
 }
 
 function getActivePremiumFeatureSubscriptions(user) {

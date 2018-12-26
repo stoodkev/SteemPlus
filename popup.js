@@ -745,9 +745,11 @@ function Upvote() {
 
 }
 // Open on SteemHunt
+// Fills the URL and Title fields according to page information
 $("#steemhunt").click(function(){
   const query = { active: true, currentWindow: true };
   chrome.tabs.query(query, function callback(tabs) {
+    //get current tab
     const currentTab = tabs[0];
     let url="https://steemhunt.com/post?title="+currentTab.title+"&url="+currentTab.url+"&by=steemplus-pay";
     window.open(url, '_blank');

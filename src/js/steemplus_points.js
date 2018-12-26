@@ -488,7 +488,7 @@ function displaySteemplusPoints(userDetails)
                     <tr>
                         <th>Date</th>
                         <th>Type</th>
-                        <th>Number of point</th>
+                        <th>Number of points</th>
                         <th>Permlink</th>
                     </tr>
                 </table>`);

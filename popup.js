@@ -751,7 +751,7 @@ $("#steemhunt").click(function(){
   chrome.tabs.query(query, function callback(tabs) {
     //get current tab
     const currentTab = tabs[0];
-    let url="https://steemhunt.com/post?title="+currentTab.title+"&url="+currentTab.url+"&by=steemplus-pay";
+    let url="https://steemhunt.com/post?title="+currentTab.title.substring(0,30)+"&url="+currentTab.url+"&by=steemplus-pay";
     window.open(encodeURI(url), '_blank');
   });
 });

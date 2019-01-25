@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "3.7",
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://widget.blocktrades.us/ ; object-src 'self'; child-src 'unsafe-eval' 'self' https://widget.blocktrades.us/",
+  "version": "3.7.0.4",
+  "content_security_policy": "script-src 'self' 'unsafe-eval' ; object-src 'self'; child-src 'unsafe-eval' 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
     "default_popup": "popup.html"

@@ -35,10 +35,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         } else {
             var loginURL = "https://steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=" + uri_login + "&scope=vote,comment,custom_json,comment_options&state=";
             loginURL += window.location.href;
-            var loginIcon = $('<a></a>').append($('<img/>').attr('class', classbutton));
+            var loginIcon = $('<span class="loginIcon">\
+            <img id="loginButton"/>\
+            <ul class="dropdown-content">\
+              <li class="title">Login to SteemPlus</li>\
+              <li>Via SteemConnect</li>\
+              <li>Via Keychain</li>\
+            </ul></span>');
         }
         if (request.data.steemConnect.connect === false || request.data.steemConnect.tokenExpire < Date.now()) {
-            $(loginIcon).children().first().attr('src', chrome.extension.getURL("src/img/unlogged.png"))
+            $(loginIcon).find("#loginButton")
+                .attr('src', chrome.extension.getURL("src/img/unlogged.png"))
                 .attr('title', 'Login to SteemPlus?');
             $(loginIcon).attr('href', loginURL);
             if (request.data.steemConnect.connect === true)
@@ -58,7 +65,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             });
         }
         showButton(loginIcon);
-
+        $(".loginIcon").unbind("click").click(function(){
+          if($(".dropdown-content").css("visibility")=="hidden")
+            $(".dropdown-content").css("visibility","visible");
+          else
+            $(".dropdown-content").css("visibility","hidden");
+        });
     }
 });
 

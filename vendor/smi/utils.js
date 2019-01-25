@@ -939,7 +939,7 @@
           type: "GET",
           beforeSend: function(xhttp) {
             xhttp.setRequestHeader("Content-type", "application/json");
-            xhttp.setRequestHeader("X-Parse-Application-Id", "efonwuhf7i2h4f72h3o8fho23fh7");
+            xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
           },
           url: APIBaseUrl+'delegators/' + name,
           success: function(incomingDelegations) {

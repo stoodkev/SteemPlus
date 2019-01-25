@@ -1,7 +1,12 @@
-.loginIcon {
+.loginIcon img {
     width: 36px;
     height: 36px;
     display: inline-block;
+    cursor: pointer;
+}
+
+.loginIcon{
+  padding-right: 10px;
 }
 
 .loginIconBusy {
@@ -10,4 +15,43 @@
     display: inline-block;
     margin-right: 0.4em;
     vertical-align: middle;
+}
+
+.dropdown-content{
+  position: absolute;
+  right: 0px;
+  top:50px;
+  background-color: #fcfcfc;
+  border: 1px solid #788187;
+  visibility: hidden;
+  min-width: 145px;
+  z-index: 1000;
+  display: block;
+  border-radius: 3px;
+  position: absolute;
+  padding: 2px;
+  -webkit-transform: translateY(10%);
+  transform: translateY(10%);
+  transition: all 0.3s ease 0s, visibility 0s linear 0.3s;
+  box-shadow: 1px 1px 5px 0px rgba(50, 50, 50, 0.75);
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.title {
+    border-bottom: 1px solid #eee;
+    padding: 0.4rem;
+    font-weight: bold;
+    text-align: left;
+    padding-left: 16px;
+}
+
+.dropdown-content li {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0.5em 1em;
+    font-size: inherit;
+     list-style: none;
+    list-style-position: outside;
+    line-height: 1.6;
 }

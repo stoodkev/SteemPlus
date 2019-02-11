@@ -87,7 +87,7 @@ function startDelegation(isSteemit, isBusy, globalP)
 function getMyTotalOutgoingDelegation(globalP)
 {
   var tmp = 0;
-  steem.api.getVestingDelegations(myAccountDelegation.name, null, 10, function(err, myOutgoingDelegations) {
+  steem.api.getVestingDelegations(myAccountDelegation.name, null, 1000, function(err, myOutgoingDelegations) {
     for (myOutgoingDelegation of myOutgoingDelegations) {
       var valueDelegation = Math.round(parseFloat(steem.formatter.vestToSteem(myOutgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem)) * 100) / 100;
       if(valueDelegation>0)
@@ -142,7 +142,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
       }
 
       // Function used to get the maximum SP user can delegate
-      function getMaxSP(){
+      async function getMaxSP(){
         var myVests = parseFloat(steem.formatter.vestToSteem(myAccountDelegation.vesting_shares.replace(' VESTS',''), globalP.totalVests, globalP.totalSteem) * 100) / 100;
         var maxSP = myVests - myTotalOutgoingDelegation - 5.000;
         return (maxSP > 0 ? maxSP.toFixed(3) : 0);
@@ -178,7 +178,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
           $('.close-button').click(function(){$('#overlay_delegate').remove();});
           $('#max_sp').click(function(){$('input[name=amount]').val(getMaxSP()+'');});
           $('form input').blur(function () {
-            if(parseFloat($('input[name=amount]').val())>=0&&parseFloat($('input[name=amount]').val())<=getMaxSP()&&$('input[placeholder="Your account"]').val()!==''&&$('input[placeholder="Send to account"]').val()!=='')
+            if(parseFloat($('input[name=amount]').val())>=0&&$('input[placeholder="Your account"]').val()!==''&&$('input[placeholder="Send to account"]').val()!=='')
               {$('#bd').prop("disabled",false); }
             else
               {$('#bd').prop("disabled",true); }

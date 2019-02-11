@@ -35,19 +35,22 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         } else {
             var loginURL = "https://steemconnect.com/oauth2/authorize?client_id=steem-plus-app&redirect_uri=" + uri_login + "&scope=vote,comment,custom_json,comment_options&state=";
             loginURL += window.location.href;
-            var loginIcon = $('<span class="loginIcon">\
+            let loginIconContent = '<span class="loginIcon">\
             <img id="loginButton"/>\
             <ul class="dropdown-content">\
               <li class="title">Login to SteemPlus</li>\
-              <li>Via SteemConnect</li>\
-              <li>Via Keychain</li>\
-            </ul></span>');
+              <li id="loginSC"><a>Via SteemConnect</a></li>';
+            if(hasSKC)
+              loginIconContent+='<li id="loginKC">Via Keychain</li>';
+
+            loginIconContent+='</ul></span>';
+            var loginIcon=$(loginIconContent);
         }
         if (request.data.steemConnect.connect === false || request.data.steemConnect.tokenExpire < Date.now()) {
             $(loginIcon).find("#loginButton")
                 .attr('src', chrome.extension.getURL("src/img/unlogged.png"))
                 .attr('title', 'Login to SteemPlus?');
-            $(loginIcon).attr('href', loginURL);
+            $("#loginSC a").attr('href', loginURL);
             if (request.data.steemConnect.connect === true)
                 chrome.storage.local.remove(['sessionToken', 'tokenExpire'], function() {
                     window.location.replace(window.location.href);
@@ -70,6 +73,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             $(".dropdown-content").css("visibility","visible");
           else
             $(".dropdown-content").css("visibility","hidden");
+        });
+        $("#loginKC").click(function(){
+          console.log(account);
+          const posting=account.posting.key_auths[0][0];
+          console.log(window.encodeMemo("12345",posting,"verifyKey"));
+          steem_keychain.requestVerifyKey(account.name,window.encodeMemo("12345",posting,"verifyKey"),"posting",function(result){
+            console.log("posting", result);
+          });
         });
     }
 });

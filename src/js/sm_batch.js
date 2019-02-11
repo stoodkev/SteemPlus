@@ -3,17 +3,12 @@ let batchIsStarted=false;
 let batch=[];
 let total_sm=null;
 let total_rate=null;
-let hasSKC=false;
 let userSM = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
 		waitForMarketPurchase();
-		steem_keychain.requestHandshake(function(){
-			console.log("handshake");
-			hasSKC=true;
-		});
   }
 });
 

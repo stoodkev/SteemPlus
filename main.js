@@ -12,8 +12,14 @@ var urlOnline = window.location.href;
 var user = null;
 let api=null;
 let activePremiumFeaturesSubscriptions = null;
-
+let account=null;
 var offlineModeRetryCount = 0;
+let hasSKC=false;
+
+steem_keychain.requestHandshake(function(){
+	console.log("Received handshake from Steem Keychain!");
+	hasSKC=true;
+});
 
 steem.api.setOptions({
     url: 'https://api.steemit.com'
@@ -224,7 +230,6 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             const steemPriceLS = (items.steemPriceLS == undefined ? 1 : items.steemPriceLS);
 
             console.log('Getting settings...');
-            const account = me.account;
             user = me.name;
             const beneficiaries = (items.ben == undefined || items.ben == "show");
             const feedp = (items.feedp == undefined || items.feedp == "show");
@@ -557,7 +562,7 @@ function initOfflineFeatures(isConnected, items, user, account) {
     }
 }
 
-async function startOfflineFeatures(items, user, account) {
+async function startOfflineFeatures(items, user, thisAccount) {
 
     if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
 
@@ -608,7 +613,7 @@ async function startOfflineFeatures(items, user, account) {
     const smi_installed_remind_me = (items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
     const smi_installed_remind_me_time = items.smi_installed_remind_me_time;
     const last_post_url = items.last_post_url;
-
+    account=thisAccount;
 
 
     checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);

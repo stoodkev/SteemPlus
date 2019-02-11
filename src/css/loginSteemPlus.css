@@ -54,4 +54,5 @@
      list-style: none;
     list-style-position: outside;
     line-height: 1.6;
+    cursor: pointer;
 }

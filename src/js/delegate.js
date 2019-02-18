@@ -184,11 +184,19 @@ function createButtonDelegation(isSteemit, busy, globalP) {
               {$('#bd').prop("disabled",true); }
           });
           $('#bd').click(function () {
-              const delegated_SP = $('input[name=amount]').val();
+              const delegated_SP = parseFloat($('input[name=amount]').val());
               var delegated_vest = delegated_SP * globalP.totalVests / globalP.totalSteem;
               delegated_vest=delegated_vest.toFixed(6);
-              var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_vest+'%20VESTS';
-              window.open(url, '_blank');
+              var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_SP.toFixed(3)+" SP";
+              if(connect.method=="sc2"){
+                window.open(url, '_blank');
+              }
+              else {
+                  steem_keychain.requestDelegation(connect.user,$('input[placeholder="Send to account"]').val() ,delegated_SP.toFixed(3),"SP",function(result){
+                    if(!result.success)
+                      window.open(url, '_blank');
+                  });
+              }
           });
 
         $('body').append(div);
@@ -257,12 +265,13 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
       var valueDelegation =Math.round(parseFloat(steem.formatter.vestToSteem(outgoingDelegation.vesting_shares, globalP.totalVests, globalP.totalSteem) * 100) / 100);
       if(valueDelegation>0){
         if(myAccountDelegation.name===usernamePageDelegation)
-          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated to @' + outgoingDelegation.delegatee + '<a target="_blank" href="https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + myAccountDelegation.name + '&delegatee=' + outgoingDelegation.delegatee + '&vesting_shares=' + 0 + '%20VESTS"><button class="stop_del '+ (isBusy ? 'stop_del_busy' : '') +'" type="button"><span aria-hidden="true" style="color:red ; margin-right:2em;" class="">×</span></button></a></span>');
+          $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated to @' + outgoingDelegation.delegatee + '<span class="undelegate" ><button class="stop_del '+ (isBusy ? 'stop_del_busy' : '') +'" type="button" data-delegatee="'+outgoingDelegation.delegatee+'"><span aria-hidden="true" style="color:red ; margin-right:2em;" class="">×</span></button></span></span>');
         else
           $(divDelegation).find('#list_delegee').append('<span style="float:left; margin-bottom:3px;" class="' + (isBusy ? 'span-busy' : 'span-steemit') + '">' +  window.SteemPlus.Utils.numberWithCommas(valueDelegation) + ' SP delegated to @' + outgoingDelegation.delegatee + '</span>');
         totalOutgoingDelegation += valueDelegation;
       }
     }
+
     $(divDelegation).find('.outgoing-delegation').append(window.SteemPlus.Utils.numberWithCommas(totalOutgoingDelegation.toFixed(3)) + ' SP');
   }
   else
@@ -303,6 +312,19 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     $('#popoverDelegation').click(function(){
       setTimeout(function(){
         $('#popoverDelegation').popover('show');
+        console.log($(".stop_del").length);
+        $(".stop_del").unbind("click").click(function(){
+          const delegatee=$(this).data("delegatee");
+          console.log("undelegate");
+          if(connect.method=="sc2")
+            window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");
+          else {
+            steem_keychain.requestDelegation(user,delegatee,(0).toFixed(3),"SP",function(result){
+              if(!result.success)
+                window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");
+            });
+          }
+        });
       },200);
 
     });

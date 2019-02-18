@@ -5,9 +5,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 function startDropdown(market_d) {
-  console.log($('span.DropdownMenu > ul.VerticalMenu').eq(0).parent());
-  console.log($('span.DropdownMenu > ul.VerticalMenu').eq(0).prevAll(".Header__usermenu"));
-    if($('span.DropdownMenu > ul.VerticalMenu').eq(0).parent().hasClass("show"))
+  if($('span.DropdownMenu > ul.VerticalMenu').eq(0).parent().hasClass("show"))
       $(".dropdown-content").css("visibility","hidden");
 
     if ($('.market-item').length > 0)

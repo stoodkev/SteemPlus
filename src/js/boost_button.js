@@ -417,11 +417,12 @@ function createMinnowBoosterTransferUI() {
                 var to = transferUI.find('input[name="to"]').val();
                 var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
                 var memo = transferUI.find('input[name="memo"]').val();
-                var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
-
-                var transferWindow = window.open();
-                transferWindow.opener = null;
-                transferWindow.location = url;
+                if(connect.method=="sc2"){
+                  var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
+                  var transferWindow = window.open();
+                  transferWindow.opener = null;
+                  transferWindow.location = url;
+                }
             });
 
             validate();

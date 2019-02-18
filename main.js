@@ -1,4 +1,4 @@
-var xhttp = new XMLHttpRequest();
+const xhttp = new XMLHttpRequest();
 const steemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com'));
 const busy = window.location.href.includes('busy.org');
 const utopian = window.location.href.includes('utopian.io');
@@ -6,13 +6,14 @@ const steemMonsters = window.location.href.includes('steemmonsters.com');
 console.log('Starting SteemPlus...');
 var market = null;
 var SBDperSteem = 0;
+var connect;
 const DEFAULT_FEED_SIZE = 3;
 var urlOffline = window.location.href;
 var urlOnline = window.location.href;
 var user = null;
 let api=null;
 let activePremiumFeaturesSubscriptions = null;
-let account=null;
+
 var offlineModeRetryCount = 0;
 let hasSKC=false;
 
@@ -20,7 +21,6 @@ steem_keychain.requestHandshake(function(){
 	console.log("Received handshake from Steem Keychain!");
 	hasSKC=true;
 });
-
 steem.api.setOptions({
     url: 'https://api.steemit.com'
 });
@@ -60,15 +60,18 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.storage.local.set({
             steemPriceLS: steemPrice
         });
-        chrome.storage.local.get(['sm_batch','vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
+        chrome.storage.local.get(['loginPub','loginUser','loginMethod','sm_batch','vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
 
-            var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
-                connect: false
-            } : {
-                connect: true,
-                sessionToken: items.sessionToken,
-                tokenExpire: items.tokenExpire
-            };
+					connect = (items.loginMethod ==undefined) ? {
+							connect: false
+					} : {
+							connect: true,
+							method:items.loginMethod,
+							user:items.loginUser,
+							sessionToken: items.sessionToken,
+							tokenExpire: items.tokenExpire,
+							public:items.loginPub
+					};
 
             const delegation = (items.del == undefined || items.del == "show");
             const account_value = (items.acc_v == undefined || items.acc_v == "show");
@@ -151,7 +154,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                             votePowerReserveRate: votePowerReserveRate
                         }
                     });
-                if (steemit && followers_table && steemConnect.connect)
+                if (steemit && followers_table && connect.connect)
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'followers_table',
@@ -178,7 +181,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                         }
                     });
             }
-            if (vote_weight_slider_busy && steemConnect.connect && busy && steemit_more_info)
+            if (vote_weight_slider_busy && connect.connect && busy && steemit_more_info)
                 chrome.runtime.sendMessage({
                     token: token,
                     to: 'vote_weight_slider_busy',
@@ -193,20 +196,29 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         });
     });
 
-chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
-    var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
-        connect: false
-    } : {
-        connect: true,
-        sessionToken: items.sessionToken,
-        tokenExpire: items.tokenExpire
-    };
+chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features', 'steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward',
+'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab',
+ 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check',
+  'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'],
+	 async function(items) {
+
+		 connect = (items.loginMethod ==undefined) ? {
+ 				connect: false
+ 		} : {
+ 				connect: true,
+ 				method:items.loginMethod,
+ 				user:items.loginUser,
+ 				sessionToken: items.sessionToken,
+ 				tokenExpire: items.tokenExpire,
+ 				public:items.loginPub
+ 		};
+
     chrome.runtime.sendMessage({
         token: token,
         to: 'steemConnect',
         order: 'start',
         data: {
-            steemConnect: steemConnect,
+            connect: connect,
             steemit: steemit,
             busy: busy,
             utopian: utopian
@@ -218,10 +230,19 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
         priceSBD: 0
     } : items.market;
     console.log('Connecting...');
-    if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
-        initializeSteemConnect(steemConnect.sessionToken);
-        api.me().then(async function(me) {
-
+    if (connect.connect && (connect.tokenExpire > Date.now())||connect.method=="keychain") {
+						let account;
+						if(connect.method=="keychain"){
+							user=connect.user;
+							account = (await steem.api.getAccountsAsync([user]))[0];
+							console.log(user,account);
+						}
+						else{
+							initializeSteemConnect(connect.sessionToken);
+	        		const me=await api.me();
+							account = me.account;
+	            user = me.name;
+						}
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
             const totalVestsLS = (items.totalVestsLS == undefined ? 1 : items.totalVestsLS);
@@ -230,7 +251,6 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             const steemPriceLS = (items.steemPriceLS == undefined ? 1 : items.steemPriceLS);
 
             console.log('Getting settings...');
-            user = me.name;
             const beneficiaries = (items.ben == undefined || items.ben == "show");
             const feedp = (items.feedp == undefined || items.feedp == "show");
             const resteem = (items.resteem !== undefined) ? items.resteem : 'show';
@@ -344,7 +364,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                     to: 'oneup',
                     order: 'start',
                     data: {
-                        sessionToken: steemConnect.sessionToken,
+                        sessionToken: connect.sessionToken,
                         account: account
                     }
                 });
@@ -523,10 +543,6 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             });
             console.log('Offline Features');
             initOfflineFeatures(true, items, user, account);
-        }, function(err) {
-            console.log('Cannot connect to steemConnect. Launching offline Features...');
-            initOfflineFeatures(false, items, null, null);
-        });
     } else {
         // No need to be connected to SteemConnect
         console.log('Offline Features');
@@ -562,7 +578,7 @@ function initOfflineFeatures(isConnected, items, user, account) {
     }
 }
 
-async function startOfflineFeatures(items, user, thisAccount) {
+async function startOfflineFeatures(items, user, account) {
 
     if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
 
@@ -613,7 +629,7 @@ async function startOfflineFeatures(items, user, thisAccount) {
     const smi_installed_remind_me = (items.smi_installed_remind_me == undefined || items.smi_installed_remind_me);
     const smi_installed_remind_me_time = items.smi_installed_remind_me_time;
     const last_post_url = items.last_post_url;
-    account=thisAccount;
+
 
 
     checkSMI(smi_installed_remind_me, smi_installed_remind_me_time);

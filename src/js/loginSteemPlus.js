@@ -1,10 +1,8 @@
 var uri_login, classbutton;
 var token_log = null;
-
 var isSteemit = null;
 var isBusy = null;
 var isUtopian = null;
-
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'steemConnect' && request.order === 'start' && token_log == null) {
         isSteemit = request.data.steemit;
@@ -27,7 +25,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             var url = new URL(window.location.href);
             chrome.storage.local.set({
                     tokenExpire: Date.now() + 7 * 24 * 3600 * 1000,
-                    sessionToken: url.searchParams.get("access_token")
+                    sessionToken: url.searchParams.get("access_token"),
+                    loginMethod: "sc2"
                 },
                 function() {
                     window.location.replace(url.searchParams.get("state"));
@@ -39,51 +38,104 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             <img id="loginButton"/>\
             <ul class="dropdown-content">\
               <li class="title">Login to SteemPlus</li>\
-              <li id="loginSC"><a>Via SteemConnect</a></li>';
+              <li id="loginSC"><a href="'+loginURL+'">Via SteemConnect</a></li>';
             if(hasSKC)
               loginIconContent+='<li id="loginKC">Via Keychain</li>';
 
             loginIconContent+='</ul></span>';
             var loginIcon=$(loginIconContent);
         }
-        if (request.data.steemConnect.connect === false || request.data.steemConnect.tokenExpire < Date.now()) {
+        if (!request.data.connect.connect || request.data.connect.tokenExpire < Date.now()) {
             $(loginIcon).find("#loginButton")
                 .attr('src', chrome.extension.getURL("src/img/unlogged.png"))
                 .attr('title', 'Login to SteemPlus?');
             $("#loginSC a").attr('href', loginURL);
-            if (request.data.steemConnect.connect === true)
-                chrome.storage.local.remove(['sessionToken', 'tokenExpire'], function() {
-                    window.location.replace(window.location.href);
+            if (request.data.connect.connect)
+                chrome.storage.local.remove(['sessionToken', 'tokenExpire', 'loginMethod'], function() {
+                    location.reload();
                 });
         } else {
-            $(loginIcon).children().first().attr('src', chrome.extension.getURL("src/img/logged.png"))
-                .attr('title', 'Log out of SteemPlus?');
-            $(loginIcon).click(function() {
-                api.revokeToken(function(err, res) {
-                    console.log(err, res);
-                    chrome.storage.local.remove(['sessionToken', 'tokenExpire'], function() {
-                        window.location.replace(window.location.href);
-                    });
-                });
-            });
+            if(request.data.connect.method=="sc2")
+              showLogout(loginIcon,request.data.connect);
+            else if(request.data.connect.method=="keychain"){
+              verifyKeychainLogin(request.data.connect.user,request.data.connect.public).then(function(success){
+                if(success)
+                  showLogout(loginIcon,request.data.connect);
+                else
+                  chrome.storage.local.remove(['loginPub', 'loginUser', 'loginMethod'], function() {
+                    console.log("remove");
+                      location.reload();
+                  });
+              });
+            }
         }
         showButton(loginIcon);
-        $(".loginIcon").unbind("click").click(function(){
-          if($(".dropdown-content").css("visibility")=="hidden")
-            $(".dropdown-content").css("visibility","visible");
-          else
-            $(".dropdown-content").css("visibility","hidden");
-        });
-        $("#loginKC").click(function(){
-          console.log(account);
-          const posting=account.posting.key_auths[0][0];
-          console.log(window.encodeMemo("12345",posting,"verifyKey"));
-          steem_keychain.requestVerifyKey(account.name,window.encodeMemo("12345",posting,"verifyKey"),"posting",function(result){
-            console.log("posting", result);
+        if (!request.data.connect.connect || request.data.connect.tokenExpire < Date.now()) {
+          $(".loginIcon").unbind("click").click(function(){
+            if($(".dropdown-content").css("visibility")=="hidden")
+              $(".dropdown-content").css("visibility","visible");
+            else
+              $(".dropdown-content").css("visibility","hidden");
           });
-        });
+        }
+
+        $("#loginKC").click(function(){
+          var elementUsername = null;
+          if (steemit) elementUsername = '.Header__userpic > span';
+          else if (busy) elementUsername = '.Topnav__user';
+          if ($(elementUsername).length > 0) {
+              if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+              else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
+              steem.api.getAccounts([user], function(err, result) {
+                  if (err) console.log(err);
+                  else {
+                    const accountLSC=result[0];
+                    const posting=accountLSC.posting.key_auths[0][0];
+                    steem_keychain.requestVerifyKey(accountLSC.name,window.encodeMemo("5JC7DdhqzsKvRTNPRffDzbJ8pyr6tNqqPs4H97AQToqs9UrEzHy",posting,"#verifyKey"),"Posting",function(result){
+                      if(result.result=="#verifyKey")
+                      chrome.storage.local.set({
+                              loginMethod: "keychain",
+                              loginUser: accountLSC.name,
+                              loginPub:posting
+                          },
+                          function() {
+                              location.reload();
+                          });
+                    });
+                  }
+              });
+            }
+          });
     }
 });
+
+function verifyKeychainLogin(user,publicKey){
+  return new Promise(function(fulfill,reject){
+        steem_keychain.requestVerifyKey(user,window.encodeMemo("5JC7DdhqzsKvRTNPRffDzbJ8pyr6tNqqPs4H97AQToqs9UrEzHy",publicKey,"#verifyKey"),"Posting",function(result){
+          fulfill(result.result=="#verifyKey");
+        });
+  });
+}
+
+function showLogout(loginIcon,connect){
+  $(loginIcon).children().first().attr('src', chrome.extension.getURL("src/img/logged.png"))
+      .attr('title', 'Log out of SteemPlus?');
+  $(loginIcon).click(function() {
+      if(connect.method=="sc2")
+        api.revokeToken(function(err, res) {
+            console.log(err, res);
+            chrome.storage.local.remove(['sessionToken', 'tokenExpire','loginMethod'], function() {
+              console.log("remove");
+                location.reload();
+            });
+        });
+      else
+        chrome.storage.local.remove(['loginUser', 'loginPub','loginMethod'], function() {
+        console.log("remove");
+            location.reload();
+        });
+  });
+}
 
 function showButton(loginIcon) {
     console.log('try to show', $('.Header__userpic').length !== 0);

@@ -347,41 +347,54 @@ async function postBeneficiaries() {
             ]
         }]
     ];
+    if(connect.method=="sc2"){
+      api.broadcast(
+          operations,
+          function(e, r) {
+              if (e) {
+                  console.log(e);
+                  if (e.error !== undefined) {
+                      // If there is an error, we check usernames to make sure all of them are correct
+                      var usernamesBenef = [];
+                      beneficiaries.forEach(function(item) {
+                          usernamesBenef.push(item.account);
+                      });
 
-    api.broadcast(
-        operations,
-        function(e, r) {
-            if (e) {
-                console.log(e);
-                if (e.error !== undefined) {
-                    // If there is an error, we check usernames to make sure all of them are correct
-                    var usernamesBenef = [];
-                    beneficiaries.forEach(function(item) {
-                        usernamesBenef.push(item.account);
-                    });
-
-                    // Trying to retrieve account with given usernames
-                    steem.api.getAccounts(usernamesBenef, function(err, result) {
-                        var errorUsernames = [];
-                        usernamesBenef.forEach(function(item) {
-                            // Account not in result are not correct.
-                            if (result.find(function(e) {
-                                    return e.name === item
-                                }) === undefined)
-                                errorUsernames.push(item);
-                        });
-                        // Display an error message for those accounts
-                        if (errorUsernames.length > 0) alert('The following usernames are not correct : ' + errorUsernames.join(', '));
-                        // If all the accounts name are correct then display error message. Problem might come from steemConnect.
-                        else
-                            alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
-                    });
-                }
-            } else {
-                if (isSteemit)
-                    window.location.replace('https://steemit.com');
-                if (isBusy)
-                    window.location.replace('https://busy.org');
-            }
-        });
+                      // Trying to retrieve account with given usernames
+                      steem.api.getAccounts(usernamesBenef, function(err, result) {
+                          var errorUsernames = [];
+                          usernamesBenef.forEach(function(item) {
+                              // Account not in result are not correct.
+                              if (result.find(function(e) {
+                                      return e.name === item
+                                  }) === undefined)
+                                  errorUsernames.push(item);
+                          });
+                          // Display an error message for those accounts
+                          if (errorUsernames.length > 0) alert('The following usernames are not correct : ' + errorUsernames.join(', '));
+                          // If all the accounts name are correct then display error message. Problem might come from steemConnect.
+                          else
+                              alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+                      });
+                  }
+              } else {
+                  if (isSteemit)
+                      window.location.replace('https://steemit.com');
+                  if (isBusy)
+                      window.location.replace('https://busy.org');
+              }
+          });
+      }
+      else {
+        steem_keychain.requestBroadcast(connect.user, operations, "Posting", function(result){
+    			console.log(result);
+          if(result.success) {
+              if (isSteemit)
+                  window.location.replace('https://steemit.com');
+              if (isBusy)
+                  window.location.replace('https://busy.org');
+          }  else
+                alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+    		});
+      }
 }

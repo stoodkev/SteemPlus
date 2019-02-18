@@ -56,3 +56,11 @@
     line-height: 1.6;
     cursor: pointer;
 }
+
+.dropdown-content li a {
+  color:black !important;
+}
+
+.dropdown-content li a:hover,#loginKC:hover  {
+  color:#06D6A9 !important;
+}

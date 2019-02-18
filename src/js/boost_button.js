@@ -418,14 +418,15 @@ function createMinnowBoosterTransferUI() {
                 var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
                 var memo = transferUI.find('input[name="memo"]').val();
                 if(connect.method=="sc2"){
+                  console.log("sc2");
                   scTransfer();
                 }
                 else
-                  steem_keychain.requestTransfer(connect.user,to,amount.split(" ")[0],memo,amount.split(" ")[1],function(result){
+                  steem_keychain.requestTransfer(connect.user,to,parseFloat(amount.split(" ")[0]).toFixed(3),"steemplus "+memo,amount.split(" ")[1],function(result){
                     if(!result.success) {
                       scTransfer();
                     }
-                  });
+                  },false);
                 function scTransfer(){
                   var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
                   var transferWindow = window.open();
@@ -721,14 +722,21 @@ async function createPostPromoterTransferUI() {
             amountPP = $('#amountPostPromoter').eq(0).val() + '.000';
         else
             amountPP = $('#amountPostPromoter').eq(0).val();
-        var requestSmartSteem = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency option:selected').eq(0).val()) + '&memo=' + encodeURIComponent("steemplus " + window.location.href);
-        var win = window.open(requestSmartSteem, '_blank');
-        if (win) {
-            //Browser has allowed it to be opened
-            win.focus();
-        } else {
-            //Browser has blocked it
-            alert('Please allow popups for this website');
+        if(connect.method=="sc2"){
+          console.log("sc2");
+          scTransfer();
+        }
+        else
+          steem_keychain.requestTransfer(connect.user,"postpromoter",parseFloat(amountPP).toFixed(3),"steemplus " + window.location.href,$('#currency option:selected').eq(0).val() ,function(result){
+            if(!result.success) {
+              scTransfer();
+            }
+          },false);
+        function scTransfer(){
+          var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency option:selected').eq(0).val()) + '&memo=' + encodeURIComponent("steemplus " + window.location.href);
+          var transferWindow = window.open();
+          transferWindow.opener = null;
+          transferWindow.location = url;
         }
     });
 

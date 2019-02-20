@@ -164,7 +164,11 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                         var urlImage = null;
                         urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
                         if (urlImage === '') urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("thumbnail") ? JSON.parse(elt.json_metadata).thumbnail : '';
-                        list_posts.push(Posts(window.SteemPlus.Sanitize.postBodyShort(elt.body), elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage, elt.url, voted));
+                        if(urlImage===''){
+                          const reg_img=/((http(s?):)([/|.|\w|\-|%|(|)])*\.(?:jpg|png|jpeg|JPG|JPEG|PNG))|((http(s?):)(.)*\/ipfs\/\w*)/;
+                          urlImage=reg_img.exec(elt.body)[0];
+                        }
+                        list_posts.push(Posts(window.SteemPlus.Sanitize.postBodyShort(elt.body), elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.active_votes.length, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage, elt.url, voted));
                         $('#loading_status').html('Fetching posts <br><br>' + ((feed_calls - 1) * 100 + i + 1) + ' / ' + feedp.nb_posts * 100);
                     }
                 });
@@ -303,11 +307,14 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     var voted = false;
                     //HERE
                     console.log(elt);
-                    //elt.active_votes.forEach(function(e){if(e.voter===user_fp&&e.weight!==0&&!checked){voted=true;checked=true;}});
                     elt.active_votes.forEach(function(e) {
                         if (e.voter === user_fp) voted = true;
                     });
-                    tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.net_votes, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '', elt.url, voted));
+                    const reg_img=/((http(s?):)([/|.|\w|\-|%|(|)])*\.(?:jpg|png|jpeg|JPG|JPEG|PNG))|((http(s?):)(.)*\/ipfs\/\w*)/;
+                    let img=JSON.parse(elt.json_metadata).hasOwnProperty("image") ? JSON.parse(elt.json_metadata).image["0"] : '';
+                    if(img="")
+                      img=reg_img.exec(elt.body)[0];
+                    tmp.push(Posts(elt.body, elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.active_votes.length, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], img, elt.url, voted));
                     if (elt.pending_payout_value !== '0.000 SBD' && voted === false) {
                         filtered_list = tmp.concat(filtered_list);
                         ad = true;
@@ -417,6 +424,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
         var offset = new Date().getTimezoneOffset();
         filtered_list.forEach(function(elt, i, a) {
+          console.log(elt);
             var bd = elt.body.replace(/<[^>]*>?/g, '');
             bd = bd.replace(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi, '');
             bd = bd.replace(/!?\[[^\]]*\]\([^\)]*\)/g, '');
@@ -491,29 +499,36 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             var elt = filtered_list[this.id];
             var that = this;
             if (elt.voted) {
-                api.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], 0, function(err, res) {
-                    if (err) console.log(err);
-                    if (res) console.log(res);
-
-                    if (res !== null) {
-                        $(that).removeClass('Voting__button--upvoted');
-
-                        filtered_list[that.id].voted = false;
-                    }
+              if(connect.method=="sc2")
+                  api.vote(feedp.user,elt.username,  elt.url.split('/').slice(-1)[0], 0, function(err, res) {
+                      if (res !== null) {
+                          $(that).removeClass('Voting__button--upvoted');
+                          filtered_list[that.id].voted = false;
+                      }
+                  });
+              else
+                steem_keychain.requestVote(feedp.user,elt.url.split('/').slice(-1)[0],elt.username,JSON.stringify(0),function(result){
+                  if (result&& result.success) {
+                      $(that).removeClass('Voting__button--upvoted');
+                      filtered_list[that.id].voted = false;
+                  }
                 });
             } else {
-                {
+                if(connect.method=="sc2")
                     api.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function(err, res) {
-                        if (err) console.log(err);
-                        if (res) console.log(res);
                         if (res !== null) {
                             $(that).addClass('Voting__button--upvoted');
                             console.log('should add class', $(this));
                             filtered_list[that.id].voted = true;
                         }
-
                     });
-                }
+                else
+                  steem_keychain.requestVote(feedp.user,elt.url.split('/').slice(-1)[0],elt.username,feedp.weight,function(result){
+                    if (result&& result.success) {
+                      $(that).addClass('Voting__button--upvoted');
+                      filtered_list[that.id].voted = true;
+                    }
+                  });
             }
 
         });

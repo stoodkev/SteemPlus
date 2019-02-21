@@ -36,7 +36,7 @@ function startPremiumFeatures() {
 
 // Function used to create the tab content
 // @param : premiumFeatureList : HTML element representing the tab
-function createTabPremiumFeatureList(premiumFeatureList) {
+async function createTabPremiumFeatureList(premiumFeatureList) {
 
   // Calculate the total for all the subscriptions
   // This will help user to know how much they spend per month
@@ -45,7 +45,14 @@ function createTabPremiumFeatureList(premiumFeatureList) {
     activePremiumFeaturesSubscriptionsUser.map(function(sub){
       totalAmountSubscription += sub.premiumFeature.price;
     });
-
+  // Get the total number of SPP owned by the user to check if user can subscribe to premium features.
+  const spps =await window.SteemPlus.api.getSPP(user);
+  let spp;
+  if(spps.length==0)
+    spp=0;
+  else
+    spp=spps[0].nbPoints;
+  console.log(spp +"spp");
   // Create tab content
   premiumFeatureList.html('\
   <div class="feed-layout container">\
@@ -58,6 +65,7 @@ function createTabPremiumFeatureList(premiumFeatureList) {
             </h1>\
             <hr class="articles__hr"/>\
               <h2 class="articles__h1" style="margin-bottom:20px">\
+                <div>Total SPP : <span class="total-per-month">'+ spp.toFixed(3) +'</span> SPP</div>\
                 Total Spent per month : <span class="total-per-month">'+ totalAmountSubscription +'</span> SPP\
               </h2>\
               <div class="LoadingIndicator loading-feature-list circle">\
@@ -102,7 +110,7 @@ function createTabPremiumFeatureList(premiumFeatureList) {
                 </div>
                 <div class="column small-12 medium-4 payment-feature">
                   <p>${feature.price} SPP/month</p>
-                  ${!isActive || activeFeature.isCanceled ? `<button class="button-steemit-subscribe" name="${feature.name}">Subscribe</button>` : `<button class="button-steemit-unsubscribe" name="${feature.name}">Unsubscribe</button>`}
+                  ${!isActive || activeFeature.isCanceled ? `<button title="`+(feature.price>spp?"You don\'t have enough SPP. Check how to get more SPP on https://steemplus.app":"")+`" class="button-steemit-subscribe`+(feature.price>spp?"-disabled":"")+`" name="`+feature.name+`">Subscribe</button>` : `<button class="button-steemit-unsubscribe" name="`+feature.name+`">Unsubscribe</button>`}
               </div>`
             );
         });
@@ -112,6 +120,7 @@ function createTabPremiumFeatureList(premiumFeatureList) {
 
       // Create event listener for subscribe buttons
       $('.button-steemit-subscribe').click(event => {
+        console.log(event.target.name);
         subscribeFeature(event.target.name);
       });
 
@@ -165,7 +174,7 @@ function findFeature(name) {
 // function used to subscribe to a feature
 // @param nameFeature : name of the feature
 function subscribeFeature(nameFeature){
-  const memo = `Premium Feature : Redeem SPP for [${nameFeature}] id:${generateRequestID(12)}`;
+  const memo = "Premium Feature : Redeem SPP for [${nameFeature}] id:${generateRequestID(12)}";
   sendTransfer(memo);
 }
 
@@ -180,15 +189,22 @@ function unsubscribeFeature(nameFeature){
 // Function used to send the transfer to SteemPlus
 // @param memo : memo discribing the purpose of the transfer
 function sendTransfer(memo){
-  const url = 'https://steemconnect.com/sign/transfer?to=' + encodeURIComponent(accountName) + '&amount=0.001%20SBD&memo=' + encodeURIComponent(memo);
-  var win = window.open(url, '_blank');
-  if (win) {
-      //Browser has allowed it to be opened
-      win.focus();
-  } else {
-      //Browser has blocked it
-      alert('Please allow popups for this website');
+  console.log(memo);
+  if(connect.method=="sc2"){
+    const url = 'https://steemconnect.com/sign/transfer?to=' + encodeURIComponent(accountName) + '&amount=0.001%20SBD&memo=' + encodeURIComponent(memo);
+    var win = window.open(url, '_blank');
+    if (win) {
+        //Browser has allowed it to be opened
+        win.focus();
+    } else {
+        //Browser has blocked it
+        alert('Please allow popups for this website');
+    }
   }
+  else steem_keychain.requestTransfer(connect.user,accountName,0.001,memo,"SBD",function(result){
+    if(result.success)
+      alert("Transfer succesful! Check your messages in a few minutes to check the premium feature was activated.");
+  },true);
 }
 
 // Function used to generate a random requestID

@@ -284,7 +284,7 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
             };*/
 
 
-            activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+            activePremiumFeaturesSubscriptions = await window.SteemPlus.api.getActivePremiumFeatureSubscriptions(user);
 
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
@@ -580,7 +580,7 @@ function initOfflineFeatures(isConnected, items, user, account) {
 
 async function startOfflineFeatures(items, user, account) {
 
-    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await window.SteemPlus.api.getActivePremiumFeatureSubscriptions(user);
 
     const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
     const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
@@ -1466,25 +1466,6 @@ function hasPremiumFeature(feature){
     return (activePremiumFeaturesSubscriptions&&activePremiumFeaturesSubscriptions.find(sub => {
         return sub.premiumFeature.name === feature;
     }) !== undefined);
-}
-
-function getActivePremiumFeatureSubscriptions(user) {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://api.steemplus.app/features/'+ user,
-            success: function(response) {
-                resolve(response.activeSubscriptions);
-            },
-            error: function(msg) {
-                resolve(msg);
-            }
-        });
-    });
 }
 
 function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time) {

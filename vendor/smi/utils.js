@@ -974,6 +974,24 @@
       });
     }
 
+    function getActivePremiumFeatureSubscriptions(user) {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: "GET",
+                beforeSend: function(xhttp) {
+                    xhttp.setRequestHeader("Content-type", "application/json");
+                    xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+                },
+                url: 'https://api.steemplus.app/features/'+ user,
+                success: function(response) {
+                    resolve(response.activeSubscriptions);
+                },
+                error: function(msg) {
+                    resolve(msg);
+                }
+            });
+        });
+    }
     var api={
       getFollowersFollowees:getFollowersFollowees,
       getResteems:getResteems,
@@ -985,7 +1003,8 @@
       getMentions:getMentions,
       getRewards:getRewards,
       getDelegators:getDelegators,
-      getSPP:getSPP
+      getSPP:getSPP,
+      getActivePremiumFeatureSubscriptions:getActivePremiumFeatureSubscriptions
     }
 
 

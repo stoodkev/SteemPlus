@@ -107,7 +107,7 @@ function createTipButton(element, username) {
                 $(tipDiv).hide('slow');
             }
         });
-    } else if (isBusy) 
+    } else if (isBusy)
     {
         if (element.hasClass('Comment__date')) {
             $(element).after(tipDiv);
@@ -183,13 +183,20 @@ function sendTip(element, username) {
 
 
     var memoTip = 'Tip sent from ' + myUsernameTip + ' to ' + username + ' using steem-plus tipping system! (https://steemit.com/@steem-plus)';
-    var urlTip = 'https://v2.steemconnect.com/sign/transfer?from=' + myUsernameTip + '&to=' + username + '&amount=' + amountTip + '%20SBD&memo=' + memoTip;
-    var win = window.open(urlTip, '_blank');
-    if (win) {
-        //Browser has allowed it to be opened
-        win.focus();
-    } else {
-        //Browser has blocked it
-        alert('Please allow popups for this website');
+    if(!connect||connect.method=="sc2"){
+      var urlTip = 'https://v2.steemconnect.com/sign/transfer?from=' + myUsernameTip + '&to=' + username + '&amount=' + amountTip + '%20SBD&memo=' + memoTip;
+      var win = window.open(urlTip, '_blank');
+      if (win) {
+          //Browser has allowed it to be opened
+          win.focus();
+      } else {
+          //Browser has blocked it
+          alert('Please allow popups for this website');
+      }
+    }else{ // Implement keychain transfer
+      steem_keychain.requestTransfer(connect.user,username,parseFloat(amountTip.split(" ")[0]).toFixed(3),memoTip,"SBD",function(result){
+        if(result.success)
+          alert("Tip sent succesfully");
+      });
     }
 }

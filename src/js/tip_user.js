@@ -183,7 +183,7 @@ function sendTip(element, username) {
 
 
     var memoTip = 'Tip sent from ' + myUsernameTip + ' to ' + username + ' using steem-plus tipping system! (https://steemit.com/@steem-plus)';
-    if(!connect||connect.method=="sc2"){
+    if(!connect||connect.method=="sc2"){ //Use SteemConnect
       var urlTip = 'https://v2.steemconnect.com/sign/transfer?from=' + myUsernameTip + '&to=' + username + '&amount=' + amountTip + '%20SBD&memo=' + memoTip;
       var win = window.open(urlTip, '_blank');
       if (win) {

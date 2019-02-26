@@ -417,11 +417,11 @@ function createMinnowBoosterTransferUI() {
                 var to = transferUI.find('input[name="to"]').val();
                 var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
                 var memo = transferUI.find('input[name="memo"]').val();
-                if(connect.method=="sc2"){
+                if(!connect||connect.method=="sc2"){ //Use SteemConnect
                   console.log("sc2");
                   scTransfer();
                 }
-                else
+                else // Use Keychain for transfer
                   steem_keychain.requestTransfer(connect.user,to,parseFloat(amount.split(" ")[0]).toFixed(3),"steemplus "+memo,amount.split(" ")[1],function(result){
                     if(!result.success) {
                       scTransfer();
@@ -722,11 +722,11 @@ async function createPostPromoterTransferUI() {
             amountPP = $('#amountPostPromoter').eq(0).val() + '.000';
         else
             amountPP = $('#amountPostPromoter').eq(0).val();
-        if(connect.method=="sc2"){
+        if(!connect||connect.method=="sc2"){ //Use SteemConnect
           console.log("sc2");
           scTransfer();
         }
-        else
+        else //Use Keychain for Transfer
           steem_keychain.requestTransfer(connect.user,"postpromoter",parseFloat(amountPP).toFixed(3),"steemplus " + window.location.href,$('#currency option:selected').eq(0).val() ,function(result){
             if(!result.success) {
               scTransfer();

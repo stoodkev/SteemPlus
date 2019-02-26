@@ -190,7 +190,7 @@ function unsubscribeFeature(nameFeature){
 // @param memo : memo discribing the purpose of the transfer
 function sendTransfer(memo){
   console.log(memo);
-  if(connect.method=="sc2"){
+if(!connect||connect.method=="sc2"){ //Use SteemConnect
     const url = 'https://steemconnect.com/sign/transfer?to=' + encodeURIComponent(accountName) + '&amount=0.001%20SBD&memo=' + encodeURIComponent(memo);
     var win = window.open(url, '_blank');
     if (win) {
@@ -201,7 +201,8 @@ function sendTransfer(memo){
         alert('Please allow popups for this website');
     }
   }
-  else steem_keychain.requestTransfer(connect.user,accountName,0.001,memo,"SBD",function(result){
+  else //Use Keychain
+    steem_keychain.requestTransfer(connect.user,accountName,0.001,memo,"SBD",function(result){
     if(result.success)
       alert("Transfer succesful! Check your messages in a few minutes to check the premium feature was activated.");
   },true);

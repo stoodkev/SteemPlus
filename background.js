@@ -26,7 +26,16 @@ chrome.runtime.onMessageExternal.addListener(function(resp, sender, sendResponse
   let response=JSON.parse(resp);
   response.keychain=true;
   // use previously accessed tab id to send response
-  chrome.tabs.sendMessage(response.data.tab.tab, response);
+  if(response.data==undefined||response.data.tab==undefined){
+    chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    }, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, response);
+    });
+  }
+  else
+    chrome.tabs.sendMessage(response.data.tab.tab, response);
 });
 
 function arrayBufferToBase64(buffer) {

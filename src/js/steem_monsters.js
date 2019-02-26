@@ -188,7 +188,7 @@ function createSteemMonsterTab(steemMonsterTab) {
 	});
 
 	$('.purchase-pack').click(function(){
-		if(!connect||connect.method=="sc2"){  // Request transfer via SC2
+		if(!connect||connect.method=="sc2")  // Request transfer via SC2
 			window.open(urlSteemMonster, '_blank');
 		else // Request transfer via Keychain
 			steem_keychain.requestTransfer(connect.user,"steemmonster",amountSM.split(" ")[0],memoSM,amountSM.split(" ")[1],function(result){

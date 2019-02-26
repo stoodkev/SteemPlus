@@ -318,7 +318,7 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
           console.log("undelegate");
           if(!connect||connect.method=="sc2"){ //Use SteemConnect
             window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");
-          else { // Use Keychain
+          }else { // Use Keychain
             steem_keychain.requestDelegation(user,delegatee,(0).toFixed(3),"SP",function(result){
               if(!result.success)
                 window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");

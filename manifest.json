@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "3.8",
+  "version": "3.8.0.1",
   "content_security_policy": "script-src 'self' 'unsafe-eval' ; object-src 'self'; child-src 'unsafe-eval' 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",

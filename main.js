@@ -17,6 +17,14 @@ let activePremiumFeaturesSubscriptions = null;
 var offlineModeRetryCount = 0;
 let hasSKC=false;
 
+let elementUsername = null;
+if (steemit) elementUsername = '.Header__userpic > span';
+else if (busy) elementUsername = '.Topnav__user';
+
+if ($(elementUsername).length > 0) {
+		if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+		else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
+}
 steem_keychain.requestHandshake(function(){
 	console.log("Received handshake from Steem Keychain!");
 	hasSKC=true;
@@ -233,7 +241,6 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
     if (connect.connect && (connect.tokenExpire > Date.now())||connect.method=="keychain") {
 						let account;
 						if(connect.method=="keychain"){
-							user=connect.user;
 							account = (await steem.api.getAccountsAsync([user]))[0];
 							console.log(user,account);
 						}
@@ -241,7 +248,6 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
 							initializeSteemConnect(connect.sessionToken);
 	        		const me=await api.me();
 							account = me.account;
-	            user = me.name;
 						}
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);

@@ -58,15 +58,20 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if(request.data.connect.method=="sc2")
               showLogout(loginIcon,request.data.connect);
             else if(request.data.connect.method=="keychain"){
-              verifyKeychainLogin(request.data.connect.user,request.data.connect.public).then(function(success){
-                if(success)
-                  showLogout(loginIcon,request.data.connect);
-                else
-                  chrome.storage.local.remove(['loginPub', 'loginUser', 'loginMethod'], function() {
-                    console.log("remove");
-                      location.reload();
-                  });
-              });
+              console.log(request.data.connect.user,user);
+              if(request.data.connect.user!=user)
+                chrome.storage.local.remove(['loginPub', 'loginUser', 'loginMethod'], function() {
+                    location.reload();
+                })
+              else
+                verifyKeychainLogin(request.data.connect.user,request.data.connect.public).then(function(success){
+                  if(success)
+                    showLogout(loginIcon,request.data.connect);
+                  else
+                    chrome.storage.local.remove(['loginPub', 'loginUser', 'loginMethod'], function() {
+                        location.reload();
+                    });
+                });
             }
         }
         showButton(loginIcon);

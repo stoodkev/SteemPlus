@@ -237,6 +237,7 @@ $("#autocomplete-git").easyAutocomplete(options);
       }]
       ];
       console.log(operations);
+      if(connect.method=="sc2"){
       api.broadcast(
         operations,
         function(e, r)
@@ -250,29 +251,45 @@ $("#autocomplete-git").easyAutocomplete(options);
             }
           }
           else {
-              $('.vframe input').eq(0).val("");
-              $('.vframe textarea').eq(0).val("");
-               $(' input[tabindex=3]').eq(0).val("");
-               var event = new Event('input', {
-                   bubbles: true
-               });
-               $('.vframe input')[0].dispatchEvent(event);
-               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
-              $(' input[tabindex=3]')[0].dispatchEvent(event);
-
-               event = new Event('keyup', {
-                   bubbles: true
-               });
-               $('.vframe input')[0].dispatchEvent(event);
-               $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
-               $(' input[tabindex=3]')[0].dispatchEvent(event);
-               window.location.replace('https://steemit.com');
+              cleanUtopian();
           }
         });
       }
+      else steem_keychain.requestBroadcast(connect.user, operations, "Posting", function(result){
+        if (!result.success)
+        {
+          if(result.error!==undefined)
+          {
+            console.log(result.error);
+            alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + result.error);
+          }
+        }
+        else {
+            cleanUtopian();
+        }
+      });
+      }
     });
 
+function cleanUtopian(){
+  $('.vframe input').eq(0).val("");
+  $('.vframe textarea').eq(0).val("");
+   $(' input[tabindex=3]').eq(0).val("");
+   var event = new Event('input', {
+       bubbles: true
+   });
+   $('.vframe input')[0].dispatchEvent(event);
+   $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+  $(' input[tabindex=3]')[0].dispatchEvent(event);
 
+   event = new Event('keyup', {
+       bubbles: true
+   });
+   $('.vframe input')[0].dispatchEvent(event);
+   $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+   $(' input[tabindex=3]')[0].dispatchEvent(event);
+   window.location.replace('https://steemit.com');
+}
 
     $("#edit-utopian").unbind('click').click(function(){
         openUtopianDialog();

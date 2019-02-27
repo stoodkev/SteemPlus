@@ -34,11 +34,6 @@ var externalLinks = [{
         return 'http://minnowpond.org';
     }
 }, {
-    title: 'Mentions',
-    href: function(username) {
-        return 'http://steemistry.com/steemit-mentions-tool/?mention=@' + username;
-    }
-}, {
     title: 'SteemWorld',
     href: function(username) {
         return 'https://steemworld.org/@' + username
@@ -57,11 +52,6 @@ var externalLinks = [{
     title: 'SteemReports',
     href: function(username) {
         return 'http://www.steemreports.com/top-voters/@' + username;
-    }
-}, {
-    title: 'Utopian',
-    href: function(username) {
-        return 'https://utopian.io/@' + username;
     }
 }, {
     title: 'Steemian Wit',

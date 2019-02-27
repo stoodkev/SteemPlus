@@ -205,12 +205,23 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
                         else if (isBusy) buttonRemoveWitness = $('<button class="Follow removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</button>');
 
                         $(buttonRemoveWitness).click(function() {
+                          if(!connect||connect.method=="sc2"){ //Use SteemConnect
                             var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
                             if (win) {
                                 win.focus();
                             } else {
                                 alert('Please allow popups for this website');
                             }
+                          }else {//Use Keychain
+                            steem_keychain.requestWitnessVote(connect.user,this.id,false,function(result){
+                              if(!result.success)
+                                var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
+                              else {
+                                $('.witnesses-names-list').empty();
+                                addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses);
+                              }
+                            });
+                          }
                         });
 
                         $(divButtonRemoveWitness).append(buttonRemoveWitness);
@@ -241,8 +252,8 @@ function getWitnessRank(username, list) {
     return userObj?userObj.rank:null;
 }
 
-function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses) {
-    if (isWitness(usernameTabWitnesses, rankingWitnesses) && !$('#witness-out').prop('checked')) return;
+function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses,force=false) {
+    if (isWitness(usernameTabWitnesses, rankingWitnesses) && !$('#witness-out').prop('checked')&&!force) return;
     var witnessesOutTab = $('\
     <h5 style="margin-bottom:20px">\
       <span class="span-nb-witnesses"></span>\
@@ -262,7 +273,7 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses) 
 
     $('.witness-content').append(witnessesOutTab);
 
-    $('#addWitnessButton').click(function() {
+    $('#addWitnessButton').unbind("click").click(function() {
         var newWitnessName = $('#addWitnessName')[0].value;
         steem.api.getAccounts([newWitnessName], function(err, result) {
 
@@ -290,12 +301,23 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses) 
                 toastr.error('Unknown error, Please try again later', titleToastr);
             } else {
                 if (result.length > 0) {
+                  if(!connect||connect.method=="sc2"){ //Use SteemConnect
                     var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + newWitnessName + '&approve=1', '_blank');
                     if (win) {
                         win.focus();
                     } else {
                         alert('Please allow popups for this website');
                     }
+                  }else { //use Keychain
+                    steem_keychain.requestWitnessVote(connect.user,newWitnessName,true,function(result){
+                      if(!result.success)
+                        var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + newWitnessName + '&approve=1', '_blank');
+                      else {
+                        $('.witnesses-names-list').empty();
+                        addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses);
+                      }
+                    });
+                  }
                 } else {
                     toastr.error('Unknown user. Please check the username.', titleToastr);
                 }
@@ -358,24 +380,49 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
     }
 
     $('.removeAsWitnessLink').unbind('click').click(function() {
-        $('.addAsWitnessLink').show();
-        $('.removeAsWitnessLink').hide();
-        var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
-        if (win) {
-            win.focus();
-        } else {
-            alert('Please allow popups for this website');
+        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+          var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
+          if (win) {
+              win.focus();
+          } else {
+              alert('Please allow popups for this website');
+          }
+        }
+        else { //Use Keychain
+          steem_keychain.requestWitnessVote(connect.user,usernameTabWitnesses,false,function(result){
+            console.log(result);
+            if(!result.success)
+              var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
+            else {
+                  console.log("change button");
+                  $('.addAsWitnessLink').show();
+                  $('.removeAsWitnessLink').hide();
+            }
+          });
         }
     });
 
     $('.addAsWitnessLink').unbind('click').click(function() {
-        $('.removeAsWitnessLink').show();
-        $('.addAsWitnessLink').hide();
-        var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
-        if (win) {
-            win.focus();
-        } else {
-            alert('Please allow popups for this website');
+        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+          var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
+          if (win) {
+              win.focus();
+          } else {
+              alert('Please allow popups for this website');
+          }
+        }
+        else { //Use Keychain
+          steem_keychain.requestWitnessVote(connect.user,usernameTabWitnesses,true,function(result){
+            console.log(result.success);
+            if(!result.success)
+              var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
+            else {
+              console.log("change button");
+
+                  $('.removeAsWitnessLink').show();
+                  $('.addAsWitnessLink').hide();
+            }
+          });
         }
     });
 

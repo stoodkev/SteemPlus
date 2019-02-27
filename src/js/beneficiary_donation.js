@@ -163,24 +163,35 @@ async function postBeneficiaryDonation() {
     ];
 
     console.log(operations);
-    /*steem_keychain.requestBroadcast(author,operations,"posting",function(a){
-        console.log(a);
-    });*/
-    api.broadcast(
-        operations,
-        function(e, r) {
-            if (e) {
-                console.log(e);
-                if (e.error !== undefined) {
-                    console.log(e,e.error,e.message,e.error_description);
-                    alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+    if(connect.method=="sc2"){
+      api.broadcast(
+          operations,
+          function(e, r) {
+              if (e) {
+                  console.log(e);
+                  if (e.error !== undefined) {
+                      console.log(e,e.error,e.message,e.error_description);
+                      alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via SteemConnect, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
 
-                }
-            } else {
+                  }
+              } else {
+                  if (isSteemit)
+                      window.location.replace('https://steemit.com');
+                  if (isBusy)
+                      window.location.replace('https://busy.org');
+              }
+          });
+        }
+        else{
+          steem_keychain.requestBroadcast(connect.user, operations, "Posting", function(result){
+      			console.log(result);
+            if(result.success) {
                 if (isSteemit)
                     window.location.replace('https://steemit.com');
                 if (isBusy)
                     window.location.replace('https://busy.org');
-            }
-        });
+            }  else
+                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+      		});
+        }
 }

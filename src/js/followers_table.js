@@ -113,7 +113,6 @@
   function sendGetFollowingRequest(username, lastFollowing) {
       return new Promise(function(resolve, reject) {
           steem.api.getFollowing(username, lastFollowing, 'blog', 100, function(err, response) {
-              //if(err!==null&&err!==undefined) console.log(err);
               resolve(response);
           });
       });
@@ -130,7 +129,6 @@
   function sendGetFollowCount(username) {
       return new Promise(function(resolve, reject) {
           steem.api.getFollowCount(username, function(err, response) {
-              // console.log(err);
               resolve(response);
           });
       });
@@ -140,7 +138,6 @@
       var chunks = _.chunk(names, 100);
 
       _.each(chunks, function(chunk, index) {
-          // console.log('getting accounts at ' + index);
           window.SteemPlus.Utils.getAccounts(chunk, function(err, accounts) {
               if (err) {
                   callback(err);
@@ -224,7 +221,6 @@
                       return 'Loading...';
                   }
                   const dollars =  window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, rewardBalance, recentClaims, steemPrice, votePowerReserveRate, false);
-                  console.log(dollars);
                   if (typeof dollars !== 'number') {
                       return 'Loading...';
                   }
@@ -326,30 +322,58 @@
                   $('.followLink').prop('onclick', null).off('click');
                   $('.unfollowLink').click(function(event) {
                       var btn = $(this);
-                      api.unfollow(myaccount.name, btn[0].id, function(err, res) {
-                          if (err === null) {
-                              console.log('Unfollowed!!', btn);
+                      if(connect.method=="sc2")
+                        api.unfollow(myaccount.name, btn[0].id, function(err, res) {
+                            if (err === null) {
+                                btn.addClass("followLink");
+                                btn.removeClass("unfollowLink");
+                                btn.html('Follow');
+                                defineOnclick();
+                            }
+                        });
+                      else {
+                        const unfollow=['follow', {
+                          follower: myaccount.name,
+                          following: btn[0].id,
+                          what: []
+                        }];
+                        steem_keychain.requestCustomJson(myaccount.name,"follow","Posting",JSON.stringify(unfollow),"Unfollow user",function(result){
+                          if(result&&result.success){
                               btn.addClass("followLink");
                               btn.removeClass("unfollowLink");
                               btn.html('Follow');
                               defineOnclick();
                           }
-                      });
+                        });
+                      }
                   });
 
                   $('.followLink').click(function(event) {
                       var btn = $(this);
-                      console.log(myaccount.name, btn[0].id);
-                      api.follow(myaccount.name, btn[0].id, function(err, res) {
-                          if (err === null) {
-                              console.log('Followed!!', btn);
-                              btn.removeClass("followLink");
-                              btn.addClass("unfollowLink");
-                              btn.html('Unfollow');
-                              defineOnclick();
+                      if(connect.method=="sc2")
+                        api.follow(myaccount.name, btn[0].id, function(err, res) {
+                            if (err === null) {
+                                btn.removeClass("followLink");
+                                btn.addClass("unfollowLink");
+                                btn.html('Unfollow');
+                                defineOnclick();
+                            }
+                        });
+                      else {
+                        const follow=['follow', {
+                          follower: myaccount.name,
+                          following: btn[0].id,
+                          what: ["blog"]
+                        }];
+                        steem_keychain.requestCustomJson(myaccount.name,"follow","Posting",JSON.stringify(follow),"Follow user",function(result){
+                          if(result&&result.success){
+                            btn.removeClass("followLink");
+                            btn.addClass("unfollowLink");
+                            btn.html('Unfollow');
+                            defineOnclick();
                           }
-                          console.log(err,res);
-                      });
+                        });
+                      }
                   });
               }
           });

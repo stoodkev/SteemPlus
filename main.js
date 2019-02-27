@@ -1,4 +1,4 @@
-var xhttp = new XMLHttpRequest();
+const xhttp = new XMLHttpRequest();
 const steemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com'));
 const busy = window.location.href.includes('busy.org');
 const utopian = window.location.href.includes('utopian.io');
@@ -6,6 +6,7 @@ const steemMonsters = window.location.href.includes('steemmonsters.com');
 console.log('Starting SteemPlus...');
 var market = null;
 var SBDperSteem = 0;
+var connect;
 const DEFAULT_FEED_SIZE = 3;
 var urlOffline = window.location.href;
 var urlOnline = window.location.href;
@@ -14,7 +15,20 @@ let api=null;
 let activePremiumFeaturesSubscriptions = null;
 
 var offlineModeRetryCount = 0;
+let hasSKC=false;
 
+let elementUsername = null;
+if (steemit) elementUsername = '.Header__userpic > span';
+else if (busy) elementUsername = '.Topnav__user';
+
+if ($(elementUsername).length > 0) {
+		if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+		else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
+}
+steem_keychain.requestHandshake(function(){
+	console.log("Received handshake from Steem Keychain!");
+	hasSKC=true;
+});
 steem.api.setOptions({
     url: 'https://api.steemit.com'
 });
@@ -54,15 +68,18 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         chrome.storage.local.set({
             steemPriceLS: steemPrice
         });
-        chrome.storage.local.get(['sm_batch','vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
+        chrome.storage.local.get(['loginPub','loginUser','loginMethod','sm_batch','vote_weight_slider_busy', 'user_info_popover', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'acc_v', 'del', 'tokenExpire', 'sessionToken'], function(items) {
 
-            var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
-                connect: false
-            } : {
-                connect: true,
-                sessionToken: items.sessionToken,
-                tokenExpire: items.tokenExpire
-            };
+					connect = (items.loginMethod ==undefined) ? {
+							connect: false
+					} : {
+							connect: true,
+							method:items.loginMethod,
+							user:items.loginUser,
+							sessionToken: items.sessionToken,
+							tokenExpire: items.tokenExpire,
+							public:items.loginPub
+					};
 
             const delegation = (items.del == undefined || items.del == "show");
             const account_value = (items.acc_v == undefined || items.acc_v == "show");
@@ -145,7 +162,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                             votePowerReserveRate: votePowerReserveRate
                         }
                     });
-                if (steemit && followers_table && steemConnect.connect)
+                if (steemit && followers_table && connect.connect)
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'followers_table',
@@ -172,7 +189,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                         }
                     });
             }
-            if (vote_weight_slider_busy && steemConnect.connect && busy && steemit_more_info)
+            if (vote_weight_slider_busy && connect.connect && busy && steemit_more_info)
                 chrome.runtime.sendMessage({
                     token: token,
                     to: 'vote_weight_slider_busy',
@@ -187,20 +204,29 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
         });
     });
 
-chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward', 'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab', 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check', 'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'], function(items) {
-    var steemConnect = (items.sessionToken === undefined || items.tokenExpire === undefined) ? {
-        connect: false
-    } : {
-        connect: true,
-        sessionToken: items.sessionToken,
-        tokenExpire: items.tokenExpire
-    };
+chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features', 'steem_monsters', 'steemplus_points', 'dtube_post' ,'utopian_post' ,'tip_user', 'resteem_indicator', 'add_signature', 'author_popup_info', 'rewards_tab', 'wallet_history', 'wallet_history_memo_key', 'article_count', 'witnesses_tab', 'classification_user', 'board_reward',
+'favorite_section', 'votePowerReserveRateLS', 'totalSteemLS', 'totalVestsLS', 'rewardBalanceLS', 'recentClaimsLS', 'steemPriceLS', 'post_floating_bottom_bar', 'post_floating_bottom_bar_size', 'last_post_url', 'smi_installed_remind_me', 'smi_installed_remind_me_time', 'md_editor_beautifier', 'blog_histogram', 'user_info_popover', 'gif_picker', 'boost_button', 'followers_table', 'vote_weight_slider', 'mentions_tab',
+ 'search_bar', 'external_link_tab', 'vote_tab', 'steemit_more_info', 'post_votes_list', 'oneup', 'weight', 'del', 'transfers', 'acc_v', 'ben', 'drop', 'badge', 'username', 'nb_posts', 'resteem', 'sort', 'tag', 'list_tags', 'voted_check',
+  'rep_feed', 'rep_feed_check', 'classif', 'whitelist', 'blacklist', 'feedp', 'sessionToken', 'tokenExpire', 'market'],
+	 async function(items) {
+
+		 connect = (items.loginMethod ==undefined) ? {
+ 				connect: false
+ 		} : {
+ 				connect: true,
+ 				method:items.loginMethod,
+ 				user:items.loginUser,
+ 				sessionToken: items.sessionToken,
+ 				tokenExpire: items.tokenExpire,
+ 				public:items.loginPub
+ 		};
+
     chrome.runtime.sendMessage({
         token: token,
         to: 'steemConnect',
         order: 'start',
         data: {
-            steemConnect: steemConnect,
+            connect: connect,
             steemit: steemit,
             busy: busy,
             utopian: utopian
@@ -212,10 +238,17 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
         priceSBD: 0
     } : items.market;
     console.log('Connecting...');
-    if (steemConnect.connect === true && steemConnect.tokenExpire > Date.now()) {
-        initializeSteemConnect(steemConnect.sessionToken);
-        api.me().then(async function(me) {
-
+    if (connect.connect && (connect.tokenExpire > Date.now())||connect.method=="keychain") {
+						let account;
+						if(connect.method=="keychain"){
+							account = (await steem.api.getAccountsAsync([user]))[0];
+							console.log(user,account);
+						}
+						else{
+							initializeSteemConnect(connect.sessionToken);
+	        		const me=await api.me();
+							account = me.account;
+						}
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
             const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
             const totalVestsLS = (items.totalVestsLS == undefined ? 1 : items.totalVestsLS);
@@ -224,8 +257,6 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             const steemPriceLS = (items.steemPriceLS == undefined ? 1 : items.steemPriceLS);
 
             console.log('Getting settings...');
-            const account = me.account;
-            user = me.name;
             const beneficiaries = (items.ben == undefined || items.ben == "show");
             const feedp = (items.feedp == undefined || items.feedp == "show");
             const resteem = (items.resteem !== undefined) ? items.resteem : 'show';
@@ -259,7 +290,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             };*/
 
 
-            activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+            activePremiumFeaturesSubscriptions = await window.SteemPlus.api.getActivePremiumFeatureSubscriptions(user);
 
             console.log('Starting features online...', user);
             if (utopian_post && (steemit))
@@ -339,7 +370,7 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
                     to: 'oneup',
                     order: 'start',
                     data: {
-                        sessionToken: steemConnect.sessionToken,
+                        sessionToken: connect.sessionToken,
                         account: account
                     }
                 });
@@ -518,10 +549,6 @@ chrome.storage.local.get(['premium_features', 'steem_monsters', 'steemplus_point
             });
             console.log('Offline Features');
             initOfflineFeatures(true, items, user, account);
-        }, function(err) {
-            console.log('Cannot connect to steemConnect. Launching offline Features...');
-            initOfflineFeatures(false, items, null, null);
-        });
     } else {
         // No need to be connected to SteemConnect
         console.log('Offline Features');
@@ -559,7 +586,7 @@ function initOfflineFeatures(isConnected, items, user, account) {
 
 async function startOfflineFeatures(items, user, account) {
 
-    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await getActivePremiumFeatureSubscriptions(user);
+    if(activePremiumFeaturesSubscriptions === null) activePremiumFeaturesSubscriptions = await window.SteemPlus.api.getActivePremiumFeatureSubscriptions(user);
 
     const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
     const totalSteemLS = (items.totalSteemLS == undefined ? 1 : items.totalSteemLS);
@@ -1447,25 +1474,6 @@ function hasPremiumFeature(feature){
     }) !== undefined);
 }
 
-function getActivePremiumFeatureSubscriptions(user) {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://api.steemplus.app/features/'+ user,
-            success: function(response) {
-                resolve(response.activeSubscriptions);
-            },
-            error: function(msg) {
-                resolve(msg);
-            }
-        });
-    });
-}
-
 function checkSMI(smi_installed_remind_me, smi_installed_remind_me_time) {
 
     if (!smi_installed_remind_me)
@@ -1521,7 +1529,7 @@ function date_diff_indays(date1, date2) {
 function checkLastPost(last_post_url, account) {
     console.log('account', account);
     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus', null, new Date().toISOString().split('.')[0], 1, function(err, result) {
-        if (!result[0].title.includes('Daily SteemPlus Stats')) {
+        if (!result[0].title.includes('Dsaily SteemPlus Stats')) {
             if (last_post_url == undefined || last_post_url !== result[0].url) {
                 toastr.options = {
                     "closeButton": false,
@@ -1548,8 +1556,8 @@ function checkLastPost(last_post_url, account) {
                 toastr.info('Thanks for using SteemPlus!<br />' +
                     'We just released a new post that you might find interesting:<br /><br /> ' + result[0].title +
                     '<br /><br />' +
-                    ((hasVotedWitness || hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <a href="" id="vote_as_witness" style="text-decoration: underline;">here</a>.<br />\
-                      You can also choose @stoodkev as your proxy by clicking <a href="" id="chose_as_proxy" style="text-decoration: underline;">here</a>.<br /><br />') +
+                    ((hasVotedWitness || hasChosenAsProxy) ? '' : 'You love SteemPlus? Please consider voting @stoodkev as a witness, it only takes few seconds! Only need to click <span id="vote_as_witness" style="text-decoration: underline;">here</span>.<br />\
+                      You can also choose @stoodkev as your proxy by clicking <span id="chose_as_proxy" style="text-decoration: underline;">here</span>.<br /><br />') +
                     '<button class="btn btn-primary" id="new_post_yes">Read</button><button class="btn btn-primary" id="new_post_fundition">Support on Fundition</button> <button id="new_post_no" class="btn btn-primary">No, thanks</button>', "Steem Plus News");
 
                 $('#new_post_yes').click(function() {
@@ -1579,6 +1587,8 @@ function checkLastPost(last_post_url, account) {
                 });
 
                 $('#vote_as_witness').click(function() {
+									console.log("wtf");
+									if(!connect||connect.method=="sc2"){
                     var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
                     if (win) {
                         //Browser has allowed it to be opened
@@ -1587,7 +1597,13 @@ function checkLastPost(last_post_url, account) {
                         //Browser has blocked it
                         alert('Please allow popups for this website');
                     }
-                });
+                	}else { // Vote for witness by keychain
+										steem_keychain.requestWitnessVote(connect.user,"stoodkev",true,function(result){
+											if(result.success)
+												alert("Thanks!");
+										});
+									}
+								});
 
                 $('#chose_as_proxy').click(function() {
                     var win = window.open('https://v2.steemconnect.com/sign/account-witness-proxy?account=' + account.name + '&proxy=stoodkev', '_blank');

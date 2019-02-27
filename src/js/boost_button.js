@@ -417,11 +417,22 @@ function createMinnowBoosterTransferUI() {
                 var to = transferUI.find('input[name="to"]').val();
                 var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
                 var memo = transferUI.find('input[name="memo"]').val();
-                var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
-
-                var transferWindow = window.open();
-                transferWindow.opener = null;
-                transferWindow.location = url;
+                if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                  console.log("sc2");
+                  scTransfer();
+                }
+                else // Use Keychain for transfer
+                  steem_keychain.requestTransfer(connect.user,to,parseFloat(amount.split(" ")[0]).toFixed(3),"steemplus "+memo,amount.split(" ")[1],function(result){
+                    if(!result.success) {
+                      scTransfer();
+                    }
+                  },false);
+                function scTransfer(){
+                  var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
+                  var transferWindow = window.open();
+                  transferWindow.opener = null;
+                  transferWindow.location = url;
+                }
             });
 
             validate();
@@ -641,13 +652,12 @@ function changeUIBooster(value) {
     else if (value === 'PostPromoter') createPostPromoterTransferUI();
 }
 
-function createPostPromoterTransferUI() {
+async function createPostPromoterTransferUI() {
 
   console.log("Create");
   var classModalLocation = '';
   if(isSteemit) classModalLocation = '.reveal';
   else if(isBusy) classModalLocation = '.modal-content-busy';
-
     var transferUI = $('\
     <div id="modalContent">\
       <div id="modalTitle" class="row">\
@@ -692,17 +702,15 @@ function createPostPromoterTransferUI() {
           </div>\
           <button id="submitPostPromoter" type="submit" disabled="" class="Action button">Submit</button>\
         </div>'));
-      var account=null;
-      window.SteemPlus.Utils.getAccounts(['postpromoter'], function(err, result){
-        console.log(err,result);
-        var vp=window.SteemPlus.Utils.getVotingPowerPerAccount(result[0]);
-        var timeBeforeVote=window.SteemPlus.Utils.getTimeBeforeFull(vp);
-        account=result[0];
+        const result=  await steem.api.getAccountsAsync(['postpromoter']);
+        console.log(result);
+        const account=result[0];
+        var vp= await window.SteemPlus.Utils.getVotingPowerPerAccount(account);
+        var timeBeforeVote=window.SteemPlus.Utils.getTimeBeforeFull(vp*100);
+
         console.log(vp,timeBeforeVote);
         $('#postPromoterInformation').html("<div><strong>Min / Max Post age:</strong> 20 mins / 3.5 days</div><div><strong>Time before vote: </strong>"+timeBeforeVote+"</div><br><div><strong>Expected upvote</strong> (+/- 10%): <span id='expected_vote'></span></div>");
-
         $('#expected_vote').html("$0");
-    });
 
     $('#selectBooster').unbind('change').on('change', function() {
         changeUIBooster(this.value);
@@ -714,25 +722,32 @@ function createPostPromoterTransferUI() {
             amountPP = $('#amountPostPromoter').eq(0).val() + '.000';
         else
             amountPP = $('#amountPostPromoter').eq(0).val();
-        var requestSmartSteem = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency option:selected').eq(0).val()) + '&memo=' + encodeURIComponent("steemplus " + window.location.href);
-        var win = window.open(requestSmartSteem, '_blank');
-        if (win) {
-            //Browser has allowed it to be opened
-            win.focus();
-        } else {
-            //Browser has blocked it
-            alert('Please allow popups for this website');
+        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+          console.log("sc2");
+          scTransfer();
+        }
+        else //Use Keychain for Transfer
+          steem_keychain.requestTransfer(connect.user,"postpromoter",parseFloat(amountPP).toFixed(3),"steemplus " + window.location.href,$('#currency option:selected').eq(0).val() ,function(result){
+            if(!result.success) {
+              scTransfer();
+            }
+          },false);
+        function scTransfer(){
+          var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency option:selected').eq(0).val()) + '&memo=' + encodeURIComponent("steemplus " + window.location.href);
+          var transferWindow = window.open();
+          transferWindow.opener = null;
+          transferWindow.location = url;
         }
     });
 
     $("#currency").on('change', function() {
-        estimateVote();
+        estimateVote(account);
     });
 
     $('#amountPostPromoter').on('input', function(e) {
         if ($('#amountPostPromoter')[0].value.length > 0) {
             $('#submitPostPromoter').attr('disabled', false);
-            estimateVote();
+            estimateVote(account);
         } else
             $('#submitPostPromoter').attr('disabled', true);
     });
@@ -748,7 +763,7 @@ function createPostPromoterTransferUI() {
     }
 }
 
-function estimateVote(){
+function estimateVote(account){
   var bid_amount=$('#amountPostPromoter')[0].value;
   var vote_value=window.SteemPlus.Utils.getVotingDollarsPerAccount(100, account, globalVar.rewardBalance, globalVar.recentClaims, globalVar.steemPrice, globalVar.votePowerReserveRate,true);
   var vote_value_usd=vote_value*market.priceSBD/2+vote_value/2;

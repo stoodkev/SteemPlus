@@ -5,7 +5,7 @@ var isBusy = null;
 var myUsernameSteemMonster=null;
 var urlSteemMonster = null;
 var pageUsernameSteemMonster = null;
-
+let amountSM,memoSM;
 var steemMonsterPacks = {
 	"booster_pack" : {
 		"name": "Booster Pack",
@@ -150,6 +150,8 @@ function createSteemMonsterTab(steemMonsterTab) {
 					$('#select_pack').append(`<option value="${packType}" ${index === 0 ? 'selected' : ''}>${packInfo.name} - ${packInfo.usdPrice} USD</option>`);
 					$('#image_pack').attr('src', `https://s3.amazonaws.com/steemmonsters/website/card_packs/${packInfo.image}.png`)
 				});
+				amountSM=response.payment;
+				memoSM=response.uid;
 				urlSteemMonster = `https://v2.steemconnect.com/sign/transfer?from=${pageUsernameSteemMonster}&to=steemmonsters&amount=${response.payment}&memo=${response.uid}`;
 				$('.total_transaction').text(response.payment);
 
@@ -160,6 +162,8 @@ function createSteemMonsterTab(steemMonsterTab) {
 					$('#select_pack').append(`<option value="${packType}" ${index === 0 ? 'selected' : ''}>${packInfo.name} - ${packInfo.usdPrice} USD</option>`);
 					$('#image_pack').attr('src', `https://s3.amazonaws.com/steemmonsters/website/card_packs/${packInfo.image}.png`)
 				});
+				amountSM=response.payment;
+				memoSM=response.uid;
 				urlSteemMonster = `https://v2.steemconnect.com/sign/transfer?from=${pageUsernameSteemMonster}&to=steemmonsters&amount=${response.payment}&memo=${response.uid}`;
 				$('.total_transaction').text(response.payment);
 			}
@@ -184,7 +188,15 @@ function createSteemMonsterTab(steemMonsterTab) {
 	});
 
 	$('.purchase-pack').click(function(){
-		window.open(urlSteemMonster, '_blank');
+		if(!connect||connect.method=="sc2")  // Request transfer via SC2
+			window.open(urlSteemMonster, '_blank');
+		else // Request transfer via Keychain
+			steem_keychain.requestTransfer(connect.user,"steemmonster",amountSM.split(" ")[0],memoSM,amountSM.split(" ")[1],function(result){
+				if(result.success)
+					alert("Purchase succesful! Check your new packs on steemmonsters.com");
+				else
+					alert("Something went wrong! Please try again later!");
+			},true);
 	});
 }
 
@@ -199,6 +211,8 @@ function sendRequestToSteemMonster()
 		url: `https://steemmonsters.com/purchases/start?player=${pageUsernameSteemMonster}&type=${$('#select_pack').val()}&qty=${$('#quantity_pack').val()}&currency=${$('#select_currency').val()}&orig_currency=${$('#select_currency').val()}&merchant=steemplus-pay`,
 		success: function(response) {
 			console.log(response);
+			amountSM=response.payment;
+			memoSM=response.uid;
 			urlSteemMonster = `https://v2.steemconnect.com/sign/transfer?from=${pageUsernameSteemMonster}&to=steemmonsters&amount=${response.payment}&memo=${response.uid}`;
 			$('.total_transaction').text(response.payment);
 			$('.SteemMonsterTabLoading').hide();

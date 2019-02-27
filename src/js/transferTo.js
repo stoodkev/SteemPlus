@@ -146,9 +146,16 @@ function createButtonT(isSteemit, busy, account, balance) {
                 }
             }
             $('#bd').click(function() {
-
+              if(!connect||connect.method=="sc2"){ // Send via Steemconnect
                 var url = 'https://v2.steemconnect.com/sign/transfer?from=' + account + '&to=' + receiver + '&amount=' + $('input[name=amount]').val() + '%20' + currency + '&memo=' + $('input[name=memo]').val();
                 window.open(url, '_blank');
+              }
+              else{ //Send via Keychain
+                steem_keychain.requestTransfer(connect.user,receiver,parseFloat($('input[name=amount]').val()).toFixed(3),$('input[name=memo]').val(),currency,function(result){
+                  if(result.success)
+                    alert("Transfer sent succesfully");
+                });
+              }
             });
         });
     }

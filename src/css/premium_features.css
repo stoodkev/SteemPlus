@@ -29,6 +29,18 @@
     min-width: 10rem;
 }
 
+.button-steemit-subscribe-disabled {
+    cursor: not-allowed;
+    background: transparent;
+    color: #BBBBBB;
+    padding: 1em;
+    margin-top: 1em;
+    font-weight: bold;
+    border: 1px solid #BBBBBB;
+    min-width: 10rem;
+
+}
+
 .button-steemit-subscribe:hover, .button-steemit-unsubscribe {
     background: #1FBF8F;
     color: white !important;

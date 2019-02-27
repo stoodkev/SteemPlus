@@ -121,8 +121,23 @@ var steem_keychain = {
 
         this.dispatchCustomEvent("swRequest", request, callback);
     },
+    // Request a vote for a witness
+    requestWitnessVote: function(username, witness, vote, callback) {
+        var request = {
+            type: "witnessVote",
+            username: username,
+            witness: witness,
+            vote: vote,
+            extension:chrome.runtime.id,
+            extensionName:chrome.runtime.getManifest().name
+        };
+        this.dispatchCustomEvent("swRequest", request, callback);
+    },
     // Send the customEvent
     dispatchCustomEvent: function(name, data, callback) {
+      chrome.runtime.sendMessage({ text: "tabID" }, tabId => {
+        // Add callback to get Tab ID
+        data.tab=tabId;
         this.requests[this.current_id] = callback;
         data = Object.assign({
             request_id: this.current_id
@@ -131,12 +146,12 @@ var steem_keychain = {
             detail: data
         }));
         this.current_id++;
+      });
     }
 }
 
 chrome.runtime.onMessage.addListener(function(response, sender, sendResponse) {
 	if (response&&response.keychain&& response.request_id) {
-      console.log(response);
       if (steem_keychain.requests[response.request_id]) {
           steem_keychain.requests[response.request_id](response);
           delete steem_keychain.requests[response.request_id];

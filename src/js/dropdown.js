@@ -5,6 +5,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 
 function startDropdown(market_d) {
+  if($('span.DropdownMenu > ul.VerticalMenu').eq(0).parent().hasClass("show"))
+      $(".dropdown-content").css("visibility","hidden");
+
     if ($('.market-item').length > 0)
         return;
 

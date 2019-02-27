@@ -255,8 +255,15 @@ function displaySteemplusPoints(userDetails)
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
                 // Create delegation steemconnect link
-                var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
-                window.open(urlDelegationSPP, '_blank');
+                if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                  var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
+                  window.open(urlDelegationSPP, '_blank');
+                }else{ //Use Keychain
+                  steem_keychain.requestDelegation(connect.user,"steem-plus",parseFloat(amountDelegation).toFixed(3),"SP",function(result){
+                    if(result.success)
+                      alert("Success! Your SPP will be in your wallet within 20 minutes!");
+                  });
+                }
             });
 
             // Close modal listeners

@@ -186,41 +186,56 @@ function checkInputDTube()
           ]
         }]
         ];
-        api.broadcast(
-          operationsDTube,
-          function(e, r)
-          {
-            if (e)
+        if(connect.method=="sc2"){
+          api.broadcast(
+            operationsDTube,
+            function(e, r)
             {
-              if(e.error!==undefined)
+              if (e)
               {
-                console.log(e,e.error);
-                alert("Something went wrong, please try again later!");
+                if(e.error!==undefined)
+                {
+                  console.log(e,e.error);
+                  alert("Something went wrong, please try again later!");
+                }
+              }
+              else
+              {
+                emptyForm();
               }
             }
-            else
-            {
-              // if article is posted, empty the form
-              $('.vframe input').eq(0).val("");
-              $('.vframe textarea').eq(0).val("");
-              $(' input[tabindex=3]').eq(0).val("");
-              var event = new Event('input', {
-                bubbles: true
-              });
-              $('.vframe input')[0].dispatchEvent(event);
-              $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
-              $(' input[tabindex=3]')[0].dispatchEvent(event);
+          );
+        }
+        else
+        steem_keychain.requestBroadcast(connect.user, operationsDTube, "Posting", function(result){
+          console.log(result);
+          if(result.success) {
+              emptyForm();
+          }  else
+                alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+        });
 
-              event = new Event('keyup', {
-                bubbles: true
-              });
-              $('.vframe input')[0].dispatchEvent(event);
-              $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
-              $(' input[tabindex=3]')[0].dispatchEvent(event);
-              window.location.replace('https://steemit.com');
-            }
-          }
-        );
+      function emptyForm(){
+        // if article is posted, empty the form
+        $('.vframe input').eq(0).val("");
+        $('.vframe textarea').eq(0).val("");
+        $(' input[tabindex=3]').eq(0).val("");
+        var event = new Event('input', {
+          bubbles: true
+        });
+        $('.vframe input')[0].dispatchEvent(event);
+        $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+        $(' input[tabindex=3]')[0].dispatchEvent(event);
+
+        event = new Event('keyup', {
+          bubbles: true
+        });
+        $('.vframe input')[0].dispatchEvent(event);
+        $('.ReplyEditor__body textarea')[0].dispatchEvent(event);
+        $(' input[tabindex=3]')[0].dispatchEvent(event);
+        window.location.replace('https://steemit.com');
+      }
+
       }
     });
     // Open modal

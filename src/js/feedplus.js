@@ -66,9 +66,7 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
         function createBusyFeedPlusButton() {
             if($('#FeedPlus').length > 0) return;
-            console.log('createBusyFeedPlusButton');
             feed_url = $('.Topnav__item-user a')[0].href + '/feed';
-            console.log(feed_url);
             app_content = $('.content').eq(0);
             post_div = app_content;
             feedplus_url = feed_url + "#plus";
@@ -134,19 +132,19 @@ function FeedPlus(isSteemit, isBusy, feedp) {
         app_content.html('<div class="loader"></div><div id="loading_status"><p></p></div>');
 
         function GetFeed(author, perm) {
-          console.log({
+          /*console.log({
               limit: LIMIT_PER_CALL,
               tag: user_fp,
               start_author: author,
               start_permlink: perm
-          });
+          });*/
             steem.api.getDiscussionsByFeed({
                 limit: LIMIT_PER_CALL,
                 tag: user_fp,
                 start_author: author,
                 start_permlink: perm
             }, function(err, result) {
-
+                console.log(result);
                 if (err) console.log(err);
                 feed_calls = feed_calls + 1;
                 result.forEach(function(elt, i, array) {
@@ -165,7 +163,8 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                         if (urlImage === '') urlImage = JSON.parse(elt.json_metadata).hasOwnProperty("thumbnail") ? JSON.parse(elt.json_metadata).thumbnail : '';
                         if(urlImage===''){
                           const reg_img=/((http(s?):)([/|.|\w|\-|%|(|)])*\.(?:jpg|png|jpeg|JPG|JPEG|PNG))|((http(s?):)(.)*\/ipfs\/\w*)/;
-                          urlImage=reg_img.exec(elt.body)[0];
+                          urlImage=reg_img.exec(elt.body);
+                          urlImage=((urlImage&&urlImage.length)?urlImage[0]:"");
                         }
                         list_posts.push(Posts(window.SteemPlus.Sanitize.postBodyShort(elt.body), elt.title, elt.hasOwnProperty("first_reblogged_by") ? elt.first_reblogged_by : '', elt.created, elt.pending_payout_value, 0, elt.active_votes.length, elt.author, JSON.parse(elt.json_metadata).hasOwnProperty("tags") ? JSON.parse(elt.json_metadata).tags : [elt.category], urlImage, elt.url, voted));
                         $('#loading_status').html('Fetching posts <br><br>' + ((feed_calls - 1) * 100 + i + 1) + ' / ' + feedp.nb_posts * 100);
@@ -305,7 +304,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));
                     var voted = false;
                     //HERE
-                    console.log(elt);
                     elt.active_votes.forEach(function(e) {
                         if (e.voter === user_fp) voted = true;
                     });
@@ -333,7 +331,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             if (isSteemit)
                 $(".App__content").html('<div class="PostsIndex row"><div class="PostsIndex__left column small-collapse"><div id="posts_list" class="PostsList"><ul class="PostsList__summaries hfeed" itemscope="" itemtype="http://schema.org/blogPosts" > </ul></div></div><div class="PostsIndex__topics column shrink "></div></div>');
             else if (isBusy) {
-                console.log($('.content'));
 
                 $(".content").html('<div class="feedplus-busy">\
               <div class="bootstrap-wrapper">\
@@ -423,7 +420,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
         var offset = new Date().getTimezoneOffset();
         filtered_list.forEach(function(elt, i, a) {
-          console.log(elt);
             var bd = elt.body.replace(/<[^>]*>?/g, '');
             bd = bd.replace(/[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi, '');
             bd = bd.replace(/!?\[[^\]]*\]\([^\)]*\)/g, '');
@@ -432,7 +428,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
             var upvoted = 'no_upvoted';
             if (isBusy) {
                 var imgUrlFeedPlus = null;
-                console.log(elt);
                 if (elt.img !== undefined && elt.img.includes('imgur')) {
                     imgUrlFeedPlus = 'https://steemitimages.com/0x0/' + elt.img;
                 } else if (elt.img !== undefined && (elt.img.includes('https') || elt.img.includes('http'))) {
@@ -517,7 +512,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
                     api.vote(feedp.user, elt.username, elt.url.split('/').slice(-1)[0], feedp.weight, function(err, res) {
                         if (res !== null) {
                             $(that).addClass('Voting__button--upvoted');
-                            console.log('should add class', $(this));
                             filtered_list[that.id].voted = true;
                         }
                     });

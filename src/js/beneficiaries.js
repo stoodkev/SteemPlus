@@ -317,7 +317,8 @@ async function postBeneficiaries() {
         maximumAcceptedPayout = '0.000 SBD';
         sbd_percent = 10000;
     }
-
+    beneficiaries.sort((a,b)=>{return a.account.localeCompare(b.account)});
+    console.log(beneficiaries);
     var operations = [
         ['comment',
             {

@@ -247,6 +247,7 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
 						else{
 							initializeSteemConnect(connect.sessionToken);
 	        		const me=await api.me();
+							console.log("me",me);
 							account = me.account;
 						}
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);

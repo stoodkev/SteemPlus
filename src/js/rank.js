@@ -156,11 +156,11 @@ function getTitleString(titleBadge, vests) {
     else if (vests < 7000000)
         title = title.concat(" - Next step 'Minnow I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(7000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 10000000)
-        title = title.concat(" - Next step 'Doplhin III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(10000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Dolphin III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(10000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 40000000)
-        title = title.concat(" - Next step 'Doplhin II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(40000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Dolphin II' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(40000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 70000000)
-        title = title.concat(" - Next step 'Doplhin I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(70000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
+        title = title.concat(" - Next step 'Dolphin I' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(70000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 100000000)
         title = title.concat(" - Next step 'Orca III' in " + window.SteemPlus.Utils.numberWithCommas(steem.formatter.vestToSteem(100000000 - vests, totalVestsRank, totalSteemRank).toFixed(0) + 'SP'));
     else if (vests < 400000000)

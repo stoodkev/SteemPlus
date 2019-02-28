@@ -138,11 +138,11 @@ function checkInputDTube()
         var beneficiaries_dtube=[];
         // Share a part of the rewards between steemplus and dtube
         beneficiaries_dtube.push({
-          account: 'steemplus-pay',
-          weight: 100*1
-        },{
           account: 'dtube.rewards',
           weight: 100*9
+        },{
+          account: 'steemplus-pay',
+          weight: 100*1
         });
 
         var maximumAcceptedPayout = '100000.000 SBD';
@@ -195,7 +195,7 @@ function checkInputDTube()
               {
                 if(e.error!==undefined)
                 {
-                  console.log(e,e.error);
+                  console.log(e,e.error,e.error_description);
                   alert("Something went wrong, please try again later!");
                 }
               }

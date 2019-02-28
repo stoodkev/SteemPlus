@@ -120,7 +120,7 @@ async function postBeneficiaryDonation() {
         body = $('textarea.ant-input').eq(0).val();
         sbd_percent = (($(".ant-select-selection-selected-value span").html().includes('50')) ? 10000 : 0);
     }
-
+    beneficaries_d=[];
     beneficiaries_d.push({
         account: 'steemplus-pay',
         weight: 100 * 5
@@ -191,7 +191,7 @@ async function postBeneficiaryDonation() {
                 if (isBusy)
                     window.location.replace('https://busy.org');
             }  else
-                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+                  alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord.'+result.error.message);
       		});
         }
 }

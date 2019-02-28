@@ -149,7 +149,6 @@ function FeedPlus(isSteemit, isBusy, feedp) {
 
                 if (err) console.log(err);
                 feed_calls = feed_calls + 1;
-                console.log(result);
                 result.forEach(function(elt, i, array) {
                     if (feed_calls == 1 || (feed_calls != 1 && i != 0)) {
                         list_authors.push(Authors(elt.author, steem.formatter.reputation(elt.author_reputation)));

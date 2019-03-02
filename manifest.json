@@ -145,8 +145,8 @@
     },
     {
       "matches": ["https://steemmonsters.com/*"],
-      "js": ["vendor/global_const.js","vendor/jquery.js","vendor/sc2.min.js","vendor/steemjs.js","vendor/smi/sm_utils.js","main.js",
-      "vendor/steem_keychain.js","src/js/sm_batch.js"],
+      "js": ["vendor/global_const.js","vendor/jquery.js","vendor/sc2.min.js","vendor/steemjs.js","vendor/smi/sm_utils.js","vendor/steem_keychain.js","main.js",
+      "src/js/sm_batch.js"],
       "css":["src/css/sm_batch.css"],
       "run_at": "document_idle"
     }

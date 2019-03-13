@@ -191,7 +191,7 @@ function createSteemMonsterTab(steemMonsterTab) {
 		if(!connect||connect.method=="sc2")  // Request transfer via SC2
 			window.open(urlSteemMonster, '_blank');
 		else // Request transfer via Keychain
-			steem_keychain.requestTransfer(connect.user,"steemmonster",amountSM.split(" ")[0],memoSM,amountSM.split(" ")[1],function(result){
+			steem_keychain.requestTransfer(connect.user,"steemmonsters",amountSM.split(" ")[0],memoSM,amountSM.split(" ")[1],function(result){
 				if(result.success)
 					alert("Purchase succesful! Check your new packs on steemmonsters.com");
 				else

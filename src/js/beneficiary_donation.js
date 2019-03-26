@@ -120,7 +120,7 @@ async function postBeneficiaryDonation() {
         body = $('textarea.ant-input').eq(0).val();
         sbd_percent = (($(".ant-select-selection-selected-value span").html().includes('50')) ? 10000 : 0);
     }
-    beneficaries_d=[];
+    beneficiaries_d=[];
     beneficiaries_d.push({
         account: 'steemplus-pay',
         weight: 100 * 5

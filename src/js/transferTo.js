@@ -51,7 +51,8 @@ function startTransfer(isSteemit, busy, account, balance) {
 }
 
 function onClickTr(isSteemit, busy, account, balance) {
-    if ((regexWalletSteemit.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryCountTransferTo < 20) {
+    // Test if it is a known wallet
+    if ((regexWalletSteemit.test(window.location.href) ||regexWalletSteemitWallet.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryCountTransferTo < 20) {
         setTimeout(function() {
             if (window.location.href.match(load_checkt) && !createdt) {
                 createdt = true;
@@ -66,7 +67,8 @@ function onClickTr(isSteemit, busy, account, balance) {
 
 function checkLoadTr(isSteemit, busy, account, balance) {
     if (window.location.href.split('@')[1].split('/')[0] === myUsernameTransferTo) return;
-    if ((regexWalletSteemit.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryCountTransferTo < 20) {
+    //Add the feature for SteemitWallet
+    if ((regexWalletSteemit.test(window.location.href) ||regexWalletSteemitWallet.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryCountTransferTo < 20) {
         if ($(wallet_elt_t).length === 0) {
             createButtonT(isSteemit, busy, account, balance);
         } else {

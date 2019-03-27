@@ -228,7 +228,7 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
         order: 'start',
         data: {
             connect: connect,
-            steemit: steemit||steemitwallet,
+            steemit: steemit,
             busy: busy,
             utopian: utopian
         }

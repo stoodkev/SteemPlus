@@ -44,7 +44,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function startAccountValue() {
-    if (regexWalletSteemit.test(window.location.href) || regexWalletBusy.test(window.location.href)) {
+    if (regexWalletSteemit.test(window.location.href) ||regexWalletSteemitWallet.test(window.location.href) || regexWalletBusy.test(window.location.href)) {
         if (acc_steemit) {
             load_check_a = /transfers/;
             load_check2_a = /transfers/;
@@ -85,7 +85,7 @@ function onClickA() {
 
 function checkLoad() {
 
-    if ((regexWalletSteemit.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryAccountVal < 5) {
+    if ((regexWalletSteemit.test(window.location.href) ||regexWalletSteemitWallet.test(window.location.href) || regexWalletBusy.test(window.location.href)) && retryAccountVal < 5) {
         if ($(wallet_elt_a).length > 0) {
             createTitle();
         } else {

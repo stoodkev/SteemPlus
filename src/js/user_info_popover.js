@@ -76,6 +76,7 @@ function displayPopoverUserInfo(userName){
 
         var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 2);
         $('.UserProfile__rep').hide();
+        // Use different parent for steemit and steemitwallet
         if(regexBlogSteemit.test(window.location.href))
           $('.UserProfile__rep').parent().after(pop);
         else if (regexBlogSteemitWallet.test(window.location.href))

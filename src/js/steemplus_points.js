@@ -67,8 +67,8 @@ function canStartSteemplusPoint()
     // Check retry limit
     if(retrySteemplusPoint >= 20) return;
 
-    // Check if current page is wallet
-    if(regexWalletSteemit.test(window.location.href))
+    // Check if current page is wallet or in steemitwallet.com
+    if(regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href))
     {
         if($('.Trans').length > 0){
             // If page ready start downloading data

@@ -113,8 +113,6 @@ function createTitle() {
 
     Promise.all([steem.api.getAccountsAsync([account_v]), steem.api.getOpenOrdersAsync(account_v), steem.api.getSavingsWithdrawFromAsync(account_v)])
         .then(function(result) {
-            console.log(result);
-
             var accountAccountValue = result[0];
             var openOrdersAccountValue = result[1];
             var savingsWithdrawFromAccountValue = result[2];

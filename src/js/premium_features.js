@@ -15,9 +15,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
-// Function used to verify if the feature has to start or not
+// Function used to verify if the feature has to start or not (adding steemitwallet support)
 function startPremiumFeatures() {
-    if (regexBlogSteemit.test(window.location.href)) {
+    if (regexBlogSteemit.test(window.location.href)||regexBlogSteemitWallet.test(window.location.href)) {
       window.SteemPlus.Tabs.createTab({
         id: 'feature_list',
         title: 'Feature List',

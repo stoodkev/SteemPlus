@@ -88,7 +88,6 @@ function displayPopoverUserInfo(userName){
   			var votingDollars = parseFloat(values[1]);
   			var fullInString = window.SteemPlus.Utils.getTimeBeforeFull(votingPower*100);
         var rc=values[2];
-        console.log(rc);
   		$('#popover').attr('data-toggle','popover');
   	    $('#popover').attr('data-content','<h5>Voting Mana:  <span class="value_of">' + votingPower + '%</span>'
   	      +'</h5><hr/><h5>Voting Value:  <span class="value_of">' + votingDollars.toFixed(2) + '$</span>'

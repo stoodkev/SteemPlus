@@ -963,7 +963,6 @@
             },
             url: APIBaseUrl+'spp/'+username,
             success: function(response) {
-                console.log(response);
                 fulfill(response);
             },
             error: function(msg) {
@@ -992,6 +991,26 @@
             });
         });
     }
+
+    function getAds() {
+        return new Promise(function(resolve, reject) {
+            $.ajax({
+                type: "GET",
+                beforeSend: function(xhttp) {
+                    xhttp.setRequestHeader("Content-type", "application/json");
+                    xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
+                },
+                url: 'https://api.steemplus.app/ads',
+                success: function(response) {
+                    resolve(response);
+                },
+                error: function(msg) {
+                    resolve(msg);
+                }
+            });
+        });
+    }
+
     var api={
       getFollowersFollowees:getFollowersFollowees,
       getResteems:getResteems,
@@ -1004,7 +1023,8 @@
       getRewards:getRewards,
       getDelegators:getDelegators,
       getSPP:getSPP,
-      getActivePremiumFeatureSubscriptions:getActivePremiumFeatureSubscriptions
+      getActivePremiumFeatureSubscriptions:getActivePremiumFeatureSubscriptions,
+      getAds:getAds
     }
 
 

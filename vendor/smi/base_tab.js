@@ -3,7 +3,7 @@
     var tabs = [];
     var tabsById = {};
 
-    var isSteemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com'));
+    var isSteemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com')|| window.location.href.includes('steemitwallet.com'));
     var isBusy = window.location.href.includes('busy.org');
 
 
@@ -242,6 +242,7 @@
 
 
     var createTab = function(tab) {
+      console.log(tab);
         tabs.push(tab);
         tabsById[tab.id] = tab;
 
@@ -251,6 +252,7 @@
         tab._tabSelector = '.' + tab._tabClass;
 
         if (tab.enabled) {
+          console.log("update");
             updateMenu(true);
         }
     };

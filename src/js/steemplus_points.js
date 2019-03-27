@@ -106,7 +106,6 @@ function canStartSteemplusPoint()
 function downloadDataSteemplusPoints(usernameSPP)
 {
   window.SteemPlus.api.getSPP(usernameSPP).then(function(response){
-    console.log(response);
     displaySteemplusPoints(response[0]);
   });
 }

@@ -19,11 +19,11 @@ var offlineModeRetryCount = 0;
 let hasSKC=false;
 
 let elementUsername = null;
-if (steemit) elementUsername = '.Header__userpic > span';
+if (steemit||steemitwallet) elementUsername = '.Header__userpic > span';
 else if (busy) elementUsername = '.Topnav__user';
 
 if ($(elementUsername).length > 0) {
-		if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+		if (steemit||steemitwallet) user = $(elementUsername)[0].title; //Get username in offline mode
 		else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
 }
 steem_keychain.requestHandshake(function(){
@@ -562,11 +562,11 @@ function initOfflineFeatures(isConnected, items, user, account) {
     if (offlineModeRetryCount < 30) {
         if (!isConnected) {
             var elementUsername = null;
-            if (steemit) elementUsername = '.Header__userpic > span';
+            if (steemit||steemitwallet) elementUsername = '.Header__userpic > span';
             else if (busy) elementUsername = '.Topnav__user';
 
             if ($(elementUsername).length > 0) {
-                if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+                if (steemit||steemitwallet) user = $(elementUsername)[0].title; //Get username in offline mode
                 else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
                 steem.api.getAccounts([user], function(err, result) {
                     if (err) console.log(err);

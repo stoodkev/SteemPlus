@@ -1,4 +1,5 @@
 const regexWalletSteemit = /^https:\/\/steemit\.com\/@[a-zA-Z0-9\-\.]*\/transfers\/*$/;
+const regexWalletSteemitWallet = /^https:\/\/steemitwallet\.com\/@[a-zA-Z0-9\-\.]*\/transfers\/*$/;
 const regexWalletBusy = /^https:\/\/busy\.org\/(wallet\/*$|@[a-zA-Z0-9\-\.]*\/transfers\/*$)/;
 const regexBlogSteemit = /^https:\/\/steemit\.com\/@.*$/;
 const regexBlogBusy = /^https:\/\/busy\.org\/@([a-zA-Z0-9\-\.]*)\/*.*$/;

@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // No parameters
 function startAuthorPopupInfo() {
     // Check url of the page. Need to be on a post to start the function
-    if (isSteemit && regexPostSteemit.test(window.location.href) && retryCountAuthorPopupInfo < 20) {
+    if (isSteemit && (regexPostSteemit.test(window.location.href)||regexPostSteemitWallet.test(window.location.href)) && retryCountAuthorPopupInfo < 20) {
         if ($('.ptc').length === 0) {
             // Looking for the right html element. If can't find it retry later. Maximum 20 seconds
             retryCountAuthorPopupInfo++;

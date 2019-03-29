@@ -57,7 +57,8 @@
             return;
         }
         var menus = $('.UserProfile__top-menu ul.menu');
-        if (menus && menus.length && menus.eq(0).find('li:eq(0) a').attr('href') === '/@' + accountName) {
+        if (menus && menus.length && (menus.eq(0).find('li:eq(0) a').attr('href') === '/@' + accountName|| window.location.href.includes('steemitwallet.com'))) {
+          console.log(menus);
             cb(menus);
         } else {
             setTimeout(function() {

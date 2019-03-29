@@ -6,11 +6,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'premium_features' && request.order === 'start' && token_premium_features == null) {
         token_premium_features = request.token;
         activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
-        startPremiumFeatures()
+        startPremiumFeatures();
     }
     else if (request.to === 'premium_features' && request.order === 'click' && token_premium_features == request.token) {
       activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
-      startPremiumFeatures()
+      startPremiumFeatures();
     }
 });
 

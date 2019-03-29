@@ -296,7 +296,6 @@ function createWalletHistoryFiltersUI() {
         '</div>\
 		</div>\
 		</div>');
-    console.log(usernameWalletHistory,accountWH.name);
 
     if (usernameWalletHistory == accountWH.name) {
         $('table').parent().find('.secondary').after($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\

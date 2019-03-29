@@ -61,7 +61,6 @@
 
         tab.createTab(tabDiv);
 
-
         otherTabs.forEach(function(otherTab) {
             otherTab.remove();
         });
@@ -90,17 +89,18 @@
         if (!name) {
             return;
         }
-
         if (isSteemit) {
             window.SteemPlus.Utils.getUserTopMenusForAccountName(name, function(menus) {
                 var menu = menus.eq(0); // first menu
-
+                console.log(menus);
+                console.log(tabs);
                 tabs.forEach(function(tab) {
                     if (!tab.enabled) {
                         return;
                     }
 
                     var menuLi = menu.find(tab._menuSelector);
+                    console.log(menuLi);
                     if (!menuLi.length) {
                         menuLi = $('<li class="smi-menu-li ' + tab._menuClass + '"><a href="#">' + tab.title + '</a></li>');
                         menuLi.find('a').unbind('click').on('click', function(e) {
@@ -108,11 +108,12 @@
                             hideOrShowDropdownPanel('dd-'+tab.nameDropdown);
                             showTab(tab.id);
                         });
-                        if(tab.newButton)
+                        if(tab.newButton){
                             if($('.menuSP_dropdown').length === 0)
                                 $('.UserProfile__top-menu > div > ul.menu').eq(0).append(menuLi);
                             else
                                 $('.menuSP_dropdown').eq(0).before(menuLi);
+                        }
                         else if(tab.newDropdown)
                         {
                             let dropdown = null;
@@ -131,6 +132,9 @@
                                     </div>
                                 </li>`);
                                 $(menu).append(dropdown);
+                                if(window.location.href.includes("steemitwallet"))
+                                  $(`.dd-${tab.nameDropdown} > ul`).append(menuLi);
+
                                 $(`a.dd-${tab.nameDropdown}.smi-open-menu-SP`).unbind('click').on('click', function(e) {
                                     e.preventDefault();
                                     // if($('.dropdown-pane-SP').hasClass('is-open'))
@@ -242,7 +246,7 @@
 
 
     var createTab = function(tab) {
-      console.log(tab);
+
         tabs.push(tab);
         tabsById[tab.id] = tab;
 
@@ -250,9 +254,8 @@
         tab._menuSelector = 'li.' + tab._menuClass;
         tab._tabClass = 'smi-' + tab.id + '-tab';
         tab._tabSelector = '.' + tab._tabClass;
-
+        console.log(tab)
         if (tab.enabled) {
-          console.log("update");
             updateMenu(true);
         }
     };

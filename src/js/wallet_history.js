@@ -104,7 +104,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             accountWH = request.data.account;
             memoKeyWH = request.data.walletHistoryMemoKey;
 
-            if ($('.smi-transaction-table-filters').length === 0 && regexWalletSteemit.test(window.location.href))
+            if ($('.smi-transaction-table-filters').length === 0 && (regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href)))
                 isSteemSQLSynchronized();
         }
 
@@ -113,7 +113,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             totalSteemWalletHistory = request.data.totalSteem;
             accountWH = request.data.account;
             memoKeyWH = request.data.walletHistoryMemoKey;
-            if ($('.smi-transaction-table-filters').length === 0 && regexWalletSteemit.test(window.location.href))
+            if ($('.smi-transaction-table-filters').length === 0 && (regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href)))
                 isSteemSQLSynchronized();
         }
     }
@@ -168,9 +168,10 @@ function displayMessageSynchronisation(nbBlockDifference) {
 // Function used to start the wallet history
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory() {
+  console.log("starttt");
     chrome.storage.local.get(['filters_state_wallet'], function(items) {
         if (items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
-        if ($('.Trans').length > 0 && regexWalletSteemit.test(window.location.href)) {
+        if ($('.Trans').length > 0 && (regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href))) {
             usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
             window.SteemPlus.api.getWallet(window.SteemPlus.Utils.getPageAccountName()).then(function(result){
               dataWalletHistory = result;
@@ -190,6 +191,7 @@ function startWalletHistory() {
 
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory() {
+  console.log("disppp");
     var tbodyWH = $('.Trans').parent();
     $('.Trans').hide();
     dataWalletHistory.forEach(function(itemWalletHistory, indexWH) {
@@ -296,7 +298,6 @@ function createWalletHistoryFiltersUI() {
         '</div>\
 		</div>\
 		</div>');
-    console.log(usernameWalletHistory,accountWH.name);
 
     if (usernameWalletHistory == accountWH.name) {
         $('table').parent().find('.secondary').after($('<div class="inputAddMemoKey" style="margin-bottom: 20px;">\
@@ -565,7 +566,7 @@ function isSteemSQLSynchronized() {
     Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), window.SteemPlus.api.getLastBlockID()])
         .then(function(value) {
             var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
-
+            console.log(nbBlockDifference);
             // 60 blocks difference means 3 minutes.
             if (nbBlockDifference < 60)
                 startWalletHistory();
@@ -581,6 +582,9 @@ function isSteemSQLSynchronized() {
                         } else {
                             if (items.wallet_choice === 'steemplus-wallet')
                                 startWalletHistory();
+                            else if (date_diff_indays(items.wallet_date_remember, Date.now()) >= 1) {
+                                displayMessageSynchronisation(nbBlockDifference);
+                            }
                         }
                     } else {
                         displayMessageSynchronisation(nbBlockDifference);

@@ -3,6 +3,7 @@ const steemit = (window.location.href.includes('steemit.com') || window.location
 const busy = window.location.href.includes('busy.org');
 const utopian = window.location.href.includes('utopian.io');
 const steemMonsters = window.location.href.includes('steemmonsters.com');
+const steemitwallet= window.location.href.includes('steemitwallet.com');
 console.log('Starting SteemPlus...');
 var market = null;
 var SBDperSteem = 0;
@@ -18,11 +19,11 @@ var offlineModeRetryCount = 0;
 let hasSKC=false;
 
 let elementUsername = null;
-if (steemit) elementUsername = '.Header__userpic > span';
+if (steemit||steemitwallet) elementUsername = '.Header__userpic > span';
 else if (busy) elementUsername = '.Topnav__user';
 
 if ($(elementUsername).length > 0) {
-		if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+		if (steemit||steemitwallet) user = $(elementUsername)[0].title; //Get username in offline mode
 		else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
 }
 steem_keychain.requestHandshake(function(){
@@ -98,13 +99,13 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                   to: 'sm_batch',
                   order: 'start'
               });
-            if (delegation && (steemit || busy))
+            if (delegation && (steemit || steemitwallet||busy))
                 chrome.runtime.sendMessage({
                     token: token,
                     to: 'delegation',
                     order: 'notif',
                     data: {
-                        steemit: steemit,
+                        steemit: steemit||steemitwallet,
                         busy: busy,
                         global: {
                             totalSteem: totalSteem,
@@ -176,7 +177,7 @@ Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), steem.api.getCurrentMe
                             totalVestingShares: totalVests
                         }
                     });
-                if (steemit && user_info_popover)
+                if ((steemit || steemitwallet) && user_info_popover)
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'user_info_popover',
@@ -561,11 +562,11 @@ function initOfflineFeatures(isConnected, items, user, account) {
     if (offlineModeRetryCount < 30) {
         if (!isConnected) {
             var elementUsername = null;
-            if (steemit) elementUsername = '.Header__userpic > span';
+            if (steemit||steemitwallet) elementUsername = '.Header__userpic > span';
             else if (busy) elementUsername = '.Topnav__user';
 
             if ($(elementUsername).length > 0) {
-                if (steemit) user = $(elementUsername)[0].title; //Get username in offline mode
+                if (steemit||steemitwallet) user = $(elementUsername)[0].title; //Get username in offline mode
                 else if (busy) user = $(elementUsername)[0].href.replace('https://busy.org/@', ''); //Get username in offline mode
                 steem.api.getAccounts([user], function(err, result) {
                     if (err) console.log(err);
@@ -643,13 +644,13 @@ async function startOfflineFeatures(items, user, account) {
     checkLastPost(last_post_url, account);
 
     console.log('Starting features...', user);
-    if (delegation && (steemit || busy))
+    if (delegation && (steemit ||steemitwallet|| busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'delegation',
             order: 'start',
             data: {
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy,
                 global: {
                     totalSteem: totalSteemLS,
@@ -658,13 +659,13 @@ async function startOfflineFeatures(items, user, account) {
                 account: account
             }
         });
-    if (transfers && (steemit))
+    if (transfers && (steemit||steemitwallet))
         chrome.runtime.sendMessage({
             token: token,
             to: 'transfers',
             order: 'start',
             data: {
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy,
                 user: user,
                 balance: {
@@ -673,14 +674,14 @@ async function startOfflineFeatures(items, user, account) {
                 }
             }
         });
-    if (account_value && (steemit || busy))
+    if (account_value && (steemit ||steemitwallet|| busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'acc_v',
             order: 'start',
             data: {
                 user: user,
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy,
                 global: {
                     totalSteem: totalSteemLS,
@@ -689,14 +690,14 @@ async function startOfflineFeatures(items, user, account) {
                 market: market
             }
         });
-    if (rank && (steemit || busy))
+    if (rank && (steemit ||steemitwallet|| busy))
         chrome.runtime.sendMessage({
             badge: items.badge,
             token: token,
             to: 'rank',
             order: 'start',
             data: {
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy,
                 totalSteem: totalSteemLS,
                 totalVests: totalVestsLS
@@ -745,17 +746,17 @@ async function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-    if (article_count && (steemit || busy))
+    if (article_count && (steemit||steemitwallet || busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'article_count',
             order: 'start',
             data: {
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy
             }
         });
-    if (wallet_history && steemit)
+    if (wallet_history && (steemit||steemitwallet))
         chrome.runtime.sendMessage({
             token: token,
             to: 'wallet_history',
@@ -824,14 +825,14 @@ async function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-    if (steemplus_points && (steemit || busy))
+    if (steemplus_points && (steemit||steemitwallet || busy))
         chrome.runtime.sendMessage({
             token: token,
             to: 'steemplus_points',
             order: 'start',
             data: {
                 account: account,
-                steemit: steemit,
+                steemit: steemit||steemitwallet,
                 busy: busy,
                 market: market,
                 global: {
@@ -851,7 +852,7 @@ async function startOfflineFeatures(items, user, account) {
                 busy: busy
             }
         });
-    if (premium_features && steemit)
+    if (premium_features && steemit||steemitwallet)
         chrome.runtime.sendMessage({
             token: token,
             order: 'start',
@@ -951,7 +952,7 @@ async function startOfflineFeatures(items, user, account) {
                 order: 'start',
                 data: {}
             });
-        if (steemit && user_info_popover)
+        if (steemit||steemitwallet && user_info_popover)
             chrome.runtime.sendMessage({
                 token: token,
                 to: 'user_info_popover',
@@ -1001,13 +1002,13 @@ async function startOfflineFeatures(items, user, account) {
             if (urlOffline !== window.location.href) {
                 if (urlOffline.match(/transfers/) && window.location.href.includes('@' + user + '/transfers'))
                     location.reload();
-                if (delegation && (steemit || busy))
+                if (delegation && (steemit ||steemitwallet|| busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'delegation',
                         order: 'click',
                         data: {
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             busy: busy,
                             global: {
                                 totalSteem: totalSteemLS,
@@ -1016,13 +1017,13 @@ async function startOfflineFeatures(items, user, account) {
                             account: account
                         }
                     });
-                if (transfers && (steemit))
+                if (transfers && (steemit||steemitwallet))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'transfers',
                         order: 'click',
                         data: {
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             user: user,
                             balance: {
                                 steem: account.balance.split(' ')[0],
@@ -1030,14 +1031,14 @@ async function startOfflineFeatures(items, user, account) {
                             }
                         }
                     });
-                if (account_value && (steemit || busy))
+                if (account_value && (steemit||steemitwallet || busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'acc_v',
                         order: 'click',
                         data: {
                             user: user,
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             busy: busy,
                             global: {
                                 totalSteem: totalSteemLS,
@@ -1046,14 +1047,14 @@ async function startOfflineFeatures(items, user, account) {
                             market: market
                         }
                     });
-                if (rank && (steemit || busy))
+                if (rank && (steemit ||steemitwallet|| busy))
                     chrome.runtime.sendMessage({
                         badge: items.badge,
                         token: token,
                         to: 'rank',
                         order: 'click',
                         data: {
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             busy: busy,
                             totalSteem: totalSteemLS,
                             totalVests: totalVestsLS
@@ -1084,7 +1085,7 @@ async function startOfflineFeatures(items, user, account) {
                         order: 'click',
                         data: {}
                     });
-                if (steemit && user_info_popover && steemit_more_info)
+                if (steemit||steemitwallet && user_info_popover && steemit_more_info)
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'user_info_popover',
@@ -1196,17 +1197,17 @@ async function startOfflineFeatures(items, user, account) {
                             busy: busy
                         }
                     });
-                if (article_count && (steemit || busy))
+                if (article_count && (steemit||steemitwallet || busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'article_count',
                         order: 'click',
                         data: {
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             busy: busy
                         }
                     });
-                if (wallet_history && steemit)
+                if (wallet_history && (steemit||steemitwallet))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'wallet_history',
@@ -1302,14 +1303,14 @@ async function startOfflineFeatures(items, user, account) {
                             steemPrice: steemPriceLS
                         }
                     });
-                if (steemplus_points && (steemit || busy))
+                if (steemplus_points && (steemit ||steemitwallet|| busy))
                     chrome.runtime.sendMessage({
                         token: token,
                         to: 'steemplus_points',
                         order: 'click',
                         data: {
                             account: account,
-                            steemit: steemit,
+                            steemit: steemit||steemitwallet,
                             busy: busy,
                             market: market,
                             global: {
@@ -1331,7 +1332,7 @@ async function startOfflineFeatures(items, user, account) {
                         }
                     });
 
-                if (premium_features && steemit)
+                if (premium_features && steemit||steemitwallet)
                     chrome.runtime.sendMessage({
                         token: token,
                         order: 'click',
@@ -1349,7 +1350,7 @@ async function startOfflineFeatures(items, user, account) {
 
                 urlOffline = window.location.href;
             }
-            if (dropdown && steemit)
+            if (dropdown && steemit||steemitwallet)
                 chrome.runtime.sendMessage({
                     token: token,
                     to: 'drop',

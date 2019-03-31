@@ -36,7 +36,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 function checkUserForInfoPopover() {
-    if (regexBlogSteemit.test(window.location.href)) {
+    if (regexBlogSteemit.test(window.location.href)||regexBlogSteemitWallet.test(window.location.href)) {
         setTimeout(function() {
 
             if (window.location.href.match(userNameRegEx) !== null) {
@@ -76,7 +76,11 @@ function displayPopoverUserInfo(userName){
 
         var reputation = window.SteemPlus.Utils.getReputation(result[0].reputation, 2);
         $('.UserProfile__rep').hide();
-        $('.UserProfile__rep').parent().after(pop);
+        // Use different parent for steemit and steemitwallet
+        if(regexBlogSteemit.test(window.location.href))
+          $('.UserProfile__rep').parent().after(pop);
+        else if (regexBlogSteemitWallet.test(window.location.href))
+        $(".Userpic").eq(1).parent().append(pop);
         $('.rep').remove();
         $('.UserProfile__rep').parent().after('<span class="rep">(' + reputation + ')</span>');
   			var title='<h5>User Information</h5>';
@@ -84,7 +88,6 @@ function displayPopoverUserInfo(userName){
   			var votingDollars = parseFloat(values[1]);
   			var fullInString = window.SteemPlus.Utils.getTimeBeforeFull(votingPower*100);
         var rc=values[2];
-        console.log(rc);
   		$('#popover').attr('data-toggle','popover');
   	    $('#popover').attr('data-content','<h5>Voting Mana:  <span class="value_of">' + votingPower + '%</span>'
   	      +'</h5><hr/><h5>Voting Value:  <span class="value_of">' + votingDollars.toFixed(2) + '$</span>'

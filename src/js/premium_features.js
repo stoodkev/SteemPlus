@@ -6,18 +6,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.to === 'premium_features' && request.order === 'start' && token_premium_features == null) {
         token_premium_features = request.token;
         activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
-        startPremiumFeatures()
+        startPremiumFeatures();
     }
     else if (request.to === 'premium_features' && request.order === 'click' && token_premium_features == request.token) {
       activePremiumFeaturesSubscriptionsUser = request.data.activePremiumFeaturesSubscriptions;
-      startPremiumFeatures()
+      startPremiumFeatures();
     }
 });
 
 
-// Function used to verify if the feature has to start or not
+// Function used to verify if the feature has to start or not (adding steemitwallet support)
 function startPremiumFeatures() {
-    if (regexBlogSteemit.test(window.location.href)) {
+    if (regexBlogSteemit.test(window.location.href)||regexBlogSteemitWallet.test(window.location.href)) {
       window.SteemPlus.Tabs.createTab({
         id: 'feature_list',
         title: 'Feature List',

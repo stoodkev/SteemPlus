@@ -37,10 +37,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 // Function used to display the badges depending on the vesting shares
 // @parameter badge : id of the set of badges
 function displayBadges(badge) {
-    // Check if user is using steemit or busy
+    // Check if user is using steemit or busy or steemitwallet
 
-
-    if (isSteemit && regexBlogSteemit.test(window.location.href) && retryCountRank < 20) {
+    if (isSteemit && (regexBlogSteemit.test(window.location.href)||regexBlogSteemitWallet.test(window.location.href)) && retryCountRank < 20) {
         // If Steemit
 
         // Checking the header is available

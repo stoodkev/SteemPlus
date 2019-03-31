@@ -9,57 +9,62 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
 		waitForMarketPurchase();
+		if(!batchIsStarted&window.location.href.includes("&tab=market"))
+			 waitForUI();
   }
 });
 
 function waitForMarketPurchase(){
    $(document).click(function(){
-     setTimeout(function(){
-     if(!batchIsStarted&&$("#menu_item_market").hasClass("active")&&$("#card_details_dialog").eq(0).css("display")=="block")
-        startBatchPurchase();
+		// change to new url based UI
+     if(!batchIsStarted&window.location.href.includes("&tab=market"))
+        waitForUI();
      else if($("#card_details_dialog").eq(0).css("display")!="block"&&batchIsStarted)
         batchIsStarted=false;
-      },3000);
    });
 }
 
+function waitForUI(){
+	console.log("wait");
+	setTimeout(function(){
+		if($(".card-img").length!=0)
+			startBatchPurchase();
+		else {
+			waitForUI();
+		}
+  },250);
+}
+
 function startBatchPurchase(){
+	console.log("start batch purchase");
+	if($("#batch_buy").length>0) return;
   batch=[];
   batchIsStarted=true;
-    for(const detail of $(".card-detail-container")){
-      const check = document.createElement("input");    // Create with DOM
-      check.type = "checkbox";
-      check.className="batchItem";
-      check.style.float="left";
-      check.style.width="7%";
-      $(detail).find('.card-detail-info').eq(0).prepend(check);
-      $(detail).find('.card-detail-info').eq(0).find("div")[3].style.width="24%";
-    }
     const batchButton = document.createElement("button");
-    batchButton.className="btn btn-default payment-btn";
-    batchButton.disabled="disabled";
+    batchButton.className="new-button disabled";
     batchButton.id="batch_buy";
-    batchButton.innerHTML="Batch Buy (0)";
-    $("#buttons").append(batchButton);
-    $("#buttons").append($("<span id='total'></span>"));
-		$(".market-header").next().after("<div class='market-header select-sm'><div class='left_sm'>Select <select style='font-size:20px'>\
+    batchButton.innerHTML="Buy with SteemPlus";
+    batchButton.title="Get free SteemPlus Points while buying Steem Monsters cards for the same price.";
+    $(".buttons").append(batchButton);
+
+    $(".buttons").append($("<span id='total'></span>"));
+		$(".filter-form .vertical-center").append("<div class='select-sm'><select >\
 		<option selected='true' disabled='disabled'>Filters</option>    \
 		<option value='All'>All</option>\
 		<option value='None'>None</option>\
-		<option value='Cheapest'>X Cheapest cards</option>\
+		<option value='Cheapest'>X First cards</option>\
 		<option value='Upto'>Up to X$</option>\
-		</select></div><div  class='left_sm'>\
-		<input type='number' id='input_sm'/></div></div>");
+		</select>\
+		<input type='number' id='input_sm'/></div>");
 
-    $(".batchItem").change(function(){
-      const parent = $(this).parent().parent();
+    $(".card-checkbox").change(function(){
       if ($(this).is(':checked')){
-        batch.push({market_id:$(parent).attr("market_id"),price:$(parent).attr("price"),uid:$(parent).attr("uid")});
+        batch.push({market_id:$(this).attr("market_id"),price:$(this).attr("price"),uid:$(this).attr("uid")});
       }
       else{
         batch = batch.filter(function(item)
         {
-            return item.uid!=$(parent).attr("uid");
+            return item.uid!=$(this).attr("uid");
         });
       }
       total_sm=numberWithCommas(
@@ -70,14 +75,11 @@ function startBatchPurchase(){
       const items=batch.length;
 			marketSettings= window.SteemPlus.SteemMonsters.getMarketSettings();
       if(items>0){
-        $("#batch_buy").attr("disabled",false);
-        $("#total").html("Total : $"+total_sm);
+        $("#batch_buy").removeClass("disabled");
       }
       else{
-        $("#total").html("");
-        $("#batch_buy").attr("disabled",true);
+        $("#batch_buy").addClass("disabled");
       }
-      $("#batch_buy").html("Batch Buy ("+items+")");
 			getPrice();
     });
 
@@ -90,12 +92,12 @@ function startBatchPurchase(){
 				$("#input_sm").val("");
 				switch($(".left_sm select option:selected").val()){
 					case "None":
-						$(".batchItem:checked").prop('checked', false).trigger("change");
+						$(".card-checbox:checked").prop('checked', false).trigger("change");
 							$("#input_sm").hide();
 						break;
 					case "All":
-						$(".batchItem:checked").prop('checked', false).trigger("change");
-						$(".batchItem:not(:checked):not(:hidden)").prop('checked', true).trigger("change");
+						$(".card-checbox:checked").prop('checked', false).trigger("change");
+						$(".card-checbox:not(:checked):not(:hidden)").prop('checked', true).trigger("change");
 							$("#input_sm").hide();
 						break;
 					case "Cheapest":
@@ -172,6 +174,6 @@ async function getPrice(){
 	const market= await marketSettings;
 	const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
 	 total_rate=(parseFloat(total_sm.replace(",",""))/rate).toFixed(3);
-	$("#total").html("Total : $"+total_sm+"<br>("+total_rate+" "+$("#ddlCurrency option:selected").val()+")");
+	 console.log(total_rate);
 	checkMemoSize(batch);
 }

@@ -133,10 +133,9 @@ function startBatchPurchase(){
 					}
 			} else if($(".select-sm select option:selected").val()=="Upto"){
 				let totalUpTo=0;
-				for (let it of $(".card-checkbox:not(:hidden):not(.checked)")){
-					const parent = $(it).parent().parent();
-					if(totalUpTo+parseFloat($(parent).attr("price"))<=parseFloat($("#input_sm").val())){
-						totalUpTo+=parseFloat($(parent).attr("price"));
+				for (let it of $(".card-checkbox:not(:hidden)")){
+					if(totalUpTo+parseFloat($(it).attr("price"))<=parseFloat($("#input_sm").val())){
+						totalUpTo+=parseFloat($(it).attr("price"));
 						$(it).click();
 					}
 					else return;

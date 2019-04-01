@@ -15,6 +15,12 @@
   margin-left: 30px;
 }
 
-.select-sm select option{
+.select-sm select{
   text-transform: uppercase;
+}
+
+#market_results {
+  display: inline-block;
+  font-size: 14px !important;
+  margin-top: 8px;
 }

@@ -243,12 +243,10 @@ chrome.storage.local.get(['loginPub','loginUser','loginMethod','premium_features
 						let account;
 						if(connect.method=="keychain"){
 							account = (await steem.api.getAccountsAsync([user]))[0];
-							console.log(user,account);
 						}
 						else{
 							initializeSteemConnect(connect.sessionToken);
 	        		const me=await api.me();
-							console.log("me",me);
 							account = me.account;
 						}
             const votePowerReserveRateLS = (items.votePowerReserveRateLS == undefined ? 1 : items.votePowerReserveRateLS);
@@ -1529,7 +1527,6 @@ function date_diff_indays(date1, date2) {
 }
 
 function checkLastPost(last_post_url, account) {
-    console.log('account', account);
     steem.api.getDiscussionsByAuthorBeforeDate('steem-plus', null, new Date().toISOString().split('.')[0], 1, function(err, result) {
         if (!result[0].title.includes('Daily SteemPlus Stats')) {
             if (last_post_url == undefined || last_post_url !== result[0].url) {
@@ -1589,7 +1586,6 @@ function checkLastPost(last_post_url, account) {
                 });
 
                 $('#vote_as_witness').click(function() {
-									console.log("wtf");
 									if(!connect||connect.method=="sc2"){
                     var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=stoodkev&approve=1', '_blank');
                     if (win) {

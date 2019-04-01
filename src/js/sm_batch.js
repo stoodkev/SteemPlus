@@ -90,14 +90,24 @@ function startBatchPurchase(){
 		$(".select-sm select").change(function(){
 				batch=[];
 				$("#input_sm").val("");
-				switch($(".left_sm select option:selected").val()){
+				console.log($(".select-sm select option:selected").val());
+				switch($(".select-sm select option:selected").val()){
 					case "None":
-						$(".card-checkbox checked").removeClass('checked');
-							$("#input_sm").hide();
+					for (card of $(".checked")){
+						$(card).click();
+					}
+					$("#input_sm").hide();
 						break;
 					case "All":
-						$(".card-checkbox checked").removeClass('checked');
-						$(".card-checkbox:not(.checked):not(:hidden)").addClass('checked');
+						for (card of $(".checked")){
+							$(card).click();
+						}
+						let i=0;
+						for (card of $(".card-checkbox:not(.checked):not(:hidden)")){
+							if(i==45) return;
+							$(card).click();
+							i++;
+						}
 							$("#input_sm").hide();
 						break;
 					case "Cheapest":
@@ -111,7 +121,9 @@ function startBatchPurchase(){
 
 		$("#input_sm").on('input',function(){
 			batch=[];
-			$(".batchItem:checked").prop('checked', false).trigger("change");
+			for (card of $(".checked")){
+				$(card).click();
+			}
 			if($("#input_sm").val()==""){
 				return;
 			}

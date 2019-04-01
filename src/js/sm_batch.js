@@ -19,7 +19,7 @@ function waitForMarketPurchase(){
 		// change to new url based UI
      if(!batchIsStarted&window.location.href.includes("&tab=market"))
         waitForUI();
-     else if($("#card_details_dialog").eq(0).css("display")!="block"&&batchIsStarted)
+     else if(($("#details_card").length==0||$("#details_card").css("display")!="block")&&batchIsStarted)
         batchIsStarted=false;
    });
 }
@@ -90,7 +90,6 @@ function startBatchPurchase(){
 		$(".select-sm select").change(function(){
 				batch=[];
 				$("#input_sm").val("");
-				console.log($(".select-sm select option:selected").val());
 				switch($(".select-sm select option:selected").val()){
 					case "None":
 					for (card of $(".checked")){
@@ -127,17 +126,18 @@ function startBatchPurchase(){
 			if($("#input_sm").val()==""){
 				return;
 			}
-			if($(".left_sm select option:selected").val()=="Cheapest"){
-					for(let i=0;i<Math.min($("#input_sm").val(),$(".batchItem:not(:hidden)").length);i++){
-						$(".batchItem:not(:hidden)").eq(i).prop('checked', true).trigger("change");
+			if($(".select-sm select option:selected").val()=="Cheapest"){
+				const nbCards=Math.min(parseInt($("#input_sm").val()),$(".card-checkbox:not(:hidden)").length);
+					for(let i=0;i<nbCards;i++){
+						$(".card-checkbox:not(:hidden)").eq(i).click();
 					}
-			} else if($(".left_sm select option:selected").val()=="Upto"){
+			} else if($(".select-sm select option:selected").val()=="Upto"){
 				let totalUpTo=0;
-				for (let it of $(".batchItem:not(:hidden)")){
+				for (let it of $(".card-checkbox:not(:hidden):not(.checked)")){
 					const parent = $(it).parent().parent();
 					if(totalUpTo+parseFloat($(parent).attr("price"))<=parseFloat($("#input_sm").val())){
 						totalUpTo+=parseFloat($(parent).attr("price"));
-						$(it).prop('checked', true).trigger("change");
+						$(it).click();
 					}
 					else return;
 				}

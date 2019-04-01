@@ -52,7 +52,6 @@ async function createTabPremiumFeatureList(premiumFeatureList) {
     spp=0;
   else
     spp=spps[0].nbPoints;
-  console.log(spp +"spp");
   // Create tab content
   premiumFeatureList.html('\
   <div class="feed-layout container">\
@@ -120,7 +119,6 @@ async function createTabPremiumFeatureList(premiumFeatureList) {
 
       // Create event listener for subscribe buttons
       $('.button-steemit-subscribe').click(event => {
-        console.log(event.target.name);
         subscribeFeature(event.target.name);
       });
 
@@ -189,7 +187,6 @@ function unsubscribeFeature(nameFeature){
 // Function used to send the transfer to SteemPlus
 // @param memo : memo discribing the purpose of the transfer
 function sendTransfer(memo){
-  console.log(memo);
 if(!connect||connect.method=="sc2"){ //Use SteemConnect
     const url = 'https://steemconnect.com/sign/transfer?to=' + encodeURIComponent(accountName) + '&amount=0.001%20SBD&memo=' + encodeURIComponent(memo);
     var win = window.open(url, '_blank');

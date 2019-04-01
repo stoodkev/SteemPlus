@@ -58,7 +58,7 @@ function startBatchPurchase(){
 		<input type='number' id='input_sm'/></div>");
 
     $(".card-checkbox").change(function(){
-      if ($(this).is(':checked')){
+      if ($(this).hasClass('checked')){
         batch.push({market_id:$(this).attr("market_id"),price:$(this).attr("price"),uid:$(this).attr("uid")});
       }
       else{
@@ -87,17 +87,17 @@ function startBatchPurchase(){
 				getPrice();
 		});
 
-		$(".left_sm select").change(function(){
+		$(".select-sm select").change(function(){
 				batch=[];
 				$("#input_sm").val("");
 				switch($(".left_sm select option:selected").val()){
 					case "None":
-						$(".card-checbox:checked").prop('checked', false).trigger("change");
+						$(".card-checkbox checked").removeClass('checked');
 							$("#input_sm").hide();
 						break;
 					case "All":
-						$(".card-checbox:checked").prop('checked', false).trigger("change");
-						$(".card-checbox:not(:checked):not(:hidden)").prop('checked', true).trigger("change");
+						$(".card-checkbox checked").removeClass('checked');
+						$(".card-checkbox:not(.checked):not(:hidden)").addClass('checked');
 							$("#input_sm").hide();
 						break;
 					case "Cheapest":

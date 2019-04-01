@@ -189,9 +189,7 @@ function createTitle() {
                 } else {
                     if ($('.vests-added').length === 0 && acc_steemit) {
                         var spanVestingShares = $('.UserWallet__balance > .column')[3];
-                        console.log(spanVestingShares);
                         var newDiv = $('<div title="' + getVestString(accountAccountValue[0].vesting_shares) + '">' + $(spanVestingShares)[0].textContent.split('(')[0] + ($(spanVestingShares)[0].textContent.split('(')[1] == undefined ? '</div>' : '</div><div title="STEEM POWER delegated to/from this account">(' + $(spanVestingShares)[0].textContent.split('(')[1] + '</div>"'));
-                        console.log(newDiv);
                         $(spanVestingShares)[0].textContent = '';
                         $(spanVestingShares).append(newDiv);
                         $(newDiv).parent().eq(0).addClass('vests-added');

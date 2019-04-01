@@ -145,11 +145,12 @@ async function sendTransfer(total_price){
 	memo+=":"+username;
 	memo+=":steemplus-pay";
 		// Getting rate
-	const total_rate=getPrice(total_price);
-	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
+	const total_rate=await getPrice(total_price);
+	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#payment_currency option:selected").val()+"&memo="+memo;
 	if(hasSKC){
 		// request payment via Keychain
-		steem_keychain.requestTransfer(username, "steemmonsters", total_rate, memo, $("#ddlCurrency option:selected").val(), function(result){
+		console.log(username, "steemmonsters", total_rate, memo, $("#payment_currency option:selected").val());
+		steem_keychain.requestTransfer(username, "steemmonsters", total_rate, memo, $("#payment_currency option:selected").val(), function(result){
 			if(!result.success)
 					window.open(steemconnect_sign);
 		},true);
@@ -160,10 +161,8 @@ async function sendTransfer(total_price){
 
 // Calculate the price in STEEM or SBD from the $ price on SM
 async function getPrice(total_sm){
-	console.log(total_sm);
 	const market= await window.SteemPlus.SteemMonsters.getMarketSettings();
 	const rate = ($("#payment_currency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
 	total_rate=(total_sm/rate).toFixed(3);
-	console.log("total price",total_rate);
 	 return total_rate;
 }

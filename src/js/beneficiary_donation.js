@@ -162,7 +162,6 @@ async function postBeneficiaryDonation() {
         }]
     ];
 
-    console.log(operations);
     if(connect.method=="sc2"){
       api.broadcast(
           operations,
@@ -184,7 +183,6 @@ async function postBeneficiaryDonation() {
         }
         else{
           steem_keychain.requestBroadcast(connect.user, operations, "Posting", function(result){
-      			console.log(result);
             if(result.success) {
                 if (isSteemit)
                     window.location.replace('https://steemit.com');

@@ -390,11 +390,9 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
         }
         else { //Use Keychain
           steem_keychain.requestWitnessVote(connect.user,usernameTabWitnesses,false,function(result){
-            console.log(result);
             if(!result.success)
               var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
             else {
-                  console.log("change button");
                   $('.addAsWitnessLink').show();
                   $('.removeAsWitnessLink').hide();
             }
@@ -413,12 +411,9 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
         }
         else { //Use Keychain
           steem_keychain.requestWitnessVote(connect.user,usernameTabWitnesses,true,function(result){
-            console.log(result.success);
             if(!result.success)
               var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
             else {
-              console.log("change button");
-
                   $('.removeAsWitnessLink').show();
                   $('.addAsWitnessLink').hide();
             }

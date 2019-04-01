@@ -317,10 +317,8 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
     $('#popoverDelegation').click(function(){
       setTimeout(function(){
         $('#popoverDelegation').popover('show');
-        console.log($(".stop_del").length);
         $(".stop_del").unbind("click").click(function(){
           const delegatee=$(this).data("delegatee");
-          console.log("undelegate");
           if(!connect||connect.method=="sc2"){ //Use SteemConnect
             window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");
           }else { // Use Keychain

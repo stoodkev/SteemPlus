@@ -240,7 +240,6 @@ function isEverythingFilled() {
             return false;
         }
     } else if (isBusy) {
-        console.log($('.Editor__title').eq(0).val() === '', $('.ant-select-selection__choice__content').length === 0, $('textarea#body').eq(0).innerHTML === '')
         if ($('.Editor__title').eq(0).val() === '' || $('.ant-select-selection__choice__content').length === 0 || $('textarea#body').eq(0).innerHTML === '') {
             alert("Please enter a title, body and tags to your post!");
             return false;

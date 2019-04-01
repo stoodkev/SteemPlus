@@ -168,7 +168,6 @@ function displayMessageSynchronisation(nbBlockDifference) {
 // Function used to start the wallet history
 // Check if the page is ready and start. If not, wait and try again
 function startWalletHistory() {
-  console.log("starttt");
     chrome.storage.local.get(['filters_state_wallet'], function(items) {
         if (items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
         if ($('.Trans').length > 0 && (regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href))) {
@@ -191,7 +190,6 @@ function startWalletHistory() {
 
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory() {
-  console.log("disppp");
     var tbodyWH = $('.Trans').parent();
     $('.Trans').hide();
     dataWalletHistory.forEach(function(itemWalletHistory, indexWH) {
@@ -566,7 +564,7 @@ function isSteemSQLSynchronized() {
     Promise.all([steem.api.getDynamicGlobalPropertiesAsync(), window.SteemPlus.api.getLastBlockID()])
         .then(function(value) {
             var nbBlockDifference = parseInt(value[0].last_irreversible_block_num) - parseInt(value[1]);
-            console.log(nbBlockDifference);
+            console.log(nbBlockDifference+" blocks behind.");
             // 60 blocks difference means 3 minutes.
             if (nbBlockDifference < 60)
                 startWalletHistory();

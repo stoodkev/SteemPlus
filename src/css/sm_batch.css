@@ -1,35 +1,28 @@
-#total {
-  float: right;
-  display: inline-block;
-  width: 180px;
-  font-size: 1.4em;
-  text-align: center;
-  height: 50px;
-  margin-top: -3px;
-}
-
-#buttons {
-  width: 100% !important;
-}
-
-.left_sm{
-  text-align: left;
-  width: 100%;
-}
-
-.select-sm {
-  margin-top: 10px;
-  margin-bottom: 20px;
+#batch_buy{
+  font-size: 13px;
+  margin-left: 20px;
 }
 
 #input_sm {
+  width: 50px;
   display: none;
-  width: 75px;
-  height:25px;
-  font-size: 20px;
-  margin-top: 5px;
+  margin-top:5px;
+  margin-left: 10px;
+  color: black;
+  border-radius: 5px;
 }
 
-#ddlCurrency {
-  display: inline-block !important;
+.select-sm  {
+  margin-top: 10px !important;
+  margin-left: 30px;
+}
+
+.select-sm select{
+  text-transform: uppercase;
+}
+
+#market_results {
+  display: inline-block;
+  font-size: 14px !important;
+  margin-top: 8px;
 }

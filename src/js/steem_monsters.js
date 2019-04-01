@@ -31,7 +31,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		retrySteemMonster = 0;
 		startSteemMonsterTab();
 	} else if (request.to === 'steem_monsters' && request.order === 'click' && token_steem_monster == request.token) {
-		console.log('click');
 		isSteemit = request.data.steemit;
 		isBusy = request.data.busy;
 		myUsernameSteemMonster = request.data.user;
@@ -55,7 +54,6 @@ function startSteemMonsterTab() {
 		else
 		{
 			pageUsernameSteemMonster = window.SteemPlus.Utils.getPageAccountName();
-			console.log(pageUsernameSteemMonster, myUsernameSteemMonster);
 			if(pageUsernameSteemMonster === myUsernameSteemMonster)
 			{
 				window.SteemPlus.Tabs.createTab({
@@ -69,7 +67,6 @@ function startSteemMonsterTab() {
 					window.SteemPlus.Tabs.showTab('steem_monsters');
 			}
 			else{
-				console.log('delete tab');
 				$('.menu-steem_monsters-tab-li').eq(0).remove();
 			}
 		}
@@ -143,7 +140,6 @@ function createSteemMonsterTab(steemMonsterTab) {
 		},
 		url: `https://steemmonsters.com/players/login?name=${pageUsernameSteemMonster}`,
 		success: function(response) {
-			console.log(response);
 			if(response.starter_pack_purchase){
 				Object.keys(steemMonsterPacks).map(function(packType, index) {
 					var packInfo = steemMonsterPacks[packType];
@@ -210,7 +206,6 @@ function sendRequestToSteemMonster()
 		},
 		url: `https://steemmonsters.com/purchases/start?player=${pageUsernameSteemMonster}&type=${$('#select_pack').val()}&qty=${$('#quantity_pack').val()}&currency=${$('#select_currency').val()}&orig_currency=${$('#select_currency').val()}&merchant=steemplus-pay`,
 		success: function(response) {
-			console.log(response);
 			amountSM=response.payment;
 			memoSM=response.uid;
 			urlSteemMonster = `https://v2.steemconnect.com/sign/transfer?from=${pageUsernameSteemMonster}&to=steemmonsters&amount=${response.payment}&memo=${response.uid}`;

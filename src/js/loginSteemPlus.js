@@ -21,7 +21,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
 
         if (window.location.href.includes('?access_token=')) {
-            console.log('create');
             var url = new URL(window.location.href);
             chrome.storage.local.set({
                     tokenExpire: Date.now() + 7 * 24 * 3600 * 1000,
@@ -58,7 +57,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
             if(request.data.connect.method=="sc2")
               showLogout(loginIcon,request.data.connect);
             else if(request.data.connect.method=="keychain"){
-              console.log(request.data.connect.user,user);
               if(request.data.connect.user!=user)
                 chrome.storage.local.remove(['loginPub', 'loginUser', 'loginMethod'], function() {
                     location.reload();
@@ -128,15 +126,12 @@ function showLogout(loginIcon,connect){
   $(loginIcon).click(function() {
       if(connect.method=="sc2")
         api.revokeToken(function(err, res) {
-            console.log(err, res);
             chrome.storage.local.remove(['sessionToken', 'tokenExpire','loginMethod'], function() {
-              console.log("remove");
                 location.reload();
             });
         });
       else
         chrome.storage.local.remove(['loginUser', 'loginPub','loginMethod'], function() {
-        console.log("remove");
             location.reload();
         });
   });

@@ -1,10 +1,9 @@
 let tokenSmBatch=null;
 let batchIsStarted=false;
 let batch=[];
-let total_sm=null;
-let total_rate=null;
 let userSM = null;
 
+// Receive message from main to start the feature
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.to === 'sm_batch' && request.order === 'start' && tokenSmBatch == null) {
 		tokenSmBatch = request.token;
@@ -24,6 +23,7 @@ function waitForMarketPurchase(){
    });
 }
 
+// Wait until SM is done loading
 function waitForUI(){
 	console.log("wait");
 	setTimeout(function(){
@@ -40,8 +40,9 @@ function startBatchPurchase(){
 	if($("#batch_buy").length>0) return;
   batch=[];
   batchIsStarted=true;
+		// Add Buttons and filters to the DOM
     const batchButton = document.createElement("button");
-    batchButton.className="new-button disabled";
+    batchButton.className="new-button";
     batchButton.id="batch_buy";
     batchButton.innerHTML="Buy with SteemPlus";
     batchButton.title="Get free SteemPlus Points while buying Steem Monsters cards for the same price.";
@@ -57,36 +58,7 @@ function startBatchPurchase(){
 		</select>\
 		<input type='number' id='input_sm'/></div>");
 
-    $(".card-checkbox").change(function(){
-      if ($(this).hasClass('checked')){
-        batch.push({market_id:$(this).attr("market_id"),price:$(this).attr("price"),uid:$(this).attr("uid")});
-      }
-      else{
-        batch = batch.filter(function(item)
-        {
-            return item.uid!=$(this).attr("uid");
-        });
-      }
-      total_sm=numberWithCommas(
-        batch.reduce(function(accumulator,value){
-          return accumulator+parseFloat(value.price);
-        },0).toFixed(3)
-      );
-      const items=batch.length;
-			marketSettings= window.SteemPlus.SteemMonsters.getMarketSettings();
-      if(items>0){
-        $("#batch_buy").removeClass("disabled");
-      }
-      else{
-        $("#batch_buy").addClass("disabled");
-      }
-			getPrice();
-    });
-
-		$("#ddlCurrency") .change(function(){
-				getPrice();
-		});
-
+		// Different filtering choices
 		$(".select-sm select").change(function(){
 				batch=[];
 				$("#input_sm").val("");
@@ -118,8 +90,10 @@ function startBatchPurchase(){
 				}
 		});
 
+		// Number of cards or max price inputed
 		$("#input_sm").on('input',function(){
 			batch=[];
+			// clear selected cards
 			for (card of $(".checked")){
 				$(card).click();
 			}
@@ -127,11 +101,13 @@ function startBatchPurchase(){
 				return;
 			}
 			if($(".select-sm select option:selected").val()=="Cheapest"){
+				// select x first cards
 				const nbCards=Math.min(parseInt($("#input_sm").val()),$(".card-checkbox:not(:hidden)").length);
 					for(let i=0;i<nbCards;i++){
 						$(".card-checkbox:not(:hidden)").eq(i).click();
 					}
 			} else if($(".select-sm select option:selected").val()=="Upto"){
+				// select all the cards until reaching the preset price
 				let totalUpTo=0;
 				for (let it of $(".card-checkbox:not(:hidden)")){
 					if(totalUpTo+parseFloat($(it).attr("price"))<=parseFloat($("#input_sm").val())){
@@ -143,13 +119,24 @@ function startBatchPurchase(){
 			}
 		});
 
+		// Batch Buy button via SteemPlus
 		$("#batch_buy").click(function(){
-				sendTransfer();
+			if($(".checked").length==0)
+				alert("Please choose some cards first");
+				total_price=0;
+				// Store list of cards to be purchased
+			for(card of $(".checked")){
+				batch.push({market_id:$(card).attr("market_id"),price:$(card).attr("price")});
+				total_price+=parseFloat($(card).attr("price"));
+			}
+				sendTransfer(total_price);
 		});
 }
 
-async function sendTransfer(){
+// Send transfer to steemmonsters
+async function sendTransfer(total_price){
 	const username=$(".username").html();
+	// Creating memo
 	let memo="sm_market_purchase:";
 	for (let tx of batch){
 		memo+=tx.market_id+",";
@@ -157,34 +144,26 @@ async function sendTransfer(){
 	memo=memo.slice(0,memo.length-1);
 	memo+=":"+username;
 	memo+=":steemplus-pay";
-
+		// Getting rate
+	const total_rate=getPrice(total_price);
 	const steemconnect_sign="https://steemconnect.com/sign/transfer?from="+username+"&to=steemmonsters&amount="+total_rate+"%20"+$("#ddlCurrency option:selected").val()+"&memo="+memo;
 	if(hasSKC){
+		// request payment via Keychain
 		steem_keychain.requestTransfer(username, "steemmonsters", total_rate, memo, $("#ddlCurrency option:selected").val(), function(result){
 			if(!result.success)
 					window.open(steemconnect_sign);
 		},true);
 	}
-	else
+	else // Request payment via Steemconnect
 		window.open(steemconnect_sign);
-
 }
 
-function checkMemoSize(batch){
-	if(batch.length>45){
-			$("#batch_buy").attr("disabled",true);
-			$("#total").html("Please buy 45 or fewer at a time.");
-	}
-}
-
-const numberWithCommas = (x) => {
-	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-async function getPrice(){
-	const market= await marketSettings;
-	const rate = ($("#ddlCurrency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
-	 total_rate=(parseFloat(total_sm.replace(",",""))/rate).toFixed(3);
-	 console.log(total_rate);
-	checkMemoSize(batch);
+// Calculate the price in STEEM or SBD from the $ price on SM
+async function getPrice(total_sm){
+	console.log(total_sm);
+	const market= await window.SteemPlus.SteemMonsters.getMarketSettings();
+	const rate = ($("#payment_currency option:selected").val()=="STEEM"?market.steem_price:market.sbd_price);
+	total_rate=(total_sm/rate).toFixed(3);
+	console.log("total price",total_rate);
+	 return total_rate;
 }

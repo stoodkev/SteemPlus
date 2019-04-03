@@ -148,7 +148,7 @@ function createButtonT(isSteemit, busy, account, balance) {
                 }
             }
             $('#bd').click(function() {
-              if(!connect||connect.method=="sc2"){ // Send via Steemconnect
+              if(!connect.connect||connect.method=="sc2"){ // Send via Steemconnect
                 var url = 'https://v2.steemconnect.com/sign/transfer?from=' + account + '&to=' + receiver + '&amount=' + $('input[name=amount]').val() + '%20' + currency + '&memo=' + $('input[name=memo]').val();
                 window.open(url, '_blank');
               }

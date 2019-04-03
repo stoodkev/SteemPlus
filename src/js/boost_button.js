@@ -417,7 +417,7 @@ function createMinnowBoosterTransferUI() {
                 var to = transferUI.find('input[name="to"]').val();
                 var amount = transferUI.find('input[name="amount"]').val() + ' ' + transferUI.find('select[name="asset"]').val();
                 var memo = transferUI.find('input[name="memo"]').val();
-                if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
                   console.log("sc2");
                   scTransfer();
                 }
@@ -429,9 +429,7 @@ function createMinnowBoosterTransferUI() {
                   },false);
                 function scTransfer(){
                   var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent(to) + '&amount=' + encodeURIComponent(amount) + '&memo=' + encodeURIComponent("steemplus " + memo);
-                  var transferWindow = window.open();
-                  transferWindow.opener = null;
-                  transferWindow.location = url;
+                  window.open(url, '_blank');
                 }
             });
 
@@ -718,11 +716,12 @@ async function createPostPromoterTransferUI() {
 
     $('#submitPostPromoter').unbind('click').click(function() {
         var amountPP = null;
+        console.log(connect);
         if (!$('#amountPostPromoter').eq(0).val().includes('.'))
             amountPP = $('#amountPostPromoter').eq(0).val() + '.000';
         else
             amountPP = $('#amountPostPromoter').eq(0).val();
-        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+        if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
           console.log("sc2");
           scTransfer();
         }
@@ -733,10 +732,9 @@ async function createPostPromoterTransferUI() {
             }
           },false);
         function scTransfer(){
+          console.log("sc");
           var url = 'https://v2.steemconnect.com/sign/transfer?to=' + encodeURIComponent('postpromoter') + '&amount=' + encodeURIComponent(parseFloat(amountPP).toFixed(3) + ' ' + $('#currency option:selected').eq(0).val()) + '&memo=' + encodeURIComponent("steemplus " + window.location.href);
-          var transferWindow = window.open();
-          transferWindow.opener = null;
-          transferWindow.location = url;
+          window.open(url, '_blank');
         }
     });
 

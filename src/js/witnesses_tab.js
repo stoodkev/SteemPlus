@@ -205,7 +205,7 @@ function addListWitness(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesse
                         else if (isBusy) buttonRemoveWitness = $('<button class="Follow removeWitnessesLink witness-items" id="' + witnessItem.name + '">Unvote</button>');
 
                         $(buttonRemoveWitness).click(function() {
-                          if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                          if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
                             var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + this.id + '&approve=0', '_blank');
                             if (win) {
                                 win.focus();
@@ -301,7 +301,7 @@ function startTabOut(usernameTabWitnesses, isMyPageWitnesses, rankingWitnesses,f
                 toastr.error('Unknown error, Please try again later', titleToastr);
             } else {
                 if (result.length > 0) {
-                  if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                  if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
                     var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + newWitnessName + '&approve=1', '_blank');
                     if (win) {
                         win.focus();
@@ -380,7 +380,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
     }
 
     $('.removeAsWitnessLink').unbind('click').click(function() {
-        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+        if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
           var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=0', '_blank');
           if (win) {
               win.focus();
@@ -401,7 +401,7 @@ function displayMyWitnessTab(usernameTabWitnesses, witnessesRankingList) {
     });
 
     $('.addAsWitnessLink').unbind('click').click(function() {
-        if(!connect||connect.method=="sc2"){ //Use SteemConnect
+        if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
           var win = window.open('https://v2.steemconnect.com/sign/account-witness-vote?witness=' + usernameTabWitnesses + '&approve=1', '_blank');
           if (win) {
               win.focus();

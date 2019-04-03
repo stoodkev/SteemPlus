@@ -254,7 +254,7 @@ function displaySteemplusPoints(userDetails)
                 var delegatedVestsSPP = amountDelegation * totalVestsSPP / totalSteemSPP;
                 delegatedVestsSPP=delegatedVestsSPP.toFixed(6);
                 // Create delegation steemconnect link
-                if(!connect||connect.method=="sc2"){ //Use SteemConnect
+                if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
                   var urlDelegationSPP = 'https://steemconnect.com/sign/delegateVestingShares?delegator=' + myUsernameSPP + '&delegatee=steem-plus&vesting_shares='+delegatedVestsSPP+'%20VESTS';
                   window.open(urlDelegationSPP, '_blank');
                 }else{ //Use Keychain

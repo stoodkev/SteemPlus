@@ -193,7 +193,7 @@ function createButtonDelegation(isSteemit, busy, globalP) {
               var delegated_vest = delegated_SP * globalP.totalVests / globalP.totalSteem;
               delegated_vest=delegated_vest.toFixed(6);
               var url = 'https://v2.steemconnect.com/sign/delegateVestingShares?delegator=' + $('input[placeholder="Your account"]').val() + '&delegatee=' + $('input[placeholder="Send to account"]').val() + '&vesting_shares='+delegated_SP.toFixed(3)+" SP";
-              if(!connect||connect.method=="sc2"){ //Use SteemConnect
+              if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
                 window.open(url, '_blank');
               }
               else { // Use Keychain
@@ -319,7 +319,7 @@ function createPopoverDelegation(isSteemit, isBusy, incomingDelegations, outgoin
         $('#popoverDelegation').popover('show');
         $(".stop_del").unbind("click").click(function(){
           const delegatee=$(this).data("delegatee");
-          if(!connect||connect.method=="sc2"){ //Use SteemConnect
+          if(!connect.connect||connect.method=="sc2"){ //Use SteemConnect
             window.open("https://v2.steemconnect.com/sign/delegateVestingShares?delegator=" + user + '&delegatee=' + delegatee + "&vesting_shares=" + 0 + "%20VESTS","_blank");
           }else { // Use Keychain
             steem_keychain.requestDelegation(user,delegatee,(0).toFixed(3),"SP",function(result){

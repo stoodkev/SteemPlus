@@ -186,6 +186,7 @@ function checkInputDTube()
           ]
         }]
         ];
+        console.log(operationsDTube);
         if(connect.method=="sc2"){
           api.broadcast(
             operationsDTube,
@@ -212,7 +213,7 @@ function checkInputDTube()
           if(result.success) {
               emptyForm();
           }  else
-                alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + e.error_description);
+                alert('The request was not succesfull. Please make sure that you logged in to SteemPlus via an account having Posting authority on Keychain, that all the beneficiaries accounts are correct and than you didn\'t post within the last 5 minutes. If the problem persists please contact @stoodkev on Discord. Error description:' + result.message);
         });
 
       function emptyForm(){

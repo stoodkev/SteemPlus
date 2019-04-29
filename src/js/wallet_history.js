@@ -171,6 +171,7 @@ function startWalletHistory() {
     chrome.storage.local.get(['filters_state_wallet'], function(items) {
         if (items.filters_state_wallet !== undefined) filtersStateWH = items.filters_state_wallet;
         if ($('.Trans').length > 0 && (regexWalletSteemit.test(window.location.href)||regexWalletSteemitWallet.test(window.location.href))) {
+          console.log("a");
             usernameWalletHistory = window.SteemPlus.Utils.getPageAccountName();
             window.SteemPlus.api.getWallet(window.SteemPlus.Utils.getPageAccountName()).then(function(result){
               dataWalletHistory = result;
@@ -190,6 +191,7 @@ function startWalletHistory() {
 
 //Function used to diplay the wallet when all the information is downloaded
 function displayWalletHistory() {
+  console.log("display");
     var tbodyWH = $('.Trans').parent();
     $('.Trans').hide();
     dataWalletHistory.forEach(function(itemWalletHistory, indexWH) {

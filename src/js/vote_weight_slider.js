@@ -89,7 +89,7 @@ async function updateVotingSlider(weightDisplay) {
             tryUpdateVotingSlider();
         }, 1000);
     } else {
-        weightDollars.text((flagInfo.length?"-":"")+dollars.toFixed(2) + '$');
+        weightDollars.text((weightDisplay.parent().parent().hasClass("Voting__adjust_weight")?"":"-")+dollars.toFixed(2) + '$');
     }
 
     if (flagInfo.length) {

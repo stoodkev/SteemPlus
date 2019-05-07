@@ -1387,6 +1387,7 @@ function getPriceSteemAsync() {
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
             },
+						timeout:5000,
             url: 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM',
             success: function(response) {
                 resolve(response.result['Bid']);
@@ -1402,6 +1403,7 @@ function getPriceSBDAsync() {
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: "GET",
+						timeout:5000,
             beforeSend: function(xhttp) {
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
@@ -1421,6 +1423,7 @@ function getBTCPriceAsync() {
     return new Promise(function(resolve, reject) {
         $.ajax({
             type: "GET",
+						timeout:5000,
             beforeSend: function(xhttp) {
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);

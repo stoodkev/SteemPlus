@@ -1382,6 +1382,7 @@ function updateSteemPrice() {
 function getPriceSteemAsync() {
     return new Promise(function(resolve, reject) {
         $.ajax({
+						dataType: "json",
             type: "GET",
             beforeSend: function(xhttp) {
                 xhttp.setRequestHeader("Content-type", "application/json");
@@ -1402,6 +1403,7 @@ function getPriceSteemAsync() {
 function getPriceSBDAsync() {
     return new Promise(function(resolve, reject) {
         $.ajax({
+					 	dataType: "json",
             type: "GET",
 						timeout:5000,
             beforeSend: function(xhttp) {
@@ -1422,6 +1424,7 @@ function getPriceSBDAsync() {
 function getBTCPriceAsync() {
     return new Promise(function(resolve, reject) {
         $.ajax({
+						dataType: "json",
             type: "GET",
 						timeout:5000,
             beforeSend: function(xhttp) {

@@ -2,7 +2,7 @@ const xhttp = new XMLHttpRequest();
 const steemit = (window.location.href.includes('steemit.com') || window.location.href.includes('mspsteem.com'));
 const busy = window.location.href.includes('busy.org');
 const utopian = window.location.href.includes('utopian.io');
-const steemMonsters = window.location.href.includes('steemmonsters.com');
+const steemMonsters = window.location.href.includes('steemmonsters.com')||window.location.href.includes('splinterlands.io');
 const steemitwallet= window.location.href.includes('steemitwallet.com');
 console.log('Starting SteemPlus...');
 var market = null;

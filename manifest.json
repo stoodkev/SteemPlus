@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SteemPlus",
   "description": "Lightweight toolbox for Steemit",
-  "version": "3.8.2.5",
+  "version": "3.8.2.6",
   "content_security_policy": "script-src 'self' 'unsafe-eval' ; object-src 'self'; child-src 'unsafe-eval' 'self'",
   "browser_action": {
     "default_icon": "src/img/logo.png",
@@ -144,7 +144,7 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://steemmonsters.com/*"],
+      "matches": ["https://steemmonsters.com/*","https://splinterlands.io/*"],
       "js": ["vendor/global_const.js","vendor/jquery.js","vendor/sc2.min.js","vendor/steemjs.js","vendor/smi/sm_utils.js","vendor/steem_keychain.js","main.js",
       "src/js/sm_batch.js"],
       "css":["src/css/sm_batch.css"],

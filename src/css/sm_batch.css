@@ -1,6 +1,7 @@
 #batch_buy{
   font-size: 13px;
   margin-left: 20px;
+  margin-top: 10px;
 }
 
 #input_sm {
@@ -19,6 +20,10 @@
 
 .select-sm select{
   text-transform: uppercase;
+}
+
+#payment_currency{
+  max-height: 37px;
 }
 
 #market_results {

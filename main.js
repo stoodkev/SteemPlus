@@ -1379,19 +1379,15 @@ function updateSteemPrice() {
     }, 60 * 1000);
 }
 
-function getPriceSteemAsync() {
+
+function getPrices() {
     return new Promise(function(resolve, reject) {
         $.ajax({
 						dataType: "json",
             type: "GET",
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-						timeout:5000,
-            url: 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-STEEM',
+            url: 'https://api.steemplus.app/bittrex',
             success: function(response) {
-                resolve(response.result['Bid']);
+                resolve(response);
             },
             error: function(msg) {
                 resolve(msg);
@@ -1400,55 +1396,14 @@ function getPriceSteemAsync() {
     });
 }
 
-function getPriceSBDAsync() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-					 	dataType: "json",
-            type: "GET",
-						timeout:5000,
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://bittrex.com/api/v1.1/public/getticker?market=BTC-SBD',
-            success: function(response) {
-                resolve(response.result['Bid']);
-            },
-            error: function(msg) {
-                resolve(msg);
-            }
-        });
-    });
-}
-
-function getBTCPriceAsync() {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-						dataType: "json",
-            type: "GET",
-						timeout:5000,
-            beforeSend: function(xhttp) {
-                xhttp.setRequestHeader("Content-type", "application/json");
-                xhttp.setRequestHeader("X-Parse-Application-Id", chrome.runtime.id);
-            },
-            url: 'https://bittrex.com/api/v1.1/public/getticker?market=USDT-BTC',
-            success: function(response) {
-                resolve(response.result['Bid']);
-            },
-            error: function(msg) {
-                resolve(msg);
-            }
-        });
-    });
-}
 
 function getSteemPrice() {
-    Promise.all([getBTCPriceAsync(), getPriceSBDAsync(), getPriceSteemAsync()])
+    getPrices()
         .then(function(values) {
             market = {
-                SBDperSteem: values[2] / values[1],
-                priceSteem: values[2] * values[0],
-                priceSBD: values[1] * values[0]
+                SBDperSteem: values.steem.result.Last / values.sbd.result.Last,
+                priceSteem: values.steem.result.Last * values.btc.result.Last,
+                priceSBD: values.sbd.result.Last * values.btc.result.Last
             };
             chrome.storage.local.set({
                 market: market

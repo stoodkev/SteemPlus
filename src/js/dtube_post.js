@@ -125,7 +125,7 @@ function checkInputDTube()
       }
       // build the article to be posted
       var tags = $(' input[tabindex=3]').eq(0).val().split(' ');
-      var permlinkSteemit=articleDTube.info.permlink
+      var permlinkSteemit=articleDTube.permlink
       .replace(/[^\w-]+/g,'');
       var title=$('.vframe input').eq(0).val();
       var body=$('.vframe textarea').eq(0).val();
@@ -152,9 +152,8 @@ function checkInputDTube()
           sbd_percent = 10000;
         }
 
-        articleDTube.info.title = title;
-        articleDTube.content.tags = tags;
-
+        articleDTube.title = title;
+        console.log(articleDTube);
         var operationsDTube = [
         ['comment',
         {
@@ -165,9 +164,9 @@ function checkInputDTube()
           title: title,
           body: body,
           json_metadata : JSON.stringify({
-            video: articleDTube,
-            tags: tags,
-            app: 'steem-plus-app'
+            video:articleDTube,
+            app: 'steem-plus-app',
+            tags
           })
         }
         ],
@@ -498,49 +497,48 @@ function openDTubeDialog()
     {
       // if both have been created, prepare json_metadata
       articleDTube = {
-        info: {
-          title: $('input[name=video-title-dtube]')[0].value,
+        ipfs: {
           snaphash: snaphashDTube,
-          author: myUsernameDtubePost,
-          permlink: createPermlink(8),
-          filesize: droppedFiledDTubePost.size,
-          spritehash: spritehashDTube
+          spritehash: spritehashDTube,
+          videohash: videohashDTube
         },
-        content: {
-          videohash: videohashDTube,
-          description: $('textarea[name=video-description-dtube]')[0].value,
-          tags: []
-        }
+        providerName:"IPFS",
+        permlink:createPermlink(8),
+        thumbnailUrl:"https://snap1.d.tube/ipfs/"+snaphashDTube,
+        title: $('input[name=video-title-dtube]')[0].value,
+        description: $('textarea[name=video-description-dtube]')[0].value,
+        filesize: droppedFiledDTubePost.size,
+        videoId: videohashDTube
       }
       if(!Number.isNaN(parseInt($('input[name=video-duration-dtube]').eq(0).val())))
-        articleDTube.info.duration=parseInt($('input[name=video-duration-dtube]').eq(0).val());
+        articleDTube.duration=parseInt($('input[name=video-duration-dtube]').eq(0).val());
       else
-        delete articleDTube.info.duration;
+        delete articleDTube.duration;
       console.log($('input[name=video-duration-dtube]').eq(0).val(),articleDTube);
       // add hashs for differents qualities
       for (let i = 0; i < encodedVideosDTube.length; i++) {
         switch(encodedVideosDTube[i].ipfsAddEncodeVideo.encodeSize || encodedVideosDTube[i].encode.encodeSize) {
           case '240p':
-          articleDTube.content.video240hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          articleDTube.ipfs.video240hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
           break;
           case '480p':
-          articleDTube.content.video480hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          articleDTube.ipfs.video480hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
           break;
           case '720p':
-          articleDTube.content.video720hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          articleDTube.ipfs.video720hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
           break;
           case '1080p':
-          articleDTube.content.video1080hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
+          articleDTube.ipfs.video1080hash = encodedVideosDTube[i].ipfsAddEncodeVideo.hash;
           break;
         }
       }
       // Create steemit new body
       headerSteemit = '<center>';
-      headerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'>';
-      headerSteemit += '<img src=\'https://ipfs.io/ipfs/' + overlayHashDTube + '\'></a></center><hr>\n\n';
-      bodySteemit = articleDTube.content.description
+      headerSteemit += 'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.permlink;
+      headerSteemit += '</center><hr>\n\n';
+      bodySteemit = articleDTube.description
       footerSteemit = '\n\n<hr>';
-      footerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.info.permlink + '\'> ▶️ DTube</a><br />';
+      footerSteemit += '<a href=\'https://d.tube/#!/v/' + myUsernameDtubePost + '/' + articleDTube.permlink + '\'> ▶️ DTube</a><br />';
       footerSteemit += '<a href=\'https://ipfs.io/ipfs/' + videohashDTube + '\'> ▶️ IPFS</a>';
       footerSteemit += '<br>Posted with @steem-plus';
 
@@ -662,6 +660,7 @@ function getProgressByToken(token)
       if(response.finished)
       {
         // saving hashs
+        console.log(response);
         spritehashDTube = response.sprite.ipfsAddSprite.hash;
         encodedVideosDTube = response.encodedVideos;
         videohashDTube = response.ipfsAddSourceVideo.hash;

@@ -109,24 +109,20 @@ async function updateVotingSlider(weightDisplay) {
 
   const post = await steem.api.getContentAsync(author, permlink);
   console.log(post);
-  const rShares = post.active_votes.reduce(
-    (acc, e) => acc + parseInt(e.rshares),
-    0
-  );
-  console.log(rShares);
+  const rShares = parseInt(post.vote_rshares);
   const dollars = await window.SteemPlus.Utils.calculateVoteValue(
     account_vws,
-    recentClaims,
+    parseFloat(recentClaims),
     rewardBalance,
     parseInt(
       weightDisplay
         .eq(0)
         .text()
-        .replace("-", ""),
-      10
-    ),
+        .replace("-", "")
+    ) * 100,
     rShares
   );
+  console.log(dollars);
   const votingEl = weightDisplay.closest(".Voting");
   const flagInfo = votingEl.find(".Voting__about-flag");
 

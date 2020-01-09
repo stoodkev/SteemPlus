@@ -201,8 +201,18 @@
     const userVotingPower = vp * (weight / 10000);
     const voteEffectiveShares =
       userVestingShares * (userVotingPower / 10000) * 0.02;
-
+    console.log(
+      account,
+      recentClaims,
+      rewardBalance,
+      weight,
+      vp,
+      medianPrice,
+      voteEffectiveShares,
+      userVotingPower
+    );
     if (postRshares) {
+      console.log(postRshares);
       // reward curve algorithm
       const multiplier = Math.pow(10, 12);
       const cureveConstant2s = 4 * multiplier;
@@ -220,7 +230,16 @@
 
       const proportion = voteClaim / recentClaims;
       const fullVote = proportion * rewardBalance;
-
+      console.log(
+        multiplier,
+        cureveConstant2s,
+        cureveConstant4s,
+        postClaims,
+        postClaimsAfterVote,
+        voteClaim,
+        proportion,
+        fullVote
+      );
       return (
         fullVote *
         (parseFloat(medianPrice.base) / parseFloat(medianPrice.quote))

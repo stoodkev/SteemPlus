@@ -107,8 +107,6 @@ async function updateVotingSlider(weightDisplay) {
     weightDisplay.after(weightDollars);
   }
 
-  const post = await steem.api.getContentAsync(author, permlink);
-  const rShares = parseInt(post.vote_rshares);
   const dollars = await window.SteemPlus.Utils.calculateVoteValue(
     account_vws,
     parseFloat(recentClaims),
@@ -119,7 +117,7 @@ async function updateVotingSlider(weightDisplay) {
         .text()
         .replace("-", "")
     ) * 100,
-    rShares
+    rshares
   );
 
   const votingEl = weightDisplay.closest(".Voting");
@@ -162,14 +160,13 @@ async function updateVotingSlider(weightDisplay) {
       pendingPayout = parseFloat(reactEl.text().replace("$", ""));
     } else {
       var reactObj = window.SteemPlus.Utils.findReact(reactEl[0]);
-      if (reactObj.props.hasOwnProperty('pending_payout')) {
+      if (reactObj.props.hasOwnProperty("pending_payout")) {
         pendingPayout = parseFloat(
           reactObj.props.pending_payout.replace(" SBD", "")
         );
       } else {
         pendingPayout = 0;
       }
-
     }
 
     voteTotal = flagInfo.find(".smi-vote-total");

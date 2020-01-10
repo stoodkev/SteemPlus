@@ -9,7 +9,7 @@ var rewardBalancePostVoteList = null;
 var recentClaimsPostVoteList = null;
 var steemPricePostVoteList = null;
 var postVoteListStarted = false;
-
+let total_value;
 // Listener on message to start the function
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.to == "post_votes_list") {
@@ -53,6 +53,16 @@ function startPostVoteList() {
     // Bind every html element to a click
     $("div.Voting__voters_list").click(function() {
       console.log("open list vote");
+      total_value = parseFloat(
+        $(this)
+          .prev(".Voting__inner")
+          .find(".integer")
+          .html() +
+          $(this)
+            .prev(".Voting__inner")
+            .find(".decimal")
+            .html()
+      );
       var votersButton = $(this);
       setTimeout(function() {
         if (votersButton.hasClass("show")) {
@@ -194,12 +204,16 @@ function getSteemContent(Author, permlink, cb) {
     if (result) {
       if (result.last_payout === "1970-01-01T00:00:00") {
         //not paid out yet!
+        const total_rshares = result.active_votes.reduce(
+          (acc, e) => acc + parseInt(e.rshares),
+          0
+        );
         _.each(result.active_votes, function(vote) {
           var voter = vote.voter;
           var rshares = vote.rshares;
-          var voteValue =
-            ((rshares * rewardBalancePostVoteList) / recentClaimsPostVoteList) *
-            steemPricePostVoteList;
+          var voteValue = (total_value / total_rshares) * rshares;
+          //((rshares * rewardBalancePostVoteList) / recentClaimsPostVoteList) *
+          //steemPricePostVoteList;
           if (typeof voteValue !== "undefined") {
             vote.voteDollar = voteValue;
           }

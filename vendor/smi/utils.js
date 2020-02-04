@@ -185,13 +185,14 @@
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  const approx_sqrt = (num) => {
+  const approx_sqrt = num => {
     // Create an initial guess by simply dividing by 3.
-    var lastGuess, guess = num / 3;
+    var lastGuess,
+      guess = num / 3;
 
     // Loop until a good enough approximation is found.
     do {
-      lastGuess = guess;  // store the previous guess
+      lastGuess = guess; // store the previous guess
 
       // find a new guess by averaging the old one with
       // the original number divided by the old guess.
@@ -199,9 +200,9 @@
 
       // Loop again if the product isn't close enough to
       // the original number.
-    } while(Math.abs(lastGuess - guess) > 5e-15);
+    } while (Math.abs(lastGuess - guess) > 5e-15);
 
-    return guess;  // return the approximate square root
+    return guess; // return the approximate square root
   };
 
   // https://github.com/steemit/steem/blob/master/libraries/chain/include/steem/chain/util/reward.hpp
@@ -209,35 +210,40 @@
   const STEEM_CONTENT_CONSTANT_HF0 = 2000000000000;
 
   // https://github.com/steemit/steem/blob/master/libraries/chain/util/reward.cpp
-  const evaluateRewardCurve = (rshares, curve, var1 = STEEM_CONTENT_CONSTANT_HF0) => {
+  const evaluateRewardCurve = (
+    rshares,
+    curve,
+    var1 = STEEM_CONTENT_CONSTANT_HF0
+  ) => {
     let result = 0;
     let content_constant;
     let s;
 
-    switch( curve ) {
-      case 'quadratic':
+    switch (curve) {
+      case "quadratic":
         content_constant = var1;
         const rshares_plus_s = rshares + content_constant;
-        result = rshares_plus_s * rshares_plus_s - content_constant * content_constant;
+        result =
+          rshares_plus_s * rshares_plus_s - content_constant * content_constant;
         break;
-      case 'bounded':
+      case "bounded":
         content_constant = var1;
         const two_alpha = content_constant * 2;
-        result = uint128_t( rshares.lo, 0 ) / ( two_alpha + rshares );
+        result = uint128_t(rshares.lo, 0) / (two_alpha + rshares);
         break;
-      case 'linear':
+      case "linear":
         result = rshares;
         break;
-      case 'square_root':
-        result = approx_sqrt( rshares );
+      case "square_root":
+        result = approx_sqrt(rshares);
         break;
-      case 'convergent_linear':
+      case "convergent_linear":
         s = var1;
-        result = ( ( rshares + s ) * ( rshares + s ) - s * s ) / ( rshares + 4 * s );
+        result = ((rshares + s) * (rshares + s) - s * s) / (rshares + 4 * s);
         break;
-      case 'convergent_square_root':
+      case "convergent_square_root":
         s = var1;
-        result = rshares / approx_sqrt( rshares + 2 * s );
+        result = rshares / approx_sqrt(rshares + 2 * s);
         break;
     }
 
@@ -248,14 +254,15 @@
   // https://github.com/steemit/condenser/pull/3631/files
   const computeVoteRshares = (votingPower, weight, cashout_time) => {
     let usedMana = votingPower.current_mana;
-    usedMana *= Math.abs(weight) * 60 * 60 * 24 / 10000;
+    usedMana *= (Math.abs(weight) * 60 * 60 * 24) / 10000;
     const denom = 10 * 60 * 60 * 24 * 5;
     usedMana = (usedMana + denom - 1) / denom;
 
     usedMana = Math.max(0, usedMana - 50000000);
 
     const lockoutTimeMillis = 12 * 60 * 60 * 1000;
-    const cashoutDeltaMillis = new Date(cashout_time) - new Date();
+    const cashoutDeltaMillis = new Date(cashout_time).getTime() - Date.now();
+
     if (cashoutDeltaMillis < lockoutTimeMillis) {
       usedMana /= cashoutDeltaMillis / lockoutTimeMillis;
     }
@@ -268,28 +275,36 @@
     recentClaims,
     rewardBalance,
     weight = 10000,
-    postRshares
+    postRshares,
+    cashout_time
   ) => {
     const userEffectiveVests = Math.round(
       getEffectiveVestingSharesPerAccount(account) * 10000
     );
     const mana = getMana(account);
     const medianPrice = await steem.api.getCurrentMedianHistoryPriceAsync();
-    const rewardFund = await steem.api.getRewardFundAsync('post');
-    const voteEffectiveShares = computeVoteRshares(mana, weight, "2020-01-16T20:34:30");
+    const rewardFund = await steem.api.getRewardFundAsync("post");
+    const voteEffectiveShares = computeVoteRshares(mana, weight, cashout_time);
 
     if (!postRshares) {
       postRshares = 0;
     }
 
-    const postClaims = evaluateRewardCurve(postRshares, rewardFund.author_reward_curve, parseInt(rewardFund.content_constant));
-    const postClaimsAfterVote = evaluateRewardCurve(postRshares + voteEffectiveShares, rewardFund.author_reward_curve, parseInt(rewardFund.content_constant));
+    const postClaims = evaluateRewardCurve(
+      postRshares,
+      rewardFund.author_reward_curve,
+      parseInt(rewardFund.content_constant)
+    );
+    const postClaimsAfterVote = evaluateRewardCurve(
+      postRshares + voteEffectiveShares,
+      rewardFund.author_reward_curve,
+      parseInt(rewardFund.content_constant)
+    );
     const voteClaims = postClaimsAfterVote - postClaims;
     const proportion = voteClaims / recentClaims;
     const fullVote = proportion * rewardBalance;
     return (
-      fullVote *
-      (parseFloat(medianPrice.base) / parseFloat(medianPrice.quote))
+      fullVote * (parseFloat(medianPrice.base) / parseFloat(medianPrice.quote))
     );
   };
 

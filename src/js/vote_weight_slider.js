@@ -106,7 +106,8 @@ async function updateVotingSlider(weightDisplay) {
     );
     weightDisplay.after(weightDollars);
   }
-
+  const post = await steem.api.getContentAsync(author, permlink);
+  const rShares = parseInt(post.vote_rshares);
   const dollars = await window.SteemPlus.Utils.calculateVoteValue(
     account_vws,
     parseFloat(recentClaims),
@@ -117,7 +118,8 @@ async function updateVotingSlider(weightDisplay) {
         .text()
         .replace("-", "")
     ) * 100,
-    rshares
+    rShares,
+    post.cashout_time
   );
 
   const votingEl = weightDisplay.closest(".Voting");
